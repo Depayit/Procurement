@@ -1,0 +1,8 @@
+{
+  "name": "Procurement & Inventory System",
+  "description": "A comprehensive web application for managing Purchase Requests, Approvals, Inventory, and Purchase Orders as detailed in the quotation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
