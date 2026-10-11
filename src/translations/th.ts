@@ -9,6 +9,7 @@ export const th = {
   'nav.vendors': 'คู่ค้า (Vendors)',
   'nav.reports': 'รายงาน',
   'nav.users': 'ผู้ใช้งาน',
+  'nav.manual': 'คู่มือการใช้งาน',
   'nav.settings': 'ตั้งค่า',
   'nav.logout': 'ออกจากระบบ',
 

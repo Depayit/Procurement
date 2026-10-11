@@ -11,6 +11,7 @@ import { VendorsPage } from './pages/Vendors';
 import { SettingsPage } from './pages/Settings';
 import { ReportsPage } from './pages/Reports';
 import { UsersPage } from './pages/Users';
+import { ManualPage } from './pages/Manual';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { useEffect } from 'react';
 import { doc, getDocFromServer } from 'firebase/firestore';
@@ -47,6 +48,7 @@ export default function App() {
               <Route path="settings" element={<SettingsPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="manual" element={<ManualPage />} />
               <Route path="*" element={
                 <div className="flex flex-col items-center justify-center h-full text-center py-20">
                    <h2 className="text-xl font-bold text-slate-800">Coming Soon / เร็วๆ นี้</h2>

@@ -9,6 +9,7 @@ import {
   Settings,
   Store,
   Users,
+  BookOpen,
   LogOut,
   X
 } from 'lucide-react';
@@ -27,6 +28,7 @@ const navItems = [
   { key: 'nav.vendors', path: '/vendors', icon: Store },
   { key: 'nav.reports', path: '/reports', icon: BarChart3 },
   { key: 'nav.users', path: '/users', icon: Users },
+  { key: 'nav.manual', path: '/manual', icon: BookOpen },
   { key: 'nav.settings', path: '/settings', icon: Settings },
 ];
 
