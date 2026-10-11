@@ -1,6 +1,10 @@
 import * as htmlToImage from 'html-to-image';
 import { jsPDF } from 'jspdf';
 
+/**
+ * Exports a DOM element to an exact standard A4 PDF document (210mm x 297mm).
+ * Enforces standard corporate document proportions (1:1.414 A4 ratio) without miniaturization or clipping.
+ */
 export const exportToPDF = async (elementId: string, filename: string) => {
   const element = document.getElementById(elementId);
   if (!element) {
@@ -8,66 +12,211 @@ export const exportToPDF = async (elementId: string, filename: string) => {
     return;
   }
 
+  // Create an offscreen isolation container with standard A4 width (794px = 210mm at 96 DPI)
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.left = '-10000px';
+  container.style.top = '-10000px';
+  container.style.width = '794px';
+  container.style.minWidth = '794px';
+  container.style.maxWidth = '794px';
+  container.style.backgroundColor = '#ffffff';
+  container.style.zIndex = '-9999';
+  container.style.overflow = 'visible';
+  container.style.boxSizing = 'border-box';
+  container.style.margin = '0';
+  container.style.padding = '0';
+
+  // Clone element into offscreen container
+  const clone = element.cloneNode(true) as HTMLElement;
+  clone.id = `${elementId}-pdf-export-clone`;
+  clone.style.width = '794px';
+  clone.style.minWidth = '794px';
+  clone.style.maxWidth = '794px';
+  clone.style.margin = '0';
+  clone.style.boxShadow = 'none';
+  clone.style.transform = 'none';
+  clone.style.backgroundColor = '#ffffff';
+  clone.style.boxSizing = 'border-box';
+
+  // Remove any elements marked with .print-hidden
+  const hiddenElements = clone.querySelectorAll('.print-hidden');
+  hiddenElements.forEach(el => el.remove());
+
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
   try {
-    // Temporarily hide elements that shouldn't be in the PDF
-    const hiddenElements = element.querySelectorAll('.print-hidden');
-    hiddenElements.forEach(el => {
-      (el as HTMLElement).style.display = 'none';
-    });
-
-    // Remove height constraints to capture full content
-    const originalMaxHeight = element.style.maxHeight;
-    element.style.maxHeight = 'none';
-    const scroller = element.querySelector('.overflow-y-auto') as HTMLElement;
-    const originalOverflow = scroller ? scroller.style.overflowY : '';
-    if (scroller) {
-      scroller.style.overflowY = 'visible';
+    // Wait for web fonts (e.g. Noto Sans Thai) to be fully loaded
+    if (document.fonts) {
+      await document.fonts.ready;
     }
+    // Brief layout settle
+    await new Promise(resolve => setTimeout(resolve, 150));
 
-    const dataUrl = await htmlToImage.toPng(element, {
-      pixelRatio: 2,
+    // Render to crisp, high-DPI PNG (2.5x pixel ratio for razor-sharp Thai tone marks and table borders)
+    const dataUrl = await htmlToImage.toPng(clone, {
+      pixelRatio: 2.5,
       backgroundColor: '#ffffff',
+      width: 794,
     });
 
-    // Restore styles
-    element.style.maxHeight = originalMaxHeight;
-    if (scroller) {
-      scroller.style.overflowY = originalOverflow;
-    }
-
-    // Restore hidden elements
-    hiddenElements.forEach(el => {
-      (el as HTMLElement).style.display = '';
-    });
-
+    // Initialize standard A4 PDF (210mm x 297mm)
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
+      compress: true,
     });
 
-    // Get image dimensions
     const imgProps = pdf.getImageProperties(dataUrl);
-    
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    
-    let heightLeft = pdfHeight;
-    let position = 0;
+    const pageWidth = 210; // A4 width in mm
+    const pageHeight = 297; // A4 height in mm
+    const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
 
-    pdf.addImage(dataUrl, 'PNG', 0, position, pdfWidth, pdfHeight);
-    heightLeft -= pageHeight;
+    // Single page tolerance (if height is within standard single A4 page with small margin buffer)
+    if (pdfHeight <= pageHeight + 2) {
+      // Exactly fit standard A4 page
+      const renderHeight = Math.min(pdfHeight, pageHeight);
+      pdf.addImage(dataUrl, 'PNG', 0, 0, pageWidth, renderHeight, undefined, 'FAST');
+    } else {
+      // Clean multi-page pagination for longer documents
+      let heightLeft = pdfHeight;
+      let position = 0;
 
-    while (heightLeft > 0) {
-      position = heightLeft - pdfHeight;
-      pdf.addPage();
-      pdf.addImage(dataUrl, 'PNG', 0, position, pdfWidth, pdfHeight);
+      pdf.addImage(dataUrl, 'PNG', 0, position, pageWidth, pdfHeight, undefined, 'FAST');
       heightLeft -= pageHeight;
+
+      while (heightLeft > 5) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(dataUrl, 'PNG', 0, position, pageWidth, pdfHeight, undefined, 'FAST');
+        heightLeft -= pageHeight;
+      }
     }
 
-    pdf.save(`${filename}.pdf`);
+    const cleanFilename = filename.endsWith('.pdf') ? filename : `${filename}.pdf`;
+    pdf.save(cleanFilename);
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('Error generating standard A4 PDF:', error);
+  } finally {
+    // Cleanup offscreen container
+    if (document.body.contains(container)) {
+      document.body.removeChild(container);
+    }
   }
+};
+
+/**
+ * Triggers native browser print for the document using an isolated iframe.
+ * Guarantees 100% exact A4 paper scale without modal distortion, clipping, or auto-shrinking.
+ */
+export const printA4Document = (elementId: string, docTitle?: string) => {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    console.warn(`Element ${elementId} not found, falling back to window.print()`);
+    window.print();
+    return;
+  }
+
+  // Create an invisible iframe for isolated printing
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  iframe.style.visibility = 'hidden';
+  document.body.appendChild(iframe);
+
+  const iframeDoc = iframe.contentWindow?.document;
+  if (!iframeDoc) {
+    window.print();
+    return;
+  }
+
+  // Clone document content and strip out print-hidden items
+  const clone = element.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll('.print-hidden').forEach(el => el.remove());
+
+  iframeDoc.open();
+  iframeDoc.write(`
+    <!DOCTYPE html>
+    <html lang="th">
+      <head>
+        <meta charset="utf-8" />
+        <title>${docTitle || 'เอกสารใบขอซื้อมาตรฐาน A4'}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+        <style>
+          @page {
+            size: A4 portrait;
+            margin: 8mm;
+          }
+          * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          html, body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #0f172a;
+            font-family: 'Inter', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            width: 100%;
+          }
+          .standard-a4-doc {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+          }
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          th, td {
+            box-sizing: border-box;
+          }
+          .print-hidden {
+            display: none !important;
+          }
+        </style>
+        ${Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+          .map(style => style.outerHTML)
+          .join('\n')}
+      </head>
+      <body>
+        ${clone.outerHTML}
+      </body>
+    </html>
+  `);
+  iframeDoc.close();
+
+  // Wait for fonts and styles to initialize in iframe
+  setTimeout(() => {
+    try {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+    } catch (e) {
+      console.error('Iframe print error, falling back to window.print()', e);
+      window.print();
+    } finally {
+      // Clean up iframe after print dialog finishes
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 2000);
+    }
+  }, 350);
 };

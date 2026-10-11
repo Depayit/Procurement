@@ -1,10 +1,11 @@
-import { FileText, Plus, Wand2, Loader2, Check, Search, Truck, Store, Edit, Trash2, Printer, ChevronDown, ChevronUp, Bell, AlertTriangle, Calendar, Settings2 } from 'lucide-react';
+import { FileText, Plus, Wand2, Loader2, Check, Search, Truck, Store, Edit, Trash2, Printer, Download, ChevronDown, ChevronUp, Bell, AlertTriangle, Calendar, Settings2 } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailsModal } from '../components/DetailsModal';
-import { exportToPDF } from '../lib/pdf';
+import { exportToPDF, printA4Document } from '../lib/pdf';
 import { cn } from '../lib/utils';
 import type { PRItem } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Mock PR items to use as context for PO creation
 const MOCK_AVAILABLE_PRS = [
@@ -100,6 +101,7 @@ const statusLabels: Record<string, string> = {
 };
 
 export function PurchaseOrderPage() {
+  const { t, isEnglish } = useLanguage();
   const [pos, setPos] = useState<PO[]>(INITIAL_POS);
   const [isCreating, setIsCreating] = useState(false);
   const [selectedPRId, setSelectedPRId] = useState<string | null>(null);
@@ -527,15 +529,15 @@ export function PurchaseOrderPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">จัดการใบสั่งซื้อ (PO)</h1>
-          <p className="text-sm text-slate-500 mt-1">รายชื่อใบสั่งซื้อและการรับของ (GR)</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('po.title')}</h1>
+          <p className="text-sm text-slate-500 mt-1">{t('po.subtitle')}</p>
         </div>
         <button 
           onClick={() => setIsCreating(true)}
           className="inline-flex items-center justify-center rounded-md text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 h-10 px-4 py-2 shadow-sm transition-colors"
         >
           <Plus className="mr-2 h-4 w-4" />
-          สร้าง PO (จากใบ PR)
+          {isEnglish ? 'Create PO (from PR)' : 'สร้าง PO (จากใบ PR)'}
         </button>
       </div>
 
@@ -607,72 +609,125 @@ export function PurchaseOrderPage() {
         </div>
         
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wide">
-                <th className="px-6 py-3">เลขที่ PO</th>
-                <th className="px-6 py-3">ผู้ขาย (Vendor)</th>
-                <th className="px-6 py-3">อ้างอิง PR</th>
-                <th className="px-6 py-3">วันที่</th>
-                <th className="px-6 py-3">จำนวนเงิน (บาท)</th>
-                <th className="px-6 py-3">สถานะ</th>
-                <th className="px-6 py-3 text-right">การจัดการ</th>
+          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+            <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
+              <tr>
+                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">เลขที่ PO</th>
+                <th className="px-4 py-3.5 min-w-[200px]">ผู้ขาย (Vendor)</th>
+                <th className="px-4 py-3.5 min-w-[220px]">อ้างอิง PR / โครงการ</th>
+                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">วันที่และกำหนดส่ง</th>
+                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">จำนวนเงิน (บาท)</th>
+                <th className="px-3 py-3.5 text-center whitespace-nowrap w-[110px]">สถานะ</th>
+                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">การจัดการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
               {filteredPOs.map((po) => (
-                <tr key={po.id} className="bg-white hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-bold text-slate-800 whitespace-nowrap flex items-center">
-                    <FileText className="mr-2 h-4 w-4 text-slate-400" />
-                    {po.poNumber}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center text-slate-600 font-medium">
-                      <Store className="mr-2 h-4 w-4 text-slate-400" />
-                      {po.vendorName}
+                <tr key={po.id} className="hover:bg-slate-50/80 transition-colors">
+                  {/* PO Number */}
+                  <td className="px-4 py-3.5 align-top whitespace-nowrap">
+                    <div className="flex items-start gap-2.5">
+                      <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-600 border border-indigo-100 mt-0.5 flex-shrink-0">
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight">{po.poNumber}</span>
+                        <span className="text-[11px] text-slate-500 font-medium mt-1 inline-block">
+                          {po.items?.length || 0} รายการสั่งซื้อ
+                        </span>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-600">{po.prNumber}</td>
-                  <td className="px-6 py-4 text-slate-600">
-                    {new Date(po.date).toLocaleDateString('th-TH')}
+
+                  {/* Vendor */}
+                  <td className="px-4 py-3.5 align-top">
+                    <div className="flex items-start gap-2">
+                      <Store className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="font-bold text-slate-900 text-sm leading-snug">{po.vendorName}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">คู่ค้าที่ลงทะเบียน</div>
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-800 font-bold">
-                    {po.totalAmount.toLocaleString()}
+
+                  {/* PR Ref & Desc */}
+                  <td className="px-4 py-3.5 align-top">
+                    <div className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                      <span>PR:</span>
+                      <span className="text-indigo-700">{po.prNumber}</span>
+                    </div>
+                    {po.poDescription && (
+                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2" title={po.poDescription}>
+                        {po.poDescription}
+                      </div>
+                    )}
                   </td>
-                  <td className="px-6 py-4">
+
+                  {/* Date */}
+                  <td className="px-4 py-3.5 align-top text-slate-600 whitespace-nowrap">
+                    <div className="text-xs text-slate-700 font-medium flex items-center gap-1">
+                      <span className="text-slate-400 text-[11px]">ออกเอกสาร:</span>
+                      <span>{new Date(po.date).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                    </div>
+                    {po.expectedDeliveryDate ? (
+                      <div className="text-xs font-semibold text-amber-700 mt-1 flex items-center gap-1">
+                        <span className="text-amber-500 text-[11px] font-normal">กำหนดส่ง:</span>
+                        <span>{new Date(po.expectedDeliveryDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-slate-400 mt-1">
+                        พร้อมส่งมอบตามกำหนด
+                      </div>
+                    )}
+                  </td>
+
+                  {/* Total Amount */}
+                  <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                    <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
+                      {po.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="text-[11px] text-slate-500 font-medium mt-1">
+                      บาท (THB)
+                    </div>
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
                     <span className={cn(
-                      "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide inline-block",
+                      "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none",
                       statusColors[po.status] || "bg-slate-100 text-slate-800"
                     )}>
                       {statusLabels[po.status] || po.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
+
+                  {/* Actions */}
+                  <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1.5 flex-wrap">
                       {(po.status === 'Issued' || po.status === 'Partially Received') && (
                         <button 
                           onClick={() => openReceiveGoods(po)}
-                          className="text-amber-600 hover:text-amber-800 font-bold text-xs uppercase tracking-wide transition-colors flex items-center"
+                          className="px-2.5 py-1.5 text-xs font-bold text-amber-700 hover:text-white hover:bg-amber-600 bg-amber-50 border border-amber-200 rounded-lg transition-colors flex items-center shadow-2xs"
                           title="รับของเข้าสต็อก (GR)"
                         >
-                          <Truck className="h-4 w-4 mr-1" />
-                          รับของ (GR)
+                          <Truck className="h-3.5 w-3.5 mr-1" />
+                          <span>รับของ</span>
                         </button>
                       )}
                       
                       {(po.status === 'Draft' || po.status === 'Issued') && (
                         <button 
                           onClick={() => setCancelPO(po)}
-                          className="text-red-500 hover:text-red-700 font-bold text-xs uppercase tracking-wide transition-colors flex items-center"
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="ยกเลิกใบสั่งซื้อ"
                         >
-                          ยกเลิก
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       )}
 
                       <button 
                         onClick={() => setViewPO(po)}
-                        className="text-slate-600 hover:text-slate-800 font-bold text-xs uppercase tracking-wide transition-colors"
+                        className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 border border-indigo-200 rounded-lg transition-colors shadow-2xs"
                       >
                         ดูรายละเอียด
                       </button>
@@ -695,19 +750,31 @@ export function PurchaseOrderPage() {
       <DetailsModal 
         isOpen={!!viewPO} 
         onClose={() => { setViewPO(null); setExpandedGR({}); }} 
+        maxWidth="max-w-5xl"
         title={`รายละเอียดใบสั่งซื้อ: ${viewPO?.poNumber}`}
         footer={
-          <div className="flex gap-2 w-full justify-end">
-            <button 
-              onClick={() => exportToPDF('pdf-content', `${viewPO?.poNumber}`)}
-              className="inline-flex items-center px-4 py-2 border border-slate-200 rounded text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm"
-            >
-              <Printer className="h-4 w-4 mr-2" />
-              Export PDF / พิมพ์
-            </button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full justify-between items-center">
+            <div className="flex gap-2">
+              <button 
+                onClick={() => exportToPDF('po-document-view', `${viewPO?.poNumber}`)}
+                className="inline-flex items-center px-3.5 py-2 border border-emerald-300 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors shadow-2xs cursor-pointer"
+                title="บันทึกเป็น PDF ขนาดมาตรฐาน A4"
+              >
+                <Download className="h-4 w-4 mr-1.5 text-emerald-600" />
+                บันทึก PDF A4
+              </button>
+              <button 
+                onClick={() => printA4Document('po-document-view', `ใบสั่งซื้อ_${viewPO?.poNumber}`)}
+                className="inline-flex items-center px-3.5 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+                title="พิมพ์เอกสาร A4"
+              >
+                <Printer className="h-4 w-4 mr-1.5 text-indigo-600" />
+                พิมพ์เอกสาร A4
+              </button>
+            </div>
             <button 
               onClick={() => setViewPO(null)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
             >
               ปิด
             </button>
@@ -715,22 +782,22 @@ export function PurchaseOrderPage() {
         }
       >
         {viewPO && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+          <div id="po-document-view" className="space-y-6 standard-a4-doc bg-white p-6 rounded-lg border border-slate-200 break-words [overflow-wrap:anywhere]">
+            <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs">
               <div>
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">ผู้ขาย (Vendor)</p>
-                <div className="flex items-center font-medium text-slate-800 mt-1">
-                  <Store className="h-4 w-4 mr-1 text-indigo-500" />
-                  {viewPO.vendorName}
+                <div className="flex items-center font-bold text-slate-900 mt-1 break-words leading-snug">
+                  <Store className="h-4 w-4 mr-1.5 text-indigo-500 flex-shrink-0" />
+                  <span>{viewPO.vendorName}</span>
                 </div>
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">อ้างอิง PR</p>
-                <p className="font-medium text-slate-800 mt-1">{viewPO.prNumber}</p>
+                <p className="font-mono font-bold text-indigo-700 mt-1">{viewPO.prNumber}</p>
               </div>
               <div className="col-span-2">
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">คำอธิบาย</p>
-                <p className="font-medium text-slate-800 mt-1">{viewPO.poDescription}</p>
+                <p className="font-medium text-slate-900 mt-1 break-words leading-relaxed">{viewPO.poDescription || '-'}</p>
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">วันที่</p>
@@ -748,44 +815,51 @@ export function PurchaseOrderPage() {
             </div>
 
             <div>
-              <h3 className="text-sm font-bold text-slate-800 mb-3 block border-b border-slate-200 pb-2">รายการสินค้าที่สั่งซื้อ</h3>
+              <h3 className="text-sm font-bold text-slate-800 mb-3 block border-b border-slate-200 pb-2">
+                รายการสินค้าที่สั่งซื้อ ({viewPO.items.length})
+              </h3>
               <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-bold uppercase tracking-wide">
+                <table className="w-full text-xs sm:text-sm text-left border-collapse">
+                  <thead className="bg-slate-100/90 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                     <tr>
-                      <th className="px-4 py-2 w-8"></th>
-                      <th className="px-4 py-2">รายละเอียด</th>
-                      <th className="px-4 py-2 text-right">จำนวน</th>
-                      <th className="px-4 py-2 text-right text-emerald-700">รับแล้ว</th>
-                      <th className="px-4 py-2 text-center">หน่วย</th>
-                      <th className="px-4 py-2 text-right">ราคา/หน่วย</th>
-                      <th className="px-4 py-2 text-right">รวมเป็นเงิน</th>
+                      <th className="px-3 py-2.5 w-10 text-center"></th>
+                      <th className="px-4 py-2.5 min-w-[200px]">รายละเอียดสินค้า</th>
+                      <th className="px-3 py-2.5 text-right w-24">จำนวนสั่ง</th>
+                      <th className="px-3 py-2.5 text-right w-24 text-emerald-800">รับแล้ว</th>
+                      <th className="px-3 py-2.5 text-center w-16">หน่วย</th>
+                      <th className="px-4 py-2.5 text-right w-28">ราคา/หน่วย</th>
+                      <th className="px-4 py-2.5 text-right w-32">รวมเป็นเงิน</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-100 bg-white">
                     {viewPO.items.map((item, idx) => (
                       <React.Fragment key={item.id || idx}>
                         <tr 
-                          className={cn("transition-colors", item.receipts && item.receipts.length > 0 ? "hover:bg-slate-50 cursor-pointer" : "")}
+                          className={cn("transition-colors hover:bg-slate-50/70", item.receipts && item.receipts.length > 0 ? "cursor-pointer" : "")}
                           onClick={() => {
                             if (item.receipts && item.receipts.length > 0) {
                               setExpandedGR(prev => ({ ...prev, [item.id]: !prev[item.id] }))
                             }
                           }}
                         >
-                          <td className="px-4 py-2 text-center">
+                          <td className="px-3 py-3 align-top text-center">
                             {item.receipts && item.receipts.length > 0 && (
-                              <button className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors">
+                              <button className="p-1 text-slate-400 hover:text-slate-700 rounded-md hover:bg-slate-200/50 transition-colors">
                                 {expandedGR[item.id] ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                               </button>
                             )}
                           </td>
-                          <td className="px-4 py-2 text-slate-800">{item.description}</td>
-                          <td className="px-4 py-2 text-right text-slate-800">{item.quantity}</td>
-                          <td className="px-4 py-2 text-right text-emerald-600 font-bold">{item.receivedQuantity}</td>
-                          <td className="px-4 py-2 text-center text-slate-600">{item.unit}</td>
-                          <td className="px-4 py-2 text-right text-slate-800">{item.unitPrice.toLocaleString()}</td>
-                          <td className="px-4 py-2 text-right text-slate-800 font-bold">{(item.quantity * item.unitPrice).toLocaleString()}</td>
+                          <td className="px-4 py-3 align-top">
+                            <div className="font-semibold text-slate-900 leading-snug">{item.description}</div>
+                            {item.specification && (
+                              <div className="text-xs text-slate-500 mt-0.5 leading-normal">{item.specification}</div>
+                            )}
+                          </td>
+                          <td className="px-3 py-3 align-top text-right font-mono tabular-nums text-slate-800">{Number(item.quantity).toLocaleString()}</td>
+                          <td className="px-3 py-3 align-top text-right font-mono tabular-nums text-emerald-700 font-bold">{Number(item.receivedQuantity || 0).toLocaleString()}</td>
+                          <td className="px-3 py-3 align-top text-center text-slate-600">{item.unit}</td>
+                          <td className="px-4 py-3 align-top text-right font-mono tabular-nums text-slate-700">{Number(item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td className="px-4 py-3 align-top text-right font-mono tabular-nums font-bold text-slate-900">{(item.quantity * item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                         {expandedGR[item.id] && item.receipts && item.receipts.length > 0 && (
                           <tr className="bg-slate-50/50">

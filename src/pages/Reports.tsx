@@ -26,6 +26,7 @@ import {
   Legend
 } from 'recharts';
 import { exportToPDF } from '../lib/pdf';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Mock Data
 const monthlySpend = [
@@ -55,6 +56,7 @@ const vendorPerformance = [
 const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#64748B'];
 
 export function ReportsPage() {
+  const { t, isEnglish } = useLanguage();
   const [dateRange, setDateRange] = useState('YTD');
   const [isExporting, setIsExporting] = useState(false);
 
@@ -88,28 +90,28 @@ export function ReportsPage() {
     <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">รายงานและการวิเคราะห์ (Reports)</h1>
-          <p className="text-sm text-slate-500 mt-1">สรุปภาพรวม KPI และสถิติการจัดซื้อ</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('reports.title')}</h1>
+          <p className="text-sm text-slate-500 mt-1">{t('reports.subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
             <button 
               onClick={() => setDateRange('MTD')}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${dateRange === 'MTD' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${dateRange === 'MTD' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
             >
-              เดือนนี้
+              {isEnglish ? 'This Month' : 'เดือนนี้'}
             </button>
             <button 
               onClick={() => setDateRange('QTD')}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${dateRange === 'QTD' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${dateRange === 'QTD' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
             >
-              ไตรมาสนี้
+              {isEnglish ? 'This Quarter' : 'ไตรมาสนี้'}
             </button>
             <button 
               onClick={() => setDateRange('YTD')}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${dateRange === 'YTD' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${dateRange === 'YTD' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
             >
-              ปีนี้
+              {isEnglish ? 'This Year' : 'ปีนี้'}
             </button>
           </div>
           <div className="flex items-center gap-2">
@@ -271,38 +273,43 @@ export function ReportsPage() {
             <span className="text-sm font-medium text-slate-500">Top 5 ผู้ขายที่มียอดซื้อสูงสุด</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-white text-xs text-slate-500 font-bold uppercase tracking-wide border-b border-slate-200">
+            <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[860px]">
+              <thead className="bg-slate-100/90 text-[11px] text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4">ชื่อผู้ขาย</th>
-                  <th className="px-6 py-4 text-center">จำนวนคำสั่งซื้อ</th>
-                  <th className="px-6 py-4 text-center">ส่งมอบตรงเวลา (%)</th>
-                  <th className="px-6 py-4 text-center">เรตติ้ง (เต็ม 5)</th>
-                  <th className="px-6 py-4 text-right">ยอดซื้อรวม (THB)</th>
+                  <th className="px-4 py-3.5 min-w-[240px]">ชื่อผู้ขาย / บริษัทคู่ค้า</th>
+                  <th className="px-3 py-3.5 text-center whitespace-nowrap w-[150px]">จำนวนคำสั่งซื้อ (PO)</th>
+                  <th className="px-3 py-3.5 text-center whitespace-nowrap w-[150px]">ส่งมอบตรงเวลา (%)</th>
+                  <th className="px-3 py-3.5 text-center whitespace-nowrap w-[140px]">เรตติ้งประเมิน</th>
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap w-[180px]">ยอดซื้อสะสมรวม (บาท)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
                 {vendorPerformance.map((vendor) => (
-                  <tr key={vendor.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 font-bold text-slate-800">{vendor.name}</td>
-                    <td className="px-6 py-4 text-center text-slate-600">{vendor.orders}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${
-                        vendor.onTime >= 90 ? 'bg-emerald-100 text-emerald-700' :
-                        vendor.onTime >= 80 ? 'bg-amber-100 text-amber-700' :
-                        'bg-red-100 text-red-700'
+                  <tr key={vendor.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-bold text-slate-900 text-sm leading-snug">{vendor.name}</div>
+                      <div className="text-xs text-slate-500 mt-0.5">คู่ค้ายอดสั่งซื้อสูงสุดประจำไตรมาส</div>
+                    </td>
+                    <td className="px-3 py-3.5 align-top text-center font-mono tabular-nums font-semibold text-slate-900">
+                      {vendor.orders} <span className="text-xs text-slate-500 font-normal">รายการ</span>
+                    </td>
+                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold font-mono tabular-nums border leading-none ${
+                        vendor.onTime >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        vendor.onTime >= 80 ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                        'bg-red-50 text-red-700 border-red-200'
                       }`}>
                         {vendor.onTime}%
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center text-amber-500 font-bold">
-                        <Star className="h-4 w-4 mr-1 fill-amber-500" />
-                        {vendor.rating.toFixed(1)}
+                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                      <div className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-amber-50 border border-amber-200 text-amber-800 font-bold font-mono tabular-nums text-xs leading-none">
+                        <Star className="h-3.5 w-3.5 mr-1 fill-amber-500 text-amber-500" />
+                        {vendor.rating.toFixed(1)} / 5.0
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right font-mono font-medium text-slate-700">
-                      ฿{vendor.spend.toLocaleString()}
+                    <td className="px-4 py-3.5 align-top text-right font-mono tabular-nums font-bold text-slate-900 whitespace-nowrap text-sm leading-tight">
+                      ฿{vendor.spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                   </tr>
                 ))}

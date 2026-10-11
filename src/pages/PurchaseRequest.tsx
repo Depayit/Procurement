@@ -1,89 +1,251 @@
 import { useState, useMemo } from 'react';
-import { Plus, Search, Filter, FileText, Trash2, Edit, AlertCircle, Printer } from 'lucide-react';
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  FileText, 
+  Trash2, 
+  Edit, 
+  AlertCircle, 
+  Printer, 
+  Download,
+  Sparkles, 
+  BookmarkCheck, 
+  Clock, 
+  CheckCircle2, 
+  XCircle,
+  Building2,
+  ChevronRight,
+  FolderOpen,
+  Eye,
+  FileCheck2
+} from 'lucide-react';
 import { cn } from '../lib/utils';
-import type { PurchaseRequest } from '../types';
+import type { PurchaseRequest, PRTemplate } from '../types';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PRFormModal } from '../components/PRFormModal';
 import { DetailsModal } from '../components/DetailsModal';
-import { exportToPDF } from '../lib/pdf';
+import { StandardPRDocument } from '../components/StandardPRDocument';
+import { exportToPDF, printA4Document } from '../lib/pdf';
+import { getAllTemplates } from '../data/prTemplates';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const INITIAL_MOCK_PRS: PurchaseRequest[] = [
   {
-    id: '1',
+    id: 'pr-1',
     prNumber: 'PR-2025-001',
     requesterName: 'สมชาย ช่างก่อสร้าง',
+    requesterPosition: 'วิศวกรสนาม (Site Engineer)',
     department: 'โครงการ คอนโดสุขุมวิท 101',
+    projectCode: 'PRJ-SKV101',
+    contactPhone: '081-987-6543',
+    deliveryLocation: 'ไซต์งานคอนโดสุขุมวิท 101 ประตู 2',
     requestDate: '2025-05-18T10:00:00Z',
+    requiredDate: '2025-05-25T00:00:00Z',
+    urgency: 'urgent',
     status: 'Pending Approval',
-    totalAmount: 350000,
+    justification: 'ขอสั่งซื้อวัสดุสำหรับงานเทคอนกรีตฐานรากและเสาตอม่อ ชั้นใต้ดินตามแผนงานงวดที่ 2 อ้างอิง BOQ งานโครงสร้าง',
+    suggestedVendor: 'บริษัท ปูนซิเมนต์ไทย จำกัด (มหาชน)',
+    includeVat: true,
+    vatAmount: 24500,
+    totalAmount: 374500,
     items: [
-      { id: '1', description: 'ปูนซีเมนต์ปอร์ตแลนด์ ประเภท 1', quantity: 500, unitPrice: 150, unit: 'ถุง' },
-      { id: '2', description: 'เหล็กเส้นกลม SR24 ขนาด 9 มม.', quantity: 200, unitPrice: 120, unit: 'เส้น' },
-      { id: '3', description: 'อิฐมอญแดง', quantity: 5000, unitPrice: 2.5, unit: 'ก้อน' },
-      { id: '4', description: 'ทรายหยาบ', quantity: 10, unitPrice: 450, unit: 'คิว' }
+      { id: '1', itemCode: 'MAT-CONC-240', description: 'คอนกรีตผสมเสร็จ 240 ksc Cube', specification: 'Slump 10±2.5 cm ปูนช้าง สำหรับฐานราก', quantity: 35, unitPrice: 1950, unit: 'คิว', remark: 'ส่งวันเสาร์เช้า' },
+      { id: '2', itemCode: 'MAT-STEEL-DB16', description: 'เหล็กข้ออ้อย DB16 SD40', specification: 'ความยาว 10 เมตร มอก. 24-2559 มีใบ Mill Cert', quantity: 150, unitPrice: 420, unit: 'เส้น', remark: 'เหล็กเสาตอม่อ' },
+      { id: '3', itemCode: 'MAT-STEEL-RB9', description: 'เหล็กเส้นกลม RB9 SR24', specification: 'ความยาว 10 เมตร มอก. 20-2559', quantity: 200, unitPrice: 135, unit: 'เส้น', remark: 'ดัดเหล็กปลอก' },
+      { id: '4', itemCode: 'MAT-WIRE-01', description: 'ลวดผูกเหล็กเบอร์ 18', specification: 'น้ำหนัก 2.5 กก./ขด นุ่มเหนียว', quantity: 20, unitPrice: 180, unit: 'ขด', remark: 'ผูกเหล็กโครงสร้าง' },
+      { id: '5', itemCode: 'MAT-WOOD-PLY', description: 'ไม้อัดเคลือบฟิล์มดำ 15 มม.', specification: '122x244 ซม. เกรดงานหล่อคอนกรีต 4-6 ครั้ง', quantity: 40, unitPrice: 650, unit: 'แผ่น', remark: 'ทำแบบข้างคาน' }
     ],
+    signatures: {
+      requestedBy: {
+        name: 'สมชาย ช่างก่อสร้าง',
+        position: 'วิศวกรสนาม',
+        date: '2025-05-18T10:00:00Z',
+        signed: true
+      },
+      checkedBy: {
+        name: 'นายอภิสิทธิ์ กลิ่นสุคนธ์',
+        position: 'วิศวกรโครงการ (Project Engineer)',
+        date: '2025-05-18T14:30:00Z',
+        signed: true,
+        comments: 'ตรวจสอบสเปกวัสดุตรงตามแบบวิศวกรรมแล้ว'
+      },
+      budgetCheckedBy: {
+        name: 'นางสาวกัญญา พงษ์ศิริ',
+        position: 'เจ้าหน้าที่ควบคุมต้นทุน (Cost Control)',
+        date: '2025-05-18T16:00:00Z',
+        signed: true,
+        comments: 'ยอดสั่งซื้ออยู่ในกรอบงบประมาณ BOQ งานโครงสร้าง'
+      },
+      approvedBy: {
+        name: 'นายธีรภัทร บริหารงาน',
+        position: 'ผู้อำนวยการสายงานโครงการ (Project Director)',
+        signed: false
+      }
+    }
   },
   {
-    id: '2',
+    id: 'pr-2',
     prNumber: 'PR-2025-002',
     requesterName: 'วิชัย คุมงาน',
+    requesterPosition: 'โฟร์แมนอาวุโส (Senior Foreman)',
     department: 'โครงการ หมู่บ้านจัดสรร บางนา',
+    projectCode: 'PRJ-BNG02',
+    contactPhone: '086-555-4321',
+    deliveryLocation: 'ไซต์บางนา กม.14 ซอยจัดสรร 3',
     requestDate: '2025-05-17T14:30:00Z',
+    requiredDate: '2025-05-22T00:00:00Z',
+    urgency: 'normal',
     status: 'Approved',
-    totalAmount: 245000,
+    justification: 'สั่งซื้ออิฐมวลเบาและปูนก่อฉาบสำหรับผนังห้องบ้านเดี่ยวเฟส 2 จำนวน 4 ยูนิต',
+    suggestedVendor: 'บริษัท คิวคอน อินเตอร์เนชั่นแนล จำกัด',
+    includeVat: true,
+    vatAmount: 5971,
+    totalAmount: 91271,
     items: [
-      { id: '2', description: 'เหล็กเส้นกลม SR24 ขนาด 9 มม.', quantity: 2041, unitPrice: 120, unit: 'เส้น' },
+      { id: '1', itemCode: 'MAT-BLOCK-G4', description: 'อิฐมวลเบา Q-Con เกรด G4 หนา 7.5 ซม.', specification: 'ขนาด 20x60 ซม. ได้มาตรฐาน มอก.', quantity: 2400, unitPrice: 19.5, unit: 'ก้อน', remark: 'ส่งรอบแรก 1,200 ก้อน' },
+      { id: '2', itemCode: 'MAT-MORT-THIN', description: 'ปูนก่ออิฐมวลเบาสูตรบาง', specification: 'ถุงละ 50 กก. ผสมสารอุ้มน้ำสูง', quantity: 60, unitPrice: 130, unit: 'ถุง', remark: 'ปูนก่อ' },
+      { id: '3', itemCode: 'MAT-PLAST-FINE', description: 'ปูนฉาบละเอียดผนังอิฐมวลเบา', specification: 'ถุงละ 50 กก. ฉาบลื่น ผิวเนียน', quantity: 120, unitPrice: 115, unit: 'ถุง', remark: 'งานฉาบ' },
+      { id: '4', itemCode: 'MAT-MESH-FIBER', description: 'ตาข่ายไฟเบอร์เสริมแรงฉาบปูน', specification: 'กว้าง 10 ซม. ยาว 50 ม./ม้วน', quantity: 15, unitPrice: 185, unit: 'ม้วน', remark: 'ติดมุมวงกบ' }
     ],
+    signatures: {
+      requestedBy: {
+        name: 'วิชัย คุมงาน',
+        position: 'โฟร์แมนอาวุโส',
+        date: '2025-05-17T14:30:00Z',
+        signed: true
+      },
+      checkedBy: {
+        name: 'นายเกรียงไกร ช่างเอก',
+        position: 'วิศวกรประจำโครงการ',
+        date: '2025-05-17T16:00:00Z',
+        signed: true
+      },
+      budgetCheckedBy: {
+        name: 'ฝ่ายควบคุมต้นทุนโครงการ',
+        position: 'Cost Controller',
+        date: '2025-05-17T17:00:00Z',
+        signed: true
+      },
+      approvedBy: {
+        name: 'นายสิทธิชัย อำนวยการ',
+        position: 'ผู้จัดการโครงการ',
+        date: '2025-05-18T09:00:00Z',
+        signed: true,
+        comments: 'อนุมัติสั่งซื้อตามแผนงานก่อสร้าง'
+      }
+    }
   },
   {
-    id: '3',
+    id: 'pr-3',
     prNumber: 'PR-2025-003',
     requesterName: 'สมปอง จัดซื้อ',
-    department: 'งานซ่อมบำรุง ส่วนกลาง',
+    requesterPosition: 'เจ้าหน้าที่จัดซื้อ (Purchasing Officer)',
+    department: 'โครงการ อาคารสำนักงาน พระราม 9',
+    projectCode: 'PRJ-RM9-03',
+    contactPhone: '089-123-4567',
+    deliveryLocation: 'ไซต์อาคารสำนักงาน สี่แยกพระราม 9',
     requestDate: '2025-05-15T09:15:00Z',
+    requiredDate: '2025-05-20T00:00:00Z',
+    urgency: 'normal',
     status: 'PO Created',
-    totalAmount: 12500,
-    items: [],
+    justification: 'จัดซื้อสายไฟฟ้า THW และท่อร้อยสายไฟ uPVC สำหรับชั้น 3-4',
+    suggestedVendor: 'บริษัท ไทยยาซากิ อิเลคทริค จำกัด',
+    includeVat: true,
+    vatAmount: 2584.4,
+    totalAmount: 39504.4,
+    items: [
+      { id: '1', itemCode: 'ELE-CBL-THW25', description: 'สายไฟฟ้า THW 1x2.5 sq.mm.', specification: 'ทองแดงแท้ 450/750V ม้วนละ 100 ม.', quantity: 12, unitPrice: 1150, unit: 'ม้วน' },
+      { id: '2', itemCode: 'ELE-PIPE-UPVC20', description: 'ท่อร้อยสายไฟ uPVC สีขาว 20 มม. (3/4")', specification: 'มาตรฐาน JIS C 8430 ยาว 2.92 ม.', quantity: 180, unitPrice: 48, unit: 'ท่อน' },
+      { id: '3', itemCode: 'ELE-BOX-HANDY', description: 'แฮนดี้บ็อกซ์ เหล็กชุบกัลวาไนซ์ 2x4 นิ้ว', specification: 'หนา 1.0 มม. ชุบสังกะสีกันสนิม', quantity: 150, unitPrice: 14, unit: 'ใบ' }
+    ]
   },
 ];
 
 const statusColors: Record<string, string> = {
-  'Draft': 'bg-slate-100 text-slate-800',
-  'Pending Approval': 'bg-amber-100 text-amber-800',
-  'Approved': 'bg-indigo-100 text-indigo-800',
-  'Rejected': 'bg-red-100 text-red-800',
-  'PO Created': 'bg-emerald-100 text-emerald-800',
+  'Draft': 'bg-slate-100 text-slate-800 border-slate-300',
+  'Pending Approval': 'bg-amber-100 text-amber-800 border-amber-300',
+  'Approved': 'bg-indigo-100 text-indigo-800 border-indigo-300',
+  'Rejected': 'bg-red-100 text-red-800 border-red-300',
+  'PO Created': 'bg-emerald-100 text-emerald-800 border-emerald-300',
 };
 
 const statusLabels: Record<string, string> = {
-  'Draft': 'ร่าง',
+  'Draft': 'ร่างเอกสาร',
   'Pending Approval': 'รออนุมัติ',
   'Approved': 'อนุมัติแล้ว',
   'Rejected': 'ถูกปฏิเสธ',
-  'PO Created': 'สร้าง PO แล้ว',
+  'PO Created': 'ออก PO แล้ว',
+};
+
+const urgencyBadges: Record<string, { label: string; color: string }> = {
+  'normal': { label: 'ปกติ', color: 'bg-slate-100 text-slate-700 border-slate-200' },
+  'urgent': { label: 'ด่วน', color: 'bg-amber-100 text-amber-800 border-amber-300 font-bold' },
+  'emergency': { label: 'ด่วนที่สุด', color: 'bg-red-100 text-red-800 border-red-300 font-bold' },
 };
 
 export function PurchaseRequestPage() {
+  const { t, isThai, isEnglish } = useLanguage();
   const [prs, setPrs] = useState<PurchaseRequest[]>(INITIAL_MOCK_PRS);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPR, setEditingPR] = useState<PurchaseRequest | null>(null);
   const [viewPR, setViewPR] = useState<PurchaseRequest | null>(null);
+  const [viewFormat, setViewFormat] = useState<'standard' | 'summary'>('standard');
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [showTemplatesGallery, setShowTemplatesGallery] = useState(false);
+
+  const statusLabels: Record<string, string> = useMemo(() => ({
+    'Draft': isEnglish ? 'Draft' : 'ร่างเอกสาร',
+    'Pending Approval': isEnglish ? 'Pending Approval' : 'รออนุมัติ',
+    'Approved': isEnglish ? 'Approved' : 'อนุมัติแล้ว',
+    'Rejected': isEnglish ? 'Rejected' : 'ถูกปฏิเสธ',
+    'PO Created': isEnglish ? 'PO Created' : 'ออก PO แล้ว',
+  }), [isEnglish]);
+
+  const urgencyBadges: Record<string, { label: string; color: string }> = useMemo(() => ({
+    'normal': { label: isEnglish ? 'Normal' : 'ปกติ', color: 'bg-slate-100 text-slate-700 border-slate-200' },
+    'urgent': { label: isEnglish ? 'Urgent' : 'ด่วน', color: 'bg-amber-100 text-amber-800 border-amber-300 font-bold' },
+    'emergency': { label: isEnglish ? 'Emergency' : 'ด่วนที่สุด', color: 'bg-red-100 text-red-800 border-red-300 font-bold' },
+  }), [isEnglish]);
+
+  const standardTemplates = useMemo(() => getAllTemplates(), []);
 
   const filteredPRs = useMemo(() => {
-    if (!searchQuery.trim()) return prs;
-    const lowerQuery = searchQuery.toLowerCase();
-    return prs.filter(pr => 
-      pr.prNumber.toLowerCase().includes(lowerQuery) || 
-      pr.requesterName.toLowerCase().includes(lowerQuery) ||
-      pr.department.toLowerCase().includes(lowerQuery)
-    );
-  }, [prs, searchQuery]);
+    return prs.filter(pr => {
+      const matchesSearch = !searchQuery.trim() || 
+        pr.prNumber.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        pr.requesterName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        pr.department.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesStatus = statusFilter === 'all' || pr.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [prs, searchQuery, statusFilter]);
 
   const handleCreateNew = () => {
     setEditingPR(null);
+    setIsModalOpen(true);
+  };
+
+  const handleCreateFromTemplate = (tpl: PRTemplate) => {
+    // Open modal prefilled with template
+    const templatePR: Partial<PurchaseRequest> = {
+      department: tpl.defaultDepartment || 'โครงการ คอนโดสุขุมวิท 101',
+      justification: tpl.defaultJustification || '',
+      urgency: tpl.defaultUrgency || 'normal',
+      items: tpl.items.map((it, idx) => ({
+        ...it,
+        id: `tpl-${Date.now()}-${idx}`
+      })),
+      includeVat: true,
+      status: 'Draft',
+    };
+    setEditingPR(templatePR as PurchaseRequest);
+    setShowTemplatesGallery(false);
     setIsModalOpen(true);
   };
 
@@ -93,24 +255,60 @@ export function PurchaseRequestPage() {
   };
 
   const handleSavePR = (data: any) => {
-    if (editingPR) {
-      // Update
-      setPrs(prs.map(p => p.id === editingPR.id ? { ...p, department: data.department, totalAmount: data.totalAmount, items: data.items } : p));
-      alert(`แก้ไข PR สำเร็จ (Mock)`);
+    if (editingPR && editingPR.id && !editingPR.id.startsWith('tpl-')) {
+      // Update existing
+      setPrs(prs.map(p => p.id === editingPR.id ? { 
+        ...p, 
+        department: data.department, 
+        projectCode: data.projectCode,
+        requesterName: data.requesterName,
+        requesterPosition: data.requesterPosition,
+        contactPhone: data.contactPhone,
+        deliveryLocation: data.deliveryLocation,
+        requiredDate: data.requiredDate,
+        urgency: data.urgency,
+        justification: data.justification,
+        suggestedVendor: data.suggestedVendor,
+        includeVat: data.includeVat,
+        vatAmount: data.vatAmount,
+        totalAmount: data.totalAmount, 
+        items: data.items 
+      } : p));
+      alert(`แก้ไขใบขอซื้อ ${editingPR.prNumber} เรียบร้อยแล้ว`);
     } else {
-      // Create
+      // Create new
+      const nextNum = prs.length + 1;
+      const formattedNum = `PR-2025-${String(nextNum).padStart(3, '0')}`;
       const newPR: PurchaseRequest = {
-        id: Math.random().toString(),
-        prNumber: `PR-2025-00${prs.length + 1}`,
-        requesterName: 'สมปอง จัดซื้อ',
+        id: `pr-${Date.now()}`,
+        prNumber: formattedNum,
+        requesterName: data.requesterName || 'สมปอง จัดซื้อ',
+        requesterPosition: data.requesterPosition || 'วิศวกรควบคุมงาน',
+        contactPhone: data.contactPhone || '089-123-4567',
         department: data.department,
+        projectCode: data.projectCode || 'PRJ-MAIN-01',
+        deliveryLocation: data.deliveryLocation,
         requestDate: new Date().toISOString(),
+        requiredDate: data.requiredDate || new Date().toISOString(),
+        urgency: data.urgency || 'normal',
         status: 'Draft',
+        justification: data.justification,
+        suggestedVendor: data.suggestedVendor,
+        includeVat: data.includeVat ?? true,
+        vatAmount: data.vatAmount || 0,
         totalAmount: data.totalAmount,
         items: data.items,
+        signatures: {
+          requestedBy: {
+            name: data.requesterName || 'สมปอง จัดซื้อ',
+            position: data.requesterPosition || 'วิศวกรควบคุมงาน',
+            date: new Date().toISOString(),
+            signed: true
+          }
+        }
       };
       setPrs([newPR, ...prs]);
-      alert(`บันทึก PR สำเร็จ (Mock) วางไว้ในสถานะ ร่าง`);
+      alert(`สร้างใบขอซื้อมาตรฐานเลขที่ ${newPR.prNumber} สำเร็จ (บันทึกในสถานะ ร่าง)`);
     }
     setIsModalOpen(false);
   };
@@ -118,132 +316,306 @@ export function PurchaseRequestPage() {
   const handleDelete = () => {
     if (deleteId) {
       setPrs(prs.filter(p => p.id !== deleteId));
-      alert('ลบเอกสารเรียบร้อย');
+      alert('ลบเอกสารแบบร่างเรียบร้อยแล้ว');
     }
     setDeleteId(null);
   };
 
   const handleCancel = () => {
     if (cancelId) {
-       setPrs(prs.map(p => p.id === cancelId ? { ...p, status: 'Rejected' } : p));
-       alert('ยกเลิกเอกสารเรียบร้อย');
+      setPrs(prs.map(p => p.id === cancelId ? { ...p, status: 'Rejected' } : p));
+      alert('ยกเลิกเอกสารเรียบร้อยแล้ว');
     }
     setCancelId(null);
-  }
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+      {/* Title Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">ระบบขอซื้อ (PR) และโครงการ</h1>
-          <p className="text-sm text-slate-500 mt-1">จัดการคำขอสั่งซื้อ ตรวจสอบงบประมาณ (BOQ) ตามโครงการ</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('pr.title')}</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700">
+              {isEnglish ? 'Construction ERP Standard' : 'มาตรฐาน ERP ก่อสร้าง'}
+            </span>
+          </div>
+          <p className="text-sm text-slate-500 mt-1">
+            {isEnglish 
+              ? 'Create standard purchase requisitions, track project BOQ budgets, and multi-tier approvals' 
+              : 'สร้างใบขอซื้อตามแบบฟอร์มมาตรฐาน ตรวจสอบงบประมาณ BOQ รายโครงการ และระบบอนุมัติหลายระดับ'}
+          </p>
         </div>
-        <button 
-          onClick={handleCreateNew}
-          className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 bg-indigo-600 text-white hover:bg-indigo-700 h-10 px-4 py-2 shadow-sm"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          สร้าง PR
-        </button>
+
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button 
+            onClick={() => setShowTemplatesGallery(!showTemplatesGallery)}
+            className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 h-10 px-4 py-2 shadow-2xs"
+          >
+            <Sparkles className="mr-2 h-4 w-4 text-indigo-600" />
+            {showTemplatesGallery 
+              ? (isEnglish ? 'Hide Templates' : 'ซ่อนเทมเพลตมาตรฐาน') 
+              : (isEnglish ? 'PR Templates Gallery' : 'คลังเทมเพลตมาตรฐาน PR')}
+          </button>
+
+          <button 
+            onClick={handleCreateNew}
+            className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 bg-indigo-600 text-white hover:bg-indigo-700 h-10 px-4 py-2 shadow-sm"
+          >
+            <Plus className="mr-1.5 h-4 w-4" />
+            {isEnglish ? 'New PR' : 'สร้าง PR ใหม่'}
+          </button>
+        </div>
       </div>
 
+      {/* Templates Gallery Section (When opened) */}
+      {showTemplatesGallery && (
+        <div className="bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/50 border border-indigo-200 rounded-xl p-5 shadow-xs animate-in fade-in duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+                <BookmarkCheck className="w-5 h-5 text-indigo-600" />
+                {isEnglish ? 'Standard Construction PR Templates' : 'เทมเพลตมาตรฐานสำหรับระบบขอซื้อ (Standard PR Templates)'}
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {isEnglish 
+                  ? 'Select preloaded construction & MEP standard templates to create a PR in 1 click' 
+                  : 'เลือกใช้เทมเพลตมาตรฐานสำเร็จรูปที่จัดเตรียมรายการพัสดุ สเปก และหน่วยนับไว้ครบถ้วน เพื่อสร้าง PR ได้ใน 1 คลิก'}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowTemplatesGallery(false)}
+              className="text-xs text-slate-400 hover:text-slate-600 font-medium"
+            >
+              {t('common.close')}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {standardTemplates.map((tpl) => (
+              <div 
+                key={tpl.id}
+                className="bg-white rounded-lg border border-slate-200 p-4 hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded uppercase">
+                      {tpl.category}
+                    </span>
+                    <span className="text-[11px] font-medium text-slate-500">
+                      {tpl.items.length} {isEnglish ? 'items' : 'รายการ'}
+                    </span>
+                  </div>
+
+                  <h3 className="font-bold text-sm text-slate-800 mt-2 group-hover:text-indigo-600 transition-colors">
+                    {tpl.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                    {tpl.description}
+                  </p>
+
+                  <div className="mt-3 pt-2.5 border-t border-slate-100 space-y-1">
+                    <div className="text-[11px] font-medium text-slate-600 line-clamp-1">
+                      {isEnglish ? 'Sample items: ' : 'ตัวอย่างรายการ: '}{tpl.items.slice(0, 2).map(i => i.description).join(', ')} ...
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-2">
+                  <button
+                    onClick={() => handleCreateFromTemplate(tpl)}
+                    className="w-full py-1.5 px-3 bg-slate-50 hover:bg-indigo-600 text-slate-700 hover:text-white rounded font-semibold text-xs transition-all border border-slate-200 hover:border-indigo-600 flex items-center justify-center gap-1.5 shadow-2xs"
+                  >
+                    <span>{isEnglish ? 'Use Template' : 'สร้าง PR จากเทมเพลตนี้'}</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Main PR List Card */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50">
+        {/* Filter and Search Bar */}
+        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50">
           <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input 
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="ค้นหาตามเลขที่ PR, ผู้ขอ, โครงการ..." 
-              className="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
+              placeholder={t('pr.searchPlaceholder')} 
+              className="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors bg-white"
             />
           </div>
-          <button className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 font-medium px-3 py-1.5 border border-slate-200 rounded bg-white shadow-sm hover:bg-slate-50 transition-colors">
-            <Filter className="mr-2 h-4 w-4" /> กรอง
-          </button>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+              <span>{isEnglish ? 'Status:' : 'สถานะ:'}</span>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="all">{isEnglish ? 'All Statuses' : 'ทั้งหมด'} ({prs.length})</option>
+                <option value="Draft">{statusLabels['Draft']}</option>
+                <option value="Pending Approval">{statusLabels['Pending Approval']}</option>
+                <option value="Approved">{statusLabels['Approved']}</option>
+                <option value="PO Created">{statusLabels['PO Created']}</option>
+                <option value="Rejected">{statusLabels['Rejected']}</option>
+              </select>
+            </div>
+          </div>
         </div>
 
+        {/* PR Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-400 font-bold uppercase bg-slate-50 border-b border-slate-200 tracking-wide">
+          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+            <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
               <tr>
-                <th className="px-6 py-3">เลขที่ PR</th>
-                <th className="px-6 py-3">ผู้ขอ</th>
-                <th className="px-6 py-3">โครงการ/ไซต์งาน</th>
-                <th className="px-6 py-3">วันที่</th>
-                <th className="px-6 py-3">จำนวนเงิน (บาท)</th>
-                <th className="px-6 py-3">สถานะ</th>
-                <th className="px-6 py-3 text-right">จัดการ</th>
+                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">{t('pr.colPrNumber')}</th>
+                <th className="px-3 py-3.5 whitespace-nowrap text-center w-[95px]">{isEnglish ? 'Urgency' : 'ความสำคัญ'}</th>
+                <th className="px-4 py-3.5 min-w-[220px]">{t('pr.colProject')}</th>
+                <th className="px-4 py-3.5 whitespace-nowrap min-w-[150px]">{t('pr.colRequester')}</th>
+                <th className="px-4 py-3.5 whitespace-nowrap w-[145px]">{isEnglish ? 'Schedule' : 'กำหนดการวันที่'}</th>
+                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">{isEnglish ? 'Total (THB)' : 'ยอดรวม (บาท)'}</th>
+                <th className="px-3 py-3.5 text-center whitespace-nowrap w-[110px]">{t('pr.colStatus')}</th>
+                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[110px]">{t('pr.colActions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredPRs.map((pr) => (
-                <tr key={pr.id} className="bg-white hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-bold text-slate-800 whitespace-nowrap flex items-center">
-                    <FileText className="mr-2 h-4 w-4 text-slate-400" />
-                    {pr.prNumber}
-                  </td>
-                  <td className="px-6 py-4 text-slate-600 font-medium">{pr.requesterName}</td>
-                  <td className="px-6 py-4 text-slate-600">{pr.department}</td>
-                  <td className="px-6 py-4 text-slate-600">
-                    {new Date(pr.requestDate).toLocaleDateString('th-TH')}
-                  </td>
-                  <td className="px-6 py-4 text-slate-800 font-bold">
-                    {pr.totalAmount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={cn(
-                      "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide",
-                      statusColors[pr.status] || "bg-slate-100 text-slate-800"
-                    )}>
-                      {statusLabels[pr.status] || pr.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      {(pr.status === 'Draft' || pr.status === 'Pending Approval') && (
+            <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
+              {filteredPRs.map((pr) => {
+                const urgency = urgencyBadges[pr.urgency || 'normal'] || urgencyBadges.normal;
+                return (
+                  <tr key={pr.id} className="hover:bg-slate-50/80 transition-colors">
+                    {/* PR Number */}
+                    <td className="px-4 py-3.5 align-top whitespace-nowrap">
+                      <div className="flex items-start gap-2.5">
+                        <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-600 border border-indigo-100 mt-0.5 flex-shrink-0">
+                          <FileText className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <span className="font-mono text-indigo-700 text-sm font-bold block leading-tight">{pr.prNumber}</span>
+                          <span className="text-[11px] text-slate-500 font-medium mt-1 inline-block">
+                            {pr.items?.length || 0} {isEnglish ? 'items' : 'รายการพัสดุ'}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Urgency */}
+                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                      <span className={cn("inline-block px-2.5 py-1 rounded-md text-[11px] border font-semibold", urgency.color)}>
+                        {urgency.label}
+                      </span>
+                    </td>
+
+                    {/* Project / Site */}
+                    <td className="px-4 py-3.5 align-top text-slate-700">
+                      <div className="font-bold text-slate-900 text-sm leading-snug">{pr.department}</div>
+                      <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs">
+                        <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                          {pr.projectCode || 'PRJ-MAIN-01'}
+                        </span>
+                        {pr.deliveryLocation && (
+                          <span className="text-slate-500 leading-normal" title={pr.deliveryLocation}>
+                            • {pr.deliveryLocation}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Requester */}
+                    <td className="px-4 py-3.5 align-top text-slate-700 whitespace-nowrap">
+                      <div className="font-semibold text-slate-900 text-sm leading-snug">{pr.requesterName}</div>
+                      <div className="text-xs text-slate-500 mt-0.5 font-normal">
+                        {pr.requesterPosition || 'วิศวกรสนาม'}
+                      </div>
+                    </td>
+
+                    {/* Dates */}
+                    <td className="px-4 py-3.5 align-top text-slate-600 whitespace-nowrap">
+                      <div className="text-xs text-slate-700 font-medium flex items-center gap-1">
+                        <span className="text-slate-400 text-[11px]">ขอเมื่อ:</span>
+                        <span>{new Date(pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      </div>
+                      <div className="text-xs font-semibold text-indigo-700 mt-1 flex items-center gap-1">
+                        <span className="text-indigo-400 text-[11px] font-normal">ต้องการ:</span>
+                        <span>{new Date(pr.requiredDate || pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      </div>
+                    </td>
+
+                    {/* Amount */}
+                    <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                      <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
+                        {pr.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-medium mt-1">
+                        {pr.includeVat ? 'รวม VAT 7%' : 'ไม่รวม VAT'}
+                      </div>
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                      <span className={cn(
+                        "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none",
+                        statusColors[pr.status] || "bg-slate-100 text-slate-800"
+                      )}>
+                        {statusLabels[pr.status] || pr.status}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
                         <button 
-                          onClick={() => handleEdit(pr)}
-                          className="text-indigo-600 hover:text-indigo-800 transition-colors"
-                          title="แก้ไขเอกสาร"
+                          onClick={() => setViewPR(pr)}
+                          className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 border border-indigo-200 rounded-lg transition-all flex items-center gap-1 shadow-2xs"
+                          title={isEnglish ? "View Standard PR Form" : "ดูแบบฟอร์มมาตรฐาน"}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>{isEnglish ? 'View' : 'ดูฟอร์ม'}</span>
                         </button>
-                      )}
-                      {(pr.status === 'Draft') && (
-                        <button 
-                          onClick={() => setDeleteId(pr.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors"
-                          title="ลบเอกสาร"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                       {(pr.status === 'Pending Approval') && (
-                         <button 
-                         onClick={() => setCancelId(pr.id)}
-                         className="text-slate-500 hover:text-slate-700 font-bold text-xs uppercase transition-colors"
-                         title="ยกเลิกเอกสาร"
-                       >
-                         ยกเลิก
-                       </button>
-                       )}
-                       
-                       <button 
-                         onClick={() => setViewPR(pr)}
-                         className="text-slate-600 hover:text-slate-800 font-bold text-xs uppercase tracking-wide transition-colors"
-                       >
-                        ดูรายละเอียด
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+
+                        {(pr.status === 'Draft' || pr.status === 'Pending Approval') && (
+                          <button 
+                            onClick={() => handleEdit(pr)}
+                            className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors border border-transparent hover:border-slate-200"
+                            title={isEnglish ? "Edit document" : "แก้ไขเอกสาร"}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </button>
+                        )}
+                        {(pr.status === 'Draft') && (
+                          <button 
+                            onClick={() => setDeleteId(pr.id)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                            title="ลบเอกสารร่าง"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                        {(pr.status === 'Pending Approval') && (
+                          <button 
+                            onClick={() => setCancelId(pr.id)}
+                            className="text-slate-400 hover:text-slate-600 font-bold text-xs transition-colors px-1.5 py-1 rounded hover:bg-slate-100"
+                            title="ยกเลิกคำขอ"
+                          >
+                            ยกเลิก
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               {filteredPRs.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
-                    ไม่พบข้อมูลที่ค้นหา
+                  <td colSpan={8} className="px-6 py-10 text-center text-slate-500">
+                    <FileText className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+                    ไม่พบรายการใบขอซื้อที่ตรงกับเงื่อนไขการค้นหา
                   </td>
                 </tr>
               )}
@@ -252,108 +624,160 @@ export function PurchaseRequestPage() {
         </div>
       </div>
 
+      {/* Details Modal with Standard Official PR Document */}
       <DetailsModal 
         isOpen={!!viewPR} 
         onClose={() => setViewPR(null)} 
-        title={`รายละเอียดใบขอซื้อ: ${viewPR?.prNumber}`}
+        maxWidth="max-w-5xl"
+        title={`เอกสารใบขอซื้อมาตรฐาน: ${viewPR?.prNumber}`}
         footer={
-          <div className="flex gap-2 w-full justify-end">
-            <button 
-              onClick={() => exportToPDF('pdf-content', `${viewPR?.prNumber}`)}
-              className="inline-flex items-center px-4 py-2 border border-slate-200 rounded text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm"
-            >
-              <Printer className="h-4 w-4 mr-2" />
-              Export PDF / พิมพ์
-            </button>
-            <button 
-              onClick={() => setViewPR(null)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
-            >
-              ปิด
-            </button>
+          <div className="flex flex-col sm:flex-row gap-2.5 w-full justify-between items-center">
+            {/* View switcher */}
+            <div className="flex bg-slate-200/80 p-0.5 rounded-lg text-xs font-semibold">
+              <button
+                onClick={() => setViewFormat('standard')}
+                className={cn(
+                  "px-3 py-1.5 rounded-md transition-colors",
+                  viewFormat === 'standard' ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                แบบฟอร์มทางการ (Official PR - A4)
+              </button>
+              <button
+                onClick={() => setViewFormat('summary')}
+                className={cn(
+                  "px-3 py-1.5 rounded-md transition-colors",
+                  viewFormat === 'summary' ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                มุมมองสรุปทั่วไป
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button 
+                onClick={() => printA4Document('standard-pr-doc', `ใบขอซื้อ_${viewPR?.prNumber}`)}
+                className="inline-flex items-center px-3.5 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+                title="พิมพ์เอกสารขนาด A4 มาตราฐานโดยตรง ไม่ผ่านการย่อส่วน"
+              >
+                <Printer className="h-4 w-4 mr-1.5 text-indigo-600" />
+                พิมพ์เอกสาร A4
+              </button>
+              <button 
+                onClick={() => exportToPDF('standard-pr-doc', `${viewPR?.prNumber}_Standard_PR`)}
+                className="inline-flex items-center px-3.5 py-2 border border-emerald-300 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors shadow-2xs cursor-pointer"
+                title="บันทึกไฟล์เป็น PDF ขนาด A4 100% สัดส่วนมาตรฐาน"
+              >
+                <Download className="h-4 w-4 mr-1.5 text-emerald-600" />
+                บันทึก PDF A4
+              </button>
+              <button 
+                onClick={() => setViewPR(null)}
+                className="inline-flex items-center px-4 py-2 rounded-lg text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+              >
+                ปิดหน้าต่าง
+              </button>
+            </div>
           </div>
         }
       >
         {viewPR && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+          <div>
+            {viewFormat === 'standard' ? (
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">ผู้ขอ</p>
-                <p className="font-medium text-slate-800">{viewPR.requesterName}</p>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">โครงการ/ไซต์งาน</p>
-                <p className="font-medium text-slate-800">{viewPR.department}</p>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">วันที่</p>
-                <p className="font-medium text-slate-800">{new Date(viewPR.requestDate).toLocaleDateString('th-TH')}</p>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">สถานะ</p>
-                <span className={cn(
-                  "inline-flex px-2 py-0.5 mt-1 rounded text-[10px] font-bold uppercase tracking-wide",
-                  statusColors[viewPR.status] || "bg-slate-100 text-slate-800"
-                )}>
-                  {statusLabels[viewPR.status] || viewPR.status}
-                </span>
-              </div>
-              {viewPR.department.includes('โครงการ') && (
-                <div className="col-span-2 pt-3 border-t border-slate-200 mt-2 flex justify-between items-center">
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center">การตรวจสอบงบประมาณ (BOQ)</p>
-                  <p className="font-medium text-emerald-600 text-sm">ยอดเงินอยู่ในกรอบงบประมาณ</p>
+                <div className="flex items-center justify-between mb-3 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span className="font-bold text-slate-700">ขนาดกระดาษมาตรฐาน A4 (210 x 297 มม.)</span>
+                    <span className="text-slate-300 hidden sm:inline">|</span>
+                    <span className="hidden sm:inline">สเกล 1:1 พร้อมพิมพ์และดาวน์โหลด PDF ไม่ย่อส่วน</span>
+                  </div>
+                  <span className="font-mono text-[11px] text-slate-400">ProcureSync A4 Standard Engine</span>
                 </div>
-              )}
-            </div>
+                <div className="bg-slate-200/70 p-3 sm:p-6 rounded-xl overflow-x-auto flex justify-center shadow-inner">
+                  <StandardPRDocument pr={viewPR} id="standard-pr-doc" />
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 uppercase">เลขที่ PR</p>
+                    <p className="font-bold text-slate-800 font-mono">{viewPR.prNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 uppercase">ผู้ขอซื้อ</p>
+                    <p className="font-medium text-slate-800">{viewPR.requesterName}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 uppercase">โครงการ</p>
+                    <p className="font-medium text-slate-800">{viewPR.department}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 uppercase">สถานะ</p>
+                    <span className={cn(
+                      "inline-flex px-2 py-0.5 rounded text-[10px] font-bold border",
+                      statusColors[viewPR.status]
+                    )}>
+                      {statusLabels[viewPR.status] || viewPR.status}
+                    </span>
+                  </div>
+                </div>
 
-            <div>
-              <h3 className="text-sm font-bold text-slate-800 mb-3 block border-b border-slate-200 pb-2">รายการที่ขอซื้อ</h3>
-              {viewPR.items && viewPR.items.length > 0 ? (
-                <div className="border border-slate-200 rounded-lg overflow-hidden">
-                  <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-bold uppercase tracking-wide">
-                      <tr>
-                        <th className="px-4 py-2">รายละเอียด</th>
-                        <th className="px-4 py-2 text-right">จำนวน</th>
-                        <th className="px-4 py-2 text-center">หน่วย</th>
-                        <th className="px-4 py-2 text-right">ราคา/หน่วย</th>
-                        <th className="px-4 py-2 text-right">รวมเป็นเงิน</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {viewPR.items.map((item, idx) => (
-                        <tr key={item.id || idx}>
-                          <td className="px-4 py-2 text-slate-800">{item.description}</td>
-                          <td className="px-4 py-2 text-right text-slate-800">{item.quantity}</td>
-                          <td className="px-4 py-2 text-center text-slate-600">{item.unit}</td>
-                          <td className="px-4 py-2 text-right text-slate-800">{item.unitPrice.toLocaleString()}</td>
-                          <td className="px-4 py-2 text-right text-slate-800 font-bold">{(item.quantity * item.unitPrice).toLocaleString()}</td>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800 mb-3 border-b border-slate-200 pb-2">รายการที่ขอซื้อ ({viewPR.items.length})</h3>
+                  <div className="border border-slate-200 rounded-lg overflow-hidden">
+                    <table className="w-full text-xs text-left border-collapse">
+                      <thead className="bg-slate-100/80 border-b border-slate-200 font-bold text-slate-700">
+                        <tr>
+                          <th className="px-4 py-2.5 w-24">รหัสพัสดุ</th>
+                          <th className="px-4 py-2.5">รายการและสเปก</th>
+                          <th className="px-3 py-2.5 text-right w-20">จำนวน</th>
+                          <th className="px-3 py-2.5 text-center w-16">หน่วย</th>
+                          <th className="px-4 py-2.5 text-right w-28">ราคา/หน่วย</th>
+                          <th className="px-4 py-2.5 text-right w-32">รวมเป็นเงิน</th>
                         </tr>
-                      ))}
-                    </tbody>
-                    <tfoot className="bg-slate-50 border-t border-slate-200">
-                      <tr>
-                        <td colSpan={4} className="px-4 py-3 text-right font-bold text-slate-600 uppercase text-xs tracking-wide">มูลค่ารวมทั้งหมด</td>
-                        <td className="px-4 py-3 text-right font-bold text-indigo-700">{viewPR.totalAmount.toLocaleString()} บาท</td>
-                      </tr>
-                    </tfoot>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {viewPR.items.map((item, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50/60">
+                            <td className="px-4 py-3 font-mono text-slate-600 font-semibold">{item.itemCode || '-'}</td>
+                            <td className="px-4 py-3">
+                              <div className="font-semibold text-slate-900 leading-snug">{item.description}</div>
+                              {item.specification && (
+                                <div className="text-[11px] text-slate-500 mt-0.5 leading-tight">{item.specification}</div>
+                              )}
+                            </td>
+                            <td className="px-3 py-3 text-right font-mono tabular-nums font-semibold text-slate-800">{Number(item.quantity).toLocaleString()}</td>
+                            <td className="px-3 py-3 text-center text-slate-600">{item.unit}</td>
+                            <td className="px-4 py-3 text-right font-mono tabular-nums text-slate-700">{Number(item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                            <td className="px-4 py-3 text-right font-mono tabular-nums font-bold text-slate-900">{(item.quantity * item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot className="bg-slate-50/80 border-t border-slate-200">
+                        <tr>
+                          <td colSpan={5} className="px-4 py-2.5 text-right font-bold text-slate-700">ยอดรวมสุทธิ:</td>
+                          <td className="px-4 py-2.5 text-right font-bold font-mono tabular-nums text-indigo-700 text-sm">{viewPR.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
                 </div>
-              ) : (
-                <p className="text-slate-500 text-sm italic">ไม่มีรายการที่ระบุไว้ในแบบร่างนี้</p>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </DetailsModal>
 
+      {/* Confirmation Dialogs */}
       <ConfirmDialog
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="ยืนยันการลบแบบร่าง"
         message="คุณแน่ใจหรือไม่ที่จะลบเอกสารแบบร่างนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้"
-        confirmText="ลบ"
+        confirmText="ลบเอกสาร"
         isDestructive={true}
       />
       
@@ -362,11 +786,12 @@ export function PurchaseRequestPage() {
         onClose={() => setCancelId(null)}
         onConfirm={handleCancel}
         title="ยืนยันการยกเลิกคำขอ"
-        message="คุณแน่ใจหรือไม่ที่จะยกเลิกคำขอ PR นี้? การดำเนินการนี้จะทำให้สถานะเปลี่ยนเป็นถูกปฏิเสธ/ยกเลิก"
+        message="คุณแน่ใจหรือไม่ที่จะยกเลิกคำขอ PR นี้? สถานะจะเปลี่ยนเป็นถูกปฏิเสธ"
         confirmText="ยกเลิกคำขอ"
         isDestructive={true}
       />
 
+      {/* PR Form Modal */}
       <PRFormModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

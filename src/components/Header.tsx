@@ -2,6 +2,8 @@ import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu } from 'lucid
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageToggle } from './LanguageToggle';
 
 const MOCK_NOTIFICATIONS = [
   { id: '1', title: 'รอการอนุมัติ: PR-2025-001', message: 'คุณมีใบขอซื้อใหม่รอการพิจารณาอนุมัติจำนวน 1 รายการ', time: '10 นาทีที่แล้ว', type: 'approval', isRead: false, link: '/approvals' },
@@ -10,6 +12,7 @@ const MOCK_NOTIFICATIONS = [
 ];
 
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
+  const { t } = useLanguage();
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -56,7 +59,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
           <input
             type="text"
             className="block w-full pl-10 pr-3 py-2 border-none rounded-md leading-5 bg-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm transition-colors"
-            placeholder="ค้นหา PR, PO, สินค้า..."
+            placeholder={t('header.searchPlaceholder')}
           />
         </div>
       </div>
@@ -79,10 +82,10 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
           {showNotifications && (
             <div className="absolute right-0 mt-2 w-80 lg:w-96 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-3 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-                <h3 className="font-bold text-slate-800">การแจ้งเตือน</h3>
+                <h3 className="font-bold text-slate-800">{t('header.notifications')}</h3>
                 {unreadCount > 0 && (
                   <button onClick={markAllAsRead} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
-                    อ่านทั้งหมด
+                    {t('header.markAllAsRead')}
                   </button>
                 )}
               </div>
@@ -137,25 +140,28 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
                   </div>
                 ) : (
                   <div className="p-6 text-center text-slate-500 text-sm">
-                    ไม่มีการแจ้งเตือนใหม่
+                    {t('header.noNotifications')}
                   </div>
                 )}
               </div>
               <div className="p-2 border-t border-slate-100 bg-slate-50 text-center">
                 <button className="text-sm font-medium text-slate-600 hover:text-slate-800">
-                  ดูการแจ้งเตือนทั้งหมด
+                  {t('header.viewAllNotifications')}
                 </button>
               </div>
             </div>
           )}
         </div>
         
+        {/* Language Switcher */}
+        <LanguageToggle />
+
         <div className="flex items-center">
           <button className="flex items-center space-x-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md p-1 transition-colors hover:bg-slate-50">
             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 border border-slate-300">SC</div>
             <div className="hidden md:block text-left">
-              <span className="block font-medium text-slate-700 leading-tight">สมปอง จัดซื้อ</span>
-              <span className="block text-xs text-slate-500">แผนกจัดซื้อก่อสร้าง</span>
+              <span className="block font-medium text-slate-700 leading-tight">{t('header.userName')}</span>
+              <span className="block text-xs text-slate-500">{t('header.userRole')}</span>
             </div>
           </button>
         </div>

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { PurchaseRequestPage } from './pages/PurchaseRequest';
@@ -29,27 +30,29 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="pr" element={<PurchaseRequestPage />} />
+    <LanguageProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="pr" element={<PurchaseRequestPage />} />
 
-          <Route path="approvals" element={<ApprovalPage />} />
-          <Route path="inventory" element={<InventoryPage />} />
-          <Route path="po" element={<PurchaseOrderPage />} />
-          <Route path="vendors" element={<VendorsPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="reports" element={<ReportsPage />} />
-          <Route path="users" element={<UsersPage />} />
-          <Route path="*" element={
-            <div className="flex flex-col items-center justify-center h-full text-center">
-               <h2 className="text-xl font-bold text-slate-800">เร็วๆ นี้</h2>
-               <p className="text-slate-500 mt-2">ฟีเจอร์นี้กำลังอยู่ระหว่างการพัฒนา</p>
-            </div>
-          } />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            <Route path="approvals" element={<ApprovalPage />} />
+            <Route path="inventory" element={<InventoryPage />} />
+            <Route path="po" element={<PurchaseOrderPage />} />
+            <Route path="vendors" element={<VendorsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="*" element={
+              <div className="flex flex-col items-center justify-center h-full text-center py-20">
+                 <h2 className="text-xl font-bold text-slate-800">Coming Soon / เร็วๆ นี้</h2>
+                 <p className="text-slate-500 mt-2">Under active development / ฟีเจอร์นี้กำลังอยู่ระหว่างการพัฒนา</p>
+              </div>
+            } />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }

@@ -6,15 +6,17 @@ import { InventoryTransactionModal, QRCodeScannerModal, PhysicalCountModal } fro
 import { DetailsModal } from '../components/DetailsModal';
 import { exportToPDF } from '../lib/pdf';
 import * as xlsx from 'xlsx';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const INITIAL_MOCK_INVENTORY: InventoryItem[] = [
-  { id: '1', code: 'MAT-CEM-01', name: 'ปูนซีเมนต์ปอร์ตแลนด์ (ตราช้าง)', category: 'วัสดุก่อสร้าง', quantity: 450, unit: 'ถุง', minStockLevel: 100, location: 'ไซโล 1' },
-  { id: '2', code: 'MAT-STL-24', name: 'เหล็กเส้นกลม SR24', category: 'วัสดุก่อสร้าง', quantity: 15, unit: 'ตัน', minStockLevel: 20, location: 'ลานเก็บ B' },
-  { id: '3', code: 'TOL-DRL-01', name: 'สว่านโรตารี่', category: 'เครื่องมือช่าง', quantity: 2, unit: 'เครื่อง', minStockLevel: 5, location: 'ห้องช่าง' },
-  { id: '4', code: 'SAF-HLM-01', name: 'หมวกนิรภัย', category: 'อุปกรณ์เซฟตี้', quantity: 120, unit: 'ใบ', minStockLevel: 50, location: 'ห้องสโตร์' },
+  { id: '1', code: 'MAT-CEM-01', name: 'ปูนซีเมนต์ปอร์ตแลนด์ (ตราช้าง)', category: 'วัสดุก่อสร้าง', quantity: 450, unit: 'ถุง', minStockLevel: 100, location: 'ไซโล 1', unitPrice: 155 },
+  { id: '2', code: 'MAT-STL-24', name: 'เหล็กเส้นกลม SR24', category: 'วัสดุก่อสร้าง', quantity: 15, unit: 'ตัน', minStockLevel: 20, location: 'ลานเก็บ B', unitPrice: 24500 },
+  { id: '3', code: 'TOL-DRL-01', name: 'สว่านโรตารี่', category: 'เครื่องมือช่าง', quantity: 2, unit: 'เครื่อง', minStockLevel: 5, location: 'ห้องช่าง', unitPrice: 3850 },
+  { id: '4', code: 'SAF-HLM-01', name: 'หมวกนิรภัย', category: 'อุปกรณ์เซฟตี้', quantity: 120, unit: 'ใบ', minStockLevel: 50, location: 'ห้องสโตร์', unitPrice: 280 },
 ];
 
 export function InventoryPage() {
+  const { t, isEnglish } = useLanguage();
   const [inventory, setInventory] = useState<InventoryItem[]>(INITIAL_MOCK_INVENTORY);
   const [isTransactOpen, setIsTransactOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -49,6 +51,7 @@ export function InventoryPage() {
           unit: row.unit || row['หน่วย'] || 'ชิ้น',
           minStockLevel: Number(row.minStockLevel || row['ขั้นต่ำ'] || 0),
           location: row.location || row['สถานที่'] || 'คลังหลัก',
+          unitPrice: Number(row.unitPrice || row['ราคา'] || 0),
         }));
 
         setInventory(prev => [...prev, ...newItems]);
@@ -129,8 +132,8 @@ export function InventoryPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">คลังสินค้า</h1>
-          <p className="text-sm text-slate-500 mt-1">ติดตามและจัดการระดับสต็อกตามไซต์งาน</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('inventory.title')}</h1>
+          <p className="text-sm text-slate-500 mt-1">{t('inventory.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <select 
@@ -138,7 +141,7 @@ export function InventoryPage() {
             onChange={(e) => setSelectedLocation(e.target.value)}
             className="px-4 py-2 border border-slate-200 rounded text-sm font-semibold text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="">ทุกไซต์งาน / สถานที่</option>
+            <option value="">{isEnglish ? 'All Sites / Locations' : 'ทุกไซต์งาน / สถานที่'}</option>
             {locations.map(loc => (
               <option key={loc} value={loc}>{loc}</option>
             ))}
@@ -155,97 +158,129 @@ export function InventoryPage() {
             className="inline-flex items-center px-4 py-2 border border-slate-200 rounded text-sm font-semibold text-slate-700 bg-white shadow-sm hover:bg-slate-50 transition-colors"
           >
             <FileSpreadsheet className="h-4 w-4 mr-2 text-slate-500" />
-            นำเข้า
+            {isEnglish ? 'Import' : 'นำเข้า'}
           </button>
           <button 
             onClick={() => setIsScannerOpen(true)}
             className="inline-flex items-center px-4 py-2 border border-slate-200 rounded text-sm font-semibold text-slate-700 bg-white shadow-sm hover:bg-slate-50 transition-colors"
           >
             <QrCode className="h-4 w-4 mr-2 text-slate-500" />
-            สแกน QR
+            {isEnglish ? 'Scan QR' : 'สแกน QR'}
           </button>
           <button 
             onClick={() => { setTransactDefaultId(undefined); setIsTransactOpen(true); }}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
           >
             <ArrowDownUp className="h-4 w-4 mr-2" />
-            รับเข้า / เบิกออก
+            {isEnglish ? 'Receive / Issue' : 'รับเข้า / เบิกออก'}
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-           <h3 className="text-sm font-bold text-slate-500 tracking-wide uppercase">รายการทั้งหมด</h3>
+           <h3 className="text-sm font-bold text-slate-500 tracking-wide uppercase">{isEnglish ? 'Total Stock Items' : 'รายการทั้งหมด'}</h3>
            <p className="text-2xl font-bold text-slate-800 mt-1">{filteredInventory.length}</p>
          </div>
          <div className={cn("bg-white rounded-xl shadow-sm border p-4 relative overflow-hidden", lowStockItems > 0 ? "border-red-200" : "border-slate-200")}>
            {lowStockItems > 0 && <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>}
            <h3 className={cn("text-sm font-bold tracking-wide uppercase", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
-             เตือนสต็อกต่ำ
+             {isEnglish ? 'Low Stock Alerts' : 'เตือนสต็อกต่ำ'}
            </h3>
            <p className={cn("text-2xl font-bold mt-1", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>{lowStockItems}</p>
          </div>
          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-           <h3 className="text-sm font-bold text-slate-500 tracking-wide uppercase">รอตรวจนับตรวจสอบ</h3>
+           <h3 className="text-sm font-bold text-slate-500 tracking-wide uppercase">{isEnglish ? 'Pending Audits' : 'รอตรวจนับตรวจสอบ'}</h3>
            <p className="text-2xl font-bold text-slate-800 mt-1">4</p>
          </div>
       </div>
 
       <div className="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-slate-50">
+          <table className="min-w-full divide-y divide-slate-200 text-left border-collapse min-w-[960px]">
+            <thead className="bg-slate-100/90 border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">รายละเอียดสินค้า</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">หมวดหมู่</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">สถานที่เก็บ</th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-bold text-slate-400 uppercase tracking-widest">จำนวนคงเหลือ</th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-bold text-slate-400 uppercase tracking-widest">จัดการ</th>
+                <th scope="col" className="px-4 py-3.5 min-w-[260px]">รหัสและรายละเอียดพัสดุ</th>
+                <th scope="col" className="px-3 py-3.5 whitespace-nowrap w-[130px]">หมวดหมู่</th>
+                <th scope="col" className="px-4 py-3.5 whitespace-nowrap w-[160px]">สถานที่จัดเก็บ</th>
+                <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">จำนวนคงเหลือ</th>
+                <th scope="col" className="px-3 py-3.5 text-center whitespace-nowrap w-[140px]">สถานะสต็อก</th>
+                <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[160px]">การจัดการ</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-slate-100">
+            <tbody className="bg-white divide-y divide-slate-100 text-xs sm:text-sm">
               {filteredInventory.map((item) => {
                 const isLow = item.quantity <= item.minStockLevel;
                 return (
-                  <tr key={item.id} className={cn("hover:bg-slate-50 transition-colors", isLow ? "bg-red-50/30" : "")}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className={cn("flex-shrink-0 h-10 w-10 border rounded flex items-center justify-center", isLow ? "bg-red-50 border-red-200 text-red-500" : "bg-slate-50 text-slate-500 border-slate-200")}>
-                          {isLow ? <AlertTriangle className="h-5 w-5" /> : <Package className="h-5 w-5" />}
+                  <tr key={item.id} className={cn("hover:bg-slate-50/80 transition-colors", isLow ? "bg-amber-50/20" : "")}>
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="flex items-start gap-3">
+                        <div className={cn(
+                          "flex-shrink-0 h-9 w-9 border rounded-lg flex items-center justify-center shadow-2xs mt-0.5", 
+                          isLow ? "bg-red-50 border-red-200 text-red-600" : "bg-slate-50 text-slate-600 border-slate-200"
+                        )}>
+                          {isLow ? <AlertTriangle className="h-4 w-4" /> : <Package className="h-4 w-4" />}
                         </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-bold text-slate-800">{item.name}</div>
-                          <div className="text-sm text-slate-500 mt-0.5">{item.code}</div>
+                        <div>
+                          <div className="text-sm font-bold text-slate-900 leading-snug">{item.name}</div>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                            <span className="font-mono text-xs text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 font-semibold">
+                              {item.code}
+                            </span>
+                            <span className="text-xs text-slate-500 font-medium">
+                              • ราคา @{(item.unitPrice ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ./{item.unit}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 font-medium">
-                      {item.category}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                      {item.location}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <span className={cn("inline-flex px-2 py-0.5 text-xs font-bold tracking-wide uppercase rounded", isLow ? 'text-red-700 bg-red-100' : 'text-slate-800 bg-slate-100')}>
-                        {item.quantity} {item.unit}
+                    <td className="px-3 py-3.5 align-top whitespace-nowrap">
+                      <span className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+                        {item.category}
                       </span>
-                      {isLow && <div className="text-xs text-red-500 font-medium mt-1">ขั้นต่ำ: {item.minStockLevel}</div>}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right space-x-3">
-                      <button 
-                         onClick={() => setCountItem(item)}
-                         className="text-slate-500 hover:text-slate-700 font-bold text-xs uppercase tracking-wide transition-colors"
-                         title="ตรวจนับ"
-                      >
-                         <CheckSquare className="h-4 w-4 inline-block mr-1 items-center mb-0.5" /> ตรวจนับ
-                      </button>
-                      <button 
-                         onClick={() => setViewItem(item)}
-                         className="text-indigo-600 hover:text-indigo-800 font-bold text-xs uppercase tracking-wide transition-colors"
-                      >
-                         รายละเอียด
-                      </button>
+                    <td className="px-4 py-3.5 align-top whitespace-nowrap text-slate-700">
+                      <div className="font-medium text-slate-900 text-sm leading-snug">{item.location}</div>
+                      <div className="text-xs text-slate-500 mt-0.5">คลังหลัก / หน้างาน</div>
+                    </td>
+                    <td className="px-4 py-3.5 align-top whitespace-nowrap text-right">
+                      <div className="text-sm font-bold font-mono tabular-nums text-slate-900 leading-tight">
+                        {(item.quantity ?? 0).toLocaleString()} <span className="font-sans font-normal text-xs text-slate-600">{item.unit}</span>
+                      </div>
+                      <div className={cn("text-xs mt-1 font-medium", isLow ? "text-red-600 font-semibold" : "text-slate-500")}>
+                        ขั้นต่ำ: {(item.minStockLevel ?? 0).toLocaleString()} {item.unit}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3.5 align-top whitespace-nowrap text-center">
+                      {isLow ? (
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200 leading-none">
+                          <AlertTriangle className="w-3 h-3 mr-1 text-red-500" />
+                          สต็อกต่ำกว่าเกณฑ์
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 leading-none">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                          พร้อมใช้งานปกติ
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 align-top whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button 
+                          onClick={() => setCountItem(item)}
+                          className="px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors shadow-2xs flex items-center"
+                          title="บันทึกตรวจนับสต็อกจริง"
+                        >
+                          <CheckSquare className="h-3.5 w-3.5 mr-1 text-slate-500" />
+                          <span>ตรวจนับ</span>
+                        </button>
+                        <button 
+                          onClick={() => setViewItem(item)}
+                          className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 hover:border-indigo-600 border border-indigo-200 rounded-lg transition-colors shadow-2xs"
+                        >
+                          รายละเอียด
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

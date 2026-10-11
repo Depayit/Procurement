@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { User, Building, Bell, Shield, Globe, Save, Database, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { User, Building, Bell, Shield, Globe, Save, Database, CheckCircle2, Languages, Check } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export function SettingsPage() {
+  const { t, language, setLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
-  
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = () => {
@@ -17,8 +19,8 @@ export function SettingsPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800">ตั้งค่าระบบ (Settings)</h1>
-        <p className="text-sm text-slate-500 mt-1">จัดการข้อมูลส่วนตัวและการตั้งค่าพื้นฐานของระบบ</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('settings.title')}</h1>
+        <p className="text-sm text-slate-500 mt-1">{t('settings.subtitle')}</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
@@ -29,56 +31,67 @@ export function SettingsPage() {
               onClick={() => setActiveTab('profile')}
               className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === 'profile' 
-                  ? 'bg-indigo-50 text-indigo-700' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <User className="h-4 w-4 mr-3" />
-              ข้อมูลส่วนตัว
+              {t('settings.tabProfile')}
             </button>
             <button
               onClick={() => setActiveTab('company')}
               className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === 'company' 
-                  ? 'bg-indigo-50 text-indigo-700' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Building className="h-4 w-4 mr-3" />
-              ข้อมูลบริษัท
+              {t('settings.tabCompany')}
+            </button>
+            <button
+              onClick={() => setActiveTab('language')}
+              className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === 'language' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <Languages className="h-4 w-4 mr-3" />
+              {t('settings.tabLanguage')}
             </button>
             <button
               onClick={() => setActiveTab('notifications')}
               className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === 'notifications' 
-                  ? 'bg-indigo-50 text-indigo-700' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Bell className="h-4 w-4 mr-3" />
-              การแจ้งเตือน
+              {t('settings.tabNotifications')}
             </button>
             <button
               onClick={() => setActiveTab('security')}
               className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === 'security' 
-                  ? 'bg-indigo-50 text-indigo-700' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Shield className="h-4 w-4 mr-3" />
-              ความปลอดภัยและความเป็นส่วนตัว
+              {t('settings.tabSecurity')}
             </button>
             <button
               onClick={() => setActiveTab('backup')}
               className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === 'backup' 
-                  ? 'bg-indigo-50 text-indigo-700' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <Database className="h-4 w-4 mr-3" />
-              สำรองข้อมูล
+              {t('settings.tabBackup')}
             </button>
           </nav>
         </div>
@@ -167,6 +180,83 @@ export function SettingsPage() {
                   </div>
                   <p className="text-xs text-slate-500 mt-2">คำอธิบาย: YYYY = ปี ค.ศ., XXX = Running Number 3 หลัก</p>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'language' && (
+            <div className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-slate-800">{t('settings.languageSelectTitle')}</h3>
+                <p className="text-sm text-slate-500 mt-1">{t('settings.languageSelectDesc')}</p>
+              </div>
+              <hr className="border-slate-100" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Thai Option */}
+                <div 
+                  onClick={() => setLanguage('th')}
+                  className={`relative p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    language === 'th' 
+                      ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' 
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-3xl">🇹🇭</div>
+                      <div>
+                        <h4 className="text-base font-bold text-slate-800">ภาษาไทย</h4>
+                        <p className="text-xs text-slate-500 mt-0.5">Thai Language (ค่าเริ่มต้น)</p>
+                      </div>
+                    </div>
+                    {language === 'th' && (
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white">
+                        <Check className="w-4 h-4" />
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-600">
+                    แสดงผลเมนู, แบบฟอร์มขอซื้อ (PR), การอนุมัติ, และเอกสารทางการเป็นภาษาไทย
+                  </div>
+                </div>
+
+                {/* English Option */}
+                <div 
+                  onClick={() => setLanguage('en')}
+                  className={`relative p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    language === 'en' 
+                      ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' 
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-3xl">🇬🇧</div>
+                      <div>
+                        <h4 className="text-base font-bold text-slate-800">English</h4>
+                        <p className="text-xs text-slate-500 mt-0.5">English Language</p>
+                      </div>
+                    </div>
+                    {language === 'en' && (
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white">
+                        <Check className="w-4 h-4" />
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-600">
+                    Display menus, Purchase Request (PR) forms, approvals, and documents in English
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs text-slate-500 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-indigo-600 shrink-0" />
+                <span>
+                  {language === 'th' 
+                    ? 'คุณสามารถสลับภาษาได้ตลอดเวลาจากแถบด้านบน (Header) หรือหน้าการตั้งค่านี้' 
+                    : 'You can switch languages anytime from the top header or from this settings page.'}
+                </span>
               </div>
             </div>
           )}
