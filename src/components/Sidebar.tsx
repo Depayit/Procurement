@@ -91,7 +91,7 @@ export function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (va
 
       <div className="p-3 border-t border-slate-100 space-y-2">
         <div className="px-1">
-          <PWAInstallButton className="w-full justify-center" />
+          <PWAInstallButton variant="sidebar" className="w-full justify-center" />
         </div>
 
         <div className="lg:hidden flex items-center justify-between px-2 pt-1 pb-2 border-b border-slate-100">

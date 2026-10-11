@@ -11,17 +11,21 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
+        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg', 'icon-maskable.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-maskable-512x512.png'],
         manifest: {
-          id: '/',
-          name: 'ProcureSync - ระบบขอซื้อและคลังสินค้า',
+          id: 'procuresync-enterprise-app',
+          name: 'ProcureSync Enterprise - ระบบจัดซื้อและบริหารคลังพัสดุ',
           short_name: 'ProcureSync',
-          description: 'ระบบขอซื้อและจัดการคลังสินค้า (ProcureSync) สำหรับงานจัดซื้อและโครงการก่อสร้าง',
+          description: 'ระบบจัดซื้อและบริหารคลังพัสดุก่อสร้าง (ProcureSync) ครบวงจร: ขอซื้อ (PR), สั่งซื้อ (PO), ตรวจรับ, คลังสินค้า และสแกน QR Code',
           theme_color: '#4F46E5',
           background_color: '#F8FAFC',
           display: 'standalone',
+          orientation: 'any',
           start_url: '/',
           scope: '/',
+          lang: 'th',
+          dir: 'ltr',
+          categories: ['business', 'productivity', 'utilities'],
           icons: [
             {
               src: '/pwa-192x192.png',
@@ -41,11 +45,49 @@ export default defineConfig(() => {
               type: 'image/png',
               purpose: 'maskable',
             },
+            {
+              src: '/icon.svg',
+              sizes: '512x512',
+              type: 'image/svg+xml',
+              purpose: 'any',
+            },
+          ],
+          shortcuts: [
+            {
+              name: 'ระบบขอซื้อ (New PR)',
+              short_name: 'ขอซื้อ PR',
+              description: 'เปิดใบขอซื้อพัสดุและวัสดุก่อสร้างใหม่',
+              url: '/pr',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
+            {
+              name: 'สแกนคลังสินค้า (Scan QR)',
+              short_name: 'สแกนคลัง',
+              description: 'เปิดกล้องสแกน QR Code ตรวจสอบและเบิกจ่ายสต็อก',
+              url: '/inventory',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
+            {
+              name: 'ระบบจัดซื้อ (PO)',
+              short_name: 'จัดซื้อ PO',
+              description: 'ออกใบสั่งซื้อและตรวจรับสินค้าหน้างาน',
+              url: '/po',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
+            {
+              name: 'คู่มือการใช้งาน (Manual)',
+              short_name: 'คู่มือระบบ',
+              description: 'คู่มือมาตรฐานการปฏิบัติงานและผังเชื่อมโยงระบบ',
+              url: '/manual',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
           ],
         },
         workbox: {
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+          navigateFallback: '/index.html',
+          navigateFallbackDenylist: [/^\/api/],
+          maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,webmanifest}'],
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -72,6 +114,17 @@ export default defineConfig(() => {
                 },
                 cacheableResponse: {
                   statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 60,
+                  maxAgeSeconds: 30 * 24 * 60 * 60,
                 },
               },
             },

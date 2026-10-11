@@ -1,13 +1,41 @@
 import { useState } from 'react';
-import { User, Building, Bell, Shield, Globe, Save, Database, CheckCircle2, Languages, Check, Smartphone, BellRing, Send, AlertCircle, Sparkles } from 'lucide-react';
+import { 
+  User, 
+  Building, 
+  Bell, 
+  Shield, 
+  Globe, 
+  Save, 
+  Database, 
+  CheckCircle2, 
+  Languages, 
+  Check, 
+  Smartphone, 
+  BellRing, 
+  Send, 
+  AlertCircle, 
+  Sparkles,
+  Wifi,
+  RotateCw,
+  QrCode,
+  FileText,
+  ShoppingCart,
+  Download,
+  Zap
+} from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import { PWAInstallButton } from '../components/PWAInstallButton';
+import { usePWAInstall } from '../hooks/usePWAInstall';
+import { useOnlineStatus } from '../components/OfflineIndicator';
 
 export function SettingsPage() {
   const { t, language, setLanguage, isEnglish } = useLanguage();
   const { permission, requestPermission, addNotification } = useNotifications();
+  const { isInstalled, clearCacheAndUpdate } = usePWAInstall();
+  const isOnline = useOnlineStatus();
   const [testSent, setTestSent] = useState(false);
+  const [isClearingCache, setIsClearingCache] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -429,17 +457,18 @@ export function SettingsPage() {
             <div className="p-6 space-y-6">
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isEnglish ? 'Progressive Web App (PWA) & Mobile' : 'การติดตั้งแอปและการใช้งาน (PWA)'}
+                  {isEnglish ? 'Progressive Web App (PWA) & Mobile System' : 'การจัดการระบบแอปและการใช้งาน (PWA & Mobile)'}
                 </h3>
                 <p className="text-sm text-slate-500 mt-1">
                   {isEnglish 
-                    ? 'Install ProcureSync onto your device for standalone offline-ready experience' 
-                    : 'ติดตั้ง ProcureSync ลงบนหน้าจอหลักเพื่อใช้งานเสมือนแอปจริง รวดเร็ว และรองรับโหมดออฟไลน์'}
+                    ? 'ProcureSync PWA provides native-like standalone app experience, camera QR scanning, offline caching, and instant home screen shortcuts.' 
+                    : 'ระบบ PWA ทำงานเสมือนแอปจริงบนมือถือและคอมพิวเตอร์ รองรับการเปิดกล้องสแกน QR Code โหมดออฟไลน์ และเมนูลัด'}
                 </p>
               </div>
               <hr className="border-slate-100" />
 
-              <div className="p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50/60 via-white to-slate-50 space-y-5">
+              {/* 1. Main Install & Header Banner */}
+              <div className="p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50/70 via-white to-slate-50 space-y-5 shadow-2xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3.5">
                     <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-md shadow-indigo-200 shrink-0">
@@ -447,34 +476,136 @@ export function SettingsPage() {
                     </div>
                     <div>
                       <h4 className="text-base font-bold text-slate-900">ProcureSync Enterprise PWA</h4>
-                      <p className="text-xs text-slate-500 mt-0.5">Version 1.0 &bull; Offline Ready &bull; Standalone Mode</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {isInstalled 
+                          ? 'โหมดแอปพลิเคชันเดี่ยว (Standalone Mode) • Service Worker v2.4 Active' 
+                          : 'พร้อมติดตั้งลงอุปกรณ์ • ทำงานออฟไลน์ • สแกน QR Real-time'}
+                      </p>
                     </div>
                   </div>
 
-                  <PWAInstallButton variant="settings" />
+                  <div className="flex items-center gap-2">
+                    <PWAInstallButton variant="settings" />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4 border-t border-slate-200/60 text-xs">
-                  <div className="p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-2xs">
-                    <span className="font-bold text-slate-900 block mb-1">⚡ รวดเร็วระดับ Native</span>
-                    <p className="text-slate-500 text-[11px] leading-relaxed">
-                      เข้าถึงระบบได้ทันทีจากไอคอนหน้าจอหลัก ไม่ต้องผ่าน Browser address bar
-                    </p>
+                {/* Live Diagnostics Badges */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-slate-200/60 text-xs">
+                  <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                    <span className="text-[10px] text-slate-400 font-semibold block uppercase">สถานะการทำงาน</span>
+                    <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1">
+                      <span className={`w-2 h-2 rounded-full ${isInstalled ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+                      <span>{isInstalled ? 'Standalone App' : 'Web Browser'}</span>
+                    </div>
                   </div>
-                  <div className="p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-2xs">
-                    <span className="font-bold text-slate-900 block mb-1">📶 รองรับโหมดออฟไลน์</span>
-                    <p className="text-slate-500 text-[11px] leading-relaxed">
-                      Service Worker แคชไฟล์ระบบ ทำให้เปิดดูข้อมูลเอกสารเดิมได้แม้สัญญาณเน็ตขาดหาย
-                    </p>
+
+                  <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                    <span className="text-[10px] text-slate-400 font-semibold block uppercase">การเชื่อมต่อเน็ต</span>
+                    <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1">
+                      <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                      <span>{isOnline ? 'Online (เชื่อมต่อแล้ว)' : 'Offline (ใช้ออฟไลน์)'}</span>
+                    </div>
                   </div>
-                  <div className="p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-2xs">
-                    <span className="font-bold text-slate-900 block mb-1">🔔 แจ้งเตือนแบบพุช</span>
-                    <p className="text-slate-500 text-[11px] leading-relaxed">
-                      รับการแจ้งเตือนงานอนุมัติ PR และการรับของ PO ได้ทันท่วงทีบนทุกอุปกรณ์
-                    </p>
+
+                  <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                    <span className="text-[10px] text-slate-400 font-semibold block uppercase">Service Worker</span>
+                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 mt-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Active (v2.4)</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                    <span className="text-[10px] text-slate-400 font-semibold block uppercase">แคชระบบ (Cache)</span>
+                    <div className="font-bold text-indigo-700 flex items-center gap-1.5 mt-1">
+                      <Zap className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>พร้อมทำงาน</span>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {/* 2. PWA App Shortcuts Showcase */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>เมนูลัดของแอป (App Shortcuts บนไอคอนหน้าจอหลัก)</span>
+                  </h4>
+                  <span className="text-[11px] text-slate-400">แตะค้างที่ไอคอนแอปเพื่อเปิดด่วน</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                      <ShoppingCart className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <strong className="text-slate-900 block font-bold">1. ขอซื้อพัสดุ (PR)</strong>
+                      <span className="text-slate-500 text-[11px]">เปิดใบขอซื้อพัสดุหน้างาน</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0">
+                      <QrCode className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <strong className="text-slate-900 block font-bold">2. สแกนคลัง (QR)</strong>
+                      <span className="text-slate-500 text-[11px]">เปิดกล้องส่องเบิกของทันที</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <strong className="text-slate-900 block font-bold">3. จัดซื้อ & ตรวจรับ (PO)</strong>
+                      <span className="text-slate-500 text-[11px]">ตรวจรับสินค้าหน้างาน</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                      <Database className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <strong className="text-slate-900 block font-bold">4. คู่มือระบบ (SOP)</strong>
+                      <span className="text-slate-500 text-[11px]">อ่านคู่มือมาตรฐานการทำงาน</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Cache & Update Maintenance Box */}
+              <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                      <RotateCw className="w-4 h-4 text-indigo-600" />
+                      <span>การจัดการแคชและการอัปเดตระบบ (Cache & Version Sync)</span>
+                    </h4>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      หากมีการอัปเดตระบบใหม่ สามารถกดปุ่มนี้เพื่อล้างไฟล์แคชและโหลดเวอร์ชันล่าสุดมาใช้งาน
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setIsClearingCache(true);
+                      await clearCacheAndUpdate();
+                    }}
+                    disabled={isClearingCache}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors shrink-0 cursor-pointer disabled:opacity-50"
+                  >
+                    <RotateCw className={`w-3.5 h-3.5 ${isClearingCache ? 'animate-spin text-indigo-600' : 'text-slate-500'}`} />
+                    <span>{isClearingCache ? 'กำลังซิงก์...' : 'ล้างแคชและอัปเดตระบบ'}</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
           )}
 
