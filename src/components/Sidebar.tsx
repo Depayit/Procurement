@@ -16,6 +16,7 @@ import { cn } from '../lib/utils';
 import { useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from './LanguageToggle';
+import { PWAInstallButton } from './PWAInstallButton';
 
 const navItems = [
   { key: 'nav.dashboard', path: '/', icon: LayoutDashboard },
@@ -87,6 +88,10 @@ export function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (va
       </div>
 
       <div className="p-3 border-t border-slate-100 space-y-2">
+        <div className="px-1">
+          <PWAInstallButton className="w-full justify-center" />
+        </div>
+
         <div className="lg:hidden flex items-center justify-between px-2 pt-1 pb-2 border-b border-slate-100">
           <span className="text-xs text-slate-500 font-medium">{t('header.language')}</span>
           <LanguageToggle />

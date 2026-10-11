@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#3730A3" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#grad)" />
+  
+  <!-- Icon Graphics: Modern Procurement Box + Sync Loop -->
+  <g filter="url(#shadow)" transform="translate(96, 96)">
+    <!-- Main Box / Cart Base -->
+    <path d="M40 80 L280 80 L250 240 L70 240 Z" fill="#FFFFFF" fill-opacity="0.95" />
+    <path d="M90 240 L230 240 L210 270 L110 270 Z" fill="#E0E7FF" />
+    <!-- Wheels / Accent nodes -->
+    <circle cx="100" cy="290" r="22" fill="#FFFFFF" />
+    <circle cx="220" cy="290" r="22" fill="#FFFFFF" />
+    <!-- Sync Arrow Check -->
+    <path d="M110 160 L145 195 L220 120" stroke="#4F46E5" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </g>
+</svg>

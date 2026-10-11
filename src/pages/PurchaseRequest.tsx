@@ -196,6 +196,7 @@ export function PurchaseRequestPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showTemplatesGallery, setShowTemplatesGallery] = useState(false);
+  const [docZoom, setDocZoom] = useState<'fit' | 'actual'>('actual');
 
   const statusLabels: Record<string, string> = useMemo(() => ({
     'Draft': isEnglish ? 'Draft' : 'ร่างเอกสาร',
@@ -470,8 +471,128 @@ export function PurchaseRequestPage() {
           </div>
         </div>
 
-        {/* PR Table */}
-        <div className="overflow-x-auto">
+        {/* Mobile PR Cards List (Visible on < md screens) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {filteredPRs.map((pr) => {
+            const urgency = urgencyBadges[pr.urgency || 'normal'] || urgencyBadges.normal;
+            return (
+              <div key={pr.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
+                {/* PR Top: Number, Badges */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-600 border border-indigo-100 flex-shrink-0">
+                      <FileText className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <span className="font-mono text-indigo-700 text-sm font-bold block leading-tight whitespace-nowrap">
+                        {pr.prNumber}
+                      </span>
+                      <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap">
+                        {pr.items?.length || 0} {isEnglish ? 'items' : 'รายการ'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                    <span className={cn("inline-block px-2 py-0.5 rounded text-[10px] border font-semibold whitespace-nowrap", urgency.color)}>
+                      {urgency.label}
+                    </span>
+                    <span className={cn(
+                      "inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border leading-none whitespace-nowrap",
+                      statusColors[pr.status] || "bg-slate-100 text-slate-800"
+                    )}>
+                      {statusLabels[pr.status] || pr.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Project & Requester */}
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
+                    {pr.department}
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-slate-600">
+                    <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
+                      {pr.projectCode || 'PRJ-MAIN-01'}
+                    </span>
+                    <span className="text-slate-500 truncate">
+                      • ผู้ขอ: {pr.requesterName}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Schedule & Amount Grid */}
+                <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
+                  <div>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ต้องการสินค้า</span>
+                    <span className="font-semibold text-indigo-700 text-xs block whitespace-nowrap">
+                      {new Date(pr.requiredDate || pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5 whitespace-nowrap">
+                      ขอเมื่อ: {new Date(pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                  <div className="border-l border-slate-200/80 pl-2.5 text-right">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดรวมสุทธิ</span>
+                    <span className="font-bold text-slate-900 font-mono tabular-nums text-sm block whitespace-nowrap">
+                      ฿{(pr.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-[10px] text-slate-500 block mt-0.5 whitespace-nowrap">
+                      {pr.includeVat ? 'รวม VAT 7%' : 'ไม่รวม VAT'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Mobile Actions */}
+                <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+                  <button 
+                    onClick={() => setViewPR(pr)}
+                    className="flex-1 py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-all flex items-center justify-center gap-1 shadow-2xs"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>{isEnglish ? 'View Form' : 'ดูฟอร์ม A4'}</span>
+                  </button>
+
+                  {(pr.status === 'Draft' || pr.status === 'Pending Approval') && (
+                    <button 
+                      onClick={() => handleEdit(pr)}
+                      className="p-1.5 text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+                      title={isEnglish ? "Edit document" : "แก้ไขเอกสาร"}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                  )}
+                  {pr.status === 'Draft' && (
+                    <button 
+                      onClick={() => setDeleteId(pr.id)}
+                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-slate-200"
+                      title="ลบเอกสารร่าง"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                  {pr.status === 'Pending Approval' && (
+                    <button 
+                      onClick={() => setCancelId(pr.id)}
+                      className="px-2 py-1 text-slate-500 hover:text-slate-700 font-bold text-xs transition-colors rounded hover:bg-slate-100 border border-slate-200"
+                      title="ยกเลิกคำขอ"
+                    >
+                      ยกเลิก
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+          {filteredPRs.length === 0 && (
+            <div className="p-8 text-center text-slate-500 text-xs">
+              <FileText className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+              ไม่พบรายการใบขอซื้อที่ตรงกับเงื่อนไขการค้นหา
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View (Visible on >= md screens) */}
+        <div className="hidden md:block overflow-x-auto smooth-scroll">
           <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
             <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
               <tr>
@@ -514,9 +635,9 @@ export function PurchaseRequestPage() {
 
                     {/* Project / Site */}
                     <td className="px-4 py-3.5 align-top text-slate-700">
-                      <div className="font-bold text-slate-900 text-sm leading-snug">{pr.department}</div>
+                      <div className="font-bold text-slate-900 text-sm leading-snug break-words">{pr.department}</div>
                       <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs">
-                        <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                        <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
                           {pr.projectCode || 'PRJ-MAIN-01'}
                         </span>
                         {pr.deliveryLocation && (
@@ -550,7 +671,7 @@ export function PurchaseRequestPage() {
                     {/* Amount */}
                     <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
                       <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
-                        {pr.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {(pr.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </div>
                       <div className="text-[11px] text-slate-500 font-medium mt-1">
                         {pr.includeVat ? 'รวม VAT 7%' : 'ไม่รวม VAT'}
@@ -560,7 +681,7 @@ export function PurchaseRequestPage() {
                     {/* Status */}
                     <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
                       <span className={cn(
-                        "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none",
+                        "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none whitespace-nowrap",
                         statusColors[pr.status] || "bg-slate-100 text-slate-800"
                       )}>
                         {statusLabels[pr.status] || pr.status}
@@ -685,17 +806,31 @@ export function PurchaseRequestPage() {
           <div>
             {viewFormat === 'standard' ? (
               <div>
-                <div className="flex items-center justify-between mb-3 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                     <span className="font-bold text-slate-700">ขนาดกระดาษมาตรฐาน A4 (210 x 297 มม.)</span>
                     <span className="text-slate-300 hidden sm:inline">|</span>
                     <span className="hidden sm:inline">สเกล 1:1 พร้อมพิมพ์และดาวน์โหลด PDF ไม่ย่อส่วน</span>
                   </div>
-                  <span className="font-mono text-[11px] text-slate-400">ProcureSync A4 Standard Engine</span>
+                  <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setDocZoom(docZoom === 'fit' ? 'actual' : 'fit')}
+                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-slate-300 rounded-md shadow-2xs hover:bg-slate-50 text-indigo-700 transition-colors"
+                    >
+                      {docZoom === 'fit' ? '🔍 ซูม 100% (ขนาดจริง)' : '📱 ย่อพอดีหน้าจอ'}
+                    </button>
+                    <span className="font-mono text-[11px] text-slate-400 hidden sm:inline">ProcureSync Engine</span>
+                  </div>
                 </div>
-                <div className="bg-slate-200/70 p-3 sm:p-6 rounded-xl overflow-x-auto flex justify-center shadow-inner">
-                  <StandardPRDocument pr={viewPR} id="standard-pr-doc" />
+                <div className="bg-slate-200/70 p-2 sm:p-6 rounded-xl overflow-x-auto flex justify-center shadow-inner smooth-scroll">
+                  <div className={cn(
+                    "transition-all duration-200",
+                    docZoom === 'fit' ? "scale-[0.45] xs:scale-[0.55] sm:scale-100 origin-top h-[540px] sm:h-auto" : ""
+                  )}>
+                    <StandardPRDocument pr={viewPR} id="standard-pr-doc" />
+                  </div>
                 </div>
               </div>
             ) : (
@@ -751,14 +886,14 @@ export function PurchaseRequestPage() {
                             <td className="px-3 py-3 text-right font-mono tabular-nums font-semibold text-slate-800">{Number(item.quantity).toLocaleString()}</td>
                             <td className="px-3 py-3 text-center text-slate-600">{item.unit}</td>
                             <td className="px-4 py-3 text-right font-mono tabular-nums text-slate-700">{Number(item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td className="px-4 py-3 text-right font-mono tabular-nums font-bold text-slate-900">{(item.quantity * item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                            <td className="px-4 py-3 text-right font-mono tabular-nums font-bold text-slate-900">{((Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                           </tr>
                         ))}
                       </tbody>
                       <tfoot className="bg-slate-50/80 border-t border-slate-200">
                         <tr>
                           <td colSpan={5} className="px-4 py-2.5 text-right font-bold text-slate-700">ยอดรวมสุทธิ:</td>
-                          <td className="px-4 py-2.5 text-right font-bold font-mono tabular-nums text-indigo-700 text-sm">{viewPR.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</td>
+                          <td className="px-4 py-2.5 text-right font-bold font-mono tabular-nums text-indigo-700 text-sm">{(viewPR.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</td>
                         </tr>
                       </tfoot>
                     </table>

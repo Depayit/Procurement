@@ -6,6 +6,7 @@ import { DetailsModal } from '../components/DetailsModal';
 import { StandardPRDocument } from '../components/StandardPRDocument';
 import { exportToPDF, printA4Document } from '../lib/pdf';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useNotifications } from '../contexts/NotificationContext';
 import { cn } from '../lib/utils';
 
 const MOCK_PR_1: PurchaseRequest = {
@@ -88,6 +89,7 @@ const MOCK_APPROVALS: ApprovalTask[] = [
 
 export function ApprovalPage() {
   const { t, isThai, isEnglish } = useLanguage();
+  const { addNotification } = useNotifications();
   const [tasks, setTasks] = useState<ApprovalTask[]>(MOCK_APPROVALS);
   const [historyTasks, setHistoryTasks] = useState<Array<ApprovalTask & { actionStatus: 'Approved' | 'Rejected'; actionDate: string }>>([
     {
@@ -131,10 +133,22 @@ export function ApprovalPage() {
     if (confirmState.action === 'approve') {
       setTasks(tasks.filter(t => t.id !== confirmState.taskId));
       setHistoryTasks(prev => [{ ...task, actionStatus: 'Approved', actionDate: new Date().toISOString() }, ...prev]);
+      addNotification({
+        title: isEnglish ? `PR Approved: ${task.documentId}` : `อนุมัติสำเร็จ: ${task.documentId}`,
+        message: isEnglish ? `Purchase request for ${(task.amount ?? 0).toLocaleString()} THB has been approved.` : `ใบขอซื้อมูลค่า ${(task.amount ?? 0).toLocaleString()} บาท ได้รับการอนุมัติแล้ว`,
+        type: 'approval',
+        link: '/approvals'
+      });
       alert(isEnglish ? `Document approved successfully` : `อนุมัติเอกสารเรียบร้อยแล้ว`);
     } else {
       setTasks(tasks.filter(t => t.id !== confirmState.taskId));
       setHistoryTasks(prev => [{ ...task, actionStatus: 'Rejected', actionDate: new Date().toISOString() }, ...prev]);
+      addNotification({
+        title: isEnglish ? `PR Rejected: ${task.documentId}` : `ปฏิเสธเอกสาร: ${task.documentId}`,
+        message: isEnglish ? `Purchase request ${task.documentId} was rejected.` : `ใบขอซื้อ ${task.documentId} ถูกปฏิเสธ`,
+        type: 'approval',
+        link: '/approvals'
+      });
       alert(isEnglish ? `Document rejected` : `ปฏิเสธเอกสารเรียบร้อยแล้ว`);
     }
     setConfirmState({ isOpen: false, taskId: null, action: null });
@@ -196,7 +210,95 @@ export function ApprovalPage() {
         viewMode === 'table' ? (
           /* Table View for Pending Approvals */
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Mobile Cards for Pending Approvals (Visible on < md) */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {tasks.map((task) => (
+                <div key={task.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
+                  {/* Top Row: Level & Document */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase tracking-wide font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                        {isEnglish ? `L${task.level}` : `ระดับ ${task.level}`}
+                      </span>
+                      <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight whitespace-nowrap">
+                        {task.documentType} {task.documentId}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 font-medium whitespace-nowrap">
+                      แบบฟอร์มมาตรฐาน
+                    </span>
+                  </div>
+
+                  {/* Project & Justification */}
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
+                      {task.prData?.department || 'โครงการงานก่อสร้าง'}
+                    </h4>
+                    <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words">
+                      {task.prData?.justification || 'คำขอวัสดุก่อสร้างตามงบประมาณ BOQ งานงวดที่ 2'}
+                    </p>
+                  </div>
+
+                  {/* Requester & Amount Grid */}
+                  <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">ผู้ขอซื้อ</span>
+                      <span className="font-semibold text-slate-800 text-xs block truncate">
+                        {task.requester}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block mt-0.5 whitespace-nowrap">
+                        {new Date(task.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="border-l border-slate-200/80 pl-2.5 text-right">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดเงินขออนุมัติ</span>
+                      <span className="font-bold text-slate-900 font-mono tabular-nums text-sm block whitespace-nowrap">
+                        ฿{(task.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                      <span className="text-[10px] text-slate-500 block mt-0.5 whitespace-nowrap">
+                        บาท (THB)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                    <button 
+                      onClick={() => setViewTask(task)}
+                      className="py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs"
+                    >
+                      ดูฟอร์ม A4
+                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button 
+                        onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}
+                        className="inline-flex items-center justify-center px-3 py-1.5 border border-slate-300 shadow-2xs text-xs font-semibold rounded-lg text-red-700 bg-white hover:bg-red-50 transition-colors"
+                      >
+                        <XCircle className="h-3.5 w-3.5 mr-1 text-red-500" />
+                        {t('approvals.rejectBtn')}
+                      </button>
+                      <button 
+                        onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'approve' })}
+                        className="inline-flex items-center justify-center px-3 py-1.5 border border-transparent shadow-2xs text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                        {t('approvals.approveBtn')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {tasks.length === 0 && (
+                <div className="p-8 text-center text-slate-500 text-xs">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+                  <h3 className="font-bold text-slate-800">ไม่มีเอกสารที่รอการอนุมัติ</h3>
+                  <p className="text-xs text-slate-500 mt-1">คุณได้ดำเนินการกับเอกสารทั้งหมดเรียบร้อยแล้ว</p>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Table (Visible on >= md) */}
+            <div className="hidden md:block overflow-x-auto smooth-scroll">
               <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
                 <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
                   <tr>
@@ -230,10 +332,10 @@ export function ApprovalPage() {
 
                       {/* Project / Justification */}
                       <td className="px-4 py-3.5 align-top">
-                        <div className="font-bold text-slate-900 text-sm leading-snug">
+                        <div className="font-bold text-slate-900 text-sm leading-snug break-words">
                           {task.prData?.department || 'โครงการงานก่อสร้าง'}
                         </div>
-                        <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2" title={task.prData?.justification}>
+                        <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words" title={task.prData?.justification}>
                           {task.prData?.justification || 'คำขอวัสดุก่อสร้างตามงบประมาณ BOQ งานงวดที่ 2'}
                         </div>
                       </td>
@@ -252,7 +354,7 @@ export function ApprovalPage() {
                       {/* Amount */}
                       <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
                         <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
-                          {task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {(task.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <div className="text-[11px] text-slate-500 font-medium mt-1">
                           บาท (THB)
@@ -379,7 +481,81 @@ export function ApprovalPage() {
       ) : (
         /* History Table View */
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile History Cards (Visible on < md) */}
+          <div className="md:hidden divide-y divide-slate-100">
+            {historyTasks.map((task) => (
+              <div key={task.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight whitespace-nowrap">
+                      {task.documentType} {task.documentId}
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      ระดับ {task.level}
+                    </span>
+                  </div>
+                  {task.actionStatus === 'Approved' ? (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                      <CheckCircle2 className="w-2.5 h-2.5 mr-1" />
+                      อนุมัติแล้ว
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 whitespace-nowrap">
+                      <XCircle className="w-2.5 h-2.5 mr-1" />
+                      ปฏิเสธ
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
+                    {task.prData?.department || 'โครงการก่อสร้าง'}
+                  </h4>
+                  {task.prData?.justification && (
+                    <p className="text-xs text-slate-600 mt-1 line-clamp-2 break-words">
+                      {task.prData.justification}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
+                  <div>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ผู้ขอซื้อ</span>
+                    <span className="font-semibold text-slate-800 text-xs block truncate">
+                      {task.requester}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5 whitespace-nowrap">
+                      {new Date(task.actionDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US')}
+                    </span>
+                  </div>
+                  <div className="border-l border-slate-200/80 pl-2.5 text-right">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดเงิน</span>
+                    <span className="font-bold text-slate-900 font-mono tabular-nums text-sm block whitespace-nowrap">
+                      ฿{task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-[10px] text-slate-500 block mt-0.5">บาท (THB)</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end pt-1 border-t border-slate-100">
+                  <button 
+                    onClick={() => setViewTask(task)}
+                    className="w-full py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs text-center"
+                  >
+                    ดูฟอร์ม A4
+                  </button>
+                </div>
+              </div>
+            ))}
+            {historyTasks.length === 0 && (
+              <div className="p-8 text-center text-slate-500 text-xs">
+                ไม่มีประวัติการอนุมัติ
+              </div>
+            )}
+          </div>
+
+          {/* Desktop History Table (Visible on >= md) */}
+          <div className="hidden md:block overflow-x-auto smooth-scroll">
             <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
               <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
                 <tr>
@@ -403,10 +579,10 @@ export function ApprovalPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-slate-900 text-sm leading-snug">
+                      <div className="font-bold text-slate-900 text-sm leading-snug break-words">
                         {task.prData?.department || 'โครงการก่อสร้าง'}
                       </div>
-                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2">
+                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words">
                         {task.prData?.justification}
                       </div>
                     </td>
@@ -533,7 +709,7 @@ export function ApprovalPage() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">มูลค่ารวม</p>
-                    <p className="font-bold text-indigo-700 text-lg font-mono">{viewTask.amount.toLocaleString()} บาท</p>
+                    <p className="font-bold text-indigo-700 text-lg font-mono">{(viewTask.amount ?? 0).toLocaleString()} บาท</p>
                   </div>
                 </div>
 

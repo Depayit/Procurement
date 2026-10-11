@@ -207,16 +207,16 @@ export function ReportsPage() {
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-6 min-w-0">
              <div className="flex items-center justify-between mb-6">
                <h2 className="text-lg font-bold text-slate-800">แนวโน้มยอดสั่งซื้อ (บาท)</h2>
                <button className="print-hidden p-2 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-lg">
                  <Filter className="h-4 w-4" />
                </button>
              </div>
-             <div className="h-72">
-               <ResponsiveContainer width="100%" height="100%">
+             <div className="w-full h-72 min-w-0 min-h-[280px]">
+               <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={260}>
                  <LineChart data={monthlySpend} margin={{ top: 5, right: 10, left: 20, bottom: 5 }}>
                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748B', fontSize: 12}} dy={10} />
@@ -229,7 +229,7 @@ export function ReportsPage() {
                    <Tooltip 
                      cursor={{stroke: '#CBD5E1', strokeWidth: 1, strokeDasharray: '4 4'}} 
                      contentStyle={{borderRadius: '8px', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} 
-                     formatter={(value: number) => [`฿${value.toLocaleString()}`, 'ยอดสั่งซื้อ']}
+                     formatter={(value: any) => [`฿${Number(value || 0).toLocaleString()}`, 'ยอดสั่งซื้อ']}
                    />
                    <Line type="monotone" dataKey="amount" stroke="#4F46E5" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
                  </LineChart>
@@ -237,10 +237,10 @@ export function ReportsPage() {
              </div>
           </div>
 
-          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-6">
+          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-6 min-w-0">
              <h2 className="text-lg font-bold text-slate-800 mb-6">สัดส่วนยอดซื้อตามหมวดหมู่</h2>
-             <div className="h-72">
-               <ResponsiveContainer width="100%" height="100%">
+             <div className="w-full h-72 min-w-0 min-h-[280px]">
+               <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={260}>
                  <PieChart>
                    <Pie
                      data={categorySpend}
@@ -256,7 +256,7 @@ export function ReportsPage() {
                      ))}
                    </Pie>
                    <Tooltip 
-                     formatter={(value) => [`${value}%`, 'สัดส่วน']}
+                     formatter={(value: any) => [`${value ?? 0}%`, 'สัดส่วน']}
                      contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} 
                    />
                    <Legend verticalAlign="bottom" height={36} iconType="circle" />
@@ -267,12 +267,53 @@ export function ReportsPage() {
         </div>
 
         {/* Data Table */}
+        {/* Data Table Container */}
         <div className="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
-          <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-            <h2 className="text-lg font-bold text-slate-800">ประสิทธิภาพการจัดส่งของผู้ขาย (Vendor Performance)</h2>
-            <span className="text-sm font-medium text-slate-500">Top 5 ผู้ขายที่มียอดซื้อสูงสุด</span>
+          <div className="p-4 sm:p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-1 bg-slate-50">
+            <h2 className="text-base sm:text-lg font-bold text-slate-800">ประสิทธิภาพการจัดส่งของผู้ขาย (Vendor Performance)</h2>
+            <span className="text-xs sm:text-sm font-medium text-slate-500">Top 5 ผู้ขายที่มียอดซื้อสูงสุด</span>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Mobile Cards (Visible on < md) */}
+          <div className="md:hidden divide-y divide-slate-100">
+            {vendorPerformance.map((vendor) => (
+              <div key={vendor.id} className="p-4 space-y-2.5 bg-white">
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
+                    {vendor.name}
+                  </h4>
+                  <div className="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200 text-amber-800 font-bold font-mono text-[10px] whitespace-nowrap">
+                    <Star className="h-3 w-3 mr-0.5 fill-amber-500 text-amber-500" />
+                    {(vendor.rating ?? 0).toFixed(1)}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs text-center">
+                  <div>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">คำสั่งซื้อ (PO)</span>
+                    <span className="font-bold text-slate-800 font-mono">{vendor.orders} รายการ</span>
+                  </div>
+                  <div className="border-x border-slate-200/80">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ตรงเวลา</span>
+                    <span className={`font-bold font-mono text-xs ${
+                      vendor.onTime >= 90 ? "text-emerald-700" : vendor.onTime >= 80 ? "text-amber-700" : "text-red-700"
+                    }`}>
+                      {vendor.onTime}%
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดซื้อรวม</span>
+                    <span className="font-bold text-slate-900 font-mono text-xs whitespace-nowrap">
+                      ฿{(vendor.spend / 1000).toFixed(0)}k
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table (Visible on >= md) */}
+          <div className="hidden md:block overflow-x-auto smooth-scroll">
             <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[860px]">
               <thead className="bg-slate-100/90 text-[11px] text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
                 <tr>
@@ -287,7 +328,7 @@ export function ReportsPage() {
                 {vendorPerformance.map((vendor) => (
                   <tr key={vendor.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-slate-900 text-sm leading-snug">{vendor.name}</div>
+                      <div className="font-bold text-slate-900 text-sm leading-snug break-words">{vendor.name}</div>
                       <div className="text-xs text-slate-500 mt-0.5">คู่ค้ายอดสั่งซื้อสูงสุดประจำไตรมาส</div>
                     </td>
                     <td className="px-3 py-3.5 align-top text-center font-mono tabular-nums font-semibold text-slate-900">
@@ -309,7 +350,7 @@ export function ReportsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3.5 align-top text-right font-mono tabular-nums font-bold text-slate-900 whitespace-nowrap text-sm leading-tight">
-                      ฿{vendor.spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      ฿{(vendor.spend ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                   </tr>
                 ))}

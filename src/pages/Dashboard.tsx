@@ -108,13 +108,13 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white shadow-xs border border-slate-200 rounded-xl p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+        <div className="bg-white shadow-xs border border-slate-200 rounded-xl p-6 min-w-0">
           <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">
             {t('dashboard.prPoComparison')}
           </h2>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-full h-72 min-w-0 min-h-[280px]">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={260}>
               <BarChart
                 data={data}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}

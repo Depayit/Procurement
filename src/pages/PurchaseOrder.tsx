@@ -396,7 +396,7 @@ export function PurchaseOrderPage() {
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-sm">
                   <span className="text-slate-500">{pr.items.length} รายการ</span>
-                  <span className="font-bold text-indigo-600">{pr.totalAmount.toLocaleString()} บาท</span>
+                  <span className="font-bold text-indigo-600">{(pr.totalAmount ?? 0).toLocaleString()} บาท</span>
                 </div>
               </div>
             ))}
@@ -484,10 +484,10 @@ export function PurchaseOrderPage() {
                   <li key={item.id} className="p-4 flex justify-between items-center bg-white">
                     <div>
                       <p className="text-sm font-bold text-slate-800">{item.description}</p>
-                      <p className="text-xs text-slate-500 mt-1">จำนวน: {item.quantity} {item.unit} &bull; ราคาต่อหน่วย: {item.unitPrice.toLocaleString()} บาท</p>
+                      <p className="text-xs text-slate-500 mt-1">จำนวน: {item.quantity} {item.unit} &bull; ราคาต่อหน่วย: {(item.unitPrice ?? 0).toLocaleString()} บาท</p>
                     </div>
                     <div className="text-sm font-bold text-slate-800">
-                      {(item.quantity * item.unitPrice).toLocaleString()}
+                      {((item.quantity || 0) * (item.unitPrice || 0)).toLocaleString()}
                     </div>
                   </li>
                 ))}
@@ -495,7 +495,7 @@ export function PurchaseOrderPage() {
               <div className="bg-slate-50 px-4 py-3 border-t border-slate-200 flex justify-between items-center">
                 <span className="text-sm text-slate-500 font-bold uppercase tracking-wide">ยอดรวมสุทธิ</span>
                 <span className="text-lg font-bold text-indigo-700">
-                  {currentItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0).toLocaleString()} บาท
+                  {currentItems.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0), 0).toLocaleString()} บาท
                 </span>
               </div>
             </div>
@@ -608,7 +608,118 @@ export function PurchaseOrderPage() {
           </div>
         </div>
         
-        <div className="overflow-x-auto">
+        {/* Mobile PO Cards List (Visible on < md screens) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {filteredPOs.map((po) => (
+            <div key={po.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
+              {/* Header Row: PO Number and Status */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-600 border border-indigo-100 flex-shrink-0">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight whitespace-nowrap">
+                      {po.poNumber}
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap">
+                      {po.items?.length || 0} รายการสั่งซื้อ
+                    </span>
+                  </div>
+                </div>
+                <span className={cn(
+                  "inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border leading-none whitespace-nowrap",
+                  statusColors[po.status] || "bg-slate-100 text-slate-800"
+                )}>
+                  {statusLabels[po.status] || po.status}
+                </span>
+              </div>
+
+              {/* Vendor & PR Reference */}
+              <div className="space-y-1">
+                <div className="flex items-start gap-1.5">
+                  <Store className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                  <span className="font-bold text-slate-900 text-sm leading-snug break-words">
+                    {po.vendorName}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                  <span className="font-mono text-[10px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
+                    PR: <strong className="text-indigo-700">{po.prNumber}</strong>
+                  </span>
+                  {po.poDescription && (
+                    <span className="text-slate-500 truncate text-[11px]">
+                      • {po.poDescription}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Schedule and Amount Grid */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">กำหนดส่งมอบ</span>
+                  <span className="font-semibold text-amber-800 text-xs block whitespace-nowrap">
+                    {po.expectedDeliveryDate 
+                      ? new Date(po.expectedDeliveryDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })
+                      : 'ตามกำหนดสัญญา'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5 whitespace-nowrap">
+                    ออกเมื่อ: {new Date(po.date).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+                <div className="border-l border-slate-200/80 pl-2.5 text-right">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดเงินรวม</span>
+                  <span className="font-bold text-slate-900 font-mono tabular-nums text-sm block whitespace-nowrap">
+                    ฿{(po.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                  <span className="text-[10px] text-slate-500 block mt-0.5 whitespace-nowrap">
+                    บาท (THB)
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions Row */}
+              <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+                {(po.status === 'Issued' || po.status === 'Partially Received') && (
+                  <button 
+                    onClick={() => openReceiveGoods(po)}
+                    className="py-1.5 px-3 text-xs font-bold text-amber-700 hover:text-white hover:bg-amber-600 bg-amber-50 border border-amber-200 rounded-lg transition-colors flex items-center justify-center gap-1 shadow-2xs"
+                  >
+                    <Truck className="h-3.5 w-3.5" />
+                    <span>รับของ</span>
+                  </button>
+                )}
+
+                <button 
+                  onClick={() => setViewPO(po)}
+                  className="flex-1 py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs text-center"
+                >
+                  ดูรายละเอียด
+                </button>
+
+                {(po.status === 'Draft' || po.status === 'Issued') && (
+                  <button 
+                    onClick={() => setCancelPO(po)}
+                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-slate-200"
+                    title="ยกเลิกใบสั่งซื้อ"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+          {filteredPOs.length === 0 && (
+            <div className="p-8 text-center text-slate-500 text-xs">
+              <FileText className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+              ไม่พบข้อมูลใบสั่งซื้อ
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View (Visible on >= md screens) */}
+        <div className="hidden md:block overflow-x-auto smooth-scroll">
           <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
             <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
               <tr>
@@ -644,7 +755,7 @@ export function PurchaseOrderPage() {
                     <div className="flex items-start gap-2">
                       <Store className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="font-bold text-slate-900 text-sm leading-snug">{po.vendorName}</div>
+                        <div className="font-bold text-slate-900 text-sm leading-snug break-words">{po.vendorName}</div>
                         <div className="text-xs text-slate-500 mt-0.5">คู่ค้าที่ลงทะเบียน</div>
                       </div>
                     </div>
@@ -652,12 +763,12 @@ export function PurchaseOrderPage() {
 
                   {/* PR Ref & Desc */}
                   <td className="px-4 py-3.5 align-top">
-                    <div className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    <div className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">
                       <span>PR:</span>
                       <span className="text-indigo-700">{po.prNumber}</span>
                     </div>
                     {po.poDescription && (
-                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2" title={po.poDescription}>
+                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words" title={po.poDescription}>
                         {po.poDescription}
                       </div>
                     )}
@@ -684,7 +795,7 @@ export function PurchaseOrderPage() {
                   {/* Total Amount */}
                   <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
                     <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
-                      {po.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {(po.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                     <div className="text-[11px] text-slate-500 font-medium mt-1">
                       บาท (THB)
@@ -694,7 +805,7 @@ export function PurchaseOrderPage() {
                   {/* Status */}
                   <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
                     <span className={cn(
-                      "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none",
+                      "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none whitespace-nowrap",
                       statusColors[po.status] || "bg-slate-100 text-slate-800"
                     )}>
                       {statusLabels[po.status] || po.status}
@@ -859,7 +970,7 @@ export function PurchaseOrderPage() {
                           <td className="px-3 py-3 align-top text-right font-mono tabular-nums text-emerald-700 font-bold">{Number(item.receivedQuantity || 0).toLocaleString()}</td>
                           <td className="px-3 py-3 align-top text-center text-slate-600">{item.unit}</td>
                           <td className="px-4 py-3 align-top text-right font-mono tabular-nums text-slate-700">{Number(item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                          <td className="px-4 py-3 align-top text-right font-mono tabular-nums font-bold text-slate-900">{(item.quantity * item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td className="px-4 py-3 align-top text-right font-mono tabular-nums font-bold text-slate-900">{((Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                         {expandedGR[item.id] && item.receipts && item.receipts.length > 0 && (
                           <tr className="bg-slate-50/50">
@@ -914,7 +1025,7 @@ export function PurchaseOrderPage() {
                   <tfoot className="bg-slate-50 border-t border-slate-200">
                     <tr>
                       <td colSpan={6} className="px-4 py-3 text-right font-bold text-slate-600 uppercase text-xs tracking-wide">ยอดรวมสุทธิ</td>
-                      <td className="px-4 py-3 text-right font-bold text-indigo-700">{viewPO.totalAmount.toLocaleString()} บาท</td>
+                      <td className="px-4 py-3 text-right font-bold text-indigo-700">{(viewPO.totalAmount ?? 0).toLocaleString()} บาท</td>
                     </tr>
                   </tfoot>
                 </table>

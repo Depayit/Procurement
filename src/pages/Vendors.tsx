@@ -158,7 +158,77 @@ export function VendorsPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Vendor Cards List (Visible on < md) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {filteredVendors.length > 0 ? filteredVendors.map((vendor) => (
+            <div key={vendor.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2.5 min-w-0">
+                  <div className="h-8 w-8 flex-shrink-0 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center shadow-2xs mt-0.5">
+                    <Store className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">{vendor.name}</h4>
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">{vendor.email}</p>
+                  </div>
+                </div>
+                <div className="inline-flex items-center px-2 py-0.5 rounded-md text-amber-800 bg-amber-50 border border-amber-200 font-bold font-mono text-[10px] whitespace-nowrap">
+                  <Star className="h-3 w-3 mr-0.5 fill-amber-500 text-amber-500" />
+                  {vendor.rating.toFixed(1)}
+                </div>
+              </div>
+
+              {/* Middle Grid: Contact & Performance */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">ผู้ติดต่อ</span>
+                  <span className="font-semibold text-slate-800 text-xs block truncate">{vendor.contactPerson}</span>
+                  <span className="text-[11px] text-slate-500 font-mono block mt-0.5">{vendor.phone}</span>
+                </div>
+                <div className="border-l border-slate-200/80 pl-2.5">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">เงื่อนไข / ส่งมอบ</span>
+                  <span className="font-medium text-slate-700 text-[11px] block truncate">{vendor.paymentTerms}</span>
+                  <span className="text-[10px] text-emerald-700 font-bold block mt-0.5 whitespace-nowrap">
+                    ส่งตรงเวลา {vendor.onTimeDeliveryRate}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions Row */}
+              <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+                <button 
+                  onClick={() => setViewVendor(vendor)}
+                  className="flex-1 py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1"
+                >
+                  <Eye className="h-3.5 w-3.5" />
+                  <span>รายละเอียด</span>
+                </button>
+                <button 
+                  onClick={() => openEditForm(vendor)}
+                  className="p-1.5 text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+                  title="แก้ไขข้อมูลคู่ค้า"
+                >
+                  <Edit className="h-4 w-4" />
+                </button>
+                <button 
+                  onClick={() => setDeleteVendorId(vendor.id)}
+                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-slate-200"
+                  title="ลบข้อมูลคู่ค้า"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )) : (
+            <div className="p-8 text-center text-slate-500 text-xs">
+              <Store className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+              <p>ไม่พบข้อมูลคู่ค้าที่ค้นหา</p>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View (Visible on >= md) */}
+        <div className="hidden md:block overflow-x-auto smooth-scroll">
           <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
             <thead className="bg-slate-100/90 text-[11px] text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
               <tr>
@@ -180,11 +250,11 @@ export function VendorsPage() {
                         <Store className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900 text-sm leading-snug">{vendor.name}</div>
+                        <div className="font-bold text-slate-900 text-sm leading-snug break-words">{vendor.name}</div>
                         <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs">
                           <span className="text-slate-500 font-normal">{vendor.email}</span>
                           {vendor.categories && vendor.categories.length > 0 && (
-                            <span className="font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-100 text-[10px]">
+                            <span className="font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-100 text-[10px] whitespace-nowrap">
                               {vendor.categories[0]}
                             </span>
                           )}

@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { User, Building, Bell, Shield, Globe, Save, Database, CheckCircle2, Languages, Check } from 'lucide-react';
+import { User, Building, Bell, Shield, Globe, Save, Database, CheckCircle2, Languages, Check, Smartphone, BellRing, Send, AlertCircle, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useNotifications } from '../contexts/NotificationContext';
+import { PWAInstallButton } from '../components/PWAInstallButton';
 
 export function SettingsPage() {
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language, setLanguage, isEnglish } = useLanguage();
+  const { permission, requestPermission, addNotification } = useNotifications();
+  const [testSent, setTestSent] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -70,6 +74,17 @@ export function SettingsPage() {
             >
               <Bell className="h-4 w-4 mr-3" />
               {t('settings.tabNotifications')}
+            </button>
+            <button
+              onClick={() => setActiveTab('pwa')}
+              className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === 'pwa' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <Smartphone className="h-4 w-4 mr-3" />
+              {isEnglish ? 'PWA & App Install' : 'PWA / ติดตั้งแอป'}
             </button>
             <button
               onClick={() => setActiveTab('security')}
@@ -264,59 +279,199 @@ export function SettingsPage() {
           {activeTab === 'notifications' && (
             <div className="p-6 space-y-6">
               <div>
-                <h3 className="text-lg font-bold text-slate-800">การแจ้งเตือน</h3>
-                <p className="text-sm text-slate-500 mt-1">เลือกช่องทางและเหตุการณ์ที่คุณต้องการรับการแจ้งเตือน</p>
+                <h3 className="text-lg font-bold text-slate-800">
+                  {isEnglish ? 'Notification Preferences' : 'การแจ้งเตือน'}
+                </h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  {isEnglish 
+                    ? 'Configure system alerts, browser push notifications, and email channels' 
+                    : 'เลือกช่องทางและเหตุการณ์ที่คุณต้องการรับการแจ้งเตือน'}
+                </p>
               </div>
               <hr className="border-slate-100" />
-              <div className="space-y-5">
-                <div className="flex items-start justify-between p-4 border border-slate-200 rounded-lg">
+
+              {/* Push & Device Notifications Section */}
+              <div className="p-5 rounded-2xl border border-indigo-100 bg-indigo-50/50 space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2.5 bg-indigo-600 text-white rounded-xl shadow-xs shrink-0 mt-0.5">
+                      <BellRing className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">
+                        {isEnglish ? 'Device & PWA Push Notifications' : 'การแจ้งเตือนบนอุปกรณ์ (Web / PWA Notifications)'}
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                        {isEnglish 
+                          ? 'Get real-time browser popups on desktop or lock-screen notifications on mobile.' 
+                          : 'รับการแจ้งเตือนทันทีบนโทรศัพท์มือถือหรือหน้าจอคอมพิวเตอร์เมื่อมีใบขอซื้อรออนุมัติ หรือสถานะเอกสารเปลี่ยนแปลง'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {permission === 'granted' ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{isEnglish ? 'Enabled' : 'เปิดใช้งานแล้ว'}</span>
+                      </span>
+                    ) : permission === 'denied' ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-600" />
+                        <span>{isEnglish ? 'Blocked' : 'ถูกบล็อกในเบราว์เซอร์'}</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+                        <span>{isEnglish ? 'Permission Required' : 'ยังไม่ได้ขอสิทธิ์'}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-indigo-100">
+                  {permission !== 'granted' && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const granted = await requestPermission();
+                        if (granted) {
+                          alert(isEnglish ? 'Notifications enabled successfully!' : 'เปิดการแจ้งเตือนสำเร็จแล้ว!');
+                        }
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                      <span>{isEnglish ? 'Request Notification Permission' : 'ขอสิทธิ์เปิดแจ้งเตือนบนอุปกรณ์'}</span>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      addNotification({
+                        title: isEnglish ? 'Test Alert: PR-2025-001 Approved' : 'ทดสอบแจ้งเตือน: PR-2025-001 ได้รับอนุมัติ',
+                        message: isEnglish ? 'ProcureSync PWA notification system is working perfectly!' : 'ระบบแจ้งเตือนของ ProcureSync PWA ทำงานได้อย่างถูกต้องและสมบูรณ์แบบ',
+                        type: 'approval',
+                        link: '/approvals'
+                      });
+                      setTestSent(true);
+                      setTimeout(() => setTestSent(false), 3000);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-200 bg-white hover:bg-indigo-50 text-indigo-700 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{testSent ? (isEnglish ? 'Notification Sent!' : 'ส่งแจ้งเตือนแล้ว!') : (isEnglish ? 'Send Test Notification' : 'ทดสอบส่งการแจ้งเตือน')}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Event Subscriptions */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  {isEnglish ? 'Alert Events' : 'ประเภทเหตุการณ์ที่ต้องการรับแจ้งเตือน'}
+                </h4>
+
+                <div className="flex items-start justify-between p-4 border border-slate-200 rounded-xl bg-white">
                   <div>
                      <h4 className="text-sm font-bold text-slate-800">การขออนุมัติ PR (สำหรับผู้อนุมัติ)</h4>
-                     <p className="text-sm text-slate-500 mt-0.5">แจ้งเตือนเมื่อมีใบขอซื้อรอการอนุมัติของคุณ</p>
+                     <p className="text-xs text-slate-500 mt-0.5">แจ้งเตือนเมื่อมีใบขอซื้อรอการอนุมัติของคุณในระบบ</p>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                       <input type="checkbox" defaultChecked className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
                       <span>Email</span>
                     </label>
-                    <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                       <input type="checkbox" defaultChecked className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                      <span>In-app</span>
+                      <span>In-app / Push</span>
                     </label>
                   </div>
                 </div>
 
-                <div className="flex items-start justify-between p-4 border border-slate-200 rounded-lg">
+                <div className="flex items-start justify-between p-4 border border-slate-200 rounded-xl bg-white">
                   <div>
                      <h4 className="text-sm font-bold text-slate-800">สถานะเอกสารเปลี่ยนแปลง</h4>
-                     <p className="text-sm text-slate-500 mt-0.5">แจ้งเตือนเมื่อเอกสารที่คุณสร้างได้รับการอนุมัติ ปฏิเสธ หรือรับของ</p>
+                     <p className="text-xs text-slate-500 mt-0.5">แจ้งเตือนเมื่อเอกสารที่คุณสร้างได้รับการอนุมัติ ปฏิเสธ หรือรับของ</p>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                       <input type="checkbox" className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
                       <span>Email</span>
                     </label>
-                    <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                       <input type="checkbox" defaultChecked className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                      <span>In-app</span>
+                      <span>In-app / Push</span>
                     </label>
                   </div>
                 </div>
 
-                <div className="flex items-start justify-between p-4 border border-slate-200 rounded-lg">
+                <div className="flex items-start justify-between p-4 border border-slate-200 rounded-xl bg-white">
                   <div>
                      <h4 className="text-sm font-bold text-slate-800">แจ้งเตือนสต็อกขั้นต่ำ (Reorder Point)</h4>
-                     <p className="text-sm text-slate-500 mt-0.5">แจ้งเตือนเมื่อสินค้าในคลังลดลงต่ำกว่าจุดสั่งซื้อ</p>
+                     <p className="text-xs text-slate-500 mt-0.5">แจ้งเตือนเมื่อสินค้าในคลังลดลงต่ำกว่าเกณฑ์ความปลอดภัย</p>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                       <input type="checkbox" defaultChecked className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
                       <span>Email</span>
                     </label>
-                    <label className="flex items-center space-x-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                       <input type="checkbox" defaultChecked className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                      <span>In-app</span>
+                      <span>In-app / Push</span>
                     </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'pwa' && (
+            <div className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-slate-800">
+                  {isEnglish ? 'Progressive Web App (PWA) & Mobile' : 'การติดตั้งแอปและการใช้งาน (PWA)'}
+                </h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  {isEnglish 
+                    ? 'Install ProcureSync onto your device for standalone offline-ready experience' 
+                    : 'ติดตั้ง ProcureSync ลงบนหน้าจอหลักเพื่อใช้งานเสมือนแอปจริง รวดเร็ว และรองรับโหมดออฟไลน์'}
+                </p>
+              </div>
+              <hr className="border-slate-100" />
+
+              <div className="p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50/60 via-white to-slate-50 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-md shadow-indigo-200 shrink-0">
+                      <Smartphone className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-slate-900">ProcureSync Enterprise PWA</h4>
+                      <p className="text-xs text-slate-500 mt-0.5">Version 1.0 &bull; Offline Ready &bull; Standalone Mode</p>
+                    </div>
+                  </div>
+
+                  <PWAInstallButton variant="settings" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4 border-t border-slate-200/60 text-xs">
+                  <div className="p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-2xs">
+                    <span className="font-bold text-slate-900 block mb-1">⚡ รวดเร็วระดับ Native</span>
+                    <p className="text-slate-500 text-[11px] leading-relaxed">
+                      เข้าถึงระบบได้ทันทีจากไอคอนหน้าจอหลัก ไม่ต้องผ่าน Browser address bar
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-2xs">
+                    <span className="font-bold text-slate-900 block mb-1">📶 รองรับโหมดออฟไลน์</span>
+                    <p className="text-slate-500 text-[11px] leading-relaxed">
+                      Service Worker แคชไฟล์ระบบ ทำให้เปิดดูข้อมูลเอกสารเดิมได้แม้สัญญาณเน็ตขาดหาย
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-2xs">
+                    <span className="font-bold text-slate-900 block mb-1">🔔 แจ้งเตือนแบบพุช</span>
+                    <p className="text-slate-500 text-[11px] leading-relaxed">
+                      รับการแจ้งเตือนงานอนุมัติ PR และการรับของ PO ได้ทันท่วงทีบนทุกอุปกรณ์
+                    </p>
                   </div>
                 </div>
               </div>

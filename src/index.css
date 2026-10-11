@@ -5,6 +5,36 @@
   --font-sans: "Inter", "Sarabun", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Global Typography & Line Breaking Balance */
+body {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Balance heading wraps to prevent orphan words */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+p, span, td, th {
+  overflow-wrap: break-word;
+}
+
+/* Prevent unwanted breaks for codes, monetary values, and tags */
+.no-break {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* Smooth mobile scrolling */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Document specific styling: English Inter + Thai Sarabun standard */
 .standard-a4-doc,
 .standard-a4-doc * {

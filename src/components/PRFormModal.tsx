@@ -459,12 +459,12 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
                   <div className="mt-2 text-[11px] text-slate-600 space-y-0.5">
                     <div className="flex justify-between">
                       <span>BOQ Budget:</span>
-                      <span className="font-semibold text-slate-800">{selectedProject.boqBudget.toLocaleString()} บ.</span>
+                      <span className="font-semibold text-slate-800">{(selectedProject?.boqBudget ?? 0).toLocaleString()} บ.</span>
                     </div>
                     <div className="flex justify-between">
                       <span>คงเหลือ:</span>
                       <span className={cn("font-bold", isOverBudget ? "text-red-600" : "text-emerald-600")}>
-                        {availableBudget.toLocaleString()} บ.
+                        {(availableBudget ?? 0).toLocaleString()} บ.
                       </span>
                     </div>
                   </div>
@@ -607,7 +607,109 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
                 </button>
               </div>
               
-              <div className="border border-slate-300 rounded-lg overflow-x-auto bg-white">
+              {/* Mobile Line Items Cards (Visible on < sm) */}
+              <div className="sm:hidden space-y-3">
+                {items.map((item, index) => {
+                  const lineTotal = Number(item.quantity || 0) * Number(item.unitPrice || 0);
+                  return (
+                    <div key={item.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-700">
+                          รายการที่ {index + 1}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold font-mono tabular-nums text-indigo-700">
+                            ฿{lineTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </span>
+                          <button 
+                            type="button"
+                            onClick={() => handleRemoveItem(item.id)}
+                            disabled={items.length === 1}
+                            className="text-slate-400 hover:text-red-500 disabled:opacity-30 p-1"
+                            title="ลบแถวนี้"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <input 
+                          type="text" required
+                          value={item.description}
+                          onChange={(e) => handleChangeItem(item.id, 'description', e.target.value)}
+                          placeholder="ชื่อสินค้า/พัสดุ *"
+                          className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                        />
+                        <input 
+                          type="text"
+                          value={item.specification || ''}
+                          onChange={(e) => handleChangeItem(item.id, 'specification', e.target.value)}
+                          placeholder="รายละเอียดสเปก, เกรด, มอก. ..."
+                          className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-[11px] text-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <label className="text-[10px] text-slate-500 font-bold block mb-0.5">รหัสพัสดุ</label>
+                          <input 
+                            type="text"
+                            value={item.itemCode || ''}
+                            onChange={(e) => handleChangeItem(item.id, 'itemCode', e.target.value)}
+                            placeholder="MAT-01"
+                            className="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-slate-500 font-bold block mb-0.5">จำนวน *</label>
+                          <input 
+                            type="number" required min="0.01" step="any"
+                            value={item.quantity}
+                            onChange={(e) => handleChangeItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
+                            className="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-right font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-slate-500 font-bold block mb-0.5">หน่วย *</label>
+                          <input 
+                            type="text" required
+                            value={item.unit}
+                            onChange={(e) => handleChangeItem(item.id, 'unit', e.target.value)}
+                            placeholder="ชิ้น/ถุง"
+                            className="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] text-slate-500 font-bold block mb-0.5">ราคา/หน่วย (บาท) *</label>
+                          <input 
+                            type="number" required min="0" step="any"
+                            value={item.unitPrice}
+                            onChange={(e) => handleChangeItem(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
+                            className="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-right font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-slate-500 font-bold block mb-0.5">หมายเหตุ</label>
+                          <input 
+                            type="text"
+                            value={item.remark || ''}
+                            onChange={(e) => handleChangeItem(item.id, 'remark', e.target.value)}
+                            placeholder="ระบุเพิ่มเติม..."
+                            className="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View (Visible on >= sm) */}
+              <div className="hidden sm:block border border-slate-300 rounded-lg overflow-x-auto bg-white smooth-scroll">
                 <table className="w-full text-left text-xs min-w-[700px]">
                   <thead>
                     <tr className="bg-slate-100 border-b border-slate-300 text-[11px] font-bold text-slate-700 uppercase tracking-wider">
@@ -708,6 +810,7 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
                     })}
                   </tbody>
                 </table>
+              </div>
 
                 {/* Bottom Calculation & Baht Text in Table */}
                 <div className="bg-slate-50 border-t border-slate-300 p-4">
@@ -756,7 +859,6 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
                   </div>
                 </div>
               </div>
-            </div>
 
             {/* Attachments */}
             <div>
@@ -802,7 +904,7 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
           <div className="text-xs text-slate-500 text-center sm:text-left">
             {isEnglish ? 'Grand Total: ' : 'ยอดรวมสุทธิ: '}
             <span className="font-bold text-slate-800 text-sm font-mono">
-              {totalAmount.toLocaleString()} {isEnglish ? 'THB' : 'บาท'}
+              {(totalAmount ?? 0).toLocaleString()} {isEnglish ? 'THB' : 'บาท'}
             </span>
             {isOverBudget && <span className="text-red-600 ml-2 font-bold">{isEnglish ? '(Over BOQ Budget)' : '(เกินงบ BOQ)'}</span>}
           </div>
