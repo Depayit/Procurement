@@ -30,11 +30,17 @@ import {
   Maximize2,
   FileCheck,
   RefreshCw,
-  Plus
+  Plus,
+  Eye,
+  X,
+  FileDown,
+  Loader2
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
+import { StandardManualDocument } from '../components/StandardManualDocument';
+import { printA4Document, exportToPDF } from '../lib/pdf';
 
 interface ButtonGuideItem {
   name: string;
@@ -73,6 +79,24 @@ export function ManualPage() {
   const { isEnglish, isThai } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedModule, setSelectedModule] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'interactive' | 'official-document'>('interactive');
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handlePrint = (docId = 'standard-manual-doc') => {
+    printA4Document(docId, 'ProcureSync_คู่มือมาตรฐานการปฏิบัติงาน_SOP');
+  };
+
+  const handleExportPDF = async (docId = 'standard-manual-doc') => {
+    try {
+      setIsExporting(true);
+      await exportToPDF(docId, 'ProcureSync_User_Manual_SOP');
+    } catch (err) {
+      console.error('PDF export error:', err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const modules: ModuleSection[] = [
     {
@@ -672,14 +696,37 @@ export function ManualPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => window.print()}
-              className="inline-flex items-center px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-colors shadow-sm cursor-pointer"
-              title="สั่งพิมพ์คู่มือหรือบันทึกเป็น PDF"
+              onClick={() => setIsPreviewModalOpen(true)}
+              className="inline-flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-xs border border-indigo-400/40 cursor-pointer"
+              title="ดูตัวอย่างเอกสารคู่มือฉบับจริง A4"
             >
-              <Printer className="w-4 h-4 mr-2 text-indigo-600" />
-              <span>{isEnglish ? 'Print / Export PDF' : 'พิมพ์คู่มือ / บันทึก PDF'}</span>
+              <Eye className="w-4 h-4 mr-1.5" />
+              <span>{isEnglish ? 'Preview A4 Document' : 'ดูตัวอย่างเอกสาร A4'}</span>
+            </button>
+
+            <button
+              onClick={() => handlePrint('standard-manual-doc')}
+              className="inline-flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-colors shadow-xs cursor-pointer"
+              title="สั่งพิมพ์คู่มือฉบับมาตรฐาน A4 (8 หน้า)"
+            >
+              <Printer className="w-4 h-4 mr-1.5 text-indigo-600" />
+              <span>{isEnglish ? 'Print Standard A4' : 'พิมพ์คู่มือมาตรฐาน A4'}</span>
+            </button>
+
+            <button
+              onClick={() => handleExportPDF('standard-manual-doc')}
+              disabled={isExporting}
+              className="inline-flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-800/90 hover:bg-slate-700 text-white border border-slate-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+              title="ดาวน์โหลดคู่มือฉบับเต็มเป็นไฟล์ PDF"
+            >
+              {isExporting ? (
+                <Loader2 className="w-4 h-4 mr-1.5 animate-spin text-indigo-400" />
+              ) : (
+                <FileDown className="w-4 h-4 mr-1.5 text-indigo-400" />
+              )}
+              <span>{isExporting ? (isEnglish ? 'Exporting...' : 'กำลังสร้าง PDF...') : (isEnglish ? 'Export PDF' : 'ดาวน์โหลด PDF')}</span>
             </button>
           </div>
         </div>
@@ -705,10 +752,92 @@ export function ManualPage() {
         </div>
       </div>
 
-      {/* 2. Quick Navigation Tabs */}
-      <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
-        <button
-          onClick={() => setSelectedModule('all')}
+      {/* View Mode Toggle Bar: Interactive vs Official SOP Document */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs print:hidden">
+        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+          <button
+            onClick={() => setViewMode('interactive')}
+            className={cn(
+              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
+              viewMode === 'interactive' 
+                ? "bg-white text-slate-900 shadow-xs" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
+          >
+            <Layers className="w-3.5 h-3.5 text-indigo-600" />
+            <span>{isEnglish ? 'Interactive Web View' : 'มุมมองหน้าเว็บแบบโต้ตอบ'}</span>
+          </button>
+          <button
+            onClick={() => setViewMode('official-document')}
+            className={cn(
+              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
+              viewMode === 'official-document' 
+                ? "bg-white text-indigo-900 shadow-xs" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
+          >
+            <FileText className="w-3.5 h-3.5 text-indigo-600" />
+            <span>{isEnglish ? 'Official A4 Document (8 Pages)' : 'เอกสารคู่มือมาตรฐาน A4 (8 หน้า)'}</span>
+          </button>
+        </div>
+
+        <div className="text-xs text-slate-500 flex items-center gap-2">
+          <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-700">
+            SOP-PROC-2026-001 (Rev. 2.4)
+          </span>
+          <span className="hidden sm:inline">•</span>
+          <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            มาตรฐาน ISO 9001:2015
+          </span>
+        </div>
+      </div>
+
+      {/* Content Rendering Branch: Official A4 Document vs Interactive Web Guide */}
+      {viewMode === 'official-document' ? (
+        <div className="space-y-4">
+          <div className="bg-indigo-50/80 border border-indigo-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-indigo-950 shadow-2xs print:hidden">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4" />
+              </div>
+              <div>
+                <strong className="block text-slate-900 font-bold text-sm">
+                  {isEnglish ? 'Official Standard Operating Procedure (SOP) Manual' : 'เอกสารคู่มือมาตรฐานการปฏิบัติงานระบบจัดซื้อและคลังสินค้า (ฉบับจริง)'}
+                </strong>
+                <p className="text-slate-600 text-[11.5px] mt-0.5">
+                  จัดหน้ากระดาษตามมาตรฐาน A4 Portrait (210 x 297 มม.) ทั้ง 8 หน้า พร้อมผังกระบวนการ สิทธิ์การใช้งาน และตารางสรุปปุ่ม เหมาะสำหรับการสั่งพิมพ์หรือบันทึก PDF
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => handlePrint('standard-manual-doc')}
+                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+              >
+                <Printer className="w-4 h-4" />
+                <span>พิมพ์เอกสารนี้</span>
+              </button>
+              <button
+                onClick={() => handleExportPDF('standard-manual-doc')}
+                disabled={isExporting}
+                className="px-3.5 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {isExporting ? <Loader2 className="w-4 h-4 animate-spin text-indigo-600" /> : <FileDown className="w-4 h-4 text-indigo-600" />}
+                <span>บันทึก PDF</span>
+              </button>
+            </div>
+          </div>
+
+          <StandardManualDocument id="standard-manual-doc" />
+        </div>
+      ) : (
+        <>
+          {/* 2. Quick Navigation Tabs */}
+          <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
+            <button
+              onClick={() => setSelectedModule('all')}
           className={cn(
             "px-3.5 py-2 rounded-lg font-bold whitespace-nowrap transition-colors",
             selectedModule === 'all'
@@ -1117,6 +1246,67 @@ export function ManualPage() {
         </div>
       </div>
 
+      {/* Hidden print container for standard A4 printing in interactive mode */}
+      <div className="hidden print:block">
+        <StandardManualDocument id="standard-manual-doc" />
+      </div>
+    </>
+  )}
+
+  {/* Official A4 Document Preview Modal */}
+  {isPreviewModalOpen && (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:hidden">
+      <div className="bg-slate-100 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden animate-in zoom-in-95 duration-200">
+        {/* Modal Header */}
+        <div className="bg-white px-5 py-3.5 border-b border-slate-200 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+              <BookOpen className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                ตัวอย่างเอกสารคู่มือมาตรฐานการปฏิบัติงาน (Standard A4 SOP Preview)
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                เอกสารทางการ 8 หน้า • รหัส SOP-PROC-2026-001 (Rev. 2.4)
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handlePrint('standard-manual-doc-modal')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>พิมพ์เอกสาร</span>
+            </button>
+            <button
+              onClick={() => handleExportPDF('standard-manual-doc-modal')}
+              disabled={isExporting}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs cursor-pointer transition-colors disabled:opacity-50"
+            >
+              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" /> : <FileDown className="w-3.5 h-3.5 text-indigo-600" />}
+              <span>บันทึก PDF</span>
+            </button>
+            <button
+              onClick={() => setIsPreviewModalOpen(false)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 ml-2 cursor-pointer transition-colors"
+              title="ปิดหน้าต่าง"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Body: Scrollable Document View */}
+        <div className="overflow-y-auto p-4 sm:p-6 bg-slate-200/80 flex-1">
+          <StandardManualDocument id="standard-manual-doc-modal" className="py-0" />
+        </div>
+      </div>
     </div>
-  );
+  )}
+
+</div>
+);
 }

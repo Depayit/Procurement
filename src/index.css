@@ -87,8 +87,12 @@ p, span, td, th {
   #standard-pr-doc-approval *,
   #preview-pr-doc,
   #preview-pr-doc *,
+  #standard-manual-doc,
+  #standard-manual-doc *,
   .standard-a4-doc,
-  .standard-a4-doc * {
+  .standard-a4-doc *,
+  .standard-manual-doc,
+  .standard-manual-doc * {
     visibility: visible !important;
   }
 
@@ -109,4 +113,32 @@ p, span, td, th {
     display: block !important;
     box-sizing: border-box !important;
   }
+
+  /* Multi-page standard manual print flow */
+  #standard-manual-doc,
+  .standard-manual-doc {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  .page-break-always {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
+
