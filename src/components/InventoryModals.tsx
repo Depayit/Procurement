@@ -113,61 +113,9 @@ export function InventoryTransactionModal({ isOpen, onClose, onSave, items, defa
   );
 }
 
-interface QRCodeScannerModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onScan: (code: string) => void;
-}
+export { QRCodeScannerModal } from './QRCodeScannerModal';
+export type { QRCodeScannerModalProps } from './QRCodeScannerModal';
 
-export function QRCodeScannerModal({ isOpen, onClose, onScan }: QRCodeScannerModalProps) {
-  const [scanning, setScanning] = useState(true);
-
-  useEffect(() => {
-    if (isOpen) {
-      setScanning(true);
-      const timer = setTimeout(() => {
-        setScanning(false);
-        onScan('MAT-CEM-01');
-      }, 2500);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, onScan]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-sm flex flex-col items-center">
-        <button onClick={onClose} className="absolute -top-12 right-0 text-white hover:text-slate-300"><X className="h-8 w-8" /></button>
-        <div className="bg-black/50 p-8 rounded-3xl border-2 border-slate-700 shadow-2xl relative overflow-hidden w-64 h-64 flex items-center justify-center">
-          {scanning ? (
-            <>
-              <div className="absolute inset-0 border-[3px] border-indigo-500 rounded-2xl opacity-50 m-4"></div>
-              <div className="absolute top-0 left-0 w-full h-1 bg-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.8)] animate-[scan_2s_ease-in-out_infinite]"></div>
-              <p className="text-white font-bold tracking-widest text-sm mt-32">SCANNING...</p>
-            </>
-          ) : (
-            <div className="flex flex-col items-center animate-in zoom-in duration-300">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-3">
-                <ClipboardCheck className="text-white h-8 w-8" />
-              </div>
-              <p className="text-white font-bold text-lg">Found Item</p>
-              <p className="text-green-400 font-mono mt-1">MAT-CEM-01</p>
-            </div>
-          )}
-          <style>{`
-            @keyframes scan {
-              0% { top: 0%; }
-              50% { top: 100%; }
-              100% { top: 0%; }
-            }
-          `}</style>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 interface PhysicalCountModalProps {
   isOpen: boolean;

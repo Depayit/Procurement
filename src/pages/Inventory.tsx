@@ -1,5 +1,6 @@
-import { Package, ArrowDownUp, QrCode, AlertTriangle, CheckSquare, Printer, FileSpreadsheet } from 'lucide-react';
-import { useState, useRef, ChangeEvent } from 'react';
+import { Package, ArrowDownUp, QrCode, AlertTriangle, CheckSquare, Printer, FileSpreadsheet, Download, X } from 'lucide-react';
+import { useState, useRef, useEffect, ChangeEvent } from 'react';
+import QRCode from 'qrcode';
 import type { InventoryItem } from '../types';
 import { cn } from '../lib/utils';
 import { InventoryTransactionModal, QRCodeScannerModal, PhysicalCountModal } from '../components/InventoryModals';
@@ -24,7 +25,20 @@ export function InventoryPage() {
   const [viewItem, setViewItem] = useState<InventoryItem | null>(null);
   const [transactDefaultId, setTransactDefaultId] = useState<string | undefined>();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [itemQrDataUrl, setItemQrDataUrl] = useState<string>('');
+  const [isQrLabelOpen, setIsQrLabelOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (viewItem) {
+      QRCode.toDataURL(viewItem.code, { width: 300, margin: 2 })
+        .then(setItemQrDataUrl)
+        .catch(() => setItemQrDataUrl(''));
+    } else {
+      setItemQrDataUrl('');
+    }
+  }, [viewItem]);
+
 
   const locations = Array.from(new Set(inventory.map(i => i.location)));
   const filteredInventory = selectedLocation ? inventory.filter(i => i.location === selectedLocation) : inventory;
@@ -108,7 +122,10 @@ export function InventoryPage() {
   };
 
   const handleScanSuccess = (code: string) => {
-    const item = inventory.find(i => i.code === code);
+    const item = inventory.find(i => 
+      i.code.toLowerCase() === code.toLowerCase() || 
+      i.id.toLowerCase() === code.toLowerCase()
+    );
     setIsScannerOpen(false);
     if (item) {
       setTimeout(() => {
@@ -116,9 +133,24 @@ export function InventoryPage() {
         setIsTransactOpen(true);
       }, 300);
     } else {
-      alert('ไม่พบสินค้านี้ในระบบ');
+      alert(isEnglish ? `Item with code "${code}" not found in system` : `ไม่พบสินค้ารหัส "${code}" ในระบบ`);
     }
   };
+
+  const handleScannerAction = (action: 'transact' | 'count' | 'view', item: InventoryItem) => {
+    setIsScannerOpen(false);
+    setTimeout(() => {
+      if (action === 'transact') {
+        setTransactDefaultId(item.id);
+        setIsTransactOpen(true);
+      } else if (action === 'count') {
+        setCountItem(item);
+      } else if (action === 'view') {
+        setViewItem(item);
+      }
+    }, 250);
+  };
+
 
   const handlePhysicalCount = (itemId: string, newQuantity: number, note: string) => {
     setInventory(inventory.map(item => item.id === itemId ? { ...item, quantity: newQuantity } : item));
@@ -429,9 +461,19 @@ export function InventoryPage() {
                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">ระดับขั้นต่ำ</p>
                  <p className="font-bold text-slate-800">{viewItem.minStockLevel} {viewItem.unit}</p>
                </div>
-               <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 flex items-center justify-center">
-                 <QrCode className="h-10 w-10 text-slate-300" />
-                 <p className="text-xs text-slate-400 absolute mt-12">สแกนรหัส</p>
+               <div 
+                 onClick={() => setIsQrLabelOpen(true)}
+                 className="bg-slate-50 hover:bg-indigo-50/60 p-2.5 rounded-lg border border-slate-200 hover:border-indigo-300 flex flex-col items-center justify-center cursor-pointer transition-colors group relative"
+                 title={isEnglish ? "Click to view / print QR Label" : "คลิกเพื่อดูและพิมพ์ป้าย QR Code"}
+               >
+                 {itemQrDataUrl ? (
+                   <img src={itemQrDataUrl} alt={`QR for ${viewItem.code}`} className="h-16 w-16 object-contain" />
+                 ) : (
+                   <QrCode className="h-10 w-10 text-slate-300" />
+                 )}
+                 <span className="text-[10px] text-slate-500 font-bold group-hover:text-indigo-600 mt-1 flex items-center gap-1">
+                   <Printer className="w-3 h-3" /> {isEnglish ? 'Print QR' : 'พิมพ์ป้าย QR'}
+                 </span>
                </div>
             </div>
 
@@ -471,6 +513,110 @@ export function InventoryPage() {
         )}
       </DetailsModal>
 
+      {/* QR Code Sticker Label Print Modal */}
+      {isQrLabelOpen && viewItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={() => setIsQrLabelOpen(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 z-10 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="font-bold text-slate-800 text-sm">
+                {isEnglish ? 'Inventory QR Sticker Label' : 'ป้ายสติกเกอร์สต็อกสินค้า (QR Label)'}
+              </h3>
+              <button 
+                onClick={() => setIsQrLabelOpen(false)} 
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Sticker Preview Card */}
+            <div className="my-5 p-5 rounded-2xl border-2 border-dashed border-indigo-200 bg-slate-50/70 flex flex-col items-center text-center shadow-inner">
+              <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                PROCURESYNC INVENTORY
+              </p>
+              
+              <div className="my-3 p-3 bg-white rounded-xl shadow-xs border border-slate-100">
+                {itemQrDataUrl && (
+                  <img src={itemQrDataUrl} alt={viewItem.code} className="w-36 h-36" />
+                )}
+              </div>
+
+              <p className="text-lg font-mono font-black text-slate-900 tracking-wider">
+                {viewItem.code}
+              </p>
+              <p className="text-xs font-bold text-slate-700 mt-1 max-w-[240px] truncate">
+                {viewItem.name}
+              </p>
+              
+              <div className="flex items-center gap-2 mt-2 text-[11px] text-slate-500">
+                <span className="bg-slate-200/80 px-2 py-0.5 rounded font-medium">{viewItem.category}</span>
+                <span>•</span>
+                <span className="font-semibold text-slate-700">{viewItem.location}</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2.5">
+              {itemQrDataUrl && (
+                <a 
+                  href={itemQrDataUrl} 
+                  download={`QR_${viewItem.code}.png`}
+                  className="flex-1 py-2.5 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl text-center transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
+                >
+                  <Download className="w-4 h-4 text-slate-500" />
+                  <span>{isEnglish ? 'Save PNG' : 'ดาวน์โหลดรูป'}</span>
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  const printWin = window.open('', '_blank');
+                  if (printWin) {
+                    printWin.document.write(`
+                      <!DOCTYPE html>
+                      <html>
+                        <head>
+                          <meta charset="utf-8" />
+                          <title>Print Label - ${viewItem.code}</title>
+                          <style>
+                            @page { size: auto; margin: 10mm; }
+                            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #fff; }
+                            .label { border: 2px dashed #94a3b8; padding: 24px; border-radius: 16px; text-align: center; width: 260px; page-break-inside: avoid; }
+                            .brand { font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
+                            .qr { width: 160px; height: 160px; margin: 12px auto; display: block; }
+                            .code { font-size: 22px; font-weight: 900; font-family: monospace; letter-spacing: 1px; color: #0f172a; margin-top: 4px; }
+                            .name { font-size: 13px; font-weight: 700; margin-top: 4px; color: #334155; }
+                            .loc { font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; }
+                          </style>
+                        </head>
+                        <body>
+                          <div class="label">
+                            <div class="brand">PROCURESYNC WAREHOUSE</div>
+                            <img class="qr" src="${itemQrDataUrl}" />
+                            <div class="code">${viewItem.code}</div>
+                            <div class="name">${viewItem.name}</div>
+                            <div class="loc">${viewItem.category} • ${viewItem.location}</div>
+                          </div>
+                          <script>
+                            window.onload = function() { window.print(); window.close(); }
+                          </script>
+                        </body>
+                      </html>
+                    `);
+                    printWin.document.close();
+                  }
+                }}
+                className="flex-1 py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl text-center transition-colors shadow-xs flex items-center justify-center gap-1.5"
+              >
+                <Printer className="w-4 h-4" />
+                <span>{isEnglish ? 'Print Label' : 'สั่งพิมพ์ป้าย'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <InventoryTransactionModal 
         isOpen={isTransactOpen}
         onClose={() => setIsTransactOpen(false)}
@@ -483,6 +629,8 @@ export function InventoryPage() {
         isOpen={isScannerOpen}
         onClose={() => setIsScannerOpen(false)}
         onScan={handleScanSuccess}
+        items={inventory}
+        onSelectAction={handleScannerAction}
       />
 
       <PhysicalCountModal

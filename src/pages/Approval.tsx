@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle, Clock, FileText, Printer, Download, Building2 } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, FileText, Printer, Download, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck } from 'lucide-react';
 import type { ApprovalTask, PurchaseRequest } from '../types';
 import { useState } from 'react';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -8,6 +8,7 @@ import { exportToPDF, printA4Document } from '../lib/pdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import { cn } from '../lib/utils';
+
 
 const MOCK_PR_1: PurchaseRequest = {
   id: 'pr-1',
@@ -124,6 +125,7 @@ export function ApprovalPage() {
     action: null
   });
   const [viewTask, setViewTask] = useState<ApprovalTask | null>(null);
+  const [docZoom, setDocZoom] = useState<'fit' | 'actual'>('fit');
 
   const handleConfirm = () => {
     if (!confirmState.taskId) return;
@@ -679,43 +681,133 @@ export function ApprovalPage() {
           <div>
             {viewTask.prData ? (
               <div>
-                <div className="flex items-center justify-between mb-3 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span className="font-bold text-slate-700">ขนาดกระดาษมาตรฐาน A4 (210 x 297 มม.)</span>
+                {/* Document Inspection Toolbar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 text-xs bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-bold text-slate-800">
+                      {isEnglish ? 'Standard A4 Sheet (210 x 297 mm)' : 'ขนาดกระดาษมาตรฐาน A4 (210 x 297 มม.)'}
+                    </span>
                     <span className="text-slate-300 hidden sm:inline">|</span>
-                    <span className="hidden sm:inline">สเกล 1:1 พร้อมพิมพ์และบันทึก PDF</span>
+                    <span className="text-slate-500 hidden sm:inline">
+                      {isEnglish ? 'Official Requisition Form (FM-PUR-001)' : 'แบบฟอร์มขอซื้อทางการ (FM-PUR-001)'}
+                    </span>
                   </div>
-                  <span className="font-mono text-[11px] text-slate-400">ProcureSync A4 Standard Engine</span>
-                </div>
-                <div className="bg-slate-200/70 p-3 sm:p-6 rounded-xl overflow-x-auto flex justify-center shadow-inner">
-                  <StandardPRDocument pr={viewTask.prData} id="standard-pr-doc-approval" />
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">ผู้ขอ/ผู้ออกเอกสาร</p>
-                    <p className="font-medium text-slate-800">{viewTask.requester}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">วันที่เอกสาร</p>
-                    <p className="font-medium text-slate-800">{new Date(viewTask.requestDate).toLocaleString('th-TH')}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">ประเภทเอกสาร</p>
-                    <p className="font-medium text-slate-800">{viewTask.documentType === 'PR' ? 'ใบขอซื้อ (Purchase Request)' : 'ใบสั่งซื้อ (Purchase Order)'}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">มูลค่ารวม</p>
-                    <p className="font-bold text-indigo-700 text-lg font-mono">{(viewTask.amount ?? 0).toLocaleString()} บาท</p>
+
+                  {/* Zoom Controls */}
+                  <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setDocZoom(docZoom === 'fit' ? 'actual' : 'fit')}
+                      className={cn(
+                        "px-2.5 py-1 text-xs font-bold rounded-lg border transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer",
+                        docZoom === 'fit'
+                          ? "bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100"
+                          : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50"
+                      )}
+                      title={docZoom === 'fit' ? 'สลับเป็นขนาดจริง 100%' : 'สลับเป็นย่อพอดีจอ'}
+                    >
+                      {docZoom === 'fit' ? (
+                        <>
+                          <ZoomIn className="w-3.5 h-3.5" />
+                          <span>{isEnglish ? 'Actual Size (100%)' : 'ซูม 100% (ขนาดจริง)'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Maximize2 className="w-3.5 h-3.5" />
+                          <span>{isEnglish ? 'Fit Width' : '📱 ย่อพอดีหน้าจอ'}</span>
+                        </>
+                      )}
+                    </button>
+                    <span className="font-mono text-[11px] text-slate-400 hidden sm:inline">ProcureSync Engine</span>
                   </div>
                 </div>
 
-                <div className="border border-slate-200 rounded-lg overflow-hidden p-6 text-center text-slate-500">
-                  <FileText className="h-12 w-12 text-slate-300 mx-auto mb-2" />
-                  <h3 className="text-sm font-bold text-slate-700">พรีวิวเอกสาร {viewTask.documentType}</h3>
+                {/* Desk Paper Canvas */}
+                <div className="bg-slate-200/80 p-2 sm:p-6 rounded-2xl overflow-x-auto flex justify-center shadow-inner smooth-scroll">
+                  <div className={cn(
+                    "transition-all duration-200 origin-top",
+                    docZoom === 'fit' 
+                      ? "scale-[0.52] xs:scale-[0.62] sm:scale-[0.78] md:scale-[0.9] lg:scale-100 h-[620px] xs:h-[720px] sm:h-[900px] md:h-[1050px] lg:h-auto"
+                      : "scale-100 h-auto"
+                  )}>
+                    <StandardPRDocument pr={viewTask.prData} id="standard-pr-doc-approval" />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between mb-2 text-xs bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                    <span className="font-bold text-slate-800">
+                      {isEnglish ? `Standard Document: ${viewTask.documentType}` : `เอกสารมาตรฐาน: ${viewTask.documentType}`}
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs text-indigo-700 font-bold">{viewTask.documentId}</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-xs text-xs">
+                  <div>
+                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">ผู้ออกเอกสาร</p>
+                    <p className="font-bold text-slate-900 mt-0.5">{viewTask.requester}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">วันที่เอกสาร</p>
+                    <p className="font-semibold text-slate-800 mt-0.5">{new Date(viewTask.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">ประเภทเอกสาร</p>
+                    <p className="font-semibold text-indigo-700 mt-0.5">{viewTask.documentType === 'PR' ? 'ใบขอซื้อ (PR)' : 'ใบสั่งซื้อ (PO)'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">มูลค่ารวม</p>
+                    <p className="font-black text-slate-950 text-sm font-mono mt-0.5">{(viewTask.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</p>
+                  </div>
+                </div>
+
+                <div className="bg-slate-200/80 p-4 sm:p-8 rounded-2xl flex justify-center shadow-inner">
+                  <div className="bg-white w-[794px] min-h-[600px] p-8 shadow-md border border-slate-300 text-slate-900">
+                    <div className="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-start">
+                      <div>
+                        <h2 className="text-base font-bold text-slate-900">บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</h2>
+                        <p className="text-xs text-slate-600 font-bold uppercase mt-0.5">PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded uppercase">
+                          {viewTask.documentType === 'PO' ? 'ใบสั่งซื้อ / PURCHASE ORDER' : 'ใบขอซื้อ / PURCHASE REQUISITION'}
+                        </span>
+                        <p className="font-mono font-bold text-indigo-700 text-sm mt-1">{viewTask.documentId}</p>
+                      </div>
+                    </div>
+
+                    <div className="border border-slate-300 p-4 rounded bg-slate-50 mb-4 grid grid-cols-2 gap-4 text-xs">
+                      <div>
+                        <span className="text-slate-500 block">ผู้จัดทำ / ออกเอกสาร:</span>
+                        <span className="font-bold text-slate-900">{viewTask.requester}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">วันที่ออกเอกสาร:</span>
+                        <span className="font-semibold text-slate-800">{new Date(viewTask.requestDate).toLocaleString('th-TH')}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">ระดับการพิจารณา:</span>
+                        <span className="font-bold text-indigo-700">ลำดับขั้นที่ {viewTask.level} (Level {viewTask.level})</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">ยอดรวมสุทธิทั้งสิ้น:</span>
+                        <span className="font-black text-slate-950 font-mono text-base">{(viewTask.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท</span>
+                      </div>
+                    </div>
+
+                    <div className="border border-slate-300 p-6 rounded-lg text-center text-slate-500 bg-white">
+                      <FileCheck className="w-12 h-12 text-indigo-500 mx-auto mb-2" />
+                      <h4 className="font-bold text-slate-800 text-sm">เอกสารพร้อมสำหรับการพิจารณาอนุมัติ</h4>
+                      <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+                        ท่านสามารถคลิก &ldquo;อนุมัติคำขอ&rdquo; เพื่อลงลายมือชื่อดิจิทัลและส่งต่อในระบบ หรือคลิก &ldquo;ปฏิเสธคำขอ&rdquo; หากต้องการส่งกลับแก้ไข
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
