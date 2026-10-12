@@ -6,52 +6,78 @@
 }
 
 /* Global Typography, Proportions & Balanced Line Breaks */
+:root {
+  /* Single source of truth for the global UI scale (Balanced Compact 85%) */
+  --app-zoom: 0.85;
+}
+
 html {
   /* Universal calibrated scale matching compact Desktop reference across all devices */
-  zoom: 85%;
+  zoom: 0.85;
 }
 
-body {
-  font-family: var(--font-sans);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  line-height: 1.58; /* Optimal Thai tone mark & Latin ascender breathing room */
-  -webkit-tap-highlight-color: transparent;
+/* Viewport-height helpers compensated for the global zoom.
+   With `zoom` applied on <html>, 100dvh/100vh resolve to only 85% of the real
+   screen, leaving an empty band at the bottom. These restore true full height. */
+.h-app {
+  height: 100vh;
+  height: calc(100dvh / var(--app-zoom));
 }
 
-/* Headings: Fluid responsive scale, balanced text wraps, no orphans */
-h1 {
-  font-size: clamp(1.35rem, 1.8vw + 0.95rem, 1.85rem);
-  line-height: 1.25;
-  text-wrap: balance;
-  letter-spacing: -0.025em;
+.min-h-app {
+  min-height: 100vh;
+  min-height: calc(100dvh / var(--app-zoom));
 }
 
-h2 {
-  font-size: clamp(1.15rem, 1.2vw + 0.85rem, 1.45rem);
-  line-height: 1.3;
-  text-wrap: balance;
-  letter-spacing: -0.02em;
-}
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    line-height: 1.58; /* Optimal Thai tone mark & Latin ascender breathing room */
+    -webkit-tap-highlight-color: transparent;
+  }
 
-h3 {
-  font-size: clamp(1rem, 0.8vw + 0.85rem, 1.2rem);
-  line-height: 1.35;
-  text-wrap: balance;
-  letter-spacing: -0.015em;
-}
+  /* Headings: Fluid responsive scale, balanced text wraps, no orphans.
+     Kept in the base layer so explicit Tailwind size classes always win. */
+  h1 {
+    font-size: clamp(1.35rem, 1.8vw + 0.95rem, 1.85rem);
+    line-height: 1.25;
+    text-wrap: balance;
+    letter-spacing: -0.025em;
+  }
 
-h4, h5, h6 {
-  text-wrap: balance;
-  line-height: 1.4;
-}
+  h2 {
+    font-size: clamp(1.15rem, 1.2vw + 0.85rem, 1.45rem);
+    line-height: 1.3;
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
 
-/* Paragraphs & Text: pretty line breaking preventing ragged edges */
-p, li, blockquote {
-  text-wrap: pretty;
-  overflow-wrap: break-word;
+  h3 {
+    font-size: clamp(1rem, 0.8vw + 0.85rem, 1.2rem);
+    line-height: 1.35;
+    text-wrap: balance;
+    letter-spacing: -0.015em;
+  }
+
+  h4, h5, h6 {
+    text-wrap: balance;
+    line-height: 1.4;
+  }
+
+  /* Paragraphs & Text: pretty line breaking preventing ragged edges */
+  p, li, blockquote {
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+
+  /* Long unbroken strings (emails, SKUs, URLs) never spill outside cards */
+  td, dd, dt, label {
+    overflow-wrap: break-word;
+  }
 }
 
 /* Heading & Subheading Highlight Utilities */
@@ -317,9 +343,23 @@ p, li, blockquote {
   background: #94a3b8;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox only — in Chromium these standard properties would override the
+   slim ::-webkit-scrollbar styles above and bring back native arrow buttons. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
 }
 
 .safe-x {
