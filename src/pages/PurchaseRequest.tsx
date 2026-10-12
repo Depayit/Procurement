@@ -18,8 +18,10 @@ import {
   ChevronRight,
   FolderOpen,
   Eye,
-  FileCheck2
+  FileCheck2,
+  UploadCloud
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import type { PurchaseRequest, PRTemplate } from '../types';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -326,6 +328,15 @@ export function PurchaseRequestPage() {
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
+          <Link
+            to="/import?target=pr"
+            className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 h-10 px-3.5 py-2 shadow-2xs"
+            title="นำเข้าไฟล์ Excel, CSV, CAD (.dxf) ถอดแบบ หรือ BOQ PDF เพื่อสร้าง PR"
+          >
+            <UploadCloud className="mr-1.5 h-4 w-4 text-indigo-600" />
+            {isEnglish ? 'Import BOQ / CAD' : 'นำเข้า BOQ / CAD'}
+          </Link>
+
           <button 
             onClick={() => setShowTemplatesGallery(!showTemplatesGallery)}
             className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 h-10 px-4 py-2 shadow-2xs"
@@ -585,17 +596,15 @@ export function PurchaseRequestPage() {
 
         {/* Desktop Table View (Visible on >= md screens) */}
         <div className="hidden md:block overflow-x-auto smooth-scroll">
-          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[840px]">
             <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
               <tr>
-                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">{t('pr.colPrNumber')}</th>
-                <th className="px-3 py-3.5 whitespace-nowrap text-center w-[95px]">{isEnglish ? 'Urgency' : 'ความสำคัญ'}</th>
-                <th className="px-4 py-3.5 min-w-[220px]">{t('pr.colProject')}</th>
-                <th className="px-4 py-3.5 whitespace-nowrap min-w-[150px]">{t('pr.colRequester')}</th>
-                <th className="px-4 py-3.5 whitespace-nowrap w-[145px]">{isEnglish ? 'Schedule' : 'กำหนดการวันที่'}</th>
-                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">{isEnglish ? 'Total (THB)' : 'ยอดรวม (บาท)'}</th>
-                <th className="px-3 py-3.5 text-center whitespace-nowrap w-[110px]">{t('pr.colStatus')}</th>
-                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[110px]">{t('pr.colActions')}</th>
+                <th className="px-3.5 py-3.5 whitespace-nowrap w-[145px]">{t('pr.colPrNumber')}</th>
+                <th className="px-3.5 py-3.5 min-w-[190px]">{t('pr.colProject')}</th>
+                <th className="px-3.5 py-3.5 whitespace-nowrap w-[155px]">{isEnglish ? 'Requester & Due Date' : 'ผู้ขอซื้อ & กำหนดส่ง'}</th>
+                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[120px]">{isEnglish ? 'Total (THB)' : 'ยอดรวม (บาท)'}</th>
+                <th className="px-2.5 py-3.5 text-center whitespace-nowrap w-[95px]">{t('pr.colStatus')}</th>
+                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[125px] sticky right-0 bg-slate-100/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">{t('pr.colActions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
@@ -603,14 +612,19 @@ export function PurchaseRequestPage() {
                 const urgency = urgencyBadges[pr.urgency || 'normal'] || urgencyBadges.normal;
                 return (
                   <tr key={pr.id} className="hover:bg-slate-50/80 transition-colors">
-                    {/* PR Number */}
-                    <td className="px-4 py-3.5 align-top whitespace-nowrap">
+                    {/* PR Number & Urgency */}
+                    <td className="px-3.5 py-3.5 align-top whitespace-nowrap">
                       <div className="flex items-start gap-2.5">
                         <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-600 border border-indigo-100 mt-0.5 flex-shrink-0">
                           <FileText className="h-4 w-4" />
                         </div>
                         <div>
-                          <span className="font-mono text-indigo-700 text-sm font-bold block leading-tight">{pr.prNumber}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono text-indigo-700 text-sm font-bold leading-tight">{pr.prNumber}</span>
+                            <span className={cn("inline-block px-1.5 py-0.5 rounded text-[10px] border font-bold leading-none", urgency.color)}>
+                              {urgency.label}
+                            </span>
+                          </div>
                           <span className="text-[11px] text-slate-500 font-medium mt-1 inline-block">
                             {pr.items?.length || 0} {isEnglish ? 'items' : 'รายการพัสดุ'}
                           </span>
@@ -618,50 +632,33 @@ export function PurchaseRequestPage() {
                       </div>
                     </td>
 
-                    {/* Urgency */}
-                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
-                      <span className={cn("inline-block px-2.5 py-1 rounded-md text-[11px] border font-semibold", urgency.color)}>
-                        {urgency.label}
-                      </span>
-                    </td>
-
                     {/* Project / Site */}
-                    <td className="px-4 py-3.5 align-top text-slate-700">
+                    <td className="px-3.5 py-3.5 align-top text-slate-700">
                       <div className="font-bold text-slate-900 text-sm leading-snug break-words">{pr.department}</div>
                       <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs">
                         <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
                           {pr.projectCode || 'PRJ-MAIN-01'}
                         </span>
                         {pr.deliveryLocation && (
-                          <span className="text-slate-500 leading-normal" title={pr.deliveryLocation}>
+                          <span className="text-slate-500 leading-normal line-clamp-1" title={pr.deliveryLocation}>
                             • {pr.deliveryLocation}
                           </span>
                         )}
                       </div>
                     </td>
 
-                    {/* Requester */}
-                    <td className="px-4 py-3.5 align-top text-slate-700 whitespace-nowrap">
+                    {/* Requester & Due Date */}
+                    <td className="px-3.5 py-3.5 align-top text-slate-700 whitespace-nowrap">
                       <div className="font-semibold text-slate-900 text-sm leading-snug">{pr.requesterName}</div>
-                      <div className="text-xs text-slate-500 mt-0.5 font-normal">
-                        {pr.requesterPosition || 'วิศวกรสนาม'}
-                      </div>
-                    </td>
-
-                    {/* Dates */}
-                    <td className="px-4 py-3.5 align-top text-slate-600 whitespace-nowrap">
-                      <div className="text-xs text-slate-700 font-medium flex items-center gap-1">
-                        <span className="text-slate-400 text-[11px]">ขอเมื่อ:</span>
-                        <span>{new Date(pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                      </div>
-                      <div className="text-xs font-semibold text-indigo-700 mt-1 flex items-center gap-1">
-                        <span className="text-indigo-400 text-[11px] font-normal">ต้องการ:</span>
-                        <span>{new Date(pr.requiredDate || pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
+                        <Clock className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                        <span className="text-slate-400 font-normal">ส่งมอบ:</span>
+                        <span className="font-semibold text-indigo-700">{new Date(pr.requiredDate || pr.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                       </div>
                     </td>
 
                     {/* Amount */}
-                    <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                    <td className="px-3.5 py-3.5 align-top text-right whitespace-nowrap">
                       <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
                         {(pr.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </div>
@@ -671,7 +668,7 @@ export function PurchaseRequestPage() {
                     </td>
 
                     {/* Status */}
-                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                    <td className="px-2.5 py-3.5 align-top text-center whitespace-nowrap">
                       <span className={cn(
                         "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none whitespace-nowrap",
                         statusColors[pr.status] || "bg-slate-100 text-slate-800"
@@ -681,7 +678,7 @@ export function PurchaseRequestPage() {
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                    <td className="px-3.5 py-3.5 align-top text-right whitespace-nowrap sticky right-0 bg-white/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">
                       <div className="flex items-center justify-end gap-1.5">
                         <button 
                           onClick={() => setViewPR(pr)}
@@ -726,7 +723,7 @@ export function PurchaseRequestPage() {
               })}
               {filteredPRs.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-6 py-10 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-10 text-center text-slate-500">
                     <FileText className="w-8 h-8 mx-auto text-slate-300 mb-2" />
                     ไม่พบรายการใบขอซื้อที่ตรงกับเงื่อนไขการค้นหา
                   </td>

@@ -102,18 +102,20 @@ export function Dashboard() {
         {/* Card 1: Total PR */}
         <Link 
           to="/pr" 
-          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-5 group hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
+          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-4 sm:p-5 group hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
         >
           <div className="flex items-center">
             <div className="flex-shrink-0 bg-indigo-50 rounded-xl p-3 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
               <ShoppingCart className="h-6 w-6" aria-hidden="true" />
             </div>
-            <div className="ml-5 w-0 flex-1">
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-slate-500 truncate">{t('dashboard.totalPr')}</dt>
-                <dd className="flex items-baseline justify-between">
-                  <div className="text-2xl font-bold text-slate-800">{totalPRCount}</div>
-                  <div className="flex items-baseline text-xs font-bold text-green-600 px-2 py-0.5 bg-green-50 rounded-md tracking-wide">
+                <dt className="text-xs sm:text-sm font-semibold text-slate-500 leading-tight truncate" title={isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}>
+                  {isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}
+                </dt>
+                <dd className="flex items-baseline justify-between mt-1">
+                  <div className="text-xl sm:text-2xl font-bold font-mono text-slate-800">{totalPRCount}</div>
+                  <div className="flex items-baseline text-[11px] font-bold text-green-600 px-1.5 py-0.5 bg-green-50 rounded-md tracking-wide">
                     <TrendingUp className="self-center flex-shrink-0 h-3 w-3 mr-1 text-green-700" aria-hidden="true" />
                     Live
                   </div>
@@ -126,18 +128,20 @@ export function Dashboard() {
         {/* Card 2: Pending Approvals */}
         <Link 
           to="/approvals" 
-          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-5 group hover:border-amber-300 hover:shadow-md transition-all cursor-pointer"
+          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-4 sm:p-5 group hover:border-amber-300 hover:shadow-md transition-all cursor-pointer"
         >
           <div className="flex items-center">
             <div className="flex-shrink-0 bg-amber-50 rounded-xl p-3 text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-colors">
               <ClipboardCheck className="h-6 w-6" aria-hidden="true" />
             </div>
-            <div className="ml-5 w-0 flex-1">
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-slate-500 truncate">{t('dashboard.pendingApprovals')}</dt>
-                <dd className="flex items-baseline justify-between">
-                  <div className="text-2xl font-bold text-slate-800">{pendingApprovalCount}</div>
-                  <span className="text-xs font-bold px-2 py-0.5 bg-amber-50 text-amber-700 rounded-md">
+                <dt className="text-xs sm:text-sm font-semibold text-slate-500 leading-tight truncate" title={isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}>
+                  {isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}
+                </dt>
+                <dd className="flex items-baseline justify-between mt-1">
+                  <div className="text-xl sm:text-2xl font-bold font-mono text-slate-800">{pendingApprovalCount}</div>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-700 rounded-md">
                     {pendingApprovalCount > 0 ? (isEnglish ? 'Action Required' : 'ต้องพิจารณา') : (isEnglish ? 'Clear' : 'เรียบร้อย')}
                   </span>
                 </dd>
@@ -149,19 +153,21 @@ export function Dashboard() {
         {/* Card 3: Low Stock */}
         <Link 
           to="/inventory" 
-          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-5 group hover:border-red-300 hover:shadow-md transition-all cursor-pointer"
+          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-4 sm:p-5 group hover:border-red-300 hover:shadow-md transition-all cursor-pointer"
         >
           <div className="flex items-center">
             <div className="flex-shrink-0 bg-red-50 rounded-xl p-3 text-red-600 group-hover:bg-red-500 group-hover:text-white transition-colors">
               <AlertTriangle className="h-6 w-6" aria-hidden="true" />
             </div>
-            <div className="ml-5 w-0 flex-1">
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-slate-500 truncate">{t('dashboard.lowStock')}</dt>
-                <dd className="flex items-baseline justify-between">
-                  <div className="text-2xl font-bold text-slate-800">{lowStockCount}</div>
+                <dt className="text-xs sm:text-sm font-semibold text-slate-500 leading-tight truncate" title={isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}>
+                  {isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}
+                </dt>
+                <dd className="flex items-baseline justify-between mt-1">
+                  <div className="text-xl sm:text-2xl font-bold font-mono text-slate-800">{lowStockCount}</div>
                   <span className={cn(
-                    "text-xs font-bold px-2 py-0.5 rounded-md",
+                    "text-[11px] font-bold px-1.5 py-0.5 rounded-md",
                     lowStockCount > 0 ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"
                   )}>
                     {lowStockCount > 0 ? (isEnglish ? 'Need Reorder' : 'ต้องสั่งเพิ่ม') : (isEnglish ? 'Normal' : 'ปกติ')}
@@ -175,18 +181,20 @@ export function Dashboard() {
         {/* Card 4: Active POs */}
         <Link 
           to="/po" 
-          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-5 group hover:border-emerald-300 hover:shadow-md transition-all cursor-pointer"
+          className="bg-white overflow-hidden shadow-xs rounded-2xl border border-slate-200 p-4 sm:p-5 group hover:border-emerald-300 hover:shadow-md transition-all cursor-pointer"
         >
           <div className="flex items-center">
             <div className="flex-shrink-0 bg-emerald-50 rounded-xl p-3 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
               <ShoppingCart className="h-6 w-6" aria-hidden="true" />
             </div>
-            <div className="ml-5 w-0 flex-1">
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-slate-500 truncate">{isEnglish ? 'Active Purchase Orders' : 'PO ที่กำลังดำเนินการ'}</dt>
-                <dd className="flex items-baseline justify-between">
-                  <div className="text-2xl font-bold text-slate-800">{activePOCount}</div>
-                  <span className="text-xs font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">
+                <dt className="text-xs sm:text-sm font-semibold text-slate-500 leading-tight truncate" title={isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}>
+                  {isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}
+                </dt>
+                <dd className="flex items-baseline justify-between mt-1">
+                  <div className="text-xl sm:text-2xl font-bold font-mono text-slate-800">{activePOCount}</div>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">
                     {isEnglish ? 'In Progress' : 'รอดำเนินการ'}
                   </span>
                 </dd>

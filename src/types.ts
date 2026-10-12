@@ -256,3 +256,21 @@ export interface CompanyProfile {
   docFormatPO?: string;
 }
 
+export type ImportTargetModule = 'inventory' | 'pr' | 'vendors' | 'po';
+export type ImportMergeMode = 'merge' | 'append' | 'replace';
+
+export interface ImportHistoryRecord {
+  id: string;
+  timestamp: string;
+  fileName: string;
+  fileType: string;
+  fileSize?: number;
+  targetModule: ImportTargetModule;
+  totalRows: number;
+  successCount: number;
+  errorCount: number;
+  mode: ImportMergeMode;
+  importedBy: string;
+  notes?: string;
+}
+

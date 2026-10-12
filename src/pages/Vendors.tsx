@@ -1,8 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import { Store, Plus, Search, Edit, Trash2, Eye, Star, TrendingUp, Phone, Mail, MapPin, Package } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Store, Plus, Search, Edit, Trash2, Eye, Star, TrendingUp, Phone, Mail, MapPin, Package, UploadCloud } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { DetailsModal } from '../components/DetailsModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useProcurement } from '../contexts/ProcurementContext';
 
 interface Vendor {
   id: string;
@@ -58,8 +60,15 @@ const MOCK_VENDORS: Vendor[] = [
 
 export function VendorsPage() {
   const { t, isEnglish } = useLanguage();
-  const [vendors, setVendors] = useState<Vendor[]>(MOCK_VENDORS);
+  const { vendors: globalVendors } = useProcurement();
+  const [vendors, setVendors] = useState<Vendor[]>(() => globalVendors?.length ? globalVendors : MOCK_VENDORS);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  useEffect(() => {
+    if (globalVendors && globalVendors.length > 0) {
+      setVendors(globalVendors);
+    }
+  }, [globalVendors]);
   
   const [viewVendor, setViewVendor] = useState<Vendor | null>(null);
   
@@ -135,13 +144,24 @@ export function VendorsPage() {
           <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('vendors.title')}</h1>
           <p className="text-sm text-slate-500 mt-1">{t('vendors.subtitle')}</p>
         </div>
-        <button 
-          onClick={openAddForm}
-          className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t('vendors.addBtn')}
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/import?target=vendors"
+            className="inline-flex items-center px-3.5 py-2 border border-slate-200 bg-white text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-2xs"
+            title="นำเข้าไฟล์ Excel, CSV หรือ JSON รายชื่อบริษัทคู่ค้า"
+          >
+            <UploadCloud className="h-4 w-4 mr-1.5 text-indigo-600" />
+            {isEnglish ? 'Import Vendors' : 'นำเข้าไฟล์คู่ค้า'}
+          </Link>
+
+          <button 
+            onClick={openAddForm}
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {t('vendors.addBtn')}
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -229,15 +249,15 @@ export function VendorsPage() {
 
         {/* Desktop Table View (Visible on >= md) */}
         <div className="hidden md:block overflow-x-auto smooth-scroll">
-          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[880px]">
             <thead className="bg-slate-100/90 text-[11px] text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
               <tr>
-                <th className="px-4 py-3.5 min-w-[260px]">ชื่อคู่ค้า / บริษัท</th>
-                <th className="px-4 py-3.5 whitespace-nowrap w-[180px]">ผู้ติดต่อและเบอร์โทร</th>
-                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">เงื่อนไขการชำระเงิน</th>
-                <th className="px-3 py-3.5 text-center whitespace-nowrap w-[130px]">คะแนนประเมิน</th>
-                <th className="px-3 py-3.5 text-center whitespace-nowrap w-[130px]">ส่งมอบตรงเวลา</th>
-                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">การจัดการ</th>
+                <th className="px-3.5 py-3.5 min-w-[220px]">ชื่อคู่ค้า / บริษัท</th>
+                <th className="px-3.5 py-3.5 whitespace-nowrap w-[170px]">ผู้ติดต่อและเบอร์โทร</th>
+                <th className="px-3.5 py-3.5 whitespace-nowrap w-[140px]">เงื่อนไขการชำระเงิน</th>
+                <th className="px-2.5 py-3.5 text-center whitespace-nowrap w-[120px]">คะแนนประเมิน</th>
+                <th className="px-2.5 py-3.5 text-center whitespace-nowrap w-[120px]">ส่งมอบตรงเวลา</th>
+                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[135px] sticky right-0 bg-slate-100/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">การจัดการ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
@@ -296,7 +316,7 @@ export function VendorsPage() {
                   </td>
 
                   {/* Actions */}
-                  <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                  <td className="px-3.5 py-3.5 align-top text-right whitespace-nowrap sticky right-0 bg-white/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">
                     <div className="flex items-center justify-end gap-1.5">
                       <button 
                         onClick={() => setViewVendor(vendor)}

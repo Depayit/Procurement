@@ -14,7 +14,8 @@ import {
   X, 
   Lock,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  UploadCloud
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useEffect } from 'react';
@@ -39,6 +40,7 @@ const navItems: NavItem[] = [
   { key: 'nav.inventory', path: '/inventory', icon: Package, requiredPerm: 'inventory:view' },
   { key: 'nav.po', path: '/po', icon: FileText, requiredPerm: 'po:view' },
   { key: 'nav.vendors', path: '/vendors', icon: Store, requiredPerm: 'vendors:view' },
+  { key: 'nav.dataImport', path: '/import', icon: UploadCloud },
   { key: 'nav.reports', path: '/reports', icon: BarChart3, requiredPerm: 'reports:view' },
   { key: 'nav.users', path: '/users', icon: Users, requiredPerm: 'users:view' },
   { key: 'nav.manual', path: '/manual', icon: BookOpen },

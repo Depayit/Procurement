@@ -212,25 +212,28 @@ export function ApprovalPage() {
             {approvalMatrix.length} ขั้นตอนตามเกณฑ์วงเงิน
           </span>
         </div>
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
           {approvalMatrix.map((step, idx) => (
-            <React.Fragment key={step.id}>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg whitespace-nowrap">
-                <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex items-center justify-center">
-                  {idx + 1}
-                </span>
-                <div>
-                  <div className="font-bold text-slate-800 text-[11px] leading-tight">{step.titleTh}</div>
-                  <div className="text-[9.5px] text-slate-500 leading-tight">
-                    {step.defaultPosition || step.titleEn} 
-                    {step.minAmount ? ` (>= ${step.minAmount.toLocaleString()} บ.)` : ''}
-                  </div>
+            <div key={step.id} className="flex items-start gap-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg min-w-0">
+              <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                {idx + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="font-bold text-slate-800 text-[11px] leading-tight truncate">{step.titleTh}</div>
+                <div className="text-[9.5px] text-slate-500 leading-tight mt-0.5 truncate" title={step.defaultPosition || step.titleEn}>
+                  {step.defaultPosition || step.titleEn}
                 </div>
+                {step.minAmount ? (
+                  <span className="inline-block mt-1 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
+                    &ge; {step.minAmount.toLocaleString()} บ.
+                  </span>
+                ) : (
+                  <span className="inline-block mt-1 text-[9px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                    ทุกวงเงิน
+                  </span>
+                )}
               </div>
-              {idx < approvalMatrix.length - 1 && (
-                <span className="text-slate-300 font-bold">→</span>
-              )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>
@@ -379,15 +382,15 @@ export function ApprovalPage() {
 
             {/* Desktop Table (Visible on >= md) */}
             <div className="hidden md:block overflow-x-auto smooth-scroll">
-              <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+              <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[880px]">
                 <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
                   <tr>
-                    <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">ระดับ & เอกสาร</th>
-                    <th className="px-4 py-3.5 min-w-[240px]">โครงการ / วัตถุประสงค์</th>
-                    <th className="px-4 py-3.5 whitespace-nowrap min-w-[170px]">ผู้ขอซื้อและวันที่</th>
-                    <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">ยอดเงิน (บาท)</th>
-                    <th className="px-3 py-3.5 text-center whitespace-nowrap w-[100px]">ตรวจสอบ</th>
-                    <th className="px-4 py-3.5 text-right whitespace-nowrap w-[170px]">การพิจารณา</th>
+                    <th className="px-3.5 py-3.5 whitespace-nowrap w-[140px]">ระดับ & เอกสาร</th>
+                    <th className="px-3.5 py-3.5 min-w-[200px]">โครงการ / วัตถุประสงค์</th>
+                    <th className="px-3.5 py-3.5 whitespace-nowrap min-w-[140px]">ผู้ขอซื้อและวันที่</th>
+                    <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[120px]">ยอดเงิน (บาท)</th>
+                    <th className="px-3 py-3.5 text-center whitespace-nowrap w-[90px]">เอกสาร</th>
+                    <th className="px-4 py-3.5 text-right whitespace-nowrap w-[180px] sticky right-0 bg-slate-100/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">การพิจารณา</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
@@ -457,7 +460,7 @@ export function ApprovalPage() {
                       </td>
 
                       {/* Actions */}
-                      <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                      <td className="px-4 py-3.5 align-top text-right whitespace-nowrap sticky right-0 bg-white/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">
                         <div className="flex items-center justify-end gap-1.5">
                           <button 
                             onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}

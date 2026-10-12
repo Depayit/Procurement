@@ -666,23 +666,22 @@ export function PurchaseOrderPage() {
 
         {/* Desktop Table View (Visible on >= md screens) */}
         <div className="hidden md:block overflow-x-auto smooth-scroll">
-          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+          <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[840px]">
             <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
               <tr>
-                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">เลขที่ PO</th>
-                <th className="px-4 py-3.5 min-w-[200px]">ผู้ขาย (Vendor)</th>
-                <th className="px-4 py-3.5 min-w-[220px]">อ้างอิง PR / โครงการ</th>
-                <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">วันที่และกำหนดส่ง</th>
-                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">จำนวนเงิน (บาท)</th>
-                <th className="px-3 py-3.5 text-center whitespace-nowrap w-[110px]">สถานะ</th>
-                <th className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">การจัดการ</th>
+                <th className="px-3.5 py-3.5 whitespace-nowrap w-[145px]">เลขที่ PO</th>
+                <th className="px-3.5 py-3.5 min-w-[210px]">ผู้ขาย & อ้างอิงโครงการ</th>
+                <th className="px-3.5 py-3.5 whitespace-nowrap w-[145px]">วันที่และกำหนดส่ง</th>
+                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[125px]">จำนวนเงิน (บาท)</th>
+                <th className="px-2.5 py-3.5 text-center whitespace-nowrap w-[100px]">สถานะ</th>
+                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[140px] sticky right-0 bg-slate-100/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">การจัดการ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
               {filteredPOs.map((po) => (
                 <tr key={po.id} className="hover:bg-slate-50/80 transition-colors">
                   {/* PO Number */}
-                  <td className="px-4 py-3.5 align-top whitespace-nowrap">
+                  <td className="px-3.5 py-3.5 align-top whitespace-nowrap">
                     <div className="flex items-start gap-2.5">
                       <div className="p-1.5 rounded-md bg-indigo-50 text-indigo-600 border border-indigo-100 mt-0.5 flex-shrink-0">
                         <FileText className="h-4 w-4" />
@@ -696,32 +695,29 @@ export function PurchaseOrderPage() {
                     </div>
                   </td>
 
-                  {/* Vendor */}
-                  <td className="px-4 py-3.5 align-top">
+                  {/* Vendor & PR Ref */}
+                  <td className="px-3.5 py-3.5 align-top">
                     <div className="flex items-start gap-2">
                       <Store className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
                       <div>
                         <div className="font-bold text-slate-900 text-sm leading-snug break-words">{po.vendorName}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">คู่ค้าที่ลงทะเบียน</div>
+                        <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                          <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
+                            <span>PR:</span>
+                            <span className="text-indigo-700">{po.prNumber}</span>
+                          </span>
+                          {po.poDescription && (
+                            <span className="text-xs text-slate-500 line-clamp-1" title={po.poDescription}>
+                              • {po.poDescription}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </td>
-
-                  {/* PR Ref & Desc */}
-                  <td className="px-4 py-3.5 align-top">
-                    <div className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 whitespace-nowrap">
-                      <span>PR:</span>
-                      <span className="text-indigo-700">{po.prNumber}</span>
-                    </div>
-                    {po.poDescription && (
-                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words" title={po.poDescription}>
-                        {po.poDescription}
-                      </div>
-                    )}
                   </td>
 
                   {/* Date */}
-                  <td className="px-4 py-3.5 align-top text-slate-600 whitespace-nowrap">
+                  <td className="px-3.5 py-3.5 align-top text-slate-600 whitespace-nowrap">
                     <div className="text-xs text-slate-700 font-medium flex items-center gap-1">
                       <span className="text-slate-400 text-[11px]">ออกเอกสาร:</span>
                       <span>{new Date(po.date).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
@@ -739,7 +735,7 @@ export function PurchaseOrderPage() {
                   </td>
 
                   {/* Total Amount */}
-                  <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                  <td className="px-3.5 py-3.5 align-top text-right whitespace-nowrap">
                     <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
                       {(po.totalAmount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
@@ -749,7 +745,7 @@ export function PurchaseOrderPage() {
                   </td>
 
                   {/* Status */}
-                  <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                  <td className="px-2.5 py-3.5 align-top text-center whitespace-nowrap">
                     <span className={cn(
                       "inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border leading-none whitespace-nowrap",
                       statusColors[po.status] || "bg-slate-100 text-slate-800"
@@ -759,8 +755,8 @@ export function PurchaseOrderPage() {
                   </td>
 
                   {/* Actions */}
-                  <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                  <td className="px-3.5 py-3.5 align-top text-right whitespace-nowrap sticky right-0 bg-white/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">
+                    <div className="flex items-center justify-end gap-1.5">
                       {(po.status === 'Issued' || po.status === 'Partially Received') && (
                         <button 
                           onClick={() => openReceiveGoods(po)}
@@ -794,7 +790,7 @@ export function PurchaseOrderPage() {
               ))}
               {filteredPOs.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
                     ไม่พบข้อมูลใบสั่งซื้อ
                   </td>
                 </tr>

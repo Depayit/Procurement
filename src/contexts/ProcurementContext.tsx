@@ -8,7 +8,10 @@ import type {
   POItem,
   POReceipt,
   ApprovalMatrixStep,
-  CompanyProfile
+  CompanyProfile,
+  ImportHistoryRecord,
+  ImportMergeMode,
+  ImportTargetModule
 } from '../types';
 import { logSystemAction } from '../lib/auditLog';
 import { DEFAULT_APPROVAL_MATRIX } from '../data/defaultApprovalMatrix';
@@ -21,6 +24,7 @@ const INVENTORY_STORAGE_KEY = `${STORAGE_PREFIX}inventory`;
 const VENDOR_STORAGE_KEY = `${STORAGE_PREFIX}vendors`;
 const APPROVAL_MATRIX_STORAGE_KEY = `${STORAGE_PREFIX}approval_matrix`;
 const COMPANY_PROFILE_STORAGE_KEY = `${STORAGE_PREFIX}company_profile`;
+const IMPORT_HISTORY_STORAGE_KEY = `${STORAGE_PREFIX}import_history`;
 
 export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   nameTh: 'บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด',
@@ -369,6 +373,25 @@ interface ProcurementContextType {
   updateCompanyProfile: (profile: Partial<CompanyProfile>) => void;
   resetCompanyProfile: () => void;
 
+  // Data Import Actions & History
+  importHistory: ImportHistoryRecord[];
+  addImportHistoryRecord: (record: Omit<ImportHistoryRecord, 'id' | 'timestamp'>) => void;
+  clearImportHistory: () => void;
+  bulkImportInventory: (
+    items: Omit<InventoryItem, 'id'>[],
+    mode?: ImportMergeMode
+  ) => { added: number; updated: number; total: number };
+  bulkImportVendors: (
+    newVendors: Omit<Vendor, 'id'>[],
+    mode?: ImportMergeMode
+  ) => { added: number; updated: number; total: number };
+  bulkImportPRs: (
+    newPRs: Omit<PurchaseRequest, 'id'>[]
+  ) => { added: number; total: number };
+  bulkImportPOs: (
+    newPOs: Omit<PurchaseOrder, 'id'>[]
+  ) => { added: number; total: number };
+
   // Reset/Utility
   resetToSeedData: () => void;
 }
@@ -431,6 +454,15 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   });
 
+  const [importHistory, setImportHistory] = useState<ImportHistoryRecord[]>(() => {
+    try {
+      const saved = localStorage.getItem(IMPORT_HISTORY_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   // 2. Persist to localStorage whenever state changes
   useEffect(() => {
     try {
@@ -479,6 +511,14 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       console.warn('Failed to save Company Profile to localStorage:', e);
     }
   }, [companyProfile]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(IMPORT_HISTORY_STORAGE_KEY, JSON.stringify(importHistory));
+    } catch (e) {
+      console.warn('Failed to save Import History to localStorage:', e);
+    }
+  }, [importHistory]);
 
   // 3. Derived Approval Tasks dynamically synchronized from PRs and Approval Matrix
   const approvalTasks: ApprovalTask[] = prs.map(pr => {
@@ -937,6 +977,257 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // ==========================================
+  // Data Import & Integration Actions
+  // ==========================================
+  const addImportHistoryRecord = (record: Omit<ImportHistoryRecord, 'id' | 'timestamp'>) => {
+    const newRecord: ImportHistoryRecord = {
+      ...record,
+      id: `IMP-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: new Date().toISOString()
+    };
+    setImportHistory(prev => [newRecord, ...prev].slice(0, 50));
+  };
+
+  const clearImportHistory = () => {
+    setImportHistory([]);
+    try {
+      localStorage.removeItem(IMPORT_HISTORY_STORAGE_KEY);
+    } catch (e) {
+      console.warn('Failed to clear import history:', e);
+    }
+  };
+
+  const bulkImportInventory = (
+    newItems: Omit<InventoryItem, 'id'>[],
+    mode: ImportMergeMode = 'merge'
+  ): { added: number; updated: number; total: number } => {
+    let addedCount = 0;
+    let updatedCount = 0;
+
+    setInventory(prev => {
+      if (mode === 'replace') {
+        const replaced = newItems.map((item, idx) => ({
+          ...item,
+          id: `inv-${Date.now()}-${idx + 1}`
+        }));
+        addedCount = replaced.length;
+        return replaced;
+      }
+
+      if (mode === 'append') {
+        const appended = newItems.map((item, idx) => ({
+          ...item,
+          id: `inv-${Date.now()}-${idx + 1}`
+        }));
+        addedCount = appended.length;
+        return [...prev, ...appended];
+      }
+
+      // Default: 'merge' mode (match on code or sku)
+      const currentMap = new Map<string, InventoryItem>();
+      prev.forEach(item => {
+        const key = (item.code || item.sku || '').trim().toLowerCase();
+        if (key) currentMap.set(key, { ...item });
+      });
+
+      const updatedList: InventoryItem[] = [...prev];
+
+      newItems.forEach((item, idx) => {
+        const key = (item.code || item.sku || '').trim().toLowerCase();
+        if (key && currentMap.has(key)) {
+          // Merge with existing
+          const existing = currentMap.get(key)!;
+          const targetIndex = updatedList.findIndex(x => x.id === existing.id);
+          if (targetIndex >= 0) {
+            updatedList[targetIndex] = {
+              ...updatedList[targetIndex],
+              ...item,
+              id: existing.id,
+              // Add quantity if new item quantity is positive
+              quantity: (updatedList[targetIndex].quantity || 0) + (item.quantity > 0 ? item.quantity : 0),
+              name: item.name || updatedList[targetIndex].name,
+              category: item.category || updatedList[targetIndex].category,
+              unit: item.unit || updatedList[targetIndex].unit,
+              location: item.location || updatedList[targetIndex].location,
+              binLocation: item.binLocation || updatedList[targetIndex].binLocation,
+              unitPrice: item.unitPrice !== undefined && item.unitPrice > 0 ? item.unitPrice : updatedList[targetIndex].unitPrice,
+            };
+            updatedCount++;
+          }
+        } else {
+          // Add new item
+          const created: InventoryItem = {
+            ...item,
+            id: `inv-${Date.now()}-${idx + 1}`,
+            centralWarehouse: item.centralWarehouse || 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)',
+            projectAllocations: item.projectAllocations && item.projectAllocations.length > 0 
+              ? item.projectAllocations 
+              : ['โครงการ คอนโดสุขุมวิท 101', 'ไซต์งานทั่วไป']
+          };
+          updatedList.push(created);
+          if (key) currentMap.set(key, created);
+          addedCount++;
+        }
+      });
+
+      return updatedList;
+    });
+
+    logSystemAction({
+      action: 'BULK_IMPORT_INVENTORY',
+      entityType: 'INVENTORY',
+      entityId: `BATCH-${Date.now()}`,
+      details: `นำเข้าพัสดุ ${newItems.length} รายการ (โหมด: ${mode}, เพิ่มใหม่: ${addedCount}, อัปเดตเดิม: ${updatedCount})`
+    });
+
+    return { added: addedCount, updated: updatedCount, total: newItems.length };
+  };
+
+  const bulkImportVendors = (
+    newVendors: Omit<Vendor, 'id'>[],
+    mode: ImportMergeMode = 'merge'
+  ): { added: number; updated: number; total: number } => {
+    let addedCount = 0;
+    let updatedCount = 0;
+
+    setVendors(prev => {
+      if (mode === 'replace') {
+        const replaced = newVendors.map((v, idx) => ({
+          ...v,
+          id: `v-${Date.now()}-${idx + 1}`
+        }));
+        addedCount = replaced.length;
+        return replaced;
+      }
+
+      if (mode === 'append') {
+        const appended = newVendors.map((v, idx) => ({
+          ...v,
+          id: `v-${Date.now()}-${idx + 1}`
+        }));
+        addedCount = appended.length;
+        return [...prev, ...appended];
+      }
+
+      // Default: 'merge' mode (match on name or email)
+      const updatedList = [...prev];
+      newVendors.forEach((vendor, idx) => {
+        const matchIndex = updatedList.findIndex(v => 
+          (vendor.name && v.name.trim().toLowerCase() === vendor.name.trim().toLowerCase()) ||
+          (vendor.email && v.email && v.email.trim().toLowerCase() === vendor.email.trim().toLowerCase())
+        );
+
+        if (matchIndex >= 0) {
+          updatedList[matchIndex] = {
+            ...updatedList[matchIndex],
+            ...vendor,
+            id: updatedList[matchIndex].id,
+            rating: vendor.rating || updatedList[matchIndex].rating,
+            onTimeDeliveryRate: vendor.onTimeDeliveryRate || updatedList[matchIndex].onTimeDeliveryRate,
+            categories: Array.from(new Set([...(updatedList[matchIndex].categories || []), ...(vendor.categories || [])]))
+          };
+          updatedCount++;
+        } else {
+          updatedList.push({
+            ...vendor,
+            id: `v-${Date.now()}-${idx + 1}`
+          });
+          addedCount++;
+        }
+      });
+
+      return updatedList;
+    });
+
+    logSystemAction({
+      action: 'BULK_IMPORT_VENDORS',
+      entityType: 'VENDOR',
+      entityId: `BATCH-${Date.now()}`,
+      details: `นำเข้าทะเบียนคู่ค้า ${newVendors.length} ราย (โหมด: ${mode}, เพิ่มใหม่: ${addedCount}, อัปเดต: ${updatedCount})`
+    });
+
+    return { added: addedCount, updated: updatedCount, total: newVendors.length };
+  };
+
+  const bulkImportPRs = (
+    newPRs: Omit<PurchaseRequest, 'id'>[]
+  ): { added: number; total: number } => {
+    const createdList: PurchaseRequest[] = newPRs.map((pr, idx) => {
+      const generatedPrNum = pr.prNumber && pr.prNumber.trim().length > 0 
+        ? pr.prNumber 
+        : `PR-${new Date().getFullYear()}-${String(prs.length + idx + 1).padStart(3, '0')}`;
+      
+      const calculatedTotal = pr.totalAmount && pr.totalAmount > 0
+        ? pr.totalAmount
+        : (pr.items || []).reduce((sum, it) => sum + (it.quantity * it.unitPrice), 0);
+
+      return {
+        ...pr,
+        id: `pr-imp-${Date.now()}-${idx + 1}`,
+        prNumber: generatedPrNum,
+        status: pr.status || 'Draft',
+        requestDate: pr.requestDate || new Date().toISOString(),
+        totalAmount: calculatedTotal,
+        items: (pr.items || []).map((it, itemIdx) => ({
+          ...it,
+          id: it.id || `item-${itemIdx + 1}`
+        }))
+      };
+    });
+
+    setPrs(prev => [...createdList, ...prev]);
+
+    logSystemAction({
+      action: 'BULK_IMPORT_PR',
+      entityType: 'PR',
+      entityId: `BATCH-${Date.now()}`,
+      details: `นำเข้าใบขอซื้อ/BOQ ${createdList.length} รายการ`
+    });
+
+    return { added: createdList.length, total: newPRs.length };
+  };
+
+  const bulkImportPOs = (
+    newPOs: Omit<PurchaseOrder, 'id'>[]
+  ): { added: number; total: number } => {
+    const createdList: PurchaseOrder[] = newPOs.map((po, idx) => {
+      const generatedPoNum = po.poNumber && po.poNumber.trim().length > 0
+        ? po.poNumber
+        : `PO-${new Date().getFullYear()}-${String(pos.length + idx + 1).padStart(3, '0')}`;
+
+      const calculatedTotal = po.totalAmount && po.totalAmount > 0
+        ? po.totalAmount
+        : (po.items || []).reduce((sum, it) => sum + (it.quantity * it.unitPrice), 0);
+
+      return {
+        ...po,
+        id: `po-imp-${Date.now()}-${idx + 1}`,
+        poNumber: generatedPoNum,
+        prNumber: po.prNumber || 'PR-IMPORT',
+        status: po.status || 'Draft',
+        date: po.date || new Date().toISOString(),
+        totalAmount: calculatedTotal,
+        items: (po.items || []).map((it, itemIdx) => ({
+          ...it,
+          id: it.id || `item-${itemIdx + 1}`,
+          receivedQuantity: it.receivedQuantity || 0
+        }))
+      };
+    });
+
+    setPos(prev => [...createdList, ...prev]);
+
+    logSystemAction({
+      action: 'BULK_IMPORT_PO',
+      entityType: 'PO',
+      entityId: `BATCH-${Date.now()}`,
+      details: `นำเข้าใบสั่งซื้อ PO ${createdList.length} รายการ`
+    });
+
+    return { added: createdList.length, total: newPOs.length };
+  };
+
+  // ==========================================
   // Reset Utility
   // ==========================================
   const resetToSeedData = () => {
@@ -946,12 +1237,14 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setVendors(SEED_VENDORS);
     setApprovalMatrix(DEFAULT_APPROVAL_MATRIX);
     setCompanyProfile(DEFAULT_COMPANY_PROFILE);
+    setImportHistory([]);
     localStorage.removeItem(PR_STORAGE_KEY);
     localStorage.removeItem(PO_STORAGE_KEY);
     localStorage.removeItem(INVENTORY_STORAGE_KEY);
     localStorage.removeItem(VENDOR_STORAGE_KEY);
     localStorage.removeItem(APPROVAL_MATRIX_STORAGE_KEY);
     localStorage.removeItem(COMPANY_PROFILE_STORAGE_KEY);
+    localStorage.removeItem(IMPORT_HISTORY_STORAGE_KEY);
   };
 
   return (
@@ -970,6 +1263,13 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       companyProfile,
       updateCompanyProfile,
       resetCompanyProfile,
+      importHistory,
+      addImportHistoryRecord,
+      clearImportHistory,
+      bulkImportInventory,
+      bulkImportVendors,
+      bulkImportPRs,
+      bulkImportPOs,
       createPR,
       updatePR,
       deletePR,
