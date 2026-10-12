@@ -24,6 +24,11 @@ import {
   sendLineNotification, 
   generateSystemCloudBackup 
 } from '../lib/integrations/cloudSync';
+import { 
+  pushAllToFirestore, 
+  pullAllFromFirestore, 
+  testFirebaseConnection 
+} from '../lib/firebaseSync';
 
 // Storage Keys
 const STORAGE_PREFIX = 'procuresync_store_';
@@ -407,6 +412,9 @@ interface ProcurementContextType {
   syncGoogleSheetsData: (targetModule?: 'inventory' | 'pr' | 'vendors') => Promise<{ success: boolean; rowsCount: number; message: string }>;
   backupSystemToCloud: () => { fileName: string; sizeBytes: number };
   testLineAlert: (customMessage?: string) => Promise<{ success: boolean; message: string }>;
+  syncToFirebase: () => Promise<{ success: boolean; message: string; counts: { prs: number; pos: number; inventory: number; vendors: number } }>;
+  pullFromFirebase: () => Promise<{ success: boolean; message: string; totalCount: number }>;
+  testFirebase: () => Promise<{ success: boolean; latencyMs?: number; projectId: string; databaseId?: string; error?: string }>;
 
   // Reset/Utility
   resetToSeedData: () => void;
@@ -1377,6 +1385,71 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // ==========================================
+  // Firebase Cloud Firestore Synchronizations
+  // ==========================================
+  const syncToFirebase = async (): Promise<{
+    success: boolean;
+    message: string;
+    counts: { prs: number; pos: number; inventory: number; vendors: number };
+  }> => {
+    const res = await pushAllToFirestore({ prs, pos, inventory, vendors });
+    const now = new Date().toISOString();
+    updateIntegrationConfig('firebase', {
+      lastSync: now,
+      status: 'connected',
+      firebase: {
+        ...integrations.firebase?.firebase,
+        lastSyncTime: now
+      }
+    });
+    return res;
+  };
+
+  const pullFromFirebase = async (): Promise<{
+    success: boolean;
+    message: string;
+    totalCount: number;
+  }> => {
+    const res = await pullAllFromFirestore();
+    if (res.prs && res.prs.length > 0) setPrs(res.prs);
+    if (res.pos && res.pos.length > 0) setPos(res.pos);
+    if (res.inventory && res.inventory.length > 0) setInventory(res.inventory);
+    if (res.vendors && res.vendors.length > 0) setVendors(res.vendors);
+
+    const now = new Date().toISOString();
+    updateIntegrationConfig('firebase', {
+      lastSync: now,
+      status: 'connected',
+      firebase: {
+        ...integrations.firebase?.firebase,
+        lastSyncTime: now
+      }
+    });
+
+    return {
+      success: true,
+      message: `ดึงข้อมูลสำเร็จ ${res.totalCount} รายการจาก Firebase Firestore`,
+      totalCount: res.totalCount
+    };
+  };
+
+  const testFirebase = async (): Promise<{
+    success: boolean;
+    latencyMs?: number;
+    projectId: string;
+    databaseId?: string;
+    error?: string;
+  }> => {
+    const res = await testFirebaseConnection();
+    updateIntegrationConfig('firebase', {
+      status: res.success ? 'connected' : 'error',
+      errorMessage: res.error,
+      lastSync: new Date().toISOString()
+    });
+    return res;
+  };
+
+  // ==========================================
   // Reset Utility
   // ==========================================
   const resetToSeedData = () => {
@@ -1424,6 +1497,9 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       syncGoogleSheetsData,
       backupSystemToCloud,
       testLineAlert,
+      syncToFirebase,
+      pullFromFirebase,
+      testFirebase,
       createPR,
       updatePR,
       deletePR,

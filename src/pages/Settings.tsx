@@ -37,7 +37,8 @@ import {
   MapPin,
   Cloud,
   ExternalLink,
-  Monitor
+  Monitor,
+  Flame
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -1307,7 +1308,7 @@ export function SettingsPage() {
                 </div>
 
                 {/* Live Diagnostics Badges */}
-                <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5 pt-4 border-t border-slate-200/60 text-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2.5 pt-4 border-t border-slate-200/60 text-xs">
                   <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
                     <span className="text-[10px] text-slate-400 font-semibold block uppercase">สถานะการทำงาน</span>
                     <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1 truncate">
@@ -1337,6 +1338,14 @@ export function SettingsPage() {
                     <div className="font-bold text-indigo-700 flex items-center gap-1.5 mt-1 truncate">
                       <Zap className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                       <span className="truncate">พร้อมทำงาน</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs col-span-2 sm:col-span-1">
+                    <span className="text-[10px] text-slate-400 font-semibold block uppercase">Firebase Cloud</span>
+                    <div className="font-bold text-amber-600 flex items-center gap-1.5 mt-1 truncate">
+                      <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span className="truncate">เชื่อมต่อคลาวด์แล้ว</span>
                     </div>
                   </div>
                 </div>
@@ -1601,6 +1610,40 @@ export function SettingsPage() {
               <hr className="border-slate-100" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 0. Firebase Cloud Firestore (Enterprise Real-Time DB) */}
+                <div className="p-4 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50/60 via-white to-slate-50 space-y-2.5 md:col-span-2 shadow-2xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+                        <Flame className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-slate-900 block">
+                          Firebase Cloud Firestore (Real-time Database)
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          Project: project-f311506a-3e04-4282-a4c
+                        </span>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1 self-start sm:self-auto shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      เชื่อมต่อคลาวด์แล้ว (Live Connected)
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    ระบบเชื่อมต่อฐานข้อมูล Google Cloud Firestore ซิงก์ข้อมูลใบขอซื้อ (PR), ใบสั่งซื้อ (PO), คลังสต็อก และบันทึก Audit Log ข้ามอุปกรณ์แบบ Real-time
+                  </p>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-amber-100">
+                    <span className="text-[11px] text-slate-400 font-mono">
+                      Database: ai-studio-08100d0d-f9e9-49d4-8350-fdc0b8ec2832
+                    </span>
+                    <Link to="/integrations" className="text-xs font-bold text-amber-700 hover:text-amber-800 hover:underline flex items-center gap-1">
+                      จัดการและซิงก์ Firestore &rarr;
+                    </Link>
+                  </div>
+                </div>
+
                 <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-900">Google Sheets Live DB</span>

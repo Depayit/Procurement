@@ -274,7 +274,7 @@ export interface ImportHistoryRecord {
   notes?: string;
 }
 
-export type IntegrationProviderId = 'google_drive' | 'google_sheets' | 'dropbox' | 'onedrive' | 'line_notify' | 'webhook';
+export type IntegrationProviderId = 'firebase' | 'google_drive' | 'google_sheets' | 'dropbox' | 'onedrive' | 'line_notify' | 'webhook';
 
 export interface CloudIntegrationConfig {
   id: IntegrationProviderId;
@@ -283,6 +283,13 @@ export interface CloudIntegrationConfig {
   lastSync?: string;
   status: 'connected' | 'disconnected' | 'error';
   errorMessage?: string;
+  firebase?: {
+    projectId?: string;
+    databaseId?: string;
+    autoSync?: boolean;
+    lastSyncTime?: string;
+    syncedCollections?: string[];
+  };
   googleDrive?: {
     folderId?: string;
     folderName?: string;

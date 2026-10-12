@@ -4,6 +4,19 @@ import type { CloudIntegrationConfig, IntegrationProviderId, InventoryItem, Purc
 export const INTEGRATIONS_STORAGE_KEY = 'procuresync_store_cloud_integrations';
 
 export const DEFAULT_INTEGRATIONS: Record<IntegrationProviderId, CloudIntegrationConfig> = {
+  firebase: {
+    id: 'firebase',
+    name: 'Firebase Cloud Firestore (Real-time Database)',
+    isEnabled: true,
+    status: 'connected',
+    firebase: {
+      projectId: 'project-f311506a-3e04-4282-a4c',
+      databaseId: 'ai-studio-08100d0d-f9e9-49d4-8350-fdc0b8ec2832',
+      autoSync: true,
+      lastSyncTime: new Date().toISOString(),
+      syncedCollections: ['prs', 'pos', 'inventory', 'vendors', 'audit_logs']
+    }
+  },
   google_sheets: {
     id: 'google_sheets',
     name: 'Google Sheets (No-Code Database)',

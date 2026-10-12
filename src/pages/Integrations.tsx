@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Cloud, 
   FileSpreadsheet, 
@@ -20,7 +20,12 @@ import {
   BellRing,
   HelpCircle,
   FileCode,
-  ArrowRight
+  ArrowRight,
+  Flame,
+  UploadCloud,
+  DownloadCloud,
+  Radio,
+  HardDrive
 } from 'lucide-react';
 import { useProcurement } from '../contexts/ProcurementContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -28,6 +33,11 @@ import {
   extractGoogleSheetId, 
   GOOGLE_APPS_SCRIPT_TEMPLATE 
 } from '../lib/integrations/cloudSync';
+import { 
+  getFirebaseStats, 
+  type FirebaseCollectionStats, 
+  firebaseConfig 
+} from '../lib/firebaseSync';
 import type { IntegrationProviderId } from '../types';
 import { Link } from 'react-router-dom';
 
@@ -38,7 +48,10 @@ export function IntegrationsPage() {
     updateIntegrationConfig,
     syncGoogleSheetsData,
     backupSystemToCloud,
-    testLineAlert
+    testLineAlert,
+    syncToFirebase,
+    pullFromFirebase,
+    testFirebase
   } = useProcurement();
 
   const [activeTab, setActiveTab] = useState<'all' | 'storage' | 'notifications'>('all');
@@ -49,6 +62,20 @@ export function IntegrationsPage() {
   const [lineResult, setLineResult] = useState<{ success: boolean; msg: string } | null>(null);
   const [backupResult, setBackupResult] = useState<{ fileName: string; sizeBytes: number } | null>(null);
   const [showAppsScriptModal, setShowAppsScriptModal] = useState(false);
+
+  // Firebase states
+  const [isTestingFirebase, setIsTestingFirebase] = useState(false);
+  const [firebaseTestResult, setFirebaseTestResult] = useState<{ success: boolean; latencyMs?: number; error?: string } | null>(null);
+  const [isSyncingFirebase, setIsSyncingFirebase] = useState(false);
+  const [firebaseSyncResult, setFirebaseSyncResult] = useState<{ success: boolean; msg: string } | null>(null);
+  const [isPullingFirebase, setIsPullingFirebase] = useState(false);
+  const [firebasePullResult, setFirebasePullResult] = useState<{ success: boolean; msg: string } | null>(null);
+  const [firebaseStats, setFirebaseStats] = useState<FirebaseCollectionStats | null>(null);
+  const [copiedProjectId, setCopiedProjectId] = useState(false);
+
+  useEffect(() => {
+    getFirebaseStats().then(setFirebaseStats).catch(() => {});
+  }, []);
 
   // Form local states for inputs
   const gsConfig = integrations.google_sheets?.googleSheets || {};
@@ -66,6 +93,61 @@ export function IntegrationsPage() {
   const lineConfig = integrations.line_notify?.lineNotify || {};
   const [lineChannelInput, setLineChannelInput] = useState(lineConfig.targetChannelName || '');
   const [lineTokenInput, setLineTokenInput] = useState(lineConfig.token || '');
+
+  // Firebase Handlers
+  const handleTestFirebase = async () => {
+    setIsTestingFirebase(true);
+    setFirebaseTestResult(null);
+    try {
+      const res = await testFirebase();
+      setFirebaseTestResult(res);
+      const stats = await getFirebaseStats();
+      setFirebaseStats(stats);
+    } catch (err: any) {
+      setFirebaseTestResult({ success: false, error: err.message || 'Failed to ping Firebase' });
+    } finally {
+      setIsTestingFirebase(false);
+    }
+  };
+
+  const handleSyncToFirebase = async () => {
+    setIsSyncingFirebase(true);
+    setFirebaseSyncResult(null);
+    try {
+      const res = await syncToFirebase();
+      setFirebaseSyncResult({ success: true, msg: res.message });
+      const stats = await getFirebaseStats();
+      setFirebaseStats(stats);
+    } catch (err: any) {
+      setFirebaseSyncResult({ success: false, msg: err.message || 'เกิดข้อผิดพลาดในการซิงก์ขึ้น Firebase' });
+    } finally {
+      setIsSyncingFirebase(false);
+    }
+  };
+
+  const handlePullFromFirebase = async () => {
+    if (!window.confirm('คุณต้องการดึงข้อมูลล่าสุดจาก Firebase Cloud Firestore เข้ามาอัปเดตข้อมูลในเครื่องใช่หรือไม่?')) {
+      return;
+    }
+    setIsPullingFirebase(true);
+    setFirebasePullResult(null);
+    try {
+      const res = await pullFromFirebase();
+      setFirebasePullResult({ success: true, msg: res.message });
+      const stats = await getFirebaseStats();
+      setFirebaseStats(stats);
+    } catch (err: any) {
+      setFirebasePullResult({ success: false, msg: err.message || 'เกิดข้อผิดพลาดในการดึงข้อมูลจาก Firebase' });
+    } finally {
+      setIsPullingFirebase(false);
+    }
+  };
+
+  const handleCopyProjectId = () => {
+    navigator.clipboard.writeText(firebaseConfig.projectId);
+    setCopiedProjectId(true);
+    setTimeout(() => setCopiedProjectId(false), 2000);
+  };
 
   // Copy Google Apps Script template
   const handleCopyScript = () => {
@@ -263,6 +345,207 @@ export function IntegrationsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* ============================================================== */}
+          {/* 0. FIREBASE CLOUD FIRESTORE (ENTERPRISE REAL-TIME DATABASE) */}
+          {/* ============================================================== */}
+          <div className="col-span-1 lg:col-span-2 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl border border-indigo-500/30 shadow-xl overflow-hidden p-6 sm:p-7 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center shrink-0 shadow-inner">
+                  <Flame className="w-7 h-7" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-bold text-white">
+                      Firebase Cloud Firestore
+                    </h3>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      Google Cloud Enterprise
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Live Connected
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                    ระบบเชื่อมต่อกับ Google Firebase Firestore ในตัว จัดเก็บและซิงค์ข้อมูลใบขอซื้อ (PR), สั่งซื้อ (PO), คลังสต็อก และประวัติการทำงาน (Audit Logs) ข้ามอุปกรณ์แบบ Real-time
+                  </p>
+                </div>
+              </div>
+
+              {/* Enable Toggle */}
+              <div className="flex items-center gap-3 self-end sm:self-auto shrink-0">
+                <span className="text-xs text-slate-300 font-medium">
+                  {integrations.firebase?.isEnabled ? 'เปิดใช้งานอยู่' : 'ปิดใช้งาน'}
+                </span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={integrations.firebase?.isEnabled !== false}
+                    onChange={(e) => updateIntegrationConfig('firebase', { isEnabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                </label>
+              </div>
+            </div>
+
+            {/* Config & Diagnostics Details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
+                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Project ID</span>
+                <div className="flex items-center justify-between gap-1 mt-1">
+                  <span className="font-mono text-xs text-amber-300 truncate" title={firebaseConfig.projectId}>
+                    {firebaseConfig.projectId}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyProjectId}
+                    className="p-1 hover:bg-white/10 rounded text-slate-300 hover:text-white transition-colors"
+                    title="คัดลอก Project ID"
+                  >
+                    {copiedProjectId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
+                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Firestore Database</span>
+                <span className="font-mono text-xs text-indigo-300 truncate block mt-1" title={firebaseConfig.firestoreDatabaseId || '(default)'}>
+                  {firebaseConfig.firestoreDatabaseId || '(default)'}
+                </span>
+              </div>
+
+              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
+                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Auth & Security Rules</span>
+                <div className="font-semibold text-emerald-300 flex items-center gap-1 mt-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Anonymous / Token Auth</span>
+                </div>
+              </div>
+
+              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
+                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">สถานะการเชื่อมต่อล่าสุด</span>
+                <div className="font-semibold text-slate-200 flex items-center gap-1.5 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>{firebaseTestResult?.latencyMs ? `ออนไลน์ (${firebaseTestResult.latencyMs}ms)` : 'พร้อมทำงาน (Connected)'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Collection Stats Badges */}
+            <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-200 flex items-center gap-1.5">
+                  <Database className="w-3.5 h-3.5 text-amber-400" />
+                  <span>จำนวนข้อมูลใน Firestore Collections บนคลาวด์:</span>
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  ตรวจสอบล่าสุด: {firebaseStats?.lastChecked || 'กำลังโหลด...'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
+                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
+                  <span className="text-[10px] text-slate-400 block">ใบขอซื้อ (prs)</span>
+                  <span className="font-bold text-sm text-amber-300 font-mono mt-0.5 block">{firebaseStats?.prsCount ?? '0'}</span>
+                </div>
+                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
+                  <span className="text-[10px] text-slate-400 block">ใบสั่งซื้อ (pos)</span>
+                  <span className="font-bold text-sm text-indigo-300 font-mono mt-0.5 block">{firebaseStats?.posCount ?? '0'}</span>
+                </div>
+                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
+                  <span className="text-[10px] text-slate-400 block">สต็อก (inventory)</span>
+                  <span className="font-bold text-sm text-emerald-300 font-mono mt-0.5 block">{firebaseStats?.inventoryCount ?? '0'}</span>
+                </div>
+                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
+                  <span className="text-[10px] text-slate-400 block">คู่ค้า (vendors)</span>
+                  <span className="font-bold text-sm text-cyan-300 font-mono mt-0.5 block">{firebaseStats?.vendorsCount ?? '0'}</span>
+                </div>
+                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10 col-span-2 sm:col-span-1">
+                  <span className="text-[10px] text-slate-400 block">บันทึก (audit_logs)</span>
+                  <span className="font-bold text-sm text-purple-300 font-mono mt-0.5 block">{firebaseStats?.logsCount ?? '0'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Results Feedback */}
+            {firebaseTestResult && (
+              <div className={`p-3 rounded-xl text-xs flex items-center gap-2 animate-in fade-in duration-200 ${
+                firebaseTestResult.success 
+                  ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30' 
+                  : 'bg-rose-500/20 text-rose-200 border border-rose-500/30'
+              }`}>
+                {firebaseTestResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+                <span>
+                  {firebaseTestResult.success 
+                    ? `เชื่อมต่อ Firebase สำเร็จ! เวลาตอบสนอง: ${firebaseTestResult.latencyMs} ms (Project: ${firebaseTestResult.projectId})`
+                    : `การเชื่อมต่อผิดพลาด: ${firebaseTestResult.error}`}
+                </span>
+              </div>
+            )}
+
+            {firebaseSyncResult && (
+              <div className={`p-3 rounded-xl text-xs flex items-center gap-2 animate-in fade-in duration-200 ${
+                firebaseSyncResult.success 
+                  ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30' 
+                  : 'bg-rose-500/20 text-rose-200 border border-rose-500/30'
+              }`}>
+                {firebaseSyncResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+                <span>{firebaseSyncResult.msg}</span>
+              </div>
+            )}
+
+            {firebasePullResult && (
+              <div className={`p-3 rounded-xl text-xs flex items-center gap-2 animate-in fade-in duration-200 ${
+                firebasePullResult.success 
+                  ? 'bg-indigo-500/20 text-indigo-200 border border-indigo-500/30' 
+                  : 'bg-rose-500/20 text-rose-200 border border-rose-500/30'
+              }`}>
+                {firebasePullResult.success ? <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+                <span>{firebasePullResult.msg}</span>
+              </div>
+            )}
+
+            {/* Action Buttons Toolbar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/10">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleTestFirebase}
+                  disabled={isTestingFirebase}
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 border border-white/10"
+                >
+                  <Radio className={`w-3.5 h-3.5 text-amber-400 ${isTestingFirebase ? 'animate-pulse' : ''}`} />
+                  <span>{isTestingFirebase ? 'กำลังทดสอบ...' : 'ทดสอบเชื่อมต่อ (Ping)'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSyncToFirebase}
+                  disabled={isSyncingFirebase}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <UploadCloud className={`w-4 h-4 ${isSyncingFirebase ? 'animate-bounce' : ''}`} />
+                  <span>{isSyncingFirebase ? 'กำลังส่งข้อมูลขึ้น Firestore...' : 'ซิงก์ข้อมูลขึ้น Cloud (Push)'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePullFromFirebase}
+                  disabled={isPullingFirebase}
+                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <DownloadCloud className={`w-4 h-4 ${isPullingFirebase ? 'animate-bounce' : ''}`} />
+                  <span>{isPullingFirebase ? 'กำลังดึงข้อมูล...' : 'ดึงข้อมูลจาก Cloud (Pull)'}</span>
+                </button>
+              </div>
+
+              <span className="text-[11px] text-slate-400">
+                Firestore Database • Google Cloud Platform
+              </span>
+            </div>
+          </div>
+
           {/* ============================================================== */}
           {/* 1. GOOGLE SHEETS LIVE DATABASE */}
           {/* ============================================================== */}
