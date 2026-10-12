@@ -274,3 +274,51 @@ export interface ImportHistoryRecord {
   notes?: string;
 }
 
+export type IntegrationProviderId = 'google_drive' | 'google_sheets' | 'dropbox' | 'onedrive' | 'line_notify' | 'webhook';
+
+export interface CloudIntegrationConfig {
+  id: IntegrationProviderId;
+  name: string;
+  isEnabled: boolean;
+  lastSync?: string;
+  status: 'connected' | 'disconnected' | 'error';
+  errorMessage?: string;
+  googleDrive?: {
+    folderId?: string;
+    folderName?: string;
+    shareLink?: string;
+    autoBackupEnabled?: boolean;
+  };
+  googleSheets?: {
+    sheetUrl?: string;
+    sheetId?: string;
+    targetModule?: 'inventory' | 'pr' | 'vendors';
+    autoSyncOnLaunch?: boolean;
+    appsScriptWebhookUrl?: string;
+  };
+  dropbox?: {
+    accessToken?: string;
+    folderPath?: string;
+    sharedLink?: string;
+    autoSyncDocs?: boolean;
+  };
+  oneDrive?: {
+    shareLink?: string;
+    folderName?: string;
+  };
+  lineNotify?: {
+    token?: string;
+    webhookUrl?: string;
+    targetChannelName?: string;
+    notifyOnPRCreated?: boolean;
+    notifyOnPRApproved?: boolean;
+    notifyOnGRReceived?: boolean;
+  };
+  webhook?: {
+    endpointUrl?: string;
+    secretKey?: string;
+    events?: string[];
+  };
+}
+
+

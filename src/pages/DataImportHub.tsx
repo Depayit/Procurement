@@ -19,7 +19,8 @@ import {
   FileBox,
   Layers3,
   ExternalLink,
-  Info
+  Info,
+  Cloud
 } from 'lucide-react';
 import { useProcurement } from '../contexts/ProcurementContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -371,6 +372,15 @@ export function DataImportHub() {
             <Download className="w-3.5 h-3.5" />
             {isEnglish ? 'Templates' : 'ดาวน์โหลดแม่แบบ'}
           </button>
+
+          <Link
+            to="/integrations"
+            className="px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+            title="เชื่อมต่อ Google Drive, Google Sheets, Dropbox และ LINE"
+          >
+            <Cloud className="w-3.5 h-3.5 text-indigo-600" />
+            {isEnglish ? 'Cloud & Plugins' : 'เชื่อมต่อคลาวด์/API'}
+          </Link>
         </div>
       </div>
 
@@ -561,6 +571,30 @@ export function DataImportHub() {
                     </div>
                     <p className="text-[11px] text-slate-500 mt-1">ทดลองโหลดรายชื่อผู้ขายและผู้รับเหมา</p>
                   </button>
+                </div>
+
+                <div className="mt-3 pt-3 border-t border-slate-200">
+                  <Link
+                    to="/integrations"
+                    className="p-3 bg-white hover:bg-indigo-50/50 border border-slate-200 hover:border-indigo-300 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                        <Cloud className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-700">
+                          ต้องการซิงค์สดจาก Google Sheets, Google Drive, หรือ Dropbox โดยไม่ต้องอัปโหลดไฟล์ซ้ำๆ?
+                        </span>
+                        <p className="text-[11px] text-slate-500">
+                          ใช้ระบบเชื่อมต่อคลาวด์ Serverless เชื่อมตรงไปยัง Sheets ของบริษัทและแจ้งเตือนเข้า LINE กลุ่มไซต์งาน
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-indigo-600 flex items-center gap-1 shrink-0 self-start sm:self-center">
+                      เปิดระบบเชื่อมต่อคลาวด์ <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </Link>
                 </div>
               </div>
             </div>

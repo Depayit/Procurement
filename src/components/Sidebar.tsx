@@ -13,9 +13,8 @@ import {
   LogOut, 
   X, 
   Lock,
-  ChevronLeft,
-  ChevronRight,
-  UploadCloud
+  UploadCloud,
+  Cloud
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useEffect } from 'react';
@@ -41,6 +40,7 @@ const navItems: NavItem[] = [
   { key: 'nav.po', path: '/po', icon: FileText, requiredPerm: 'po:view' },
   { key: 'nav.vendors', path: '/vendors', icon: Store, requiredPerm: 'vendors:view' },
   { key: 'nav.dataImport', path: '/import', icon: UploadCloud },
+  { key: 'nav.integrations', path: '/integrations', icon: Cloud },
   { key: 'nav.reports', path: '/reports', icon: BarChart3, requiredPerm: 'reports:view' },
   { key: 'nav.users', path: '/users', icon: Users, requiredPerm: 'users:view' },
   { key: 'nav.manual', path: '/manual', icon: BookOpen },
@@ -51,14 +51,12 @@ export interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   isCollapsed?: boolean;
-  toggleCollapsed?: () => void;
 }
 
 export function Sidebar({ 
   isOpen, 
   setIsOpen,
-  isCollapsed = false,
-  toggleCollapsed
+  isCollapsed = false
 }: SidebarProps) {
   const location = useLocation();
   const { t, isEnglish } = useLanguage();
@@ -88,18 +86,6 @@ export function Sidebar({
       isCollapsed ? "lg:w-20" : "lg:w-64",
       isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full pointer-events-none lg:translate-x-0 lg:pointer-events-auto shadow-none"
     )}>
-      {/* Desktop Collapse / Expand Toggle Button on Edge */}
-      {toggleCollapsed && (
-        <button
-          type="button"
-          onClick={toggleCollapsed}
-          className="hidden lg:flex absolute -right-3 top-5 w-6 h-6 bg-white border border-slate-200 rounded-full shadow-sm items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-400 transition-all z-30 cursor-pointer"
-          title={isCollapsed ? (isEnglish ? 'Expand sidebar' : 'ขยายแถบเมนู (แสดงชื่อเมนู)') : (isEnglish ? 'Collapse sidebar' : 'ย่อแถบเมนู (เพิ่มพื้นที่ทำงาน)')}
-        >
-          {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
-        </button>
-      )}
-
       {/* Header Branding */}
       <div className={cn(
         "flex items-center h-16 border-b border-slate-200 shrink-0 transition-all duration-300",

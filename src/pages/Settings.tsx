@@ -34,8 +34,11 @@ import {
   Image as ImageIcon,
   Phone,
   Mail,
-  MapPin
+  MapPin,
+  Cloud,
+  ExternalLink
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useProcurement, DEFAULT_COMPANY_PROFILE } from '../contexts/ProcurementContext';
@@ -301,6 +304,17 @@ export function SettingsPage() {
             >
               <Database className="h-4 w-4 mr-3" />
               {t('settings.tabBackup')}
+            </button>
+            <button
+              onClick={() => setActiveTab('integrations')}
+              className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === 'integrations' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <Cloud className="h-4 w-4 mr-3" />
+              {isEnglish ? 'Cloud & Plugins' : 'เชื่อมต่อคลาวด์/API'}
             </button>
           </nav>
         </div>
@@ -1522,6 +1536,85 @@ export function SettingsPage() {
                        </tbody>
                      </table>
                    </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'integrations' && (
+            <div className="p-6 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800">
+                    {isEnglish ? 'Serverless Cloud & API Integrations' : 'การเชื่อมต่อคลาวด์และปลั๊กอิน (Serverless Cloud & APIs)'}
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {isEnglish 
+                      ? 'Integrate directly with Google Drive, Google Sheets, Dropbox, and LINE without complex server setups.' 
+                      : 'เชื่อมต่อ Google Sheets เป็น Database สด, Google Drive, Dropbox และ LINE แจ้งเตือนหน้างาน ใช้งานง่ายโดยไม่ต้องมีเซิร์ฟเวอร์'}
+                  </p>
+                </div>
+                <Link
+                  to="/integrations"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 self-start sm:self-center"
+                >
+                  เปิดศูนย์เชื่อมต่อคลาวด์ฉบับเต็ม <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <hr className="border-slate-100" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900">Google Sheets Live DB</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">เชื่อมต่อแล้ว</span>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    ดึงข้อมูลพัสดุและสต็อกตรงจาก Google Sheets โดยไม่ต้องใช้ Database Server
+                  </p>
+                  <Link to="/integrations" className="text-xs font-semibold text-indigo-600 hover:underline block pt-1">
+                    ตั้งค่า Google Sheets &rarr;
+                  </Link>
+                </div>
+
+                <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900">Google Drive & Dropbox</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">พร้อมใช้งาน</span>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    จัดเก็บเอกสารใบสั่งซื้อ ใบตรวจรับ และก้อน Backup สำรองข้อมูลระบบทั้งหมด
+                  </p>
+                  <Link to="/integrations" className="text-xs font-semibold text-indigo-600 hover:underline block pt-1">
+                    ตั้งค่า Drive & โฟลเดอร์ &rarr;
+                  </Link>
+                </div>
+
+                <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900">LINE Notifications</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">เปิดใช้งาน</span>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    ส่งข้อความแจ้งเตือนอัตโนมัติเมื่อมี PR ใหม่ หรือพัสดุมาส่งเข้ากลุ่มไลน์หน้างาน
+                  </p>
+                  <Link to="/integrations" className="text-xs font-semibold text-indigo-600 hover:underline block pt-1">
+                    ทดสอบส่งข้อความ LINE &rarr;
+                  </Link>
+                </div>
+
+                <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900">1-Click Cloud Backup</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800">Snapshot</span>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    สำรองข้อมูลระบบทั้งหมด (PR, PO, สต็อก, คู่ค้า) เป็นไฟล์ก้อนเดียวได้ในคลิกเดียว
+                  </p>
+                  <Link to="/integrations" className="text-xs font-semibold text-indigo-600 hover:underline block pt-1">
+                    สร้างไฟล์สำรองข้อมูล &rarr;
+                  </Link>
                 </div>
               </div>
             </div>

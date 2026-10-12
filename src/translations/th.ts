@@ -11,6 +11,7 @@ export const th = {
   'nav.users': 'ผู้ใช้งาน',
   'nav.manual': 'คู่มือการใช้งาน',
   'nav.dataImport': 'ศูนย์นำเข้าข้อมูล (Data Hub)',
+  'nav.integrations': 'เชื่อมต่อคลาวด์/API (Cloud Sync)',
   'nav.settings': 'ตั้งค่า',
   'nav.logout': 'ออกจากระบบ',
 

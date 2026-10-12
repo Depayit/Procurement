@@ -21,6 +21,7 @@ const ReportsPage = lazy(() => import('./pages/Reports').then(m => ({ default: m
 const UsersPage = lazy(() => import('./pages/Users').then(m => ({ default: m.UsersPage })));
 const ManualPage = lazy(() => import('./pages/Manual').then(m => ({ default: m.ManualPage })));
 const DataImportHub = lazy(() => import('./pages/DataImportHub').then(m => ({ default: m.DataImportHub })));
+const IntegrationsPage = lazy(() => import('./pages/Integrations').then(m => ({ default: m.IntegrationsPage })));
 
 function PageLoadingSkeleton() {
   return (
@@ -126,6 +127,11 @@ export default function App() {
                   <Route path="import" element={
                     <Suspense fallback={<PageLoadingSkeleton />}>
                       <DataImportHub />
+                    </Suspense>
+                  } />
+                  <Route path="integrations" element={
+                    <Suspense fallback={<PageLoadingSkeleton />}>
+                      <IntegrationsPage />
                     </Suspense>
                   } />
                   <Route path="*" element={

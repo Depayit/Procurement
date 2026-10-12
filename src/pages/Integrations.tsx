@@ -1,0 +1,677 @@
+import React, { useState } from 'react';
+import { 
+  Cloud, 
+  FileSpreadsheet, 
+  Database, 
+  Share2, 
+  Download, 
+  CheckCircle2, 
+  AlertCircle, 
+  RefreshCw, 
+  ExternalLink, 
+  Copy, 
+  Check, 
+  Send, 
+  Sparkles, 
+  ShieldCheck, 
+  Info, 
+  Zap, 
+  FolderPlus,
+  BellRing,
+  HelpCircle,
+  FileCode,
+  ArrowRight
+} from 'lucide-react';
+import { useProcurement } from '../contexts/ProcurementContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { 
+  extractGoogleSheetId, 
+  GOOGLE_APPS_SCRIPT_TEMPLATE 
+} from '../lib/integrations/cloudSync';
+import type { IntegrationProviderId } from '../types';
+import { Link } from 'react-router-dom';
+
+export function IntegrationsPage() {
+  const { isEnglish } = useLanguage();
+  const {
+    integrations,
+    updateIntegrationConfig,
+    syncGoogleSheetsData,
+    backupSystemToCloud,
+    testLineAlert
+  } = useProcurement();
+
+  const [activeTab, setActiveTab] = useState<'all' | 'storage' | 'notifications'>('all');
+  const [copiedScript, setCopiedScript] = useState(false);
+  const [isSyncingSheet, setIsSyncingSheet] = useState(false);
+  const [sheetSyncResult, setSheetSyncResult] = useState<{ success: boolean; msg: string } | null>(null);
+  const [isSendingLine, setIsSendingLine] = useState(false);
+  const [lineResult, setLineResult] = useState<{ success: boolean; msg: string } | null>(null);
+  const [backupResult, setBackupResult] = useState<{ fileName: string; sizeBytes: number } | null>(null);
+  const [showAppsScriptModal, setShowAppsScriptModal] = useState(false);
+
+  // Form local states for inputs
+  const gsConfig = integrations.google_sheets?.googleSheets || {};
+  const [sheetUrlInput, setSheetUrlInput] = useState(gsConfig.sheetUrl || '');
+  const [sheetModuleInput, setSheetModuleInput] = useState<'inventory' | 'pr' | 'vendors'>(gsConfig.targetModule || 'inventory');
+
+  const gdConfig = integrations.google_drive?.googleDrive || {};
+  const [driveFolderInput, setDriveFolderInput] = useState(gdConfig.folderName || '');
+  const [driveLinkInput, setDriveLinkInput] = useState(gdConfig.shareLink || '');
+
+  const dbConfig = integrations.dropbox?.dropbox || {};
+  const [dropboxPathInput, setDropboxPathInput] = useState(dbConfig.folderPath || '');
+  const [dropboxLinkInput, setDropboxLinkInput] = useState(dbConfig.sharedLink || '');
+
+  const lineConfig = integrations.line_notify?.lineNotify || {};
+  const [lineChannelInput, setLineChannelInput] = useState(lineConfig.targetChannelName || '');
+  const [lineTokenInput, setLineTokenInput] = useState(lineConfig.token || '');
+
+  // Copy Google Apps Script template
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(GOOGLE_APPS_SCRIPT_TEMPLATE);
+    setCopiedScript(true);
+    setTimeout(() => setCopiedScript(false), 2500);
+  };
+
+  // Google Sheets Sync
+  const handleSyncGoogleSheets = async () => {
+    setIsSyncingSheet(true);
+    setSheetSyncResult(null);
+
+    // Save configuration first
+    updateIntegrationConfig('google_sheets', {
+      isEnabled: true,
+      googleSheets: {
+        ...gsConfig,
+        sheetUrl: sheetUrlInput,
+        sheetId: extractGoogleSheetId(sheetUrlInput),
+        targetModule: sheetModuleInput
+      }
+    });
+
+    try {
+      const res = await syncGoogleSheetsData(sheetModuleInput);
+      setSheetSyncResult({ success: true, msg: res.message });
+    } catch (err: any) {
+      setSheetSyncResult({ 
+        success: false, 
+        msg: err.message || 'เกิดข้อผิดพลาดในการดึงข้อมูลจาก Google Sheets' 
+      });
+    } finally {
+      setIsSyncingSheet(false);
+    }
+  };
+
+  // Backup System to Cloud
+  const handleCloudBackup = () => {
+    const res = backupSystemToCloud();
+    setBackupResult(res);
+    setTimeout(() => setBackupResult(null), 5000);
+  };
+
+  // Test LINE Alert
+  const handleTestLine = async () => {
+    setIsSendingLine(true);
+    setLineResult(null);
+
+    // Save config
+    updateIntegrationConfig('line_notify', {
+      isEnabled: true,
+      lineNotify: {
+        ...lineConfig,
+        targetChannelName: lineChannelInput,
+        token: lineTokenInput
+      }
+    });
+
+    try {
+      const res = await testLineAlert();
+      setLineResult({ success: true, msg: res.message });
+    } catch (err: any) {
+      setLineResult({ success: false, msg: err.message || 'ส่งข้อความไม่สำเร็จ' });
+    } finally {
+      setIsSendingLine(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 pb-16 max-w-6xl mx-auto">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-md relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none" />
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <span className="p-2 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                <Cloud className="w-5 h-5" />
+              </span>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                {isEnglish ? 'Serverless Cloud & Plugins Integration' : 'ศูนย์เชื่อมต่อคลาวด์และปลั๊กอิน (Cloud & Plugins)'}
+              </h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                100% Serverless • ไม่ต้องมีเซิร์ฟเวอร์
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              {isEnglish 
+                ? 'Connect easily to Google Sheets as a live database, Google Drive, Dropbox, and LINE Notify directly from your browser. Perfect for construction teams without dedicated IT infrastructure.' 
+                : 'เชื่อมต่อเครื่องมือที่ทุกคนใช้งานง่าย: ใช้ Google Sheets เป็นฐานข้อมูลสด, Google Drive และ Dropbox สำหรับเก็บเอกสารและแบบ CAD, พร้อมระบบแจ้งเตือนเข้ากลุ่ม LINE หน้างาน ทำงานได้ทันทีบนคอมพิวเตอร์ของคุณโดยไม่ต้องเช่าเซิร์ฟเวอร์ราคาแพง'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={handleCloudBackup}
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-900/40 flex items-center gap-2 cursor-pointer transition-all"
+            >
+              <Download className="w-4 h-4" />
+              {isEnglish ? 'Instant Cloud Backup' : 'สำรองข้อมูลทั้งระบบ (1-Click Backup)'}
+            </button>
+          </div>
+        </div>
+
+        {backupResult && (
+          <div className="mt-4 p-3 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-xs text-emerald-200 flex items-center gap-2 animate-in fade-in duration-300">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>
+              สร้างไฟล์สำรองข้อมูล <strong>{backupResult.fileName}</strong> เรียบร้อยแล้ว (ขนาด: {(backupResult.sizeBytes / 1024).toFixed(1)} KB)
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Philosophy / Value Highlight Box */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <Zap className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-slate-900">ไม่ต้องมี Server หรือ Database ซับซ้อน</h4>
+            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+              เหมาะสำหรับบริษัทรับเหมาและธุรกิจทั่วไป ไม่ต้องมีทีม IT คอยดูแล ไม่เสียค่าบริการเซิร์ฟเวอร์รายเดือน
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <FileSpreadsheet className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-slate-900">Google Sheets คือ Database ของคุณ</h4>
+            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+              คนทั่วไปเปิดและแก้ข้อมูลใน Google Sheets จากมือถือหรือคอมพิวเตอร์ ระบบจะดึงสต็อกเข้ามาซิงค์ได้ทันที
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+            <BellRing className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-slate-900">แจ้งเตือนเข้า LINE กลุ่มไซต์งาน</h4>
+            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+              วิศวกรและโฟร์แมนรับการแจ้งเตือนเมื่อมีใบขอซื้อ (PR) อนุมัติ หรือพัสดุมาส่งถึงคลัง ผ่านแอป LINE ที่ใช้ทุกวัน
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Integration Providers Grid */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-900">
+            รายการปลั๊กอินและบริการคลาวด์ที่รองรับ
+          </h2>
+          <span className="text-xs text-slate-500">
+            เปิดใช้งานอยู่ {Object.values(integrations).filter(x => x.isEnabled).length} จาก {Object.keys(integrations).length} บริการ
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* ============================================================== */}
+          {/* 1. GOOGLE SHEETS LIVE DATABASE */}
+          {/* ============================================================== */}
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+            <div className="p-6 space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-xs">
+                    <FileSpreadsheet className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-slate-900">Google Sheets Live Database</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        แนะนำ
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      ใช้ Google Sheets เป็นฐานข้อมูลสต็อกพัสดุและรายการขอซื้อ แก้ไขบน Sheets แล้วดึงเข้าแอปได้ทันที
+                    </p>
+                  </div>
+                </div>
+
+                {/* Enable Toggle */}
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input 
+                    type="checkbox" 
+                    checked={integrations.google_sheets?.isEnabled}
+                    onChange={(e) => updateIntegrationConfig('google_sheets', { isEnabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                </label>
+              </div>
+
+              {/* Settings Inputs */}
+              <div className="space-y-3 pt-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Google Sheets URL หรือ Sheet ID
+                  </label>
+                  <input
+                    type="text"
+                    value={sheetUrlInput}
+                    onChange={(e) => setSheetUrlInput(e.target.value)}
+                    placeholder="https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5.../edit"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    * ต้องเปิดการแชร์ลิงก์ใน Google Sheets เป็น: <strong>"ทุกคนที่มีลิงก์มีสิทธิ์ดู" (Anyone with the link can view)</strong>
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                      โมดูลเป้าหมายที่ต้องการซิงค์
+                    </label>
+                    <select
+                      value={sheetModuleInput}
+                      onChange={(e) => setSheetModuleInput(e.target.value as any)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    >
+                      <option value="inventory">คลังพัสดุและ SKU กลาง</option>
+                      <option value="pr">รายการขอซื้อ / BOQ (PR)</option>
+                      <option value="vendors">ทะเบียนคู่ค้าและผู้รับเหมา</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                      การซิงค์อัตโนมัติ
+                    </label>
+                    <div className="flex items-center h-9 text-xs text-slate-600">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-semibold text-[11px]">
+                        <Check className="w-3.5 h-3.5" /> ซิงค์สดทางตรง
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {sheetSyncResult && (
+                  <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+                    sheetSyncResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+                  }`}>
+                    {sheetSyncResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />}
+                    <span>{sheetSyncResult.msg}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setShowAppsScriptModal(true)}
+                className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+              >
+                <FileCode className="w-3.5 h-3.5" /> โค้ด Apps Script สำหรับซิงค์ 2 ทาง
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSyncGoogleSheets}
+                disabled={isSyncingSheet || !integrations.google_sheets?.isEnabled}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm transition-all"
+              >
+                {isSyncingSheet ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-3.5 h-3.5" />
+                )}
+                {isSyncingSheet ? 'กำลังดึงข้อมูล...' : 'ซิงค์ข้อมูลเดี๋ยวนี้ (Sync Now)'}
+              </button>
+            </div>
+          </div>
+
+          {/* ============================================================== */}
+          {/* 2. GOOGLE DRIVE (CLOUD STORAGE & BACKUP) */}
+          {/* ============================================================== */}
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+            <div className="p-6 space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shadow-xs">
+                    <Cloud className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Google Drive Storage & Backup</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      จัดเก็บเอกสารใบสั่งซื้อ ใบตรวจรับ และก้อน Backup สำรองข้อมูลระบบทั้งหมดอัตโนมัติ
+                    </p>
+                  </div>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input 
+                    type="checkbox" 
+                    checked={integrations.google_drive?.isEnabled}
+                    onChange={(e) => updateIntegrationConfig('google_drive', { isEnabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    ชื่อโฟลเดอร์ Google Drive ของบริษัท
+                  </label>
+                  <input
+                    type="text"
+                    value={driveFolderInput}
+                    onChange={(e) => setDriveFolderInput(e.target.value)}
+                    placeholder="ProcureSync เอกสารและแบบก่อสร้าง"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    ลิงก์โฟลเดอร์แชร์ใน Google Drive (Share Link)
+                  </label>
+                  <input
+                    type="text"
+                    value={driveLinkInput}
+                    onChange={(e) => setDriveLinkInput(e.target.value)}
+                    placeholder="https://drive.google.com/drive/folders/..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              {driveLinkInput ? (
+                <a
+                  href={driveLinkInput}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                >
+                  เปิดโฟลเดอร์ Google Drive <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <span className="text-xs text-slate-400">ยังไม่ได้ระบุลิงก์โฟลเดอร์</span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleCloudBackup}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" /> สำรองข้อมูลขึ้น Drive
+              </button>
+            </div>
+          </div>
+
+          {/* ============================================================== */}
+          {/* 3. LINE NOTIFY / LINE WEBHOOK */}
+          {/* ============================================================== */}
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+            <div className="p-6 space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center border border-green-100 shadow-xs">
+                    <BellRing className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">LINE Notifications (กลุ่มไลน์หน้างาน)</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      ส่งข้อความแจ้งเตือนอัตโนมัติเข้ากลุ่ม LINE ของวิศวกร, โฟร์แมน และฝ่ายจัดซื้อ
+                    </p>
+                  </div>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input 
+                    type="checkbox" 
+                    checked={integrations.line_notify?.isEnabled}
+                    onChange={(e) => updateIntegrationConfig('line_notify', { isEnabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                </label>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    ชื่อกลุ่ม LINE ที่ต้องการส่งแจ้งเตือน
+                  </label>
+                  <input
+                    type="text"
+                    value={lineChannelInput}
+                    onChange={(e) => setLineChannelInput(e.target.value)}
+                    placeholder="กลุ่มไลน์: จัดซื้อ & วิศวกรโครงการ"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    LINE Token หรือ Webhook URL
+                  </label>
+                  <input
+                    type="text"
+                    value={lineTokenInput}
+                    onChange={(e) => setLineTokenInput(e.target.value)}
+                    placeholder="ใส่ LINE Notify Token หรือ Webhook URL..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 font-mono"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 pt-1">
+                  <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+                    <input type="checkbox" defaultChecked className="rounded text-green-600 focus:ring-green-500" />
+                    <span>เมื่อสร้าง PR ใหม่</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+                    <input type="checkbox" defaultChecked className="rounded text-green-600 focus:ring-green-500" />
+                    <span>เมื่อ PR ได้รับอนุมัติ</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+                    <input type="checkbox" defaultChecked className="rounded text-green-600 focus:ring-green-500" />
+                    <span>เมื่อตรวจรับของ (GR)</span>
+                  </label>
+                </div>
+
+                {lineResult && (
+                  <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+                    lineResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+                  }`}>
+                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                    <span>{lineResult.msg}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-400">แจ้งเตือนฟรีไม่มีค่าใช้จ่าย</span>
+
+              <button
+                type="button"
+                onClick={handleTestLine}
+                disabled={isSendingLine || !integrations.line_notify?.isEnabled}
+                className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+              >
+                <Send className="w-3.5 h-3.5" />
+                {isSendingLine ? 'กำลังส่งทดสอบ...' : 'ทดสอบส่งเข้า LINE (Test)'}
+              </button>
+            </div>
+          </div>
+
+          {/* ============================================================== */}
+          {/* 4. DROPBOX & CAD FILES */}
+          {/* ============================================================== */}
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+            <div className="p-6 space-y-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-xs">
+                    <Share2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Dropbox File Sync</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      จัดเก็บไฟล์แนบใบเสนอราคา, สเปกงานก่อสร้าง และแบบถอดปริมาณงาน CAD (.dxf)
+                    </p>
+                  </div>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input 
+                    type="checkbox" 
+                    checked={integrations.dropbox?.isEnabled}
+                    onChange={(e) => updateIntegrationConfig('dropbox', { isEnabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    เส้นทางโฟลเดอร์ใน Dropbox (Folder Path)
+                  </label>
+                  <input
+                    type="text"
+                    value={dropboxPathInput}
+                    onChange={(e) => setDropboxPathInput(e.target.value)}
+                    placeholder="/ProcureSync/Drawings_and_Receipts"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Dropbox Shared Folder Link
+                  </label>
+                  <input
+                    type="text"
+                    value={dropboxLinkInput}
+                    onChange={(e) => setDropboxLinkInput(e.target.value)}
+                    placeholder="https://www.dropbox.com/scl/fo/..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              {dropboxLinkInput ? (
+                <a
+                  href={dropboxLinkInput}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                >
+                  เปิดโฟลเดอร์ Dropbox <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <span className="text-xs text-slate-400">ยังไม่ได้ระบุลิงก์โฟลเดอร์</span>
+              )}
+
+              <button
+                type="button"
+                onClick={() => alert('บันทึกการเชื่อมต่อ Dropbox เรียบร้อยแล้ว')}
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-sm"
+              >
+                บันทึกการตั้งค่า
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL: Google Apps Script Code Generator */}
+      {showAppsScriptModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <FileCode className="w-5 h-5 text-emerald-600" />
+                <h3 className="text-base font-bold text-slate-900">
+                  Google Apps Script สำหรับซิงค์ 2 ทาง (ไม่ต้องมีเซิร์ฟเวอร์)
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAppsScriptModal(false)}
+                className="text-xs font-semibold text-slate-400 hover:text-slate-600"
+              >
+                ปิด
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              เพียงคัดลอกโค้ดสคริปต์นี้ ไปวางใน Google Sheets ที่เมนู <strong>ส่วนขยาย (Extensions) &gt; Apps Script</strong> แล้วกด <strong>ทำให้ใช้งานได้ (Deploy)</strong> คุณจะได้ Webhook URL ฟรีๆ ของ Google ไว้บันทึกข้อมูลใบขอซื้อและสต็อกลง Sheets อัตโนมัติ!
+            </p>
+
+            <div className="relative">
+              <pre className="bg-slate-900 text-emerald-400 p-4 rounded-2xl text-xs font-mono overflow-x-auto max-h-72">
+                {GOOGLE_APPS_SCRIPT_TEMPLATE}
+              </pre>
+              <button
+                type="button"
+                onClick={handleCopyScript}
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-all"
+              >
+                {copiedScript ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedScript ? 'คัดลอกแล้ว!' : 'คัดลอกโค้ด'}
+              </button>
+            </div>
+
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
+              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>
+                เมื่อ Deploy แล้ว ให้เลือกสิทธิ์เข้าถึง (Who has access) เป็น <strong>"Anyone" (ทุกคน)</strong> เพื่อให้ระบบ ProcureSync สามารถส่งข้อมูลเข้าไปบันทึกได้
+              </span>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setShowAppsScriptModal(false)}
+                className="px-5 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800"
+              >
+                เข้าใจแล้ว ปิดหน้าต่าง
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

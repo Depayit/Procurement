@@ -11,6 +11,7 @@ export const en: Record<string, string> = {
   'nav.users': 'Users',
   'nav.manual': 'User Manual',
   'nav.dataImport': 'Data Import Hub',
+  'nav.integrations': 'Cloud & Integrations',
   'nav.settings': 'Settings',
   'nav.logout': 'Log Out',
 

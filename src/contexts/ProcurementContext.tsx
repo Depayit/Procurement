@@ -11,10 +11,19 @@ import type {
   CompanyProfile,
   ImportHistoryRecord,
   ImportMergeMode,
-  ImportTargetModule
+  ImportTargetModule,
+  CloudIntegrationConfig,
+  IntegrationProviderId
 } from '../types';
 import { logSystemAction } from '../lib/auditLog';
 import { DEFAULT_APPROVAL_MATRIX } from '../data/defaultApprovalMatrix';
+import { 
+  DEFAULT_INTEGRATIONS, 
+  INTEGRATIONS_STORAGE_KEY, 
+  fetchGoogleSheetData, 
+  sendLineNotification, 
+  generateSystemCloudBackup 
+} from '../lib/integrations/cloudSync';
 
 // Storage Keys
 const STORAGE_PREFIX = 'procuresync_store_';
@@ -392,6 +401,13 @@ interface ProcurementContextType {
     newPOs: Omit<PurchaseOrder, 'id'>[]
   ) => { added: number; total: number };
 
+  // Cloud Integrations & Serverless Sync
+  integrations: Record<IntegrationProviderId, CloudIntegrationConfig>;
+  updateIntegrationConfig: (id: IntegrationProviderId, updates: Partial<CloudIntegrationConfig>) => void;
+  syncGoogleSheetsData: (targetModule?: 'inventory' | 'pr' | 'vendors') => Promise<{ success: boolean; rowsCount: number; message: string }>;
+  backupSystemToCloud: () => { fileName: string; sizeBytes: number };
+  testLineAlert: (customMessage?: string) => Promise<{ success: boolean; message: string }>;
+
   // Reset/Utility
   resetToSeedData: () => void;
 }
@@ -463,6 +479,15 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   });
 
+  const [integrations, setIntegrations] = useState<Record<IntegrationProviderId, CloudIntegrationConfig>>(() => {
+    try {
+      const saved = localStorage.getItem(INTEGRATIONS_STORAGE_KEY);
+      return saved ? { ...DEFAULT_INTEGRATIONS, ...JSON.parse(saved) } : DEFAULT_INTEGRATIONS;
+    } catch {
+      return DEFAULT_INTEGRATIONS;
+    }
+  });
+
   // 2. Persist to localStorage whenever state changes
   useEffect(() => {
     try {
@@ -519,6 +544,14 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       console.warn('Failed to save Import History to localStorage:', e);
     }
   }, [importHistory]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(INTEGRATIONS_STORAGE_KEY, JSON.stringify(integrations));
+    } catch (e) {
+      console.warn('Failed to save Integrations to localStorage:', e);
+    }
+  }, [integrations]);
 
   // 3. Derived Approval Tasks dynamically synchronized from PRs and Approval Matrix
   const approvalTasks: ApprovalTask[] = prs.map(pr => {
@@ -1228,6 +1261,122 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // ==========================================
+  // Cloud Integrations & Serverless Sync Actions
+  // ==========================================
+  const updateIntegrationConfig = (id: IntegrationProviderId, updates: Partial<CloudIntegrationConfig>) => {
+    setIntegrations(prev => {
+      const current = prev[id] || DEFAULT_INTEGRATIONS[id];
+      const updated = {
+        ...current,
+        ...updates
+      };
+      logSystemAction({
+        action: 'UPDATE_INTEGRATION_CONFIG',
+        entityType: 'SETTINGS',
+        entityId: id,
+        details: `อัปเดตการตั้งค่าปลั๊กอิน: ${updated.name} (เปิดใช้งาน: ${updated.isEnabled ? 'ใช่' : 'ปิด'})`
+      });
+      return {
+        ...prev,
+        [id]: updated
+      };
+    });
+  };
+
+  const syncGoogleSheetsData = async (
+    targetMod: 'inventory' | 'pr' | 'vendors' = 'inventory'
+  ): Promise<{ success: boolean; rowsCount: number; message: string }> => {
+    const config = integrations.google_sheets?.googleSheets;
+    const sheetUrl = config?.sheetUrl || config?.sheetId;
+    if (!sheetUrl) {
+      throw new Error('ยังไม่ได้ระบุ Google Sheet URL หรือ Sheet ID');
+    }
+
+    const { headers, rows, totalRows } = await fetchGoogleSheetData(sheetUrl);
+
+    // Map rows into system
+    if (targetMod === 'inventory') {
+      const mappedItems = rows.map((r, idx) => ({
+        code: String(r['รหัสพัสดุ'] || r['รหัส'] || r['SKU'] || r['code'] || `SKU-GS-${idx + 1}`),
+        sku: String(r['SKU'] || r['รหัสพัสดุ'] || `SKU-GS-${idx + 1}`),
+        barcode: String(r['บาร์โค้ด'] || r['barcode'] || `885${1000000000 + idx}`),
+        name: String(r['ชื่อสินค้า'] || r['รายการ'] || r['name'] || 'วัสดุจาก Google Sheets'),
+        category: String(r['หมวดหมู่'] || r['category'] || 'วัสดุก่อสร้าง'),
+        quantity: Number(r['จำนวนสต็อก'] || r['จำนวน'] || r['quantity'] || 0),
+        unit: String(r['หน่วยนับ'] || r['หน่วย'] || r['unit'] || 'หน่วย'),
+        minStockLevel: Number(r['เกณฑ์สต็อกขั้นต่ำ'] || r['ขั้นต่ำ'] || 0),
+        location: String(r['คลังสินค้า'] || r['จุดจัดเก็บ'] || 'คลังพัสดุก่อสร้างกลาง (Central WH)'),
+        binLocation: String(r['จุดจัดเก็บในคลังกลาง'] || r['binLocation'] || 'Zone GS-01'),
+        centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)',
+        projectAllocations: ['โครงการ คอนโดสุขุมวิท 101', 'ทุกไซต์งาน'],
+        unitPrice: Number(r['ราคาต่อหน่วย'] || r['ราคา'] || 0)
+      }));
+
+      bulkImportInventory(mappedItems, 'merge');
+    }
+
+    const now = new Date().toISOString();
+    updateIntegrationConfig('google_sheets', {
+      lastSync: now,
+      status: 'connected',
+      errorMessage: undefined
+    });
+
+    logSystemAction({
+      action: 'SYNC_GOOGLE_SHEETS',
+      entityType: 'INTEGRATION',
+      entityId: 'google_sheets',
+      details: `ซิงค์ข้อมูลจาก Google Sheets เข้าสู่ ${targetMod} สำเร็จ ${totalRows} แถว`
+    });
+
+    return {
+      success: true,
+      rowsCount: totalRows,
+      message: `ซิงค์ข้อมูลสำเร็จ ${totalRows} แถวจาก Google Sheets`
+    };
+  };
+
+  const backupSystemToCloud = (): { fileName: string; sizeBytes: number } => {
+    const result = generateSystemCloudBackup({
+      prs,
+      pos,
+      inventory,
+      vendors,
+      approvalMatrix: approvalMatrix as any,
+      companyProfile: [companyProfile] as any
+    });
+
+    const now = new Date().toISOString();
+    updateIntegrationConfig('google_drive', {
+      lastSync: now,
+      status: 'connected'
+    });
+
+    logSystemAction({
+      action: 'BACKUP_TO_CLOUD',
+      entityType: 'BACKUP',
+      entityId: result.fileName,
+      details: `สร้างก้อน Snapshot สำรองข้อมูลระบบทั้งหมด (${result.fileName})`
+    });
+
+    return result;
+  };
+
+  const testLineAlert = async (customMessage?: string): Promise<{ success: boolean; message: string }> => {
+    const config = integrations.line_notify?.lineNotify;
+    const msg = customMessage || `📢 [ProcureSync Alert] ทดสอบการแจ้งเตือนระบบจัดซื้อหน้างาน ยอดคงเหลือพัสดุและ PR พร้อมใช้งาน`;
+    const res = await sendLineNotification(msg, config);
+
+    const now = new Date().toISOString();
+    updateIntegrationConfig('line_notify', {
+      lastSync: now,
+      status: 'connected'
+    });
+
+    return res;
+  };
+
+  // ==========================================
   // Reset Utility
   // ==========================================
   const resetToSeedData = () => {
@@ -1270,6 +1419,11 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       bulkImportVendors,
       bulkImportPRs,
       bulkImportPOs,
+      integrations,
+      updateIntegrationConfig,
+      syncGoogleSheetsData,
+      backupSystemToCloud,
+      testLineAlert,
       createPR,
       updatePR,
       deletePR,

@@ -41,7 +41,6 @@ export function Layout() {
         isOpen={isSidebarOpen} 
         setIsOpen={setIsSidebarOpen}
         isCollapsed={isSidebarCollapsed}
-        toggleCollapsed={toggleSidebarCollapse}
       />
       
       <div className="flex flex-col flex-1 w-0 overflow-hidden min-w-0 transition-all duration-300">
