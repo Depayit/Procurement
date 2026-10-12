@@ -407,9 +407,9 @@ export function SettingsPage() {
             <div className="p-6 space-y-6">
               {/* Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="p-1.5 bg-indigo-50 text-indigo-700 rounded-lg">
+                    <span className="p-1.5 bg-indigo-50 text-indigo-700 rounded-lg shrink-0">
                       <Building className="h-5 w-5" />
                     </span>
                     <h3 className="text-lg font-bold text-slate-800">
@@ -423,7 +423,7 @@ export function SettingsPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap shrink-0">
                   <button
                     type="button"
                     onClick={handleResetCompany}
@@ -1307,36 +1307,36 @@ export function SettingsPage() {
                 </div>
 
                 {/* Live Diagnostics Badges */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-slate-200/60 text-xs">
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5 pt-4 border-t border-slate-200/60 text-xs">
                   <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
                     <span className="text-[10px] text-slate-400 font-semibold block uppercase">สถานะการทำงาน</span>
-                    <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1">
-                      <span className={`w-2 h-2 rounded-full ${isInstalled ? 'bg-emerald-500' : 'bg-blue-500'}`} />
-                      <span>{isInstalled ? 'Standalone App' : 'Web Browser'}</span>
+                    <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1 truncate">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${isInstalled ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+                      <span className="truncate">{isInstalled ? 'Standalone App' : 'Web Browser'}</span>
                     </div>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
                     <span className="text-[10px] text-slate-400 font-semibold block uppercase">การเชื่อมต่อเน็ต</span>
-                    <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1">
-                      <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                      <span>{isOnline ? 'Online (เชื่อมต่อแล้ว)' : 'Offline (ใช้ออฟไลน์)'}</span>
+                    <div className="font-bold text-slate-800 flex items-center gap-1.5 mt-1 truncate">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${isOnline ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                      <span className="truncate">{isOnline ? 'Online (เชื่อมต่อ)' : 'Offline (ออฟไลน์)'}</span>
                     </div>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
                     <span className="text-[10px] text-slate-400 font-semibold block uppercase">Service Worker</span>
-                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 mt-1">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Active (v2.5)</span>
+                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 mt-1 truncate">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span className="truncate">Active (v2.5)</span>
                     </div>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
                     <span className="text-[10px] text-slate-400 font-semibold block uppercase">แคชระบบ (Cache)</span>
-                    <div className="font-bold text-indigo-700 flex items-center gap-1.5 mt-1">
-                      <Zap className="w-3.5 h-3.5 text-indigo-600" />
-                      <span>พร้อมทำงาน</span>
+                    <div className="font-bold text-indigo-700 flex items-center gap-1.5 mt-1 truncate">
+                      <Zap className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                      <span className="truncate">พร้อมทำงาน</span>
                     </div>
                   </div>
                 </div>
@@ -1352,14 +1352,14 @@ export function SettingsPage() {
                   <span className="text-[11px] text-slate-400">แตะค้างที่ไอคอนแอปเพื่อเปิดด่วน</span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 text-xs">
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
                     <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
                       <ShoppingCart className="w-4 h-4" />
                     </div>
-                    <div>
-                      <strong className="text-slate-900 block font-bold">1. ขอซื้อพัสดุ (PR)</strong>
-                      <span className="text-slate-500 text-[11px]">เปิดใบขอซื้อพัสดุหน้างาน</span>
+                    <div className="min-w-0 flex-1">
+                      <strong className="text-slate-900 block font-bold truncate">1. ขอซื้อพัสดุ (PR)</strong>
+                      <span className="text-slate-500 text-[11px] block leading-tight">เปิดใบขอซื้อหน้างาน</span>
                     </div>
                   </div>
 
@@ -1367,9 +1367,9 @@ export function SettingsPage() {
                     <div className="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0">
                       <Barcode className="w-4 h-4" />
                     </div>
-                    <div>
-                      <strong className="text-slate-900 block font-bold">2. สแกนบาร์โค้ด SKU</strong>
-                      <span className="text-slate-500 text-[11px]">ยิงบาร์โค้ด/กล้องส่องเบิกของ</span>
+                    <div className="min-w-0 flex-1">
+                      <strong className="text-slate-900 block font-bold truncate">2. สแกนบาร์โค้ด SKU</strong>
+                      <span className="text-slate-500 text-[11px] block leading-tight">ยิงสแกนเบิกจ่ายพัสดุ</span>
                     </div>
                   </div>
 
@@ -1377,9 +1377,9 @@ export function SettingsPage() {
                     <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
                       <FileText className="w-4 h-4" />
                     </div>
-                    <div>
-                      <strong className="text-slate-900 block font-bold">3. จัดซื้อ & ตรวจรับ (PO)</strong>
-                      <span className="text-slate-500 text-[11px]">ตรวจรับสินค้าหน้างาน</span>
+                    <div className="min-w-0 flex-1">
+                      <strong className="text-slate-900 block font-bold truncate">3. จัดซื้อ & ตรวจรับ (PO)</strong>
+                      <span className="text-slate-500 text-[11px] block leading-tight">ตรวจรับสินค้าเข้าไซต์งาน</span>
                     </div>
                   </div>
 
@@ -1387,33 +1387,36 @@ export function SettingsPage() {
                     <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                       <Database className="w-4 h-4" />
                     </div>
-                    <div>
-                      <strong className="text-slate-900 block font-bold">4. คู่มือระบบ (SOP)</strong>
-                      <span className="text-slate-500 text-[11px]">อ่านคู่มือมาตรฐานการทำงาน</span>
+                    <div className="min-w-0 flex-1">
+                      <strong className="text-slate-900 block font-bold truncate">4. คู่มือระบบ (SOP)</strong>
+                      <span className="text-slate-500 text-[11px] block leading-tight">คู่มือมาตรฐานการทำงาน</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* 3. Cache & Update Maintenance Box with Changelog */}
-              <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <RotateCw className="w-4 h-4 text-indigo-600" />
-                      <h4 className="text-sm font-bold text-slate-800">
-                        การจัดการแคชและการอัปเดตระบบ (System Version & Cache Sync)
+              <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-4 overflow-hidden">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-slate-100 pb-3.5">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <RotateCw className="w-4 h-4 text-indigo-600 shrink-0" />
+                      <h4 className="text-sm font-bold text-slate-800 break-words">
+                        การจัดการแคชและการอัปเดตระบบ
                       </h4>
-                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                      <span className="text-xs text-slate-400 font-medium hidden sm:inline">
+                        (System Version & Cache Sync)
+                      </span>
+                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono shrink-0">
                         v2.5.0
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed break-words">
                       หากมีการอัปเดตระบบใหม่ สามารถกดปุ่มนี้เพื่อล้างไฟล์แคช บังคับโหลดเวอร์ชันล่าสุด และแจ้งเตือนผู้ใช้ทุกคน
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
                     <button
                       type="button"
                       onClick={() => {
@@ -1422,9 +1425,9 @@ export function SettingsPage() {
                         setUpdateAlertSent(true);
                         setTimeout(() => setUpdateAlertSent(false), 3500);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition-colors shrink-0 cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition-colors shrink-0 cursor-pointer shadow-2xs"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="w-3.5 h-3.5 shrink-0" />
                       <span>{updateAlertSent ? 'ส่งแจ้งเตือนแล้ว!' : 'แจ้งเตือนอัพเดต'}</span>
                     </button>
 
@@ -1435,10 +1438,10 @@ export function SettingsPage() {
                         await clearCacheAndUpdate();
                       }}
                       disabled={isClearingCache}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-colors shrink-0 cursor-pointer disabled:opacity-50 shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-colors shrink-0 cursor-pointer disabled:opacity-50 shadow-xs"
                     >
-                      <RotateCw className={`w-3.5 h-3.5 ${isClearingCache ? 'animate-spin' : ''}`} />
-                      <span>{isClearingCache ? 'กำลังซิงก์...' : 'ล้างแคชและอัปเดตระบบ'}</span>
+                      <RotateCw className={`w-3.5 h-3.5 shrink-0 ${isClearingCache ? 'animate-spin' : ''}`} />
+                      <span>{isClearingCache ? 'กำลังซิงก์...' : 'ล้างแคชและอัปเดต'}</span>
                     </button>
                   </div>
                 </div>
@@ -1446,13 +1449,13 @@ export function SettingsPage() {
                 {/* Changelog Highlights */}
                 <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 text-xs space-y-1.5">
                   <div className="font-bold text-slate-700 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <span>ไฮไลต์การอัพเดตระบบล่าสุด (Release Notes v2.5.0):</span>
                   </div>
-                  <ul className="text-slate-600 space-y-1 pl-5 list-disc text-[11.5px] leading-relaxed">
-                    <li><strong>แบบฟอร์มเอกสารมาตรฐาน A4 ขาว/ดำ 100%:</strong> ทั้งใบขอซื้อ (PR) และใบสั่งซื้อ (PO) กำหนดพื้นหลังสีขาวบริสุทธิ์ ตัวอักษรและเส้นขอบสีดำ รองรับมาตรฐาน ISO 9001:2015</li>
-                    <li><strong>ระบบสายการอนุมัติ (Approval Matrix):</strong> กำหนดขั้นตอน วงเงิน ตำแหน่ง และชื่อผู้มีอำนาจลงนามได้ยืดหยุ่น เชื่อมโยงตรงกับทุกแบบฟอร์ม</li>
-                    <li><strong>คลังพัสดุและวัสดุก่อสร้างกลาง (Central Material Hub):</strong> รองรับการยิงสแกนบาร์โค้ด Master SKU (1D Code 128) จัดการและเบิกจ่ายวัสดุอุปกรณ์ไปยังโครงการและไซต์งานก่อสร้าง</li>
+                  <ul className="text-slate-600 space-y-1.5 pl-5 list-disc text-[11.5px] leading-relaxed">
+                    <li className="break-words"><strong>แบบฟอร์มเอกสารมาตรฐาน A4 ขาว/ดำ 100%:</strong> ทั้งใบขอซื้อ (PR) และใบสั่งซื้อ (PO) กำหนดพื้นหลังสีขาวบริสุทธิ์ ตัวอักษรและเส้นขอบสีดำ รองรับมาตรฐาน ISO 9001:2015</li>
+                    <li className="break-words"><strong>ระบบสายการอนุมัติ (Approval Matrix):</strong> กำหนดขั้นตอน วงเงิน ตำแหน่ง และชื่อผู้มีอำนาจลงนามได้ยืดหยุ่น เชื่อมโยงตรงกับทุกแบบฟอร์ม</li>
+                    <li className="break-words"><strong>คลังพัสดุและวัสดุก่อสร้างกลาง (Central Material Hub):</strong> รองรับการยิงสแกนบาร์โค้ด Master SKU (1D Code 128) จัดการและเบิกจ่ายวัสดุอุปกรณ์ไปยังโครงการและไซต์งานก่อสร้าง</li>
                   </ul>
                 </div>
               </div>
