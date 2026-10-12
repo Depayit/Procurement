@@ -4,89 +4,15 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailsModal } from '../components/DetailsModal';
 import { exportToPDF, printA4Document } from '../lib/pdf';
 import { cn } from '../lib/utils';
-import type { PRItem } from '../types';
+import type { PurchaseOrder as PO, POItem, POStatus, PRItem } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
-
-// Mock PR items to use as context for PO creation
-const MOCK_AVAILABLE_PRS = [
-  { id: 'pr1', prNumber: 'PR-2025-001', department: 'โครงการ คอนโดสุขุมวิท 101', totalAmount: 350000, date: '2025-05-18', items: [
-    { id: '1', description: 'ปูนซีเมนต์ปอร์ตแลนด์ ประเภท 1', quantity: 500, unitPrice: 150, unit: 'ถุง' },
-    { id: '2', description: 'เหล็กเส้นกลม SR24 ขนาด 9 มม.', quantity: 200, unitPrice: 120, unit: 'เส้น' },
-    { id: '3', description: 'อิฐมอญแดง', quantity: 5000, unitPrice: 2.5, unit: 'ก้อน' },
-    { id: '4', description: 'ทรายหยาบ', quantity: 10, unitPrice: 450, unit: 'คิว' }
-  ] },
-  { id: 'pr3', prNumber: 'PR-2025-003', department: 'โครงการ หมู่บ้านจัดสรร พระราม 2', totalAmount: 85000, date: '2025-05-19', items: [
-    { id: '5', description: 'กระเบื้องแกรนิตโต้ 60x60', quantity: 200, unitPrice: 425, unit: 'กล่อง' }
-  ] }
-];
-
-const MOCK_VENDORS = [
-  { id: 'v1', name: 'บริษัท วัสดุก่อสร้างไทย จำกัด' },
-  { id: 'v2', name: 'โฮมสแควร์ เซ็นเตอร์' },
-  { id: 'v3', name: 'ดีดี อินเตอร์เทรดวัสดุ' }
-];
-
-type POStatus = 'Draft' | 'Issued' | 'Partially Received' | 'Completed' | 'Cancelled';
-
-interface POItem extends PRItem {
-  receivedQuantity: number;
-  receipts?: { 
-    id: string; 
-    date: string; 
-    quantity: number; 
-    receivedBy: string;
-    isDirectToSite?: boolean;
-    deliveryNotes?: string[];
-  }[];
-}
-
-interface PO {
-  id: string;
-  poNumber: string;
-  prNumber: string;
-  vendorName: string;
-  poDescription: string;
-  totalAmount: number;
-  status: POStatus;
-  date: string;
-  expectedDeliveryDate?: string;
-  items: POItem[];
-}
-
-const INITIAL_POS: PO[] = [
-  {
-    id: 'po1',
-    poNumber: 'PO-2025-089',
-    prNumber: 'PR-2025-001',
-    vendorName: 'บริษัท วัสดุก่อสร้างไทย จำกัด',
-    poDescription: 'สั่งซื้อวัสดุก่อสร้างหลักสำหรับไซต์งานสุขุมวิท',
-    totalAmount: 120000,
-    status: 'Issued',
-    date: '2025-05-18',
-    expectedDeliveryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    items: MOCK_AVAILABLE_PRS[0].items.map(i => ({ ...i, receivedQuantity: 0 })),
-  },
-  {
-    id: 'po2',
-    poNumber: 'PO-2025-090',
-    prNumber: 'PR-2025-002',
-    vendorName: 'โฮมสแควร์ เซ็นเตอร์',
-    poDescription: 'เหล็กเส้นเพิ่มเติมสำหรับลานจอดรถ',
-    totalAmount: 45000,
-    status: 'Partially Received',
-    date: '2025-05-17',
-    expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    items: [MOCK_AVAILABLE_PRS[0].items[1]].map(i => ({ 
-      ...i, 
-      receivedQuantity: 50,
-      receipts: [{ id: 'rcpt1', date: '2025-05-18T09:00:00Z', quantity: 50, receivedBy: 'วิชัย คลังสินค้า' }]
-    })),
-  },
-];
+import { useProcurement } from '../contexts/ProcurementContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const statusColors: Record<string, string> = {
   'Draft': 'bg-slate-100 text-slate-800',
   'Issued': 'bg-blue-100 text-blue-800',
+  'Sent': 'bg-blue-100 text-blue-800',
   'Partially Received': 'bg-amber-100 text-amber-800',
   'Completed': 'bg-emerald-100 text-emerald-800',
   'Cancelled': 'bg-red-100 text-red-800',
@@ -95,6 +21,7 @@ const statusColors: Record<string, string> = {
 const statusLabels: Record<string, string> = {
   'Draft': 'ร่าง',
   'Issued': 'ออกคำสั่งซื้อแล้ว',
+  'Sent': 'ส่งคำสั่งซื้อแล้ว',
   'Partially Received': 'รับของบางส่วน',
   'Completed': 'รับของครบแล้ว',
   'Cancelled': 'ยกเลิก',
@@ -102,11 +29,18 @@ const statusLabels: Record<string, string> = {
 
 export function PurchaseOrderPage() {
   const { t, isEnglish } = useLanguage();
-  const [pos, setPos] = useState<PO[]>(INITIAL_POS);
+  const { pos, prs, vendors, createPOFromPR, receivePOGoods, updatePO, deletePO } = useProcurement();
+  const { currentUser, canCreatePO } = useAuth();
+  
   const [isCreating, setIsCreating] = useState(false);
   const [selectedPRId, setSelectedPRId] = useState<string | null>(null);
   
-  const currentPR = useMemo(() => MOCK_AVAILABLE_PRS.find(pr => pr.id === selectedPRId) || null, [selectedPRId]);
+  const availablePRs = useMemo(() => {
+    const approved = prs.filter(pr => pr.status === 'Approved');
+    return approved.length > 0 ? approved : prs.filter(pr => pr.status !== 'Cancelled' && pr.status !== 'Draft');
+  }, [prs]);
+
+  const currentPR = useMemo(() => prs.find(pr => pr.id === selectedPRId) || null, [prs, selectedPRId]);
   const currentItems = currentPR?.items || [];
 
   const [receivingPO, setReceivingPO] = useState<PO | null>(null);
@@ -115,7 +49,7 @@ export function PurchaseOrderPage() {
   const [deliveryNoteFiles, setDeliveryNoteFiles] = useState<File[]>([]);
   
   const [poDescription, setPoDescription] = useState('');
-  const [selectedVendor, setSelectedVendor] = useState(MOCK_VENDORS[0].id);
+  const [selectedVendor, setSelectedVendor] = useState(vendors[0]?.id || 'v1');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isConfirmCreateOpen, setIsConfirmCreateOpen] = useState(false);
   const [viewPO, setViewPO] = useState<PO | null>(null);
@@ -150,7 +84,7 @@ export function PurchaseOrderPage() {
 
   const handleCancelPO = () => {
     if (!cancelPO) return;
-    setPos(pos.map(po => po.id === cancelPO.id ? { ...po, status: 'Cancelled' } : po));
+    updatePO(cancelPO.id, { status: 'Cancelled' });
     setCancelPO(null);
     alert(`ใบสั่งซื้อ ${cancelPO.poNumber} ถูกยกเลิกเรียบร้อยแล้ว แจ้งเตือนไปยังผู้ขายและทีมจัดซื้อแล้ว`);
   };
@@ -179,25 +113,19 @@ export function PurchaseOrderPage() {
   };
 
   const createPO = () => {
-    const vendor = MOCK_VENDORS.find(v => v.id === selectedVendor);
-    // Set expected delivery to some random future date for demo (e.g. 2 days from now)
+    const vendor = vendors.find(v => v.id === selectedVendor) || vendors[0];
     const expectedDate = new Date();
     expectedDate.setDate(expectedDate.getDate() + 2);
 
-    const newPO: PO = {
-      id: Math.random().toString(),
-      poNumber: `PO-2025-0${pos.length + 91}`,
-      prNumber: currentPR ? currentPR.prNumber : 'Unknown PR',
-      vendorName: vendor ? vendor.name : 'Unknown Vendor',
-      poDescription: poDescription || 'สั่งซื้อวัสดุก่อสร้าง',
-      totalAmount: currentItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0),
-      status: 'Issued',
-      date: new Date().toISOString().split('T')[0],
-      expectedDeliveryDate: expectedDate.toISOString().split('T')[0],
-      items: currentItems.map(i => ({ ...i, receivedQuantity: 0 })),
-    };
+    if (currentPR) {
+      createPOFromPR(
+        currentPR.id,
+        vendor ? vendor.id : 'v1',
+        poDescription || `สั่งซื้อตามใบขอซื้อ ${currentPR.prNumber}`,
+        expectedDate.toISOString().split('T')[0]
+      );
+    }
     
-    setPos([newPO, ...pos]);
     setIsConfirmCreateOpen(false);
     setIsCreating(false);
     setSelectedPRId(null);
@@ -219,35 +147,25 @@ export function PurchaseOrderPage() {
   const handleReceiveGoods = () => {
     if (!receivingPO) return;
     
-    const now = new Date().toISOString();
-    
-    // Update PO items
-    const updatedItems = receivingPO.items.map(item => {
-      const addedQty = receiveQuantities[item.id] || 0;
-      if (addedQty > 0) {
-        const newReceipt = { 
-          id: Math.random().toString(36).substr(2, 9), 
-          date: now, 
-          quantity: addedQty, 
-          receivedBy: 'สมชาย คลังสินค้า',
-          isDirectToSite,
-          deliveryNotes: deliveryNoteFiles.map(f => f.name)
-        };
-        return {
-          ...item,
-          receivedQuantity: item.receivedQuantity + addedQty,
-          receipts: [...(item.receipts || []), newReceipt]
-        };
-      }
-      return item;
-    });
-    
-    const isCompleted = updatedItems.every(item => item.receivedQuantity >= item.quantity);
-    const newStatus: POStatus = isCompleted ? 'Completed' : 'Partially Received';
-    
-    setPos(pos.map(po => po.id === receivingPO.id ? { ...po, status: newStatus, items: updatedItems } : po));
+    const receiptItems = Object.entries(receiveQuantities)
+      .filter(([_, qty]) => qty > 0)
+      .map(([poItemId, quantity]) => ({ poItemId, quantity }));
+
+    if (receiptItems.length === 0) {
+      alert('กรุณาระบุจำนวนสินค้าที่ได้รับเข้าในรอบนี้อย่างน้อย 1 รายการ');
+      return;
+    }
+
+    receivePOGoods(
+      receivingPO.id,
+      receiptItems,
+      currentUser.name || 'สมชาย คลังสินค้า',
+      isDirectToSite,
+      deliveryNoteFiles.map(f => f.name)
+    );
+
     setReceivingPO(null);
-    alert('บันทึกรับของ (GR) เรียบร้อยแล้ว ระบบได้ทำการอัปเดตสต็อกอัตโนมัติ');
+    alert('บันทึกรับของ (GR) เรียบร้อยแล้ว ระบบได้ทำการอัปเดตสต็อกคลังสินค้าและบันทึกประวัติอัตโนมัติ');
   };
 
   if (receivingPO) {
@@ -379,27 +297,37 @@ export function PurchaseOrderPage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {MOCK_AVAILABLE_PRS.map(pr => (
-              <div 
-                key={pr.id} 
-                onClick={() => setSelectedPRId(pr.id)}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 cursor-pointer hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 uppercase tracking-wide">
-                      อนุมัติแล้ว
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-800">{pr.prNumber}</h3>
-                  <p className="text-sm text-slate-500 mt-1">{pr.department}</p>
-                </div>
-                <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-sm">
-                  <span className="text-slate-500">{pr.items.length} รายการ</span>
-                  <span className="font-bold text-indigo-600">{(pr.totalAmount ?? 0).toLocaleString()} บาท</span>
-                </div>
+            {availablePRs.length === 0 ? (
+              <div className="col-span-2 p-8 text-center bg-white border border-dashed border-slate-300 rounded-xl">
+                <FileText className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                <h4 className="font-bold text-slate-700">ไม่มีใบขอซื้อที่รอออก PO ในขณะนี้</h4>
+                <p className="text-sm text-slate-500 mt-1">
+                  ใบขอซื้อต้องได้รับสถานะ &quot;Approved&quot; ก่อนจึงจะสามารถนำมาแปลงเป็นใบสั่งซื้อ (PO) ได้
+                </p>
               </div>
-            ))}
+            ) : (
+              availablePRs.map(pr => (
+                <div 
+                  key={pr.id} 
+                  onClick={() => setSelectedPRId(pr.id)}
+                  className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 cursor-pointer hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 uppercase tracking-wide">
+                        {pr.status === 'Approved' ? 'อนุมัติแล้ว' : pr.status}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-800">{pr.prNumber}</h3>
+                    <p className="text-sm text-slate-500 mt-1">{pr.department}</p>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center text-sm">
+                    <span className="text-slate-500">{pr.items.length} รายการ</span>
+                    <span className="font-bold text-indigo-600">{(pr.totalAmount ?? 0).toLocaleString()} บาท</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       );
@@ -422,7 +350,7 @@ export function PurchaseOrderPage() {
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">เปรียบเทียบและเลือกผู้ขาย (Vendor)</label>
               <div className="grid grid-cols-1 space-y-2">
-                {MOCK_VENDORS.map((vendor, idx) => (
+                {vendors.map((vendor, idx) => (
                   <label key={vendor.id} className={cn("flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors", selectedVendor === vendor.id ? "border-indigo-500 bg-indigo-50" : "border-slate-200 hover:bg-slate-50")}>
                     <div className="flex items-center">
                       <input 
@@ -435,7 +363,7 @@ export function PurchaseOrderPage() {
                       />
                       <div>
                         <div className="font-bold text-slate-800">{vendor.name}</div>
-                        <div className="text-xs text-slate-500">เงื่อนไข: เครดิต {30 + (idx * 15)} วัน</div>
+                        <div className="text-xs text-slate-500">เงื่อนไข: {vendor.paymentTerms || `เครดิต ${30 + (idx * 15)} วัน`}</div>
                       </div>
                     </div>
                     <div className="text-right">

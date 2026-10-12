@@ -1,5 +1,5 @@
-export type PRStatus = 'Draft' | 'Pending Approval' | 'Approved' | 'Rejected' | 'PO Created';
-export type POStatus = 'Draft' | 'Sent' | 'Partially Received' | 'Received' | 'Closed';
+export type PRStatus = 'Draft' | 'Pending Approval' | 'Approved' | 'Rejected' | 'PO Created' | 'Cancelled';
+export type POStatus = 'Draft' | 'Issued' | 'Sent' | 'Partially Received' | 'Completed' | 'Cancelled';
 export type PRUrgency = 'normal' | 'urgent' | 'emergency';
 
 export interface PRItem {
@@ -104,13 +104,59 @@ export interface InventoryItem {
   unitPrice?: number;
 }
 
+export interface POReceipt {
+  id: string;
+  date: string;
+  quantity: number;
+  receivedBy: string;
+  isDirectToSite?: boolean;
+  deliveryNotes?: string[];
+}
+
+export interface POItem extends PRItem {
+  receivedQuantity: number;
+  receipts?: POReceipt[];
+}
+
 export interface PurchaseOrder {
   id: string;
   poNumber: string;
+  prNumber: string;
+  prId?: string;
   vendorName: string;
-  prId: string;
-  orderDate: string;
-  deliveryDate: string;
-  status: POStatus;
+  vendorId?: string;
+  poDescription?: string;
+  department?: string;
+  projectCode?: string;
   totalAmount: number;
+  status: POStatus;
+  date: string;
+  orderDate?: string;
+  expectedDeliveryDate?: string;
+  deliveryLocation?: string;
+  paymentTerms?: string;
+  items: POItem[];
+}
+
+export interface Vendor {
+  id: string;
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  address: string;
+  paymentTerms: string;
+  rating: number; // out of 5
+  onTimeDeliveryRate: number; // percentage
+  categories: string[];
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: 'Site Engineer' | 'Purchasing Staff' | 'Purchasing Manager' | 'Approver' | 'Inventory Control' | 'Admin';
+  status: 'Active' | 'Inactive';
+  lastLogin?: string;
+  department?: string;
 }

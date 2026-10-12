@@ -1,12 +1,14 @@
 import { CheckCircle2, XCircle, Clock, FileText, Printer, Download, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck } from 'lucide-react';
 import type { ApprovalTask, PurchaseRequest } from '../types';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailsModal } from '../components/DetailsModal';
 import { StandardPRDocument } from '../components/StandardPRDocument';
 import { exportToPDF, printA4Document } from '../lib/pdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNotifications } from '../contexts/NotificationContext';
+import { useProcurement } from '../contexts/ProcurementContext';
+import { useAuth } from '../contexts/AuthContext';
 import { cn } from '../lib/utils';
 
 
@@ -91,28 +93,26 @@ const MOCK_APPROVALS: ApprovalTask[] = [
 export function ApprovalPage() {
   const { t, isThai, isEnglish } = useLanguage();
   const { addNotification } = useNotifications();
-  const [tasks, setTasks] = useState<ApprovalTask[]>(MOCK_APPROVALS);
-  const [historyTasks, setHistoryTasks] = useState<Array<ApprovalTask & { actionStatus: 'Approved' | 'Rejected'; actionDate: string }>>([
-    {
-      id: 'appr-hist-1',
-      documentId: 'PR-2025-003',
-      documentType: 'PR',
-      requester: 'วิศวกรโครงสร้าง (งานงวด 1)',
-      requestDate: '2025-05-10T09:00:00Z',
-      amount: 450000,
-      status: 'Approved',
-      level: 1,
-      actionStatus: 'Approved',
-      actionDate: '2025-05-10T14:30:00Z',
-      prData: {
-        ...MOCK_PR_1,
-        prNumber: 'PR-2025-003',
-        department: 'โครงการ อาคารสำนักงานพระราม 9',
-        justification: 'สั่งซื้อเหล็กเส้นข้ออ้อย SD40 มอก. สำหรับงานเสาเข็มเจาะงวดที่ 1',
-        totalAmount: 450000
-      }
-    }
-  ]);
+  const { approvalTasks, approvePR, rejectPR, prs } = useProcurement();
+  const { currentUser, canApprove } = useAuth();
+  const tasks = approvalTasks;
+  const historyTasks = useMemo(() => {
+    return prs
+      .filter(p => p.status === 'Approved' || p.status === 'Rejected' || p.status === 'PO Created')
+      .map(p => ({
+        id: `appr-hist-${p.id}`,
+        documentId: p.prNumber,
+        documentType: 'PR' as const,
+        requester: `${p.requesterName} (${p.department})`,
+        requestDate: p.requestDate,
+        amount: p.totalAmount,
+        status: (p.status === 'Rejected' ? 'Rejected' : 'Approved') as 'Approved' | 'Rejected',
+        level: 1,
+        actionStatus: (p.status === 'Rejected' ? 'Rejected' : 'Approved') as 'Approved' | 'Rejected',
+        actionDate: p.signatures?.approvedBy?.date || p.requestDate,
+        prData: p
+      }));
+  }, [prs]);
   const [activeTab, setActiveTab] = useState<'pending' | 'history'>('pending');
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const [confirmState, setConfirmState] = useState<{
@@ -133,8 +133,14 @@ export function ApprovalPage() {
     if (!task) return;
 
     if (confirmState.action === 'approve') {
-      setTasks(tasks.filter(t => t.id !== confirmState.taskId));
-      setHistoryTasks(prev => [{ ...task, actionStatus: 'Approved', actionDate: new Date().toISOString() }, ...prev]);
+      if (task.documentType === 'PR' && task.prData) {
+        approvePR(
+          task.prData.id,
+          currentUser.name || 'ผู้อำนวยการสายงานโครงการ',
+          currentUser.role || 'Project Director',
+          'อนุมัติผ่านระบบเรียบร้อยตาม BOQ'
+        );
+      }
       addNotification({
         title: isEnglish ? `PR Approved: ${task.documentId}` : `อนุมัติสำเร็จ: ${task.documentId}`,
         message: isEnglish ? `Purchase request for ${(task.amount ?? 0).toLocaleString()} THB has been approved.` : `ใบขอซื้อมูลค่า ${(task.amount ?? 0).toLocaleString()} บาท ได้รับการอนุมัติแล้ว`,
@@ -143,8 +149,14 @@ export function ApprovalPage() {
       });
       alert(isEnglish ? `Document approved successfully` : `อนุมัติเอกสารเรียบร้อยแล้ว`);
     } else {
-      setTasks(tasks.filter(t => t.id !== confirmState.taskId));
-      setHistoryTasks(prev => [{ ...task, actionStatus: 'Rejected', actionDate: new Date().toISOString() }, ...prev]);
+      if (task.documentType === 'PR' && task.prData) {
+        rejectPR(
+          task.prData.id,
+          currentUser.name || 'ผู้อำนวยการสายงานโครงการ',
+          currentUser.role || 'Project Director',
+          'ปฏิเสธเอกสาร'
+        );
+      }
       addNotification({
         title: isEnglish ? `PR Rejected: ${task.documentId}` : `ปฏิเสธเอกสาร: ${task.documentId}`,
         message: isEnglish ? `Purchase request ${task.documentId} was rejected.` : `ใบขอซื้อ ${task.documentId} ถูกปฏิเสธ`,

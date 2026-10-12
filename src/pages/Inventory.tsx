@@ -8,17 +8,13 @@ import { DetailsModal } from '../components/DetailsModal';
 import { exportToPDF } from '../lib/pdf';
 import * as xlsx from 'xlsx';
 import { useLanguage } from '../contexts/LanguageContext';
-
-const INITIAL_MOCK_INVENTORY: InventoryItem[] = [
-  { id: '1', code: 'MAT-CEM-01', name: 'ปูนซีเมนต์ปอร์ตแลนด์ (ตราช้าง)', category: 'วัสดุก่อสร้าง', quantity: 450, unit: 'ถุง', minStockLevel: 100, location: 'ไซโล 1', unitPrice: 155 },
-  { id: '2', code: 'MAT-STL-24', name: 'เหล็กเส้นกลม SR24', category: 'วัสดุก่อสร้าง', quantity: 15, unit: 'ตัน', minStockLevel: 20, location: 'ลานเก็บ B', unitPrice: 24500 },
-  { id: '3', code: 'TOL-DRL-01', name: 'สว่านโรตารี่', category: 'เครื่องมือช่าง', quantity: 2, unit: 'เครื่อง', minStockLevel: 5, location: 'ห้องช่าง', unitPrice: 3850 },
-  { id: '4', code: 'SAF-HLM-01', name: 'หมวกนิรภัย', category: 'อุปกรณ์เซฟตี้', quantity: 120, unit: 'ใบ', minStockLevel: 50, location: 'ห้องสโตร์', unitPrice: 280 },
-];
+import { useProcurement } from '../contexts/ProcurementContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export function InventoryPage() {
   const { t, isEnglish } = useLanguage();
-  const [inventory, setInventory] = useState<InventoryItem[]>(INITIAL_MOCK_INVENTORY);
+  const { inventory, addInventoryItem, updateInventoryItem, transactInventory } = useProcurement();
+  const { currentUser } = useAuth();
   const [isTransactOpen, setIsTransactOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [countItem, setCountItem] = useState<InventoryItem | null>(null);
@@ -68,7 +64,7 @@ export function InventoryPage() {
           unitPrice: Number(row.unitPrice || row['ราคา'] || 0),
         }));
 
-        setInventory(prev => [...prev, ...newItems]);
+        newItems.forEach(item => addInventoryItem(item));
         alert(`นำเข้าข้อมูล ${newItems.length} รายการสำเร็จ`);
       } catch (err) {
         console.error("Error importing file:", err);
@@ -83,40 +79,31 @@ export function InventoryPage() {
   };
 
   const handleTransaction = (data: any) => {
-    let updatedInventory = [...inventory];
-    if (data.type === 'receive' || data.type === 'issue') {
-      updatedInventory = updatedInventory.map(item => {
-        if (item.id === data.itemId) {
-          let newQty = item.quantity;
-          if (data.type === 'receive') newQty += data.quantity;
-          if (data.type === 'issue') newQty -= data.quantity;
-          return { ...item, quantity: newQty };
-        }
-        return item;
-      });
+    if (data.type === 'receive') {
+      transactInventory(data.itemId, data.quantity, 'IN', data.note || 'รับเข้าคลัง');
+    } else if (data.type === 'issue') {
+      transactInventory(data.itemId, data.quantity, 'OUT', data.note || 'เบิกใช้งาน');
     } else if (data.type === 'transfer') {
-      // Find source item
-      const sourceItem = updatedInventory.find(i => i.id === data.itemId);
+      const sourceItem = inventory.find(i => i.id === data.itemId);
       if (sourceItem) {
-        // Deduct from source
-        updatedInventory = updatedInventory.map(item => 
-          item.id === data.itemId ? { ...item, quantity: item.quantity - data.quantity } : item
-        );
-        // Find if target location already has this item code
-        const targetItemIndex = updatedInventory.findIndex(i => i.code === sourceItem.code && i.location === data.location);
-        if (targetItemIndex >= 0) {
-          updatedInventory[targetItemIndex] = { ...updatedInventory[targetItemIndex], quantity: updatedInventory[targetItemIndex].quantity + data.quantity };
+        transactInventory(data.itemId, data.quantity, 'OUT', `โอนย้ายไปยัง ${data.location}`);
+        const targetItem = inventory.find(i => i.code === sourceItem.code && i.location === data.location);
+        if (targetItem) {
+          transactInventory(targetItem.id, data.quantity, 'IN', `รับโอนจาก ${sourceItem.location}`);
         } else {
-          updatedInventory.push({
-            ...sourceItem,
-            id: Math.random().toString(36).substr(2, 9),
+          addInventoryItem({
+            code: sourceItem.code,
+            name: sourceItem.name,
+            category: sourceItem.category,
+            quantity: data.quantity,
+            unit: sourceItem.unit,
+            minStockLevel: sourceItem.minStockLevel,
             location: data.location,
-            quantity: data.quantity
+            unitPrice: sourceItem.unitPrice
           });
         }
       }
     }
-    setInventory(updatedInventory);
     alert(`บันทึกรายการ${data.type === 'receive' ? 'รับ' : data.type === 'issue' ? 'เบิก' : 'โอน'}เรียบร้อย`);
     setIsTransactOpen(false);
   };
@@ -151,9 +138,8 @@ export function InventoryPage() {
     }, 250);
   };
 
-
   const handlePhysicalCount = (itemId: string, newQuantity: number, note: string) => {
-    setInventory(inventory.map(item => item.id === itemId ? { ...item, quantity: newQuantity } : item));
+    transactInventory(itemId, newQuantity, 'ADJUST', note || 'ตรวจนับยอดคงเหลือจริงหน้างาน');
     alert('บันทึกยอดตรวจนับเรียบร้อย');
     setCountItem(null);
   };

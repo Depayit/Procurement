@@ -29,6 +29,8 @@ import { StandardPRDocument } from '../components/StandardPRDocument';
 import { exportToPDF, printA4Document } from '../lib/pdf';
 import { getAllTemplates } from '../data/prTemplates';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useProcurement } from '../contexts/ProcurementContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const INITIAL_MOCK_PRS: PurchaseRequest[] = [
   {
@@ -186,7 +188,8 @@ const urgencyBadges: Record<string, { label: string; color: string }> = {
 
 export function PurchaseRequestPage() {
   const { t, isThai, isEnglish } = useLanguage();
-  const [prs, setPrs] = useState<PurchaseRequest[]>(INITIAL_MOCK_PRS);
+  const { prs, createPR, updatePR, deletePR } = useProcurement();
+  const { currentUser } = useAuth();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -258,12 +261,11 @@ export function PurchaseRequestPage() {
   const handleSavePR = (data: any) => {
     if (editingPR && editingPR.id && !editingPR.id.startsWith('tpl-')) {
       // Update existing
-      setPrs(prs.map(p => p.id === editingPR.id ? { 
-        ...p, 
+      updatePR(editingPR.id, {
         department: data.department, 
         projectCode: data.projectCode,
-        requesterName: data.requesterName,
-        requesterPosition: data.requesterPosition,
+        requesterName: data.requesterName || editingPR.requesterName,
+        requesterPosition: data.requesterPosition || editingPR.requesterPosition,
         contactPhone: data.contactPhone,
         deliveryLocation: data.deliveryLocation,
         requiredDate: data.requiredDate,
@@ -274,57 +276,32 @@ export function PurchaseRequestPage() {
         vatAmount: data.vatAmount,
         totalAmount: data.totalAmount, 
         items: data.items 
-      } : p));
+      });
       alert(`แก้ไขใบขอซื้อ ${editingPR.prNumber} เรียบร้อยแล้ว`);
     } else {
-      // Create new
-      const nextNum = prs.length + 1;
-      const formattedNum = `PR-2025-${String(nextNum).padStart(3, '0')}`;
-      const newPR: PurchaseRequest = {
-        id: `pr-${Date.now()}`,
-        prNumber: formattedNum,
-        requesterName: data.requesterName || 'สมปอง จัดซื้อ',
-        requesterPosition: data.requesterPosition || 'วิศวกรควบคุมงาน',
-        contactPhone: data.contactPhone || '089-123-4567',
-        department: data.department,
-        projectCode: data.projectCode || 'PRJ-MAIN-01',
-        deliveryLocation: data.deliveryLocation,
-        requestDate: new Date().toISOString(),
-        requiredDate: data.requiredDate || new Date().toISOString(),
-        urgency: data.urgency || 'normal',
-        status: 'Draft',
-        justification: data.justification,
-        suggestedVendor: data.suggestedVendor,
-        includeVat: data.includeVat ?? true,
-        vatAmount: data.vatAmount || 0,
-        totalAmount: data.totalAmount,
-        items: data.items,
-        signatures: {
-          requestedBy: {
-            name: data.requesterName || 'สมปอง จัดซื้อ',
-            position: data.requesterPosition || 'วิศวกรควบคุมงาน',
-            date: new Date().toISOString(),
-            signed: true
-          }
-        }
-      };
-      setPrs([newPR, ...prs]);
-      alert(`สร้างใบขอซื้อมาตรฐานเลขที่ ${newPR.prNumber} สำเร็จ (บันทึกในสถานะ ร่าง)`);
+      // Create new through unified store
+      const created = createPR({
+        ...data,
+        requesterName: data.requesterName || currentUser.name || 'สมชาย ช่างก่อสร้าง',
+        requesterPosition: data.requesterPosition || currentUser.role || 'วิศวกรสนาม',
+        status: data.status || 'Draft',
+      });
+      alert(`สร้างใบขอซื้อมาตรฐานเลขที่ ${created.prNumber} สำเร็จ (บันทึกในสถานะ ${created.status === 'Pending Approval' ? 'รออนุมัติ' : 'ร่าง'})`);
     }
     setIsModalOpen(false);
   };
 
   const handleDelete = () => {
     if (deleteId) {
-      setPrs(prs.filter(p => p.id !== deleteId));
-      alert('ลบเอกสารแบบร่างเรียบร้อยแล้ว');
+      deletePR(deleteId);
+      alert('ลบเอกสารเรียบร้อยแล้ว');
     }
     setDeleteId(null);
   };
 
   const handleCancel = () => {
     if (cancelId) {
-      setPrs(prs.map(p => p.id === cancelId ? { ...p, status: 'Rejected' } : p));
+      updatePR(cancelId, { status: 'Rejected' });
       alert('ยกเลิกเอกสารเรียบร้อยแล้ว');
     }
     setCancelId(null);
