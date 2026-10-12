@@ -20,20 +20,25 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
+import { cn } from '../lib/utils';
 
 export function Dashboard() {
   const { t, isEnglish } = useLanguage();
-  const { prs, pos, inventory, approvalTasks } = useProcurement();
+  const { prs = [], pos = [], inventory = [], approvalTasks = [] } = useProcurement() || {};
+
+  const safePRs = Array.isArray(prs) ? prs : [];
+  const safePOs = Array.isArray(pos) ? pos : [];
+  const safeInventory = Array.isArray(inventory) ? inventory : [];
+  const safeApprovalTasks = Array.isArray(approvalTasks) ? approvalTasks : [];
 
   // Dynamic KPI Metrics
-  const totalPRCount = prs.length;
-  const pendingApprovalCount = approvalTasks.length;
-  const lowStockCount = inventory.filter(item => item.quantity <= item.minStockLevel).length;
-  const activePOCount = pos.filter(po => po.status !== 'Completed' && po.status !== 'Cancelled').length;
+  const totalPRCount = safePRs.length;
+  const pendingApprovalCount = safeApprovalTasks.length;
+  const lowStockCount = safeInventory.filter(item => item && (item.quantity ?? 0) <= (item.minStockLevel ?? 0)).length;
+  const activePOCount = safePOs.filter(po => po && po.status !== 'Completed' && po.status !== 'Cancelled').length;
 
   // Monthly aggregated data from real items
   const chartData = useMemo(() => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const baseMonthData = [
       { name: 'Jan', pr: 85000, po: 65000 },
       { name: 'Feb', pr: 120000, po: 95000 },
@@ -44,8 +49,8 @@ export function Dashboard() {
     ];
 
     // Add current real PR/PO totals to May / Jun
-    const currentPRTotal = prs.reduce((sum, p) => sum + (p.totalAmount || 0), 0);
-    const currentPOTotal = pos.reduce((sum, p) => sum + (p.totalAmount || 0), 0);
+    const currentPRTotal = safePRs.reduce((sum, p) => sum + (p?.totalAmount || 0), 0);
+    const currentPOTotal = safePOs.reduce((sum, p) => sum + (p?.totalAmount || 0), 0);
 
     baseMonthData[4].pr = Math.round(currentPRTotal * 0.6);
     baseMonthData[4].po = Math.round(currentPOTotal * 0.55);
@@ -53,32 +58,38 @@ export function Dashboard() {
     baseMonthData[5].po = Math.round(currentPOTotal * 0.45);
 
     return baseMonthData;
-  }, [prs, pos]);
+  }, [safePRs, safePOs]);
 
   // Dynamic Recent Activity list
   const recentActivities = useMemo(() => {
-    const prItems = prs.slice(0, 3).map(p => ({
-      id: p.prNumber,
-      type: 'PR',
-      desc: p.items[0]?.description ? `${p.items[0].description} (${p.items.length} รายการ)` : p.justification || 'รายการวัสดุโครงการ',
-      amount: `${(p.totalAmount || 0).toLocaleString()} THB`,
-      req: p.department || p.requesterName,
-      status: p.status,
-      link: '/pr'
-    }));
+    const prItems = safePRs.slice(0, 3).map(p => {
+      const itemsList = Array.isArray(p?.items) ? p.items : [];
+      const firstItemDesc = itemsList[0]?.description;
+      return {
+        id: p?.prNumber || 'PR-N/A',
+        type: 'PR' as const,
+        desc: firstItemDesc 
+          ? `${firstItemDesc} (${itemsList.length} รายการ)` 
+          : p?.justification || 'รายการวัสดุโครงการ',
+        amount: `${(p?.totalAmount || 0).toLocaleString()} THB`,
+        req: p?.department || p?.requesterName || '-',
+        status: p?.status || 'Draft',
+        link: '/pr'
+      };
+    });
 
-    const poItems = pos.slice(0, 2).map(po => ({
-      id: po.poNumber,
-      type: 'PO',
-      desc: po.poDescription || `สั่งซื้อจาก ${po.vendorName}`,
-      amount: `${(po.totalAmount || 0).toLocaleString()} THB`,
-      req: po.vendorName,
-      status: po.status,
+    const poItems = safePOs.slice(0, 2).map(po => ({
+      id: po?.poNumber || 'PO-N/A',
+      type: 'PO' as const,
+      desc: po?.poDescription || `สั่งซื้อจาก ${po?.vendorName || '-'}`,
+      amount: `${(po?.totalAmount || 0).toLocaleString()} THB`,
+      req: po?.vendorName || '-',
+      status: po?.status || 'Draft',
       link: '/po'
     }));
 
     return [...prItems, ...poItems];
-  }, [prs, pos]);
+  }, [safePRs, safePOs]);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
