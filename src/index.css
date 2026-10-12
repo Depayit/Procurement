@@ -6,6 +6,13 @@
 }
 
 /* Global Typography & Line Breaking Balance */
+html {
+  /* Calibrated scale for desktop enterprise density matching user reference (80%) */
+  @media (min-width: 1024px) {
+    zoom: 80%;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
@@ -218,6 +225,33 @@ p, span, td, th {
 
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ==========================================================================
+   MODERN ULTRA-SLIM SCROLLBARS
+   Prevents bulky OS scrollbars from cluttering dense enterprise layouts
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
 .safe-x {

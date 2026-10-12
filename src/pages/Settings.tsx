@@ -36,7 +36,8 @@ import {
   Mail,
   MapPin,
   Cloud,
-  ExternalLink
+  ExternalLink,
+  Monitor
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -69,6 +70,27 @@ export function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  // UI Scale State
+  const [uiScale, setUiScale] = useState(() => {
+    try {
+      return localStorage.getItem('procuresync_ui_scale') || '80%';
+    } catch {
+      return '80%';
+    }
+  });
+
+  const handleScaleChange = (scale: string) => {
+    setUiScale(scale);
+    try {
+      localStorage.setItem('procuresync_ui_scale', scale);
+    } catch {
+      // ignore
+    }
+    if (window.innerWidth >= 1024) {
+      document.documentElement.style.zoom = scale;
+    }
+  };
 
   // Company Profile State
   const [companyForm, setCompanyForm] = useState(companyProfile);
@@ -315,6 +337,17 @@ export function SettingsPage() {
             >
               <Cloud className="h-4 w-4 mr-3" />
               {isEnglish ? 'Cloud & Plugins' : 'เชื่อมต่อคลาวด์/API'}
+            </button>
+            <button
+              onClick={() => setActiveTab('display')}
+              className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === 'display' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <Monitor className="h-4 w-4 mr-3" />
+              {isEnglish ? 'Display & UI Scale' : 'ขนาดหน้าจอ / UI Scale'}
             </button>
           </nav>
         </div>
@@ -1615,6 +1648,99 @@ export function SettingsPage() {
                   <Link to="/integrations" className="text-xs font-semibold text-indigo-600 hover:underline block pt-1">
                     สร้างไฟล์สำรองข้อมูล &rarr;
                   </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'display' && (
+            <div className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-slate-800">
+                  {isEnglish ? 'Display Scale & UI Density' : 'ขนาดการแสดงผลระบบ (UI Scale)'}
+                </h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  {isEnglish 
+                    ? 'Adjust the overall system sizing and scale for your display, laptop, or monitor.' 
+                    : 'ปรับสเกลขนาดของระบบทั้งระบบให้พอดีกับขนาดหน้าจอ แล็ปท็อป หรือจอมอนิเตอร์ของคุณ'}
+                </p>
+              </div>
+              <hr className="border-slate-100" />
+
+              <div className="space-y-4">
+                <label className="text-sm font-semibold text-slate-700 block">
+                  {isEnglish ? 'Select System Scale' : 'เลือกระดับขนาดการแสดงผล:'}
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    { 
+                      scale: '80%', 
+                      label: '80% Ultra Compact', 
+                      desc: isEnglish 
+                        ? 'Recommended reference size — perfectly fits laptop screens without overflow or truncation. Complete cards and tables visible.'
+                        : 'ขนาดตามตัวอย่างที่แนะนำ — พอดีกับหน้าจอแล็ปท็อป ไม่ล้น ไม่ตัดทอนคำ การ์ดและตารางแสดงผลครบถ้วน',
+                      tag: isEnglish ? 'Reference (Recommended)' : 'ตามตัวอย่าง (แนะนำ)'
+                    },
+                    { 
+                      scale: '85%', 
+                      label: '85% Balanced Compact', 
+                      desc: isEnglish 
+                        ? 'Balanced compact size — crisp typography and comfortable spacing.'
+                        : 'ขนาดกะทัดรัดสมดุล — ตัวอักษรกำลังพอดีตา รายละเอียดครบ',
+                      tag: isEnglish ? 'Balanced' : 'สมดุล'
+                    },
+                    { 
+                      scale: '90%', 
+                      label: '90% Medium', 
+                      desc: isEnglish 
+                        ? 'Medium size — suitable for larger 24-27 inch monitors.'
+                        : 'ขนาดปานกลาง — สำหรับจอขนาดใหญ่ 24-27 นิ้ว',
+                      tag: isEnglish ? 'Large Monitor' : 'จอใหญ่'
+                    },
+                    { 
+                      scale: '100%', 
+                      label: '100% Standard', 
+                      desc: isEnglish 
+                        ? 'Default full scale view.'
+                        : 'ขนาดเริ่มต้นปกติแบบเต็มสเกล',
+                      tag: isEnglish ? 'Default' : 'ค่าเริ่มต้น'
+                    },
+                  ].map((item) => (
+                    <div 
+                      key={item.scale}
+                      onClick={() => handleScaleChange(item.scale)}
+                      className={cn(
+                        "p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between",
+                        uiScale === item.scale 
+                          ? "border-indigo-600 bg-indigo-50/50 shadow-xs" 
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      )}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            {item.label}
+                            {uiScale === item.scale && <Check className="w-4 h-4 text-indigo-600" />}
+                          </span>
+                          <span className={cn(
+                            "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                            uiScale === item.scale 
+                              ? "bg-indigo-600 text-white" 
+                              : "bg-slate-100 text-slate-600"
+                          )}>
+                            {item.tag}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          {item.desc}
+                        </p>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                        <span>Desktop & Laptop</span>
+                        <span>zoom: {item.scale}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
