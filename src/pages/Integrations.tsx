@@ -136,7 +136,7 @@ export function IntegrationsPage() {
   };
 
   return (
-    <div className="space-y-6 pb-16 max-w-6xl mx-auto">
+    <div className="space-y-6 pb-16 w-full">
       {/* MVP Mock Sandbox Notice */}
       <div className="bg-amber-500/10 border border-amber-500/30 text-amber-950 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-3">

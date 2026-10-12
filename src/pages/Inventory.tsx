@@ -274,42 +274,54 @@ export function InventoryPage() {
 
       {/* Central Warehouse Architecture Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 border border-slate-800 shadow-sm relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <span className="p-1 rounded bg-indigo-500/30 text-indigo-300">
-                <Building2 className="w-4 h-4" />
+        <div className="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center relative z-10">
+          
+          {/* Left Column: Title & Architecture Explanation (7 cols) */}
+          <div className="lg:col-span-7 space-y-2">
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 rounded-xl bg-indigo-500/30 text-indigo-300 border border-indigo-400/30 shrink-0">
+                <Building2 className="w-5 h-5" />
               </span>
-              <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                สถาปัตยกรรมคลังพัสดุก่อสร้างกลาง (Central Construction Material Hub • Site Requisition)
-              </h2>
+              <div>
+                <h2 className="text-sm sm:text-base font-bold text-white tracking-wide" style={{ textWrap: 'pretty' }}>
+                  สถาปัตยกรรมคลังพัสดุก่อสร้างกลาง
+                </h2>
+                <p className="text-[11px] text-indigo-300 font-medium">
+                  Central Construction Material Hub • Site Requisition & Real-time Sync
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+            <p className="text-xs text-slate-300 leading-relaxed pr-0 lg:pr-2">
               พัสดุและวัสดุก่อสร้างทั้งหมดถูกควบคุมอยู่ที่ <strong>คลังพัสดุก่อสร้างกลางแห่งเดียว</strong> โดยใช้ <strong>Master SKU Barcode (Code 128)</strong> เป็นรหัสมาตรฐาน เมื่อวิศวกรหรือโฟร์แมนทำรายการเบิกจ่ายไปหน้างาน หรือตรวจรับพัสดุเข้าคลังจากใบสั่งซื้อ (PO Receipt) สต็อกจริงในคลังกลางจะถูกอัปเดตแบบ Real-time ทันที
             </p>
           </div>
 
-          {/* Connected Project Sites Badge Group */}
-          <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/15 shrink-0">
-            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-300" />
-              ไซต์งานและโครงการที่เชื่อมโยงเบิกใช้วัสดุ (Active Project Sites):
-            </span>
+          {/* Right Column: Connected Project Sites Group (5 cols) */}
+          <div className="lg:col-span-5 bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-white/15">
+            <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-white/10">
+              <span className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                ไซต์งานและโครงการที่เชื่อมโยงเบิกใช้วัสดุ
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-mono">
+                5 Sites Active
+              </span>
+            </div>
             <div className="flex flex-wrap items-center gap-1.5">
               {[
-                { name: 'โครงการ คอนโดสุขุมวิท 101', color: 'bg-indigo-500/20 text-indigo-200 border-indigo-500/40' },
-                { name: 'โครงการ โรงพยาบาลบางนา', color: 'bg-cyan-500/20 text-cyan-200 border-cyan-500/40' },
-                { name: 'โครงการ อาคารสำนักงานพระราม 9', color: 'bg-blue-500/20 text-blue-200 border-blue-500/40' },
+                { name: 'คอนโดสุขุมวิท 101', color: 'bg-indigo-500/20 text-indigo-200 border-indigo-500/40' },
+                { name: 'โรงพยาบาลบางนา', color: 'bg-cyan-500/20 text-cyan-200 border-cyan-500/40' },
+                { name: 'อาคารสำนักงานพระราม 9', color: 'bg-blue-500/20 text-blue-200 border-blue-500/40' },
                 { name: 'งานระบบ MEP & เครื่องมือช่าง', color: 'bg-amber-500/20 text-amber-200 border-amber-500/40' },
                 { name: 'งานโครงสร้างและวิศวกรรมฐานราก', color: 'bg-emerald-500/20 text-emerald-200 border-emerald-500/40' },
               ].map(p => (
                 <span 
                   key={p.name}
-                  className={cn("inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md border", p.color)}
+                  className={cn("inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md border", p.color)}
                 >
-                  <CheckCircle2 className="w-2.5 h-2.5" />
-                  {p.name}
+                  <CheckCircle2 className="w-2.5 h-2.5 shrink-0" />
+                  <span className="whitespace-nowrap">{p.name}</span>
                 </span>
               ))}
             </div>

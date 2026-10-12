@@ -116,7 +116,7 @@ export function ReportsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
+    <div className="space-y-6 animate-in fade-in duration-500 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
