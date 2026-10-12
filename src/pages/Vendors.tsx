@@ -139,10 +139,19 @@ export function VendorsPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('vendors.title')}</h1>
-          <p className="text-sm text-slate-500 mt-1">{t('vendors.subtitle')}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              {t('vendors.title')}
+            </h1>
+            <span className="heading-badge heading-badge-primary shadow-2xs">
+              {isEnglish ? 'Approved Vendors' : 'ทะเบียนคู่ค้าและผู้รับเหมา'}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+            {t('vendors.subtitle')}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Link

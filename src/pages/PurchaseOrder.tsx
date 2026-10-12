@@ -458,33 +458,44 @@ export function PurchaseOrderPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('po.title')}</h1>
-          <p className="text-sm text-slate-500 mt-1">{t('po.subtitle')}</p>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              {t('po.title')}
+            </h1>
+            <span className="heading-badge heading-badge-emerald shadow-2xs">
+              {isEnglish ? 'PO Issuance & Logistics' : 'ระบบออกใบสั่งซื้อและตรวจรับ'}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+            {t('po.subtitle')}
+          </p>
         </div>
-        <button 
-          onClick={() => {
-            if (!canCreatePO) {
-              alert(isEnglish 
-                ? `Permission Denied: Your current role (${currentUser.role}) does not have permission to issue POs.` 
-                : `ไม่มีสิทธิ์: ตำแหน่งปัจจุบันของคุณ (${currentUser.role}) ไม่ได้รับอนุญาตให้ออกใบสั่งซื้อ (PO)`);
-              return;
-            }
-            setIsCreating(true);
-          }}
-          disabled={!canCreatePO}
-          className={cn(
-            "inline-flex items-center justify-center rounded-xl text-sm font-semibold h-10 px-4 py-2 shadow-xs transition-colors",
-            canCreatePO 
-              ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" 
-              : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60"
-          )}
-          title={!canCreatePO ? (isEnglish ? 'Requires Purchasing Staff / Manager / Admin role' : 'ต้องได้รับสิทธิ์ฝ่ายจัดซื้อหรือแอดมิน') : undefined}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          {isEnglish ? 'Create PO (from PR)' : 'สร้าง PO (จากใบ PR)'}
-        </button>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button 
+            onClick={() => {
+              if (!canCreatePO) {
+                alert(isEnglish 
+                  ? `Permission Denied: Your current role (${currentUser.role}) does not have permission to issue POs.` 
+                  : `ไม่มีสิทธิ์: ตำแหน่งปัจจุบันของคุณ (${currentUser.role}) ไม่ได้รับอนุญาตให้ออกใบสั่งซื้อ (PO)`);
+                return;
+              }
+              setIsCreating(true);
+            }}
+            disabled={!canCreatePO}
+            className={cn(
+              "inline-flex items-center justify-center rounded-xl text-xs sm:text-sm font-semibold h-10 px-4 py-2 shadow-xs transition-colors",
+              canCreatePO 
+                ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" 
+                : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60"
+            )}
+            title={!canCreatePO ? (isEnglish ? 'Requires Purchasing Staff / Manager / Admin role' : 'ต้องได้รับสิทธิ์ฝ่ายจัดซื้อหรือแอดมิน') : undefined}
+          >
+            <Plus className="mr-1.5 h-4 w-4" />
+            {isEnglish ? 'Create PO (from PR)' : 'สร้าง PO (จากใบ PR)'}
+          </button>
+        </div>
       </div>
 
       {/* Upcoming Deliveries Notification Box */}

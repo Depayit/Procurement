@@ -117,10 +117,19 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('reports.title')}</h1>
-          <p className="text-sm text-slate-500 mt-1">{t('reports.subtitle')}</p>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              {t('reports.title')}
+            </h1>
+            <span className="heading-badge heading-badge-primary shadow-2xs">
+              {isEnglish ? 'Analytics & BI' : 'ศูนย์วิเคราะห์และสถิติ'}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+            {t('reports.subtitle')}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center bg-white border border-slate-200 rounded-lg p-1 shadow-sm">

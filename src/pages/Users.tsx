@@ -300,16 +300,18 @@ export function UsersPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t('users.title')}</h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              {t('users.title')}
+            </h1>
+            <span className="heading-badge heading-badge-primary shadow-2xs">
               <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
               RBAC Enterprise
             </span>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
             {isEnglish 
               ? 'Role-Based Access Control, Granular Permission Matrix, and User Management' 
               : 'กำหนดบทบาทแต่ละตำแหน่ง การมอบหมายสิทธิ์ของแอดมิน และควบคุมความปลอดภัยทั้งระบบ'}

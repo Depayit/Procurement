@@ -313,11 +313,11 @@ export function DataImportHub() {
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 {isEnglish ? 'Universal Data Import & Integration Hub' : 'ศูนย์นำเข้าข้อมูลและผสานระบบองค์กร'}
               </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <Sparkles className="w-3 h-3 text-emerald-600" />
+              <span className="heading-badge heading-badge-emerald shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 {isEnglish ? 'AI Auto-Detect & Map' : 'ระบบจับคู่อัตโนมัติ'}
               </span>
             </div>
