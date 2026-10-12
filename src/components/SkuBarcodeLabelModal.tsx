@@ -13,7 +13,8 @@ import {
   Sliders,
   CheckCircle2,
   Box,
-  Share2
+  Share2,
+  Building2
 } from 'lucide-react';
 import { SkuBarcode, generateBarcodeDataUrl } from './SkuBarcode';
 import type { InventoryItem } from '../types';
@@ -39,7 +40,7 @@ export function SkuBarcodeLabelModal({
   const [barcodeFormat, setBarcodeFormat] = useState<'CODE128' | 'EAN13' | 'CODE39'>('CODE128');
   const [showPrice, setShowPrice] = useState<boolean>(true);
   const [showLocation, setShowLocation] = useState<boolean>(true);
-  const [showPlatforms, setShowPlatforms] = useState<boolean>(true);
+  const [showProjects, setShowProjects] = useState<boolean>(true);
   const [copiedSku, setCopiedSku] = useState<boolean>(false);
 
   // Compute Master SKU and Barcode values
@@ -53,14 +54,14 @@ export function SkuBarcodeLabelModal({
     return item.barcode || item.sku || item.code;
   }, [item]);
 
-  const connectedPlatforms = useMemo(() => {
-    if (!item?.platforms || item.platforms.length === 0) {
-      return ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน'];
+  const connectedProjects = useMemo(() => {
+    if (!item?.projectAllocations || item.projectAllocations.length === 0) {
+      return ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา', 'สโตร์กลาง'];
     }
-    return item.platforms;
+    return item.projectAllocations;
   }, [item]);
 
-  const centralWarehouseName = item?.centralWarehouse || 'คลังสินค้ากลาง (Central WH)';
+  const centralWarehouseName = item?.centralWarehouse || 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)';
   const storageBin = item?.binLocation || item?.location || 'โซนจัดเก็บ A-01';
 
   if (!isOpen || !item) return null;
@@ -113,8 +114,8 @@ export function SkuBarcodeLabelModal({
       labelsHtml += `
         <div class="label-card ${template}">
           <div class="header-row">
-            <span class="wh-tag">CENTRAL WAREHOUSE • คลังกลาง</span>
-            <span class="hub-badge">SINGLE-HUB SYNC</span>
+            <span class="wh-tag">CENTRAL MATERIAL HUB • คลังพัสดุก่อสร้างกลาง</span>
+            <span class="hub-badge">CONSTRUCTION-HUB</span>
           </div>
 
           <div class="title-row">
@@ -139,10 +140,10 @@ export function SkuBarcodeLabelModal({
             ` : ''}
           </div>
 
-          ${showPlatforms ? `
-          <div class="platforms-row">
-            <span class="sync-title">MULTI-PLATFORM:</span>
-            ${connectedPlatforms.map(p => `<span class="platform-chip">${p}</span>`).join(' ')}
+          ${showProjects ? `
+          <div class="projects-row">
+            <span class="sync-title">PROJECT / SITE:</span>
+            ${connectedProjects.slice(0, 3).map(p => `<span class="project-chip">${p}</span>`).join(' ')}
           </div>
           ` : ''}
 
@@ -279,7 +280,7 @@ export function SkuBarcodeLabelModal({
               font-weight: 800;
               color: #047857;
             }
-            .platforms-row {
+            .projects-row {
               display: flex;
               align-items: center;
               gap: 2px;
@@ -294,7 +295,7 @@ export function SkuBarcodeLabelModal({
               color: #475569;
               font-size: 6px;
             }
-            .platform-chip {
+            .project-chip {
               background: #f8fafc;
               border: 0.5px solid #94a3b8;
               border-radius: 2px;
@@ -363,8 +364,8 @@ export function SkuBarcodeLabelModal({
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
                 {isEnglish 
-                  ? 'Single Central Warehouse • Synced across Multi-Platform Channels' 
-                  : 'คลังสินค้ามีที่เดียว • ซิงค์สต็อกกลางร่วมกับหลากหลายแพลตฟอร์ม (Shopee, Lazada, TikTok, POS)'}
+                  ? 'Central Construction Material Warehouse • Standard Barcodes for Project Site Requisition' 
+                  : 'คลังพัสดุก่อสร้างกลาง • ป้ายบาร์โค้ดมาตรฐานสำหรับจัดเก็บและเบิกจ่ายไปยังไซต์งาน/โครงการ'}
               </p>
             </div>
           </div>
@@ -379,17 +380,17 @@ export function SkuBarcodeLabelModal({
         {/* Modal Body */}
         <div className="p-5 overflow-y-auto space-y-5 flex-1">
           
-          {/* Central Warehouse & Multi-Platform Banner */}
+          {/* Central Warehouse Banner */}
           <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 rounded-xl shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <Store className="w-4 h-4 text-emerald-400" />
+                  <Building2 className="w-4 h-4 text-emerald-400" />
                   <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
                     {centralWarehouseName}
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-[11px] text-emerald-400 font-medium">Single Physical Inventory</span>
+                  <span className="text-[11px] text-emerald-400 font-medium">Single Construction Material Hub</span>
                 </div>
                 <div className="text-sm font-bold mt-1 text-white flex items-center gap-2">
                   <span>ตำแหน่งจัดเก็บ:</span>
@@ -399,16 +400,16 @@ export function SkuBarcodeLabelModal({
                 </div>
               </div>
               
-              {/* Connected Platforms Chips */}
+              {/* Connected Project Sites Chips */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-slate-300 font-medium mr-1">ซิงค์สต็อกกลาง:</span>
-                {connectedPlatforms.map((plat) => (
+                <span className="text-[11px] text-slate-300 font-medium mr-1">ไซต์งาน/โครงการที่เบิกใช้:</span>
+                {connectedProjects.map((proj) => (
                   <span 
-                    key={plat} 
+                    key={proj} 
                     className="inline-flex items-center gap-1 text-[11px] font-bold bg-white/15 text-white px-2 py-0.5 rounded-md border border-white/20"
                   >
                     <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                    {plat}
+                    {proj}
                   </span>
                 ))}
               </div>
@@ -505,12 +506,12 @@ export function SkuBarcodeLabelModal({
                       )}
                     </div>
 
-                    {/* Platforms Synced Badges */}
-                    {showPlatforms && (
+                    {/* Projects Allocated Badges */}
+                    {showProjects && (
                       <div className="border-t border-dashed border-slate-200 pt-1.5 flex items-center justify-between">
-                        <span className="text-[8px] font-bold text-slate-400 uppercase">Multi-Platform:</span>
+                        <span className="text-[8px] font-bold text-slate-400 uppercase">PROJECT / SITE:</span>
                         <div className="flex items-center gap-1 flex-wrap justify-end">
-                          {connectedPlatforms.slice(0, 4).map(p => (
+                          {connectedProjects.slice(0, 3).map(p => (
                             <span key={p} className="text-[8px] font-bold bg-slate-100 text-slate-700 px-1 py-0.2 rounded">
                               {p}
                             </span>
@@ -694,11 +695,11 @@ export function SkuBarcodeLabelModal({
                 <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={showPlatforms}
-                    onChange={(e) => setShowPlatforms(e.target.checked)}
+                    checked={showProjects}
+                    onChange={(e) => setShowProjects(e.target.checked)}
                     className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span>แสดงป้ายกำกับแพลตฟอร์มที่เชื่อมโยง (Multi-Platform)</span>
+                  <span>แสดงโครงการ/ไซต์งานที่เบิกใช้ (Allocated Projects)</span>
                 </label>
 
                 <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
@@ -716,9 +717,9 @@ export function SkuBarcodeLabelModal({
               <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-amber-900 text-xs leading-relaxed">
                 <span className="font-bold block flex items-center gap-1 text-amber-950">
                   <Box className="w-3.5 h-3.5 text-amber-700" />
-                  มาตรฐานคลังกลางระบบหลายแพลตฟอร์ม:
+                  มาตรฐานคลังพัสดุและวัสดุก่อสร้างกลาง:
                 </span>
-                แปะป้าย SKU Barcode ไว้ที่กล่องสินค้าหรือชั้นวาง เมื่อมีออเดอร์จาก Shopee, Lazada หรือ TikTok พนักงานที่โต๊ะแพ็คสามารถใช้เครื่องยิงบาร์โค้ดสแกน SKU นี้เพื่อตัดยอดสต็อกกลางและตรวจสอบความถูกต้องได้ทันที
+                แปะป้าย SKU Barcode ไว้ที่ชั้นวาง พาเลท หรือกล่องพัสดุก่อสร้าง เมื่อวิศวกรหรือโฟร์แมนทำใบเบิกพัสดุไปหน้างาน เจ้าหน้าที่คลังสามารถใช้เครื่องยิงบาร์โค้ดยิงสแกน SKU เพื่อตัดยอดสต็อกและยืนยันการจ่ายวัสดุไปยังไซต์งานได้อย่างถูกต้องทันที
               </div>
             </div>
           </div>

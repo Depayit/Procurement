@@ -1405,7 +1405,7 @@ export function SettingsPage() {
                   <ul className="text-slate-600 space-y-1 pl-5 list-disc text-[11.5px] leading-relaxed">
                     <li><strong>แบบฟอร์มเอกสารมาตรฐาน A4 ขาว/ดำ 100%:</strong> ทั้งใบขอซื้อ (PR) และใบสั่งซื้อ (PO) กำหนดพื้นหลังสีขาวบริสุทธิ์ ตัวอักษรและเส้นขอบสีดำ รองรับมาตรฐาน ISO 9001:2015</li>
                     <li><strong>ระบบสายการอนุมัติ (Approval Matrix):</strong> กำหนดขั้นตอน วงเงิน ตำแหน่ง และชื่อผู้มีอำนาจลงนามได้ยืดหยุ่น เชื่อมโยงตรงกับทุกแบบฟอร์ม</li>
-                    <li><strong>ระบบบาร์โค้ด Master SKU:</strong> รองรับการยิงสแกนบาร์โค้ด 1D Code 128 คลังสินค้าแกนกลาง เชื่อมโยงหลายแพลตฟอร์ม (Shopee, Lazada, TikTok Shop, POS)</li>
+                    <li><strong>คลังพัสดุและวัสดุก่อสร้างกลาง (Central Material Hub):</strong> รองรับการยิงสแกนบาร์โค้ด Master SKU (1D Code 128) จัดการและเบิกจ่ายวัสดุอุปกรณ์ไปยังโครงการและไซต์งานก่อสร้าง</li>
                   </ul>
                 </div>
               </div>

@@ -96,7 +96,7 @@ export interface ApprovalTask {
 export interface InventoryItem {
   id: string;
   code: string;
-  sku?: string;               // Master SKU (แกนกลางเชื่อมโยงทุกแพลตฟอร์ม)
+  sku?: string;               // Master SKU (รหัสพัสดุมาตรฐานคลังพัสดุก่อสร้างกลาง)
   barcode?: string;           // 1D Barcode (Code 128 / EAN สำหรับเครื่องยิงบาร์โค้ด)
   name: string;
   category: string;
@@ -105,8 +105,8 @@ export interface InventoryItem {
   minStockLevel: number;
   location: string;           // คลังสินค้า / ตำแหน่งจัดเก็บ
   binLocation?: string;       // โซนจัดเก็บย่อยในคลัง (เช่น Zone A-01 / Rack 2)
-  centralWarehouse?: string;  // คลังสินค้ากลาง (Single Central Warehouse Hub)
-  platforms?: string[];       // แพลตฟอร์มที่เชื่อมโยง เช่น ['Shopee', 'Lazada', 'TikTok Shop', 'POS']
+  centralWarehouse?: string;  // คลังพัสดุก่อสร้างกลาง (Central Construction Material Hub)
+  projectAllocations?: string[]; // โครงการ/ไซต์งานก่อสร้างที่เบิกใช้วัสดุนี้ เช่น ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา']
   unitPrice?: number;
 }
 

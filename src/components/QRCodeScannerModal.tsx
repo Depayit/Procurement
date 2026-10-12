@@ -600,21 +600,21 @@ export function QRCodeScannerModal({
                     </div>
                   </div>
 
-                  {/* Multi-Platform Central Warehouse Indicator */}
+                  {/* Construction Central Material Hub Indicator */}
                   <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
                     <div className="flex items-center justify-between text-[11px] mb-1">
-                      <span className="font-bold text-slate-600 flex items-center gap-1">
-                        <Store className="w-3 h-3 text-emerald-600" />
-                        {scannedResult.item.centralWarehouse || 'คลังสินค้ากลาง (Central WH)'}
+                      <span className="font-bold text-slate-700 flex items-center gap-1">
+                        <Store className="w-3.5 h-3.5 text-blue-600" />
+                        {scannedResult.item.centralWarehouse || 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)'}
                       </span>
-                      <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                        Single Physical Hub
+                      <span className="text-[10px] text-blue-700 font-semibold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                        Construction Central Hub
                       </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-1 pt-1 border-t border-slate-200/60">
-                      <span className="text-[10px] text-slate-400 font-medium">ตัดสต็อกร่วม:</span>
-                      {(scannedResult.item.platforms || ['Shopee', 'Lazada', 'TikTok Shop', 'POS']).map(p => (
-                        <span key={p} className="text-[9.5px] font-bold bg-white text-slate-700 px-1.5 py-0.2 rounded border border-slate-200">
+                    <div className="flex flex-wrap items-center gap-1 pt-1.5 border-t border-slate-200/60">
+                      <span className="text-[10px] text-slate-500 font-medium">โครงการ/ไซต์งานที่เบิกใช้:</span>
+                      {(scannedResult.item.projectAllocations || ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา', 'ไซต์งานทั่วไป']).map(p => (
+                        <span key={p} className="text-[9.5px] font-semibold bg-white text-slate-700 px-1.5 py-0.5 rounded border border-slate-200">
                           {p}
                         </span>
                       ))}

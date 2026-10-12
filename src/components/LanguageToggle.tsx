@@ -31,7 +31,7 @@ export function LanguageToggle({ variant = 'header', className }: LanguageToggle
   return (
     <div
       className={cn(
-        "inline-flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-semibold select-none shadow-xs",
+        "inline-flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-semibold select-none shadow-xs shrink-0",
         className
       )}
       role="group"
@@ -41,30 +41,30 @@ export function LanguageToggle({ variant = 'header', className }: LanguageToggle
         type="button"
         onClick={() => setLanguage('th')}
         className={cn(
-          "px-2.5 py-1 rounded-md transition-all flex items-center gap-1.5 text-xs",
+          "px-1.5 sm:px-2.5 py-1 rounded-md transition-all flex items-center gap-1 text-xs whitespace-nowrap",
           language === 'th'
             ? "bg-white text-indigo-700 shadow-xs font-bold border border-slate-200/60"
             : "text-slate-600 hover:text-slate-900"
         )}
         title="สลับเป็นภาษาไทย"
       >
-        <span className="text-[13px] leading-none">🇹🇭</span>
-        <span>ไทย</span>
+        <span className="text-[12px] sm:text-[13px] leading-none">🇹🇭</span>
+        <span className="hidden sm:inline">ไทย</span>
       </button>
 
       <button
         type="button"
         onClick={() => setLanguage('en')}
         className={cn(
-          "px-2.5 py-1 rounded-md transition-all flex items-center gap-1.5 text-xs",
+          "px-1.5 sm:px-2.5 py-1 rounded-md transition-all flex items-center gap-1 text-xs whitespace-nowrap",
           language === 'en'
             ? "bg-white text-indigo-700 shadow-xs font-bold border border-slate-200/60"
             : "text-slate-600 hover:text-slate-900"
         )}
         title="Switch to English"
       >
-        <span className="text-[13px] leading-none">🇬🇧</span>
-        <span>EN</span>
+        <span className="text-[12px] sm:text-[13px] leading-none">🇬🇧</span>
+        <span className="hidden sm:inline">EN</span>
       </button>
     </div>
   );

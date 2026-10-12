@@ -380,24 +380,24 @@ export function ManualPage() {
     },
     {
       id: 'inventory',
-      title: '4. คลังสินค้ากลางและระบบบาร์โค้ด SKU (Central Warehouse & SKU Barcode)',
-      titleEn: '4. Central Warehouse & Master SKU Barcode Scanner',
+      title: '4. คลังพัสดุและวัสดุก่อสร้างกลางและระบบบาร์โค้ด SKU (Central Construction Material Hub & SKU Barcode)',
+      titleEn: '4. Central Construction Material Hub & Master SKU Barcode Scanner',
       icon: Package,
-      badge: 'คลังสินค้ากลาง & บาร์โค้ด SKU',
-      role: 'เจ้าหน้าที่สโตร์ / ผู้จัดการคลังสินค้า / พนักงานแพ็คของ',
-      summary: 'ควบคุมจำนวนสต็อกคงเหลือของคลังสินค้ากลางจุดเดียว (Single Central Warehouse Hub) ที่ตัดสต็อกร่วมกับหลากหลายแพลตฟอร์ม (Shopee, Lazada, TikTok, POS) ด้วยระบบ Master SKU Barcode (1D Code 128) รองรับทั้งเครื่องยิงบาร์โค้ดไร้สาย กล้องสด และระบบพิมพ์ป้ายสติกเกอร์ความร้อน',
-      summaryEn: 'Centralized inventory control for single-warehouse multi-platform operations (Shopee, Lazada, TikTok, POS) using 1D Master SKU Barcodes, wireless barcode guns, and printable thermal labels.',
+      badge: 'คลังพัสดุก่อสร้างกลาง & บาร์โค้ด SKU',
+      role: 'เจ้าหน้าที่สโตร์ / ผู้จัดการคลังพัสดุ / โฟร์แมนหน้างาน / วิศวกรโครงการ',
+      summary: 'ควบคุมจำนวนสต็อกคงเหลือของคลังพัสดุและวัสดุก่อสร้างกลาง (Central Construction Material Hub) สำหรับจัดเก็บ รับเข้า และเบิกจ่ายวัสดุอุปกรณ์ไปยังโครงการและไซต์งานก่อสร้างต่างๆ ด้วยระบบ Master SKU Barcode (1D Code 128) รองรับทั้งเครื่องยิงบาร์โค้ดไร้สาย กล้องสด และระบบพิมพ์ป้ายสติกเกอร์ความร้อนติดพัสดุ/ชั้นวาง',
+      summaryEn: 'Centralized inventory control for construction contractor central material hub, managing site requisitions, project allocations, and receipts using 1D Master SKU Barcodes, wireless barcode guns, and printable thermal labels.',
       route: '/inventory',
       linkages: [
         {
           from: 'ตรวจรับของจาก PO',
-          to: 'คลังสินค้ากลาง (Central WH)',
+          to: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)',
           description: 'สต็อกจะเพิ่มขึ้นอัตโนมัติตามจำนวนที่ตรวจรับเข้าคลังกลาง'
         },
         {
           from: 'สแกน SKU Barcode',
-          to: 'หน้าต่างรับเข้า / เบิกออก / ตรวจนับ',
-          description: 'ยิงบาร์โค้ดสินค้าเพื่อยืนยันออเดอร์จาก Shopee/Lazada หรือทำรายการเบิกออกได้ทันที'
+          to: 'หน้าต่างรับเข้า / เบิกจ่ายไปหน้างาน / ตรวจนับ',
+          description: 'ยิงบาร์โค้ดวัสดุเพื่อยืนยันการรับเข้า หรือตัดสต็อกเบิกจ่ายไปยังไซต์งานก่อสร้างได้ทันที'
         },
         {
           from: 'สต็อกต่ำกว่าระดับขั้นต่ำ (Low Stock)',
@@ -442,8 +442,8 @@ export function ManualPage() {
           icon: ArrowDownUp,
           color: 'bg-indigo-600 text-white',
           location: 'แถบเครื่องมือ / ปุ่มหลังสแกนบาร์โค้ด',
-          action: 'บันทึกการรับเข้าสต็อก, เบิกออกไปแพ็คออเดอร์ หรือโอนย้ายระหว่างจุดจัดเก็บในคลัง',
-          linkage: 'ปรับปรุงยอดสต็อกกลางและบันทึกประวัติการเคลื่อนไหว'
+          action: 'บันทึกการรับเข้าสต็อก, เบิกจ่ายพัสดุไปหน้างานก่อสร้าง หรือโอนย้ายระหว่างจุดจัดเก็บในคลังกลาง',
+          linkage: 'ปรับปรุงยอดสต็อกกลางและบันทึกประวัติการเบิกจ่ายโครงการ'
         },
         {
           name: 'ตรวจนับสต็อก (Physical Count)',
@@ -471,8 +471,8 @@ export function ManualPage() {
         }
       ],
       tips: [
-        'พนักงานแพ็คของสามารถเสียบเครื่องยิงบาร์โค้ดไร้สาย (Wireless Barcode Gun) แล้วยิงบาร์โค้ดบนกล่องสินค้าได้ทันที ระบบจะค้นหา Master SKU และแสดงยอดสต็อกคลังกลางโดยอัตโนมัติ',
-        'ป้ายบาร์โค้ด SKU รองรับการพิมพ์ผ่านเครื่องพิมพ์สติกเกอร์ความร้อนความเร็วสูง (Direct Thermal Printers เช่น Xprinter, Zebra) สำหรับแปะพัสดุก่อนส่งขนส่ง Shopee, Lazada, TikTok, Flash, SPX'
+        'เจ้าหน้าที่สโตร์หรือโฟร์แมนสามารถเสียบเครื่องยิงบาร์โค้ดไร้สาย (Wireless Barcode Gun) แล้วยิงบาร์โค้ดบนวัสดุหรือกล่องพัสดุได้ทันที ระบบจะค้นหา Master SKU และแสดงยอดสต็อกพร้อมโครงการที่เบิกใช้โดยอัตโนมัติ',
+        'ป้ายบาร์โค้ด SKU รองรับการพิมพ์ผ่านเครื่องพิมพ์สติกเกอร์ความร้อนความเร็วสูง (Direct Thermal Printers เช่น Xprinter, Zebra) สำหรับแปะพัสดุ พาเลท หรือชั้นวางก่อนส่งมอบไปยังหน้างานโครงการ'
       ]
     },
     {

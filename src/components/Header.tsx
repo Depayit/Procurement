@@ -68,14 +68,15 @@ export function Header({
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 z-10 w-full shrink-0">
-      <div className="flex items-center flex-1 gap-3 sm:gap-4 min-w-0">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-6 z-10 w-full shrink-0">
+      <div className="flex items-center flex-1 gap-2 sm:gap-4 min-w-0">
         <button 
           onClick={onMenuClick}
-          className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md shrink-0 cursor-pointer"
+          className="lg:hidden p-2 -ml-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg shrink-0 cursor-pointer transition-colors"
+          title={isEnglish ? 'Open menu' : 'เปิดเมนู'}
         >
           <span className="sr-only">Open sidebar</span>
-          <Menu className="h-6 w-6" />
+          <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
 
         {/* Desktop Collapse / Expand Toggle */}
@@ -102,7 +103,7 @@ export function Header({
         </div>
       </div>
       
-      <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+      <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
         {/* PWA Install Button */}
         <PWAInstallButton />
 

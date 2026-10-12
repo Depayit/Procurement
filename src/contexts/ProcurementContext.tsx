@@ -186,10 +186,10 @@ const SEED_INVENTORY: InventoryItem[] = [
     quantity: 450, 
     unit: 'ถุง', 
     minStockLevel: 100, 
-    location: 'คลังสินค้ากลาง (Central WH)', 
+    location: 'คลังพัสดุก่อสร้างกลาง (Central WH)', 
     binLocation: 'ไซโล 1 (Bay C-01)', 
-    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
-    platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน', 'B2B'], 
+    centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)', 
+    projectAllocations: ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา', 'โครงการ อาคารสำนักงานพระราม 9'], 
     unitPrice: 155 
   },
   { 
@@ -202,10 +202,10 @@ const SEED_INVENTORY: InventoryItem[] = [
     quantity: 15, 
     unit: 'ตัน', 
     minStockLevel: 20, 
-    location: 'คลังสินค้ากลาง (Central WH)', 
+    location: 'คลังพัสดุก่อสร้างกลาง (Central WH)', 
     binLocation: 'ลานเก็บ B (Zone B-04)', 
-    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
-    platforms: ['Shopee', 'Lazada', 'POS หน้าร้าน', 'B2B'], 
+    centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)', 
+    projectAllocations: ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ สะพานข้ามแยกรามคำแหง'], 
     unitPrice: 24500 
   },
   { 
@@ -218,10 +218,10 @@ const SEED_INVENTORY: InventoryItem[] = [
     quantity: 12, 
     unit: 'เครื่อง', 
     minStockLevel: 5, 
-    location: 'คลังสินค้ากลาง (Central WH)', 
+    location: 'คลังพัสดุก่อสร้างกลาง (Central WH)', 
     binLocation: 'ห้องช่าง (Shelf T-12)', 
-    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
-    platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน'], 
+    centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)', 
+    projectAllocations: ['ทีมช่างงานระบบ MEP', 'โครงการ คอนโดสุขุมวิท 101'], 
     unitPrice: 3850 
   },
   { 
@@ -234,10 +234,10 @@ const SEED_INVENTORY: InventoryItem[] = [
     quantity: 120, 
     unit: 'ใบ', 
     minStockLevel: 50, 
-    location: 'คลังสินค้ากลาง (Central WH)', 
+    location: 'คลังพัสดุก่อสร้างกลาง (Central WH)', 
     binLocation: 'สโตร์กลาง (Rack S-03)', 
-    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
-    platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'B2B'], 
+    centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)', 
+    projectAllocations: ['วิศวกรและคนงานทุกไซต์งาน', 'ฝ่ายความปลอดภัย จป.'], 
     unitPrice: 280 
   },
   { 
@@ -250,10 +250,10 @@ const SEED_INVENTORY: InventoryItem[] = [
     quantity: 120, 
     unit: 'กล่อง', 
     minStockLevel: 50, 
-    location: 'คลังสินค้ากลาง (Central WH)', 
+    location: 'คลังพัสดุก่อสร้างกลาง (Central WH)', 
     binLocation: 'โกดัง A (Pallet P-09)', 
-    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
-    platforms: ['Shopee', 'Lazada', 'POS หน้าร้าน', 'B2B'], 
+    centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)', 
+    projectAllocations: ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ บ้านเดี่ยวราชพฤกษ์'], 
     unitPrice: 425 
   }
 ];

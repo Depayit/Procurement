@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Box,
   Layers,
-  Sparkles
+  Sparkles,
+  Building2
 } from 'lucide-react';
 import { useState, useRef, ChangeEvent } from 'react';
 import type { InventoryItem } from '../types';
@@ -65,7 +66,7 @@ export function InventoryPage() {
     const itemName = (item.name || '').toLowerCase();
     const itemCat = (item.category || '').toLowerCase();
     const itemBin = (item.binLocation || '').toLowerCase();
-    const itemPlatforms = (item.platforms || []).join(' ').toLowerCase();
+    const itemProjects = (item.projectAllocations || []).join(' ').toLowerCase();
 
     return (
       itemSku.includes(query) ||
@@ -74,7 +75,7 @@ export function InventoryPage() {
       itemName.includes(query) ||
       itemCat.includes(query) ||
       itemBin.includes(query) ||
-      itemPlatforms.includes(query)
+      itemProjects.includes(query)
     );
   });
 
@@ -104,10 +105,10 @@ export function InventoryPage() {
             quantity: Number(row.quantity || row['จำนวน'] || 0),
             unit: row.unit || row['หน่วย'] || 'ชิ้น',
             minStockLevel: Number(row.minStockLevel || row['ขั้นต่ำ'] || 0),
-            location: row.location || row['สถานที่'] || 'คลังสินค้ากลาง (Central WH)',
+            location: row.location || row['สถานที่'] || 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)',
             binLocation: row.binLocation || row['จุดเก็บ'] || 'โซนจัดเก็บ A-01',
-            centralWarehouse: 'คลังสินค้ากลาง (Central Hub)',
-            platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน', 'B2B'],
+            centralWarehouse: 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)',
+            projectAllocations: ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา', 'ไซต์งานทั่วไป'],
             unitPrice: Number(row.unitPrice || row['ราคา'] || 0),
           };
         });
@@ -151,7 +152,7 @@ export function InventoryPage() {
             location: data.location,
             binLocation: sourceItem.binLocation,
             centralWarehouse: sourceItem.centralWarehouse,
-            platforms: sourceItem.platforms,
+            projectAllocations: sourceItem.projectAllocations,
             unitPrice: sourceItem.unitPrice
           });
         }
@@ -216,19 +217,19 @@ export function InventoryPage() {
       {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800">
-              {isEnglish ? 'Central Warehouse & SKU Barcode System' : 'คลังสินค้ากลางและระบบบาร์โค้ด SKU'}
+              {isEnglish ? 'Central Construction Material Warehouse & Barcode' : 'คลังพัสดุและวัสดุก่อสร้างกลาง (Central Material Hub)'}
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
-              <Store className="w-3 h-3" />
-              Single Warehouse Hub
+              <Building2 className="w-3 h-3" />
+              Central Construction Hub
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             {isEnglish 
-              ? 'Single physical warehouse stock pool, synchronized across multi-platform channels (Shopee, Lazada, TikTok, POS)' 
-              : 'คลังสินค้ามีจุดเดียว • ควบคุมสต็อกคงเหลือจริงแบบ Real-time ตัดสต็อกร่วมกับหลากหลายแพลตฟอร์ม'}
+              ? 'Central material warehouse controlling stock, tools, and construction supplies dispatched across contractor project sites' 
+              : 'คลังพัสดุและวัสดุก่อสร้างกลาง • ควบคุมสต็อกพัสดุ เครื่องมือ และวัสดุงานก่อสร้าง จัดเก็บและเบิกจ่ายไปยังไซต์งาน/โครงการต่างๆ'}
           </p>
         </div>
 
@@ -269,37 +270,37 @@ export function InventoryPage() {
         </div>
       </div>
 
-      {/* Central Warehouse & Multi-Platform Architecture Banner */}
+      {/* Central Warehouse Architecture Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 border border-slate-800 shadow-sm relative overflow-hidden">
         <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-indigo-500/30 text-indigo-300">
-                <Store className="w-4 h-4" />
+                <Building2 className="w-4 h-4" />
               </span>
               <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                สถาปัตยกรรมคลังสินค้ากลางจุดเดียว (Single Central Hub • Multi-Platform Sync)
+                สถาปัตยกรรมคลังพัสดุก่อสร้างกลาง (Central Construction Material Hub • Site Requisition)
               </h2>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-              สินค้าทั้งหมดถูกจัดเก็บอยู่ที่ <strong>คลังสินค้ากลางแห่งเดียว</strong> โดยใช้ <strong>Master SKU Barcode (Code 128)</strong> เป็นแกนกลางในการเชื่อมโยงออเดอร์ เมื่อมีคำสั่งซื้อจากแพลตฟอร์มใดก็ตาม สต็อกจริงในคลังนี้จะถูกตัดยอดทันที
+              พัสดุและวัสดุก่อสร้างทั้งหมดถูกควบคุมอยู่ที่ <strong>คลังพัสดุก่อสร้างกลางแห่งเดียว</strong> โดยใช้ <strong>Master SKU Barcode (Code 128)</strong> เป็นรหัสมาตรฐาน เมื่อวิศวกรหรือโฟร์แมนทำรายการเบิกจ่ายไปหน้างาน หรือตรวจรับพัสดุเข้าคลังจากใบสั่งซื้อ (PO Receipt) สต็อกจริงในคลังกลางจะถูกอัปเดตแบบ Real-time ทันที
             </p>
           </div>
 
-          {/* Connected Multi-Platforms Badge Group */}
+          {/* Connected Project Sites Badge Group */}
           <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/15 shrink-0">
             <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-300" />
-              แพลตฟอร์มที่เชื่อมโยงสต็อกกลาง (Omnichannel Pool):
+              ไซต์งานและโครงการที่เชื่อมโยงเบิกใช้วัสดุ (Active Project Sites):
             </span>
             <div className="flex flex-wrap items-center gap-1.5">
               {[
-                { name: 'Shopee', color: 'bg-orange-500/20 text-orange-200 border-orange-500/40' },
-                { name: 'Lazada', color: 'bg-blue-500/20 text-blue-200 border-blue-500/40' },
-                { name: 'TikTok Shop', color: 'bg-rose-500/20 text-rose-200 border-rose-500/40' },
-                { name: 'POS หน้าร้าน', color: 'bg-emerald-500/20 text-emerald-200 border-emerald-500/40' },
-                { name: 'B2B Procurement', color: 'bg-purple-500/20 text-purple-200 border-purple-500/40' },
+                { name: 'โครงการ คอนโดสุขุมวิท 101', color: 'bg-indigo-500/20 text-indigo-200 border-indigo-500/40' },
+                { name: 'โครงการ โรงพยาบาลบางนา', color: 'bg-cyan-500/20 text-cyan-200 border-cyan-500/40' },
+                { name: 'โครงการ อาคารสำนักงานพระราม 9', color: 'bg-blue-500/20 text-blue-200 border-blue-500/40' },
+                { name: 'งานระบบ MEP & เครื่องมือช่าง', color: 'bg-amber-500/20 text-amber-200 border-amber-500/40' },
+                { name: 'งานโครงสร้างและวิศวกรรมฐานราก', color: 'bg-emerald-500/20 text-emerald-200 border-emerald-500/40' },
               ].map(p => (
                 <span 
                   key={p.name}
@@ -318,7 +319,7 @@ export function InventoryPage() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
           <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
-            {isEnglish ? 'Total Stock Items' : 'รายการสินค้าทั้งหมด'}
+            {isEnglish ? 'Total Stock Items' : 'รายการพัสดุทั้งหมด'}
           </h3>
           <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">
             {filteredInventory.length} <span className="text-xs font-normal text-slate-500">SKUs</span>
@@ -346,10 +347,10 @@ export function InventoryPage() {
 
         <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
           <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
-            {isEnglish ? 'Multi-Platform Sync Rate' : 'สถานะการเชื่อมต่อแพลตฟอร์ม'}
+            {isEnglish ? 'Site Fulfillment Rate' : 'ความพร้อมจ่ายวัสดุหน้างาน'}
           </h3>
           <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-emerald-600 mt-1 flex items-center gap-1.5">
-            100% <span className="text-xs font-normal text-slate-500">ซิงค์สต็อกรวม</span>
+            98.5% <span className="text-xs font-normal text-slate-500">พร้อมเบิกจ่าย</span>
           </p>
         </div>
       </div>
@@ -463,10 +464,10 @@ export function InventoryPage() {
                   </div>
                 </div>
 
-                {/* Multi-Platform Badges */}
+                {/* Project Site Badges */}
                 <div className="flex items-center gap-1 flex-wrap pt-0.5">
-                  <span className="text-[10px] font-semibold text-slate-400">ซิงค์:</span>
-                  {(item.platforms || ['Shopee', 'Lazada', 'TikTok', 'POS']).map(p => (
+                  <span className="text-[10px] font-semibold text-slate-400">โครงการ:</span>
+                  {(item.projectAllocations || ['โครงการ คอนโดสุขุมวิท 101', 'ทุกไซต์งาน']).map(p => (
                     <span key={p} className="text-[10px] font-bold bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded border border-slate-200">
                       {p}
                     </span>
@@ -511,7 +512,7 @@ export function InventoryPage() {
                 <th scope="col" className="px-3 py-3.5 whitespace-nowrap w-[130px]">หมวดหมู่</th>
                 <th scope="col" className="px-4 py-3.5 whitespace-nowrap w-[180px]">จุดจัดเก็บในคลังกลาง</th>
                 <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">สต็อกคลังกลาง</th>
-                <th scope="col" className="px-3 py-3.5 whitespace-nowrap w-[180px]">แพลตฟอร์มที่เชื่อมโยง</th>
+                <th scope="col" className="px-3 py-3.5 whitespace-nowrap w-[200px]">โครงการ / ไซต์งานที่ใช้</th>
                 <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[180px]">การจัดการ</th>
               </tr>
             </thead>
@@ -521,7 +522,7 @@ export function InventoryPage() {
                 const masterSku = item.sku || item.code;
                 const barcodeVal = item.barcode || masterSku;
                 const binLoc = item.binLocation || item.location;
-                const platforms = item.platforms || ['Shopee', 'Lazada', 'TikTok Shop', 'POS'];
+                const projects = item.projectAllocations || ['โครงการ คอนโดสุขุมวิท 101', 'ทุกไซต์งาน'];
 
                 return (
                   <tr key={item.id} className={cn("hover:bg-slate-50/80 transition-colors", isLow ? "bg-amber-50/20" : "")}>
@@ -578,8 +579,8 @@ export function InventoryPage() {
                     </td>
 
                     <td className="px-3 py-3.5 align-top">
-                      <div className="flex flex-wrap gap-1 max-w-[190px]">
-                        {platforms.map(p => (
+                      <div className="flex flex-wrap gap-1 max-w-[200px]">
+                        {projects.map(p => (
                           <span 
                             key={p} 
                             className="text-[10px] font-bold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-200"
@@ -589,7 +590,7 @@ export function InventoryPage() {
                         ))}
                       </div>
                       <span className="text-[10px] text-emerald-600 font-semibold block mt-1">
-                        ● ตัดสต็อกคลังกลาง
+                        ● คลังกลางกระจายหน้างาน
                       </span>
                     </td>
 
@@ -679,24 +680,24 @@ export function InventoryPage() {
               </div>
             </div>
 
-            {/* Central Warehouse & Platform Linkage Info */}
+            {/* Central Warehouse & Project Allocation Info */}
             <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 rounded-xl shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                    <Store className="w-4 h-4 text-emerald-400" />
-                    <span>{viewItem.centralWarehouse || 'คลังสินค้ากลาง (Central WH)'}</span>
+                    <Building2 className="w-4 h-4 text-emerald-400" />
+                    <span>{viewItem.centralWarehouse || 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)'}</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span className="text-emerald-400">Single Stock Hub</span>
+                    <span className="text-emerald-400">Single Construction Hub</span>
                   </div>
                   <div className="text-xs text-slate-200 mt-1">
                     จุดจัดเก็บ: <span className="font-bold text-amber-300 font-mono">{viewItem.binLocation || viewItem.location}</span>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-300 block mb-1">ซิงค์ตัดสต็อกช่องทาง:</span>
+                  <span className="text-[10px] text-slate-300 block mb-1">โครงการก่อสร้างที่เบิกใช้วัสดุนี้:</span>
                   <div className="flex flex-wrap gap-1">
-                    {(viewItem.platforms || ['Shopee', 'Lazada', 'TikTok Shop', 'POS']).map(p => (
+                    {(viewItem.projectAllocations || ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา']).map(p => (
                       <span key={p} className="text-[10px] font-bold bg-white/15 px-2 py-0.5 rounded text-white border border-white/20">
                         {p}
                       </span>
@@ -774,8 +775,8 @@ export function InventoryPage() {
                       <Barcode className="h-4 w-4" />
                     </span>
                     <div>
-                      <p className="text-sm font-bold text-slate-800">ตัดสต็อกออเดอร์แพลตฟอร์ม (Shopee / SPX)</p>
-                      <p className="text-xs text-slate-500">4 ชั่วโมงที่แล้ว • ยิงบาร์โค้ด Master SKU ยืนยันแพ็ค</p>
+                      <p className="text-sm font-bold text-slate-800">เบิกจ่ายวัสดุไปหน้างาน (โครงการคอนโดสุขุมวิท 101)</p>
+                      <p className="text-xs text-slate-500">4 ชั่วโมงที่แล้ว • ยิงบาร์โค้ด Master SKU ตัดจ่ายตามใบเบิกพัสดุ</p>
                     </div>
                   </div>
                   <span className="text-sm font-bold text-blue-700">-10 {viewItem.unit}</span>

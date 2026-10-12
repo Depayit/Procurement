@@ -67,11 +67,24 @@ export function Sidebar({
     setIsOpen(false);
   }, [location.pathname, setIsOpen]);
 
+  // Lock background scroll on mobile when sidebar drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
-    <div className={cn(
-      "fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200 text-slate-600 transition-all duration-300 ease-in-out lg:static lg:translate-x-0 h-screen relative",
-      isCollapsed ? "lg:w-20 w-64" : "w-64",
-      isOpen ? "translate-x-0" : "-translate-x-full"
+    <aside className={cn(
+      "fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200 text-slate-600 transition-transform duration-300 ease-in-out h-[100dvh] w-72 max-w-[85vw]",
+      "lg:relative lg:inset-auto lg:h-screen lg:max-w-none lg:z-30 lg:transition-[width,transform]",
+      isCollapsed ? "lg:w-20" : "lg:w-64",
+      isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full pointer-events-none lg:translate-x-0 lg:pointer-events-auto shadow-none"
     )}>
       {/* Desktop Collapse / Expand Toggle Button on Edge */}
       {toggleCollapsed && (
@@ -120,9 +133,14 @@ export function Sidebar({
         </div>
 
         {/* Mobile close button */}
-        <button onClick={() => setIsOpen(false)} className="lg:hidden text-slate-400 hover:text-slate-600 p-1">
-          <span className="sr-only">Close sidebar</span>
-          <X className="w-6 h-6" />
+        <button 
+          type="button"
+          onClick={() => setIsOpen(false)} 
+          className="lg:hidden text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-lg transition-colors cursor-pointer"
+          title={isEnglish ? 'Close menu' : 'ปิดเมนู'}
+          aria-label="Close sidebar"
+        >
+          <X className="w-5 h-5" />
         </button>
       </div>
       
@@ -204,7 +222,7 @@ export function Sidebar({
       </div>
 
       {/* Footer Actions */}
-      <div className="p-3 border-t border-slate-100 space-y-2">
+      <div className="p-3 border-t border-slate-100 space-y-2 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] lg:pb-3">
         <div className="px-1">
           <div className={cn(isCollapsed ? "lg:hidden" : "block")}>
             <PWAInstallButton variant="sidebar" className="w-full justify-center" />
@@ -239,6 +257,6 @@ export function Sidebar({
           )}
         </button>
       </div>
-    </div>
+    </aside>
   );
 }
