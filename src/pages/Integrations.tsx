@@ -92,7 +92,7 @@ export function IntegrationsPage() {
 
     try {
       const res = await syncGoogleSheetsData(sheetModuleInput);
-      setSheetSyncResult({ success: true, msg: res.message });
+      setSheetSyncResult({ success: true, msg: `[MVP Mock Preview] ${res.message} (โหมดจำลองการทำงานสำหรับการนำเสนอ)` });
     } catch (err: any) {
       setSheetSyncResult({ 
         success: false, 
@@ -127,7 +127,7 @@ export function IntegrationsPage() {
 
     try {
       const res = await testLineAlert();
-      setLineResult({ success: true, msg: res.message });
+      setLineResult({ success: true, msg: `[MVP Mock Preview] ${res.message} (จำลองการแจ้งเตือน ไม่ส่งออกภายนอกจริง)` });
     } catch (err: any) {
       setLineResult({ success: false, msg: err.message || 'ส่งข้อความไม่สำเร็จ' });
     } finally {
@@ -137,6 +137,34 @@ export function IntegrationsPage() {
 
   return (
     <div className="space-y-6 pb-16 max-w-6xl mx-auto">
+      {/* MVP Mock Sandbox Notice */}
+      <div className="bg-amber-500/10 border border-amber-500/30 text-amber-950 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-800 font-bold shrink-0">
+            <Sparkles className="w-5 h-5 text-amber-600" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">
+                ระบบจำลองเพื่อการนำเสนอ (MVP Mock Preview & Simulation Sandbox)
+              </h2>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-200 text-amber-900 border border-amber-300 uppercase">
+                Demo Only
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+              ฟังก์ชันเชื่อมต่อ API และคลาวด์ทั้งหมดถูกกำหนดให้อยู่ในโหมดจำลอง (Mock Sandbox) สำหรับการนำเสนอผู้บริหาร/ผู้มีส่วนได้ส่วนเสีย ไม่มีการส่งข้อมูลจริงไปยังระบบภายนอก
+            </p>
+          </div>
+        </div>
+        <div className="shrink-0 flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-amber-300 text-amber-900 font-bold text-xs shadow-2xs">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            Sandbox Locked
+          </span>
+        </div>
+      </div>
+
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-md relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none" />
@@ -248,8 +276,8 @@ export function IntegrationsPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm font-bold text-slate-900">Google Sheets Live Database</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                        แนะนำ
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        MVP Mock
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5">
@@ -363,7 +391,12 @@ export function IntegrationsPage() {
                     <Cloud className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900">Google Drive Storage & Backup</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-slate-900">Google Drive Storage & Backup</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        MVP Mock
+                      </span>
+                    </div>
                     <p className="text-xs text-slate-500 mt-0.5">
                       จัดเก็บเอกสารใบสั่งซื้อ ใบตรวจรับ และก้อน Backup สำรองข้อมูลระบบทั้งหมดอัตโนมัติ
                     </p>
@@ -445,7 +478,12 @@ export function IntegrationsPage() {
                     <BellRing className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900">LINE Notifications (กลุ่มไลน์หน้างาน)</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-slate-900">LINE Notifications (กลุ่มไลน์หน้างาน)</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        MVP Mock
+                      </span>
+                    </div>
                     <p className="text-xs text-slate-500 mt-0.5">
                       ส่งข้อความแจ้งเตือนอัตโนมัติเข้ากลุ่ม LINE ของวิศวกร, โฟร์แมน และฝ่ายจัดซื้อ
                     </p>
@@ -542,7 +580,12 @@ export function IntegrationsPage() {
                     <Share2 className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900">Dropbox File Sync</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-slate-900">Dropbox File Sync</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        MVP Mock
+                      </span>
+                    </div>
                     <p className="text-xs text-slate-500 mt-0.5">
                       จัดเก็บไฟล์แนบใบเสนอราคา, สเปกงานก่อสร้าง และแบบถอดปริมาณงาน CAD (.dxf)
                     </p>

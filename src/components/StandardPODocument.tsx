@@ -64,7 +64,7 @@ export function StandardPODocument({
     <div
       id={id}
       className={cn(
-        "standard-a4-doc bg-white text-slate-900 mx-auto select-text shadow-sm border border-slate-300 rounded-sm",
+        "standard-a4-doc bg-white text-slate-900 mx-auto select-text shadow-sm border border-slate-300 rounded-sm relative overflow-hidden",
         "w-[794px] min-h-[1123px] p-8",
         "print:w-full print:min-h-0 print:border-none print:shadow-none print:p-0 print:m-0",
         className
@@ -80,6 +80,32 @@ export function StandardPODocument({
         overflowWrap: 'break-word',
       }}
     >
+      {/* MVP Presentation Diagonal Watermark */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-20 select-none">
+        <div className="transform -rotate-30 border-4 border-dashed border-red-500/25 px-8 py-5 rounded-3xl text-center bg-white/5">
+          <span className="block text-4xl sm:text-5xl font-black tracking-widest text-red-600/20 font-mono">
+            MVP SAMPLE
+          </span>
+          <span className="block text-xs sm:text-sm font-bold text-red-700/30 mt-1 tracking-wider uppercase">
+            เอกสารจำลองเพื่อการสาธิตเท่านั้น (DEMO PROTOTYPE ONLY)
+          </span>
+          <span className="block text-[10px] font-semibold text-slate-500/30 mt-0.5">
+            ห้ามนำไปใช้อ้างอิงการสั่งซื้อจริงทางกฎหมาย • NOT FOR OFFICIAL PRODUCTION
+          </span>
+        </div>
+      </div>
+
+      {/* Top MVP Notice Strip */}
+      <div className="bg-amber-500/10 border border-amber-500/30 text-amber-900 text-[10px] px-3 py-1.5 mb-2.5 rounded flex items-center justify-between font-medium print:bg-slate-100 print:text-slate-800 print:border-slate-300 relative z-10">
+        <span className="flex items-center gap-1.5">
+          <span className="font-bold text-amber-800 print:text-slate-900">⚠️ ใบสั่งซื้อตัวอย่าง MVP:</span>
+          <span>สร้างจากระบบต้นแบบเพื่อการนำเสนอเท่านั้น (Not for Production Use)</span>
+        </span>
+        <span className="font-mono text-[9px] font-bold uppercase tracking-wider bg-amber-200/80 print:bg-slate-200 text-amber-900 print:text-slate-800 px-2 py-0.5 rounded">
+          MVP SAMPLE
+        </span>
+      </div>
+
       {/* 1. Header: Corporate Details + Official Title Box */}
       <div className="border-b border-slate-300 pb-3 mb-3 bg-white">
         <div className="flex justify-between items-start gap-4">

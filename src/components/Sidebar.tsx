@@ -198,10 +198,19 @@ export function Sidebar({
                 {label}
               </span>
 
+              {item.key === 'nav.integrations' && (
+                <span className={cn(
+                  "ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 uppercase shrink-0 tracking-tight",
+                  isCollapsed ? "lg:hidden" : "block"
+                )}>
+                  Mock
+                </span>
+              )}
+
               {/* Floating Tooltip for collapsed mode */}
               {isCollapsed && (
                 <span className="hidden lg:group-hover:block absolute left-full ml-3 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded shadow-lg whitespace-nowrap z-50 pointer-events-none">
-                  {label}
+                  {label} {item.key === 'nav.integrations' ? '(Mock Preview)' : ''}
                 </span>
               )}
             </Link>
