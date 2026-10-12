@@ -611,29 +611,29 @@ export function SettingsPage() {
                   <span className="text-[11px] text-slate-400">ขนาด A4 จริงที่ใช้พิมพ์</span>
                 </div>
 
-                <div className="border border-black p-4 bg-white text-black text-xs font-sans">
-                  <div className="flex items-start gap-3">
+                <div className="border border-slate-300 rounded-sm p-4 bg-white text-slate-900 text-xs font-sans shadow-2xs">
+                  <div className="flex items-start gap-3.5">
                     {companyForm.logoUrl ? (
-                      <div className="w-12 h-12 border border-black p-0.5 flex items-center justify-center shrink-0 bg-white overflow-hidden">
+                      <div className="w-14 h-14 rounded-sm bg-white flex items-center justify-center shrink-0 border border-slate-200 p-1 overflow-hidden shadow-2xs">
                         <img src={companyForm.logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 border border-black font-mono font-bold text-base flex items-center justify-center shrink-0">
+                      <div className="w-12 h-12 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-lg shrink-0 font-mono shadow-2xs">
                         PS
                       </div>
                     )}
                     <div className="min-w-0 flex-1 text-[11px] leading-tight">
-                      <div className="font-bold text-[13px] text-black leading-snug">
+                      <div className="font-bold text-[14px] text-slate-900 leading-snug tracking-tight">
                         {companyForm.nameTh || 'ชื่อบริษัทภาษาไทย'}
                       </div>
-                      <div className="font-bold text-[10px] text-black uppercase mt-0.5">
+                      <div className="font-bold text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">
                         {companyForm.nameEn || 'COMPANY NAME ENGLISH'}
                       </div>
-                      <div className="text-[10px] text-black mt-1">
+                      <div className="text-[10px] text-slate-600 mt-1 leading-relaxed">
                         {companyForm.address || 'ที่อยู่บริษัท'}
                       </div>
-                      <div className="text-[10px] text-black mt-0.5">
-                        เลขประจำตัวผู้เสียภาษี: <span className="font-mono font-semibold">{companyForm.taxId || '-'}</span> | โทร: {companyForm.phone || '-'} | อีเมล: {companyForm.email || '-'}
+                      <div className="text-[10px] text-slate-500 mt-0.5 leading-relaxed">
+                        เลขประจำตัวผู้เสียภาษี: <span className="font-mono font-semibold text-slate-800">{companyForm.taxId || '-'}</span> • โทร: {companyForm.phone || '-'} • อีเมล: {companyForm.email || '-'}
                       </div>
                     </div>
                   </div>

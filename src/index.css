@@ -53,45 +53,36 @@ p, span, td, th {
 }
 
 /* ==========================================================================
-   STRICT MONOCHROME DOCUMENT ENFORCEMENT
-   All official documents (PR, PO, Approval Matrix) must strictly be Black & White.
-   No colors allowed. Background must strictly be pure white (#ffffff) across the entire document.
+   ENTERPRISE STANDARD CORPORATE A4 DOCUMENT STYLES
+   Calibrated line weights, crisp table borders, and clear hierarchy
+   adhering to modern ERP / ISO 9001 industry standards.
    ========================================================================== */
-.standard-a4-doc,
-.standard-a4-doc table,
-.standard-a4-doc thead,
-.standard-a4-doc tbody,
-.standard-a4-doc tfoot,
-.standard-a4-doc tr,
-.standard-a4-doc th,
-.standard-a4-doc td,
-.standard-a4-doc div,
-.standard-a4-doc span,
-.standard-a4-doc p,
-.standard-a4-doc h1,
-.standard-a4-doc h2,
-.standard-a4-doc h3,
-.standard-a4-doc h4 {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
+.standard-a4-doc {
+  background-color: #ffffff;
+  color: #0f172a;
+  box-sizing: border-box;
+  font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.42;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
-.standard-a4-doc svg {
-  color: #000000 !important;
-  stroke: #000000 !important;
+.standard-a4-doc table {
+  border-collapse: collapse;
 }
 
-/* ==========================================================================
-   OFFICIAL COLOR EXCEPTION FOR APPROVAL SEALS & COMPANY LOGO
-   Forms remain clean pure white/black, but approval matrix stamps & seals
-   (e.g. อนุมัติโครงการ, ผ่านการตรวจสอบ, ไม่อนุมัติ, รออนุมัติ)
-   and company logo retain their authentic official colors.
-   ========================================================================== */
+/* Ensure clean logo transparency */
 .standard-a4-doc img {
   background-color: transparent !important;
 }
 
+/* ==========================================================================
+   OFFICIAL COLOR EXCEPTION FOR APPROVAL SEALS & STATUS STAMPS
+   Stamps & seals use authentic corporate colors (Emerald, Indigo, Amber, Red).
+   ========================================================================== */
 .standard-a4-doc .stamp-approved,
 .standard-a4-doc .stamp-approved * {
   background-color: #ecfdf5 !important;

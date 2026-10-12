@@ -95,7 +95,7 @@ const MOCK_APPROVALS: ApprovalTask[] = [
 export function ApprovalPage() {
   const { t, isThai, isEnglish } = useLanguage();
   const { addNotification } = useNotifications();
-  const { approvalTasks, approvePR, rejectPR, prs, pos, approvalMatrix } = useProcurement();
+  const { approvalTasks, approvePR, rejectPR, prs, pos, approvalMatrix, companyProfile } = useProcurement();
   const { currentUser, canApprove } = useAuth();
   const tasks = approvalTasks;
   const historyTasks = useMemo(() => {
@@ -880,64 +880,100 @@ export function ApprovalPage() {
                 )}>
                   <div 
                     id="standard-pr-doc-approval" 
-                    className="standard-a4-doc bg-white text-black w-[794px] min-h-[1123px] p-8 shadow-none border-2 border-black flex flex-col justify-between"
+                    className="standard-a4-doc bg-white text-slate-900 w-[794px] min-h-[1123px] p-8 shadow-sm border border-slate-300 rounded-sm flex flex-col justify-between"
                     style={{
                       boxSizing: 'border-box',
                       colorScheme: 'light',
                       backgroundColor: '#ffffff',
-                      color: '#000000',
-                      fontFamily: "'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                      color: '#0f172a',
+                      fontFamily: "'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                      lineHeight: 1.42,
+                      wordBreak: 'normal',
+                      overflowWrap: 'break-word',
                     }}
                   >
                     <div>
                       {/* Corporate Header */}
-                      <div className="border-b-2 border-black pb-3 mb-4 bg-white flex justify-between items-start gap-4">
-                        <div className="flex items-start gap-3 flex-1 min-w-0">
-                          <div className="w-12 h-12 bg-white text-black flex items-center justify-center font-bold text-xl flex-shrink-0 border-2 border-black font-mono">
-                            PS
-                          </div>
+                      <div className="border-b border-slate-300 pb-3 mb-4 bg-white flex justify-between items-start gap-4">
+                        <div className="flex items-start gap-3.5 flex-1 min-w-0">
+                          {companyProfile?.logoUrl ? (
+                            <div className="w-14 h-14 rounded-sm bg-white flex items-center justify-center flex-shrink-0 border border-slate-200 p-1 overflow-hidden shadow-2xs">
+                              <img 
+                                src={companyProfile.logoUrl} 
+                                alt="Company Logo" 
+                                className="max-h-full max-w-full object-contain" 
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-lg flex-shrink-0 font-mono shadow-2xs">
+                              PS
+                            </div>
+                          )}
                           <div className="min-w-0 flex-1">
-                            <h2 className="text-[15px] font-bold text-black leading-snug">บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</h2>
-                            <p className="text-[11px] text-black font-bold uppercase mt-0.5">PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.</p>
-                            <p className="text-[10.5px] text-black mt-1 leading-relaxed">เลขประจำตัวผู้เสียภาษี: 0105566012345 | โทร: 02-123-4567</p>
+                            <h2 className="text-[15px] font-bold text-slate-900 leading-snug tracking-tight">
+                              {companyProfile?.nameTh || 'บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด'}
+                            </h2>
+                            <p className="text-[10.5px] text-slate-500 font-bold tracking-wider uppercase mt-0.5">
+                              {companyProfile?.nameEn || 'PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.'}
+                            </p>
+                            <p className="text-[10px] text-slate-600 mt-1 leading-relaxed">
+                              {companyProfile?.address || '888 อาคารเอ็มไพร์ทาวเวอร์ ชั้น 24 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพฯ 10120'}
+                            </p>
+                            <p className="text-[10px] text-slate-500 leading-relaxed mt-0.5">
+                              เลขประจำตัวผู้เสียภาษี: <span className="font-semibold text-slate-800 font-mono">{companyProfile?.taxId || '0105566012345'}</span> • โทร: {companyProfile?.phone || '02-123-4567'} • อีเมล: {companyProfile?.email || 'admin@procuresync.co.th'}
+                            </p>
                           </div>
                         </div>
-                        <div className="text-right w-64">
-                          <div className="w-full bg-white border-2 border-black text-black py-1 px-2.5 text-center font-bold text-xs uppercase">
-                            {viewTask.documentType === 'PO' ? 'ใบสั่งซื้อ / PURCHASE ORDER' : 'ใบขอซื้อ / PURCHASE REQUISITION'}
+                        <div className="text-right flex flex-col items-end flex-shrink-0 w-64 shadow-2xs">
+                          <div className="w-full bg-slate-900 text-white py-1 px-3 rounded-t-sm text-center tracking-wider font-bold text-xs uppercase">
+                            {viewTask.documentType === 'PO' ? 'ใบสั่งซื้อ / PURCHASE ORDER (PO)' : 'ใบขอซื้อ / PURCHASE REQUISITION (PR)'}
                           </div>
-                          <div className="w-full border-x-2 border-b-2 border-black bg-white p-2 text-xs">
-                            <div className="flex justify-between font-mono font-bold text-black">
-                              <span>เลขที่เอกสาร:</span>
-                              <span>{viewTask.documentId}</span>
+                          <div className="w-full border-x border-b border-slate-300 bg-white p-2 text-xs space-y-1 rounded-b-sm">
+                            <div className="flex justify-between items-baseline font-mono font-bold text-slate-900">
+                              <span className="text-[11px] font-bold text-slate-700">เลขที่เอกสาร:</span>
+                              <span className="text-sm">{viewTask.documentId}</span>
                             </div>
-                            <div className="flex justify-between border-t border-black pt-1 mt-1 text-[11px]">
-                              <span>วันที่:</span>
-                              <span>{new Date(viewTask.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US')}</span>
+                            <div className="flex justify-between items-baseline border-t border-slate-100 pt-1 text-[11px]">
+                              <span className="text-slate-500">วันที่:</span>
+                              <span className="font-semibold text-slate-800">{new Date(viewTask.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US')}</span>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Information Matrix */}
-                      <div className="border-2 border-black mb-4 bg-white text-xs">
+                      <div className="border border-slate-300 rounded-sm mb-4 bg-white text-xs overflow-hidden shadow-2xs">
                         <table className="w-full border-collapse table-fixed text-left bg-white">
                           <tbody>
-                            <tr className="border-b border-black">
-                              <th className="w-[140px] py-2 px-3 bg-white border-r border-black font-bold text-black">ผู้ออกเอกสาร</th>
-                              <td className="py-2 px-3 font-semibold text-black border-r border-black">{viewTask.requester}</td>
-                              <th className="w-[140px] py-2 px-3 bg-white border-r border-black font-bold text-black">ระดับการพิจารณา</th>
-                              <td className="py-2 px-3 font-bold text-black">ลำดับขั้นที่ {viewTask.level} (Level {viewTask.level})</td>
+                            <tr className="border-b border-slate-200">
+                              <th className="w-[140px] py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ผู้ออกเอกสาร</th>
+                              <td className="py-2 px-3 font-semibold text-slate-900 border-r border-slate-200">{viewTask.requester}</td>
+                              <th className="w-[140px] py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ระดับการพิจารณา</th>
+                              <td className="py-2 px-3 font-bold text-slate-900">ลำดับขั้นที่ {viewTask.level} (Level {viewTask.level})</td>
                             </tr>
-                            <tr className="border-b border-black">
-                              <th className="py-2 px-3 bg-white border-r border-black font-bold text-black">ประเภทเอกสาร</th>
-                              <td className="py-2 px-3 font-semibold text-black border-r border-black">{viewTask.documentType === 'PR' ? 'ใบขอซื้อ (PR)' : 'ใบสั่งซื้อ (PO)'}</td>
-                              <th className="py-2 px-3 bg-white border-r border-black font-bold text-black">สถานะ</th>
-                              <td className="py-2 px-3 font-bold text-black">{viewTask.status === 'Approved' ? 'อนุมัติแล้ว' : viewTask.status === 'Rejected' ? 'ปฏิเสธ' : 'รอการพิจารณา'}</td>
+                            <tr className="border-b border-slate-200">
+                              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ประเภทเอกสาร</th>
+                              <td className="py-2 px-3 font-semibold text-slate-900 border-r border-slate-200">{viewTask.documentType === 'PR' ? 'ใบขอซื้อ (PR)' : 'ใบสั่งซื้อ (PO)'}</td>
+                              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">สถานะเอกสาร</th>
+                              <td className="py-2 px-3 align-middle">
+                                {viewTask.status === 'Approved' ? (
+                                  <span className="stamp-approved inline-flex items-center gap-1 px-2.5 py-0.5 border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold rounded-sm text-[10px] shadow-2xs">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> อนุมัติแล้ว (Approved)
+                                  </span>
+                                ) : viewTask.status === 'Rejected' ? (
+                                  <span className="stamp-rejected inline-flex items-center gap-1 px-2.5 py-0.5 border border-red-600 bg-red-50 text-red-800 font-bold rounded-sm text-[10px] shadow-2xs">
+                                    <XCircle className="w-3.5 h-3.5 text-red-600" /> ไม่อนุมัติ (Rejected)
+                                  </span>
+                                ) : (
+                                  <span className="stamp-pending inline-flex items-center gap-1 px-2.5 py-0.5 border border-amber-600 bg-amber-50 text-amber-800 font-bold rounded-sm text-[10px] shadow-2xs">
+                                    <Clock className="w-3.5 h-3.5 text-amber-600" /> รอการพิจารณา
+                                  </span>
+                                )}
+                              </td>
                             </tr>
                             <tr>
-                              <th className="py-2 px-3 bg-white border-r border-black font-bold text-black">ยอดเงินรวมสุทธิ</th>
-                              <td colSpan={3} className="py-2 px-3 font-bold font-mono text-black text-sm">
+                              <th className="py-2.5 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ยอดเงินรวมสุทธิ</th>
+                              <td colSpan={3} className="py-2.5 px-3 font-bold font-mono text-slate-950 text-sm">
                                 {(viewTask.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท
                               </td>
                             </tr>
@@ -945,9 +981,10 @@ export function ApprovalPage() {
                         </table>
                       </div>
 
-                      <div className="border-2 border-black p-4 mb-4 bg-white text-center">
-                        <p className="text-xs font-bold text-black">
-                          เอกสารทางการผ่านการตรวจสอบความถูกต้องตามกระบวนการจัดซื้อและระบบควบคุมภายใน
+                      <div className="border border-slate-200 rounded-sm p-3 mb-4 bg-slate-50/80 text-center flex items-center justify-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <p className="text-[11px] font-medium text-slate-700">
+                          เอกสารทางการผ่านการตรวจสอบความถูกต้องตามกระบวนการจัดซื้อและระบบควบคุมภายในมาตรฐานสากล
                         </p>
                       </div>
                     </div>
@@ -968,10 +1005,10 @@ export function ApprovalPage() {
                       />
 
                       {/* Footer */}
-                      <div className="flex justify-between items-center text-[10px] text-black pt-2 mt-2 border-t-2 border-black bg-white">
-                        <div>พิมพ์เมื่อ: {new Date().toLocaleString(isThai ? 'th-TH' : 'en-US')} | ProcureSync ERP</div>
-                        <div>หน้า 1 จาก 1</div>
-                        <div className="font-mono">DOC ID: {viewTask.documentId} | FM-PUR-APP</div>
+                      <div className="flex justify-between items-center text-[9.5px] text-slate-500 pt-2 mt-2 border-t border-slate-300 bg-white">
+                        <div>พิมพ์เมื่อ: {new Date().toLocaleString(isThai ? 'th-TH' : 'en-US')} • ระบบจัดซื้อ ProcureSync ERP</div>
+                        <div className="font-semibold text-slate-600">หน้า 1 จาก 1 • เอกสารควบคุมภายใน</div>
+                        <div className="font-mono text-slate-600 font-semibold">DOC ID: {viewTask.documentId} • FM-PUR-APP</div>
                       </div>
                     </div>
                   </div>

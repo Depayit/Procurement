@@ -25,8 +25,10 @@ export interface ApprovalMatrixDocumentTableProps {
 }
 
 /**
- * Enterprise Approval Matrix signature table for official printable A4 documents (PR & PO).
- * Dynamically draws its columns, labels, positions, and signatories from the company's configured Approval Matrix.
+ * Enterprise Standard Approval Matrix Signature Block.
+ * Calibrated to modern ERP / ISO 9001 corporate document standards.
+ * Features precision 1px borders, subtle shaded role badges, dashed ink-signing guidelines,
+ * and authentic official colored stamp seals.
  */
 export function ApprovalMatrixDocumentTable({
   steps,
@@ -44,7 +46,6 @@ export function ApprovalMatrixDocumentTable({
   className,
   isThai = true
 }: ApprovalMatrixDocumentTableProps) {
-  // Effective amount
   const effectiveTotalAmount = documentTotalAmount ?? totalAmount;
 
   // Filter steps configured for this document type and threshold amount
@@ -52,7 +53,6 @@ export function ApprovalMatrixDocumentTable({
     if (!step.appliesTo.includes(documentType)) return false;
     if (effectiveTotalAmount !== undefined) {
       if (step.minAmount !== undefined && effectiveTotalAmount < step.minAmount) {
-        // If not required and amount is below threshold, skip
         if (!step.isRequired) return false;
       }
     }
@@ -82,7 +82,6 @@ export function ApprovalMatrixDocumentTable({
     ? isRejectedProp 
     : (status === 'Rejected' || status === 'Cancelled');
 
-  // Responsive grid based on number of steps (e.g. 2, 3, 4, 5 columns)
   const colCount = Math.min(relevantSteps.length, 6);
   const gridColClass = 
     colCount === 2 ? 'grid-cols-2' :
@@ -91,23 +90,25 @@ export function ApprovalMatrixDocumentTable({
     colCount === 6 ? 'grid-cols-6' : 'grid-cols-4';
 
   return (
-    <div className={cn("border-2 border-black bg-white mb-3 text-center text-xs select-text", className)}>
-      {/* Table Header */}
-      <div className="bg-white border-b-2 border-black py-1 px-2 font-bold text-black uppercase tracking-wide text-[11px] flex items-center justify-between">
-        <span>การตรวจสอบและอนุมัติ (APPROVAL MATRIX)</span>
-        <span className="text-[9.5px] text-black font-semibold">
-          {documentType === 'PR' ? 'ใบขอซื้อ (Purchase Request)' : 'ใบสั่งซื้อ (Purchase Order)'}
+    <div className={cn("border border-slate-300 rounded-sm bg-white mb-3 text-center text-xs select-text overflow-hidden shadow-2xs", className)}>
+      {/* Table Header Bar */}
+      <div className="bg-slate-100 border-b border-slate-300 py-1.5 px-3 font-bold text-slate-800 uppercase tracking-wide text-[10.5px] flex items-center justify-between">
+        <span className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+          <span>การตรวจสอบและอนุมัติ (APPROVAL MATRIX WORKFLOW)</span>
+        </span>
+        <span className="text-[9.5px] text-slate-600 font-semibold tracking-normal">
+          {documentType === 'PR' ? 'ใบขอซื้อ (Purchase Request)' : 'ใบสั่งซื้อ (Purchase Order)'} • FM-APV-01
         </span>
       </div>
 
       {/* Grid of Signatory Columns */}
-      <div className={cn("grid divide-x divide-black bg-white", gridColClass)}>
+      <div className={cn("grid divide-x divide-slate-300 bg-white", gridColClass)}>
         {relevantSteps.map((step, idx) => {
           const roleKey = step.roleKey;
           const isRequesterStep = roleKey === 'requestedBy';
           const signature = signatures?.[roleKey];
 
-          // Determine displayed name and position
           const displayedName = isRequesterStep 
             ? (requesterName || fallbackRequester?.name || signature?.name || step.defaultName) 
             : (signature?.name || step.defaultName);
@@ -120,7 +121,6 @@ export function ApprovalMatrixDocumentTable({
           const displayedDate = signature?.date || (isRequesterStep ? (requestDate || fallbackRequester?.date) : (isLastStep && isApproved ? (requestDate) : undefined));
           const isStepSigned = signature?.signed || (isRequesterStep && !!displayedDate) || (isLastStep && isApproved);
 
-          // Check if this step is optional due to amount thresholds
           const hasThreshold = typeof step.minAmount === 'number' && step.minAmount > 0;
           const isApplicableForAmount = effectiveTotalAmount === undefined || !hasThreshold || effectiveTotalAmount >= (step.minAmount || 0);
 
@@ -128,64 +128,66 @@ export function ApprovalMatrixDocumentTable({
             <div 
               key={step.id || idx} 
               className={cn(
-                "p-2.5 flex flex-col justify-between min-h-[118px] bg-white text-black",
-                !isApplicableForAmount ? "opacity-75" : ""
+                "flex flex-col justify-between min-h-[124px] bg-white text-slate-900 transition-colors",
+                !isApplicableForAmount ? "opacity-75 bg-slate-50/40" : ""
               )}
             >
               {/* Step Header */}
-              <div>
-                <div className="font-bold text-black text-[11px] leading-tight">
+              <div className="bg-slate-50/80 p-2 border-b border-slate-200">
+                <div className="font-bold text-slate-900 text-[10.5px] leading-tight">
                   {step.titleTh}
                 </div>
-                <div className="text-[9px] text-black font-normal leading-tight mt-0.5">
+                <div className="text-[9px] text-slate-500 font-medium uppercase tracking-wider leading-tight mt-0.5">
                   {step.titleEn}
                 </div>
                 {hasThreshold && (
-                  <div className="text-[8.5px] text-black font-mono font-bold mt-0.5">
-                    วงเงิน &gt; {step.minAmount?.toLocaleString()} บ.
+                  <div className="mt-1">
+                    <span className="inline-block text-[8.5px] font-mono font-bold text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-300 shadow-2xs">
+                      วงเงิน &gt; {step.minAmount?.toLocaleString()} บ.
+                    </span>
                   </div>
                 )}
               </div>
 
               {/* Signatory Name & Signature Status */}
-              <div className="my-auto py-1">
-                <div className="font-bold text-black leading-tight text-[11px]">
+              <div className="p-2.5 my-auto">
+                <div className="font-bold text-slate-900 leading-tight text-[11px]">
                   {displayedName || '-'}
                 </div>
-                <div className="text-[10px] text-black mt-0.5 leading-tight">
+                <div className="text-[10px] text-slate-500 mt-0.5 leading-tight">
                   {displayedPosition || '-'}
                 </div>
 
-                <div className="text-[10px] text-black mt-1">
+                <div className="mt-2 min-h-[26px] flex items-center justify-center">
                   {isStepSigned ? (
                     <span className={cn(
-                      "font-bold inline-flex items-center gap-1 px-2 py-0.5 rounded-none border text-[10.5px]",
+                      "font-bold inline-flex items-center gap-1 px-2.5 py-1 rounded-sm border text-[10px] shadow-2xs",
                       isLastStep 
                         ? "stamp-approved bg-emerald-50 text-emerald-700 border-emerald-600" 
                         : "stamp-reviewed bg-indigo-50 text-indigo-700 border-indigo-600"
                     )}>
-                      <CheckCircle2 className={cn("w-3 h-3 shrink-0", isLastStep ? "text-emerald-600" : "text-indigo-600")} />
-                      {isLastStep ? 'อนุมัติโครงการ' : 'ผ่านการตรวจสอบ'}
+                      <CheckCircle2 className={cn("w-3.5 h-3.5 shrink-0", isLastStep ? "text-emerald-600" : "text-indigo-600")} />
+                      <span>{isLastStep ? 'อนุมัติโครงการ' : 'ผ่านการตรวจสอบ'}</span>
                     </span>
                   ) : isLastStep && isRejected ? (
-                    <span className="stamp-rejected font-bold bg-red-50 text-red-700 border-red-600 px-2 py-0.5 rounded-none border inline-flex items-center gap-1 text-[10.5px]">
-                      <AlertCircle className="w-3 h-3 text-red-600 shrink-0" /> ไม่อนุมัติ
+                    <span className="stamp-rejected font-bold bg-red-50 text-red-700 border-red-600 px-2.5 py-1 rounded-sm border inline-flex items-center gap-1 text-[10px] shadow-2xs">
+                      <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" /> 
+                      <span>ไม่อนุมัติ</span>
                     </span>
                   ) : !isApplicableForAmount ? (
-                    <span className="text-black text-[9.5px] italic">[ ต่ำกว่าเกณฑ์วงเงิน ]</span>
+                    <span className="text-slate-400 text-[9.5px] italic">[ ไม่อยู่ในเกณฑ์วงเงิน ]</span>
                   ) : (
-                    <span className="text-black font-mono tracking-widest text-[11px] font-bold">..............................</span>
+                    <div className="w-full">
+                      <div className="w-24 border-b border-dashed border-slate-300 mx-auto mb-1" />
+                      <span className="text-slate-400 font-mono text-[9px]">( ลงชื่อผู้มีอำนาจ )</span>
+                    </div>
                   )}
                 </div>
               </div>
 
               {/* Date Box */}
-              <div className="text-[10px] text-black border-t border-black pt-1 mt-auto font-medium">
-                วันที่: {
-                  displayedDate 
-                    ? formatDate(displayedDate)
-                    : '....../....../......'
-                }
+              <div className="text-[9.5px] text-slate-600 border-t border-slate-200 py-1.5 px-1 mt-auto font-medium bg-slate-50/50">
+                วันที่: {displayedDate ? formatDate(displayedDate) : '....../....../......'}
               </div>
             </div>
           );

@@ -172,12 +172,6 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
             overflow-wrap: break-word;
             width: 100%;
           }
-          .standard-a4-doc,
-          .standard-a4-doc * {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border-color: #000000 !important;
-          }
           .standard-a4-doc {
             width: 100% !important;
             max-width: 100% !important;
@@ -185,6 +179,7 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
             padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
+            background-color: #ffffff !important;
           }
           table {
             border-collapse: collapse;
