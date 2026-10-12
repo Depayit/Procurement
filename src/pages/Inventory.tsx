@@ -236,7 +236,7 @@ export function InventoryPage() {
         </div>
 
         {/* Header Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2 w-full sm:w-auto">
           <input 
             type="file" 
             ref={fileInputRef} 
@@ -246,28 +246,28 @@ export function InventoryPage() {
           />
           <Link 
             to="/import?target=inventory"
-            className="inline-flex items-center px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center justify-center px-2 sm:px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs hover:bg-slate-50 transition-colors text-center w-full sm:w-auto"
             title="นำเข้าไฟล์หลายรูปแบบ (Excel, CSV, CAD, PDF, Word, JSON) พร้อมจับคู่คอลัมน์อัตโนมัติ"
           >
-            <UploadCloud className="h-4 w-4 mr-1.5 text-indigo-600" />
-            <span>{isEnglish ? 'Import Hub' : 'นำเข้าข้อมูลไฟล์'}</span>
+            <UploadCloud className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-indigo-600 shrink-0" />
+            <span className="truncate">{isEnglish ? 'Import' : 'นำเข้าไฟล์'}</span>
           </Link>
           
           <button 
             onClick={() => setIsScannerOpen(true)}
-            className="inline-flex items-center px-3.5 py-2 border border-indigo-200 rounded-lg text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50/70 shadow-2xs hover:bg-indigo-100 transition-colors"
+            className="inline-flex items-center justify-center px-2 sm:px-3.5 py-2 border border-indigo-200 rounded-lg text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50/70 shadow-2xs hover:bg-indigo-100 transition-colors text-center w-full sm:w-auto"
             title="สแกนบาร์โค้ด SKU ด้วยกล้องหรือเครื่องยิงบาร์โค้ด"
           >
-            <Barcode className="h-4 w-4 mr-1.5 text-indigo-600" />
-            <span>{isEnglish ? 'Scan SKU Barcode' : 'สแกนบาร์โค้ด SKU'}</span>
+            <Barcode className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-indigo-600 shrink-0" />
+            <span className="truncate">{isEnglish ? 'Scan Barcode' : 'สแกน SKU'}</span>
           </button>
 
           <button 
             onClick={() => { setTransactDefaultId(undefined); setIsTransactOpen(true); }}
-            className="inline-flex items-center px-3 py-2 border border-transparent rounded-lg shadow-2xs text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center justify-center px-2 sm:px-3 py-2 border border-transparent rounded-lg shadow-2xs text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors text-center w-full sm:w-auto"
           >
-            <ArrowDownUp className="h-4 w-4 mr-1.5" />
-            <span>{isEnglish ? 'Receive / Issue' : 'รับเข้า / เบิกออก'}</span>
+            <ArrowDownUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 shrink-0" />
+            <span className="truncate">{isEnglish ? 'Receive/Issue' : 'รับเข้า/เบิก'}</span>
           </button>
         </div>
       </div>

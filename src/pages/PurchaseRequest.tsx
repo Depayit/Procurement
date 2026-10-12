@@ -327,24 +327,26 @@ export function PurchaseRequestPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2.5 w-full sm:w-auto">
           <Link
             to="/import?target=pr"
-            className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 h-10 px-3.5 py-2 shadow-2xs"
+            className="inline-flex items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 h-9 sm:h-10 px-2 sm:px-3.5 py-2 shadow-2xs text-center w-full sm:w-auto"
             title="นำเข้าไฟล์ Excel, CSV, CAD (.dxf) ถอดแบบ หรือ BOQ PDF เพื่อสร้าง PR"
           >
-            <UploadCloud className="mr-1.5 h-4 w-4 text-indigo-600" />
-            {isEnglish ? 'Import BOQ / CAD' : 'นำเข้า BOQ / CAD'}
+            <UploadCloud className="mr-1 sm:mr-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-600 shrink-0" />
+            <span className="truncate">{isEnglish ? 'Import BOQ' : 'นำเข้า BOQ'}</span>
           </Link>
 
           <button 
             onClick={() => setShowTemplatesGallery(!showTemplatesGallery)}
-            className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 h-10 px-4 py-2 shadow-2xs"
+            className="inline-flex items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 h-9 sm:h-10 px-2 sm:px-4 py-2 shadow-2xs text-center w-full sm:w-auto"
           >
-            <Sparkles className="mr-2 h-4 w-4 text-indigo-600" />
-            {showTemplatesGallery 
-              ? (isEnglish ? 'Hide Templates' : 'ซ่อนเทมเพลตมาตรฐาน') 
-              : (isEnglish ? 'PR Templates Gallery' : 'คลังเทมเพลตมาตรฐาน PR')}
+            <Sparkles className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-600 shrink-0" />
+            <span className="truncate">
+              {showTemplatesGallery 
+                ? (isEnglish ? 'Hide' : 'ซ่อนแบบ') 
+                : (isEnglish ? 'Templates' : 'เทมเพลต')}
+            </span>
           </button>
 
           <button 
@@ -359,15 +361,15 @@ export function PurchaseRequestPage() {
             }}
             disabled={!canCreatePR}
             className={cn(
-              "inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors h-10 px-4 py-2 shadow-sm",
+              "inline-flex items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors h-9 sm:h-10 px-2 sm:px-4 py-2 shadow-sm text-center w-full sm:w-auto",
               canCreatePR 
                 ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" 
                 : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60"
             )}
             title={!canCreatePR ? (isEnglish ? 'Requires PR Create permission' : 'ต้องได้รับสิทธิ์สร้างใบขอซื้อ') : undefined}
           >
-            <Plus className="mr-1.5 h-4 w-4" />
-            {isEnglish ? 'New PR' : 'สร้าง PR ใหม่'}
+            <Plus className="mr-1 sm:mr-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+            <span className="truncate">{isEnglish ? 'New PR' : 'สร้าง PR'}</span>
           </button>
         </div>
       </div>
@@ -443,7 +445,7 @@ export function PurchaseRequestPage() {
       {/* Main PR List Card */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         {/* Filter and Search Bar */}
-        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50">
+        <div className="p-3 sm:p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center justify-between bg-slate-50">
           <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input 
@@ -455,22 +457,20 @@ export function PurchaseRequestPage() {
             />
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-              <span>{isEnglish ? 'Status:' : 'สถานะ:'}</span>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              >
-                <option value="all">{isEnglish ? 'All Statuses' : 'ทั้งหมด'} ({prs.length})</option>
-                <option value="Draft">{statusLabels['Draft']}</option>
-                <option value="Pending Approval">{statusLabels['Pending Approval']}</option>
-                <option value="Approved">{statusLabels['Approved']}</option>
-                <option value="PO Created">{statusLabels['PO Created']}</option>
-                <option value="Rejected">{statusLabels['Rejected']}</option>
-              </select>
-            </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <span className="text-xs text-slate-600 font-medium shrink-0">{isEnglish ? 'Status:' : 'สถานะ:'}</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="all">{isEnglish ? 'All Statuses' : 'ทั้งหมด'} ({prs.length})</option>
+              <option value="Draft">{statusLabels['Draft']}</option>
+              <option value="Pending Approval">{statusLabels['Pending Approval']}</option>
+              <option value="Approved">{statusLabels['Approved']}</option>
+              <option value="PO Created">{statusLabels['PO Created']}</option>
+              <option value="Rejected">{statusLabels['Rejected']}</option>
+            </select>
           </div>
         </div>
 

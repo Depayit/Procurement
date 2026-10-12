@@ -8,7 +8,7 @@
 /* Global Typography, Proportions & Balanced Line Breaks */
 html {
   /* Universal calibrated scale matching compact Desktop reference across all devices */
-  zoom: 80%;
+  zoom: 85%;
 }
 
 body {
@@ -325,6 +325,14 @@ p, li, blockquote {
 .safe-x {
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 

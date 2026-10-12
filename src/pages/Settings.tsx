@@ -227,7 +227,7 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto">
+    <div className="w-full space-y-6 animate-in fade-in duration-500">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-800">{t('settings.title')}</h1>
         <p className="text-sm text-slate-500 mt-1">{t('settings.subtitle')}</p>
@@ -236,7 +236,7 @@ export function SettingsPage() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Navigation */}
         <div className="w-full md:w-64 flex-shrink-0">
-          <nav className="flex md:flex-col space-x-2 md:space-x-0 md:space-y-1 overflow-x-auto pb-2 md:pb-0">
+          <nav className="flex md:flex-col space-x-2 md:space-x-0 md:space-y-1 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
             <button
               onClick={() => setActiveTab('profile')}
               className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
