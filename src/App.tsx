@@ -64,8 +64,10 @@ export default function App() {
   // Initialize UI display density scale across all devices
   useEffect(() => {
     try {
-      const savedScale = localStorage.getItem('procuresync_ui_scale') || '80%';
+      const savedScale = localStorage.getItem('procuresync_ui_scale') || '100%';
       document.documentElement.style.zoom = savedScale;
+      const numScale = parseFloat(savedScale) / 100;
+      document.documentElement.style.setProperty('--app-zoom', String(numScale || 1));
     } catch {
       // ignore
     }

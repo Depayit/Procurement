@@ -7,18 +7,16 @@
 
 /* Global Typography, Proportions & Balanced Line Breaks */
 :root {
-  /* Single source of truth for the global UI scale (Balanced Compact 85%) */
-  --app-zoom: 0.85;
+  /* Single source of truth for the global UI scale (100% Standard) */
+  --app-zoom: 1;
 }
 
 html {
-  /* Universal calibrated scale matching compact Desktop reference across all devices */
-  zoom: 0.85;
+  /* Universal calibrated scale matching Standard 100% */
+  zoom: 1;
 }
 
-/* Viewport-height helpers compensated for the global zoom.
-   With `zoom` applied on <html>, 100dvh/100vh resolve to only 85% of the real
-   screen, leaving an empty band at the bottom. These restore true full height. */
+/* Viewport-height helpers compensated for global zoom adjustments */
 .h-app {
   height: 100vh;
   height: calc(100dvh / var(--app-zoom));

@@ -74,9 +74,9 @@ export function SettingsPage() {
   // UI Scale State
   const [uiScale, setUiScale] = useState(() => {
     try {
-      return localStorage.getItem('procuresync_ui_scale') || '80%';
+      return localStorage.getItem('procuresync_ui_scale') || '100%';
     } catch {
-      return '80%';
+      return '100%';
     }
   });
 
@@ -88,6 +88,8 @@ export function SettingsPage() {
       // ignore
     }
     document.documentElement.style.zoom = scale;
+    const numScale = parseFloat(scale) / 100;
+    document.documentElement.style.setProperty('--app-zoom', String(numScale || 1));
   };
 
   // Company Profile State
@@ -1672,36 +1674,36 @@ export function SettingsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { 
-                      scale: '80%', 
-                      label: '80% Ultra Compact', 
+                      scale: '100%', 
+                      label: '100% Standard', 
                       desc: isEnglish 
-                        ? 'Recommended reference size — perfectly fits laptop screens without overflow or truncation. Complete cards and tables visible.'
-                        : 'ขนาดตามตัวอย่างที่แนะนำ — พอดีกับหน้าจอแล็ปท็อป ไม่ล้น ไม่ตัดทอนคำ การ์ดและตารางแสดงผลครบถ้วน',
-                      tag: isEnglish ? 'Reference (Recommended)' : 'ตามตัวอย่าง (แนะนำ)'
-                    },
-                    { 
-                      scale: '85%', 
-                      label: '85% Balanced Compact', 
-                      desc: isEnglish 
-                        ? 'Balanced compact size — crisp typography and comfortable spacing.'
-                        : 'ขนาดกะทัดรัดสมดุล — ตัวอักษรกำลังพอดีตา รายละเอียดครบ',
-                      tag: isEnglish ? 'Balanced' : 'สมดุล'
+                        ? 'Standard full scale view — optimal readability and proportions on all screens.'
+                        : 'ขนาดมาตรฐานปกติแบบเต็มสเกล — ตัวหนังสือคมชัด อ่านง่าย สัดส่วนมาตรฐาน',
+                      tag: isEnglish ? 'Standard (Default)' : 'มาตรฐาน (ค่าเริ่มต้น)'
                     },
                     { 
                       scale: '90%', 
                       label: '90% Medium', 
                       desc: isEnglish 
-                        ? 'Medium size — suitable for larger 24-27 inch monitors.'
-                        : 'ขนาดปานกลาง — สำหรับจอขนาดใหญ่ 24-27 นิ้ว',
-                      tag: isEnglish ? 'Large Monitor' : 'จอใหญ่'
+                        ? 'Medium compact size — suitable for laptops and medium monitors.'
+                        : 'ขนาดกะทัดรัดปานกลาง — เหมาะสำหรับแล็ปท็อปและจอภาพทั่วไป',
+                      tag: isEnglish ? 'Medium' : 'ปานกลาง'
                     },
                     { 
-                      scale: '100%', 
-                      label: '100% Standard', 
+                      scale: '85%', 
+                      label: '85% Balanced Compact', 
                       desc: isEnglish 
-                        ? 'Default full scale view.'
-                        : 'ขนาดเริ่มต้นปกติแบบเต็มสเกล',
-                      tag: isEnglish ? 'Default' : 'ค่าเริ่มต้น'
+                        ? 'Balanced compact size — displays more data on screen with comfortable spacing.'
+                        : 'ขนาดกะทัดรัดสมดุล — แสดงข้อมูลได้มากขึ้น สบายตา',
+                      tag: isEnglish ? 'Balanced' : 'สมดุล'
+                    },
+                    { 
+                      scale: '80%', 
+                      label: '80% Ultra Compact', 
+                      desc: isEnglish 
+                        ? 'Ultra compact size — fits more content on compact laptop displays without overflow.'
+                        : 'ขนาดกะทัดรัดพิเศษ — พอดีกับหน้าจอแล็ปท็อปขนาดเล็ก มองเห็นข้อมูลครบถ้วน',
+                      tag: isEnglish ? 'Ultra Compact' : 'กะทัดรัดพิเศษ'
                     },
                   ].map((item) => (
                     <div 

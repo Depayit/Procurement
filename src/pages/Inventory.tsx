@@ -408,15 +408,25 @@ export function InventoryPage() {
       <div className="bg-white shadow-xs border border-slate-200 rounded-xl overflow-hidden">
         
         {/* Mobile Cards View (Visible on < md screens) */}
-        <div className="md:hidden divide-y divide-slate-100">
-          {filteredInventory.map((item) => {
+        <div className="md:hidden divide-y divide-slate-200">
+          {filteredInventory.map((item, index) => {
             const isLow = (item.quantity ?? 0) <= (item.minStockLevel ?? 0);
             const masterSku = item.sku || item.code;
             const barcodeVal = item.barcode || masterSku;
             const binLoc = item.binLocation || item.location;
 
             return (
-              <div key={item.id} className={cn("p-4 transition-colors space-y-3", isLow ? "bg-amber-50/30" : "bg-white")}>
+              <div 
+                key={item.id} 
+                className={cn(
+                  "p-4 transition-colors space-y-3", 
+                  isLow 
+                    ? "bg-amber-50/60 border-l-4 border-l-amber-500" 
+                    : index % 2 === 1 
+                      ? "bg-slate-100/60" 
+                      : "bg-white"
+                )}
+              >
                 {/* Item Top Row */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start gap-2.5 min-w-0">
@@ -457,7 +467,14 @@ export function InventoryPage() {
                 </div>
 
                 {/* Stock & Storage Bin Row */}
-                <div className="grid grid-cols-2 gap-2 bg-slate-50/70 p-2.5 rounded-lg border border-slate-100 text-xs">
+                <div className={cn(
+                  "grid grid-cols-2 gap-2 p-2.5 rounded-lg border text-xs",
+                  isLow
+                    ? "bg-white/90 border-amber-200/80"
+                    : index % 2 === 1
+                      ? "bg-white border-slate-200/90 shadow-2xs"
+                      : "bg-slate-50 border-slate-200/60"
+                )}>
                   <div>
                     <span className="text-[10px] text-slate-400 font-bold uppercase block">คงเหลือในคลัง</span>
                     <span className="font-bold text-slate-900 font-mono tabular-nums text-sm">
@@ -482,7 +499,15 @@ export function InventoryPage() {
                 <div className="flex items-center gap-1 flex-wrap pt-0.5">
                   <span className="text-[10px] font-semibold text-slate-400">โครงการ:</span>
                   {(item.projectAllocations || ['โครงการ คอนโดสุขุมวิท 101', 'ทุกไซต์งาน']).map(p => (
-                    <span key={p} className="text-[10px] font-bold bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded border border-slate-200">
+                    <span 
+                      key={p} 
+                      className={cn(
+                        "text-[10px] font-bold px-1.5 py-0.5 rounded border",
+                        index % 2 === 1
+                          ? "bg-white text-slate-700 border-slate-200/90"
+                          : "bg-slate-100 text-slate-700 border-slate-200"
+                      )}
+                    >
                       {p}
                     </span>
                   ))}
