@@ -1,8 +1,8 @@
-import { FileText, Plus, Wand2, Loader2, Check, Search, Truck, Store, Edit, Trash2, Printer, Download, ChevronDown, ChevronUp, Bell, AlertTriangle, Calendar, Settings2 } from 'lucide-react';
+import { FileText, Plus, Wand2, Loader2, Check, Search, Truck, Store, Edit, Trash2, Printer, ChevronDown, ChevronUp, Bell, AlertTriangle, Calendar, Settings2 } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailsModal } from '../components/DetailsModal';
-import { exportToPDF, printA4Document } from '../lib/pdf';
+import { printA4Document } from '../lib/pdf';
 import { cn } from '../lib/utils';
 import type { PurchaseOrder as PO, POItem, POStatus, PRItem } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -820,17 +820,9 @@ export function PurchaseOrderPage() {
           <div className="flex flex-col sm:flex-row gap-2 w-full justify-between items-center">
             <div className="flex gap-2">
               <button 
-                onClick={() => exportToPDF('po-document-view', `${viewPO?.poNumber}`)}
-                className="inline-flex items-center px-3.5 py-2 border border-emerald-300 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors shadow-2xs cursor-pointer"
-                title="บันทึกเป็น PDF ขนาดมาตรฐาน A4"
-              >
-                <Download className="h-4 w-4 mr-1.5 text-emerald-600" />
-                บันทึก PDF A4
-              </button>
-              <button 
                 onClick={() => printA4Document('po-document-view', `ใบสั่งซื้อ_${viewPO?.poNumber}`)}
                 className="inline-flex items-center px-3.5 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
-                title="พิมพ์เอกสาร A4"
+                title="พิมพ์เอกสาร A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
               >
                 <Printer className="h-4 w-4 mr-1.5 text-indigo-600" />
                 พิมพ์เอกสาร A4

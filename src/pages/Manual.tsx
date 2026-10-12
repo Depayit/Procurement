@@ -34,14 +34,17 @@ import {
   Plus,
   Eye,
   X,
-  FileDown,
-  Loader2
+  UploadCloud,
+  Cloud,
+  BellRing,
+  FileCode,
+  History
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
 import { StandardManualDocument } from '../components/StandardManualDocument';
-import { printA4Document, exportToPDF } from '../lib/pdf';
+import { printA4Document } from '../lib/pdf';
 
 interface ButtonGuideItem {
   name: string;
@@ -82,21 +85,9 @@ export function ManualPage() {
   const [selectedModule, setSelectedModule] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'interactive' | 'official-document'>('interactive');
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
 
   const handlePrint = (docId = 'standard-manual-doc') => {
     printA4Document(docId, 'ProcureSync_คู่มือมาตรฐานการปฏิบัติงาน_SOP');
-  };
-
-  const handleExportPDF = async (docId = 'standard-manual-doc') => {
-    try {
-      setIsExporting(true);
-      await exportToPDF(docId, 'ProcureSync_User_Manual_SOP');
-    } catch (err) {
-      console.error('PDF export error:', err);
-    } finally {
-      setIsExporting(false);
-    }
   };
 
   const modules: ModuleSection[] = [
@@ -226,12 +217,12 @@ export function ManualPage() {
           linkage: 'ได้เอกสารตัวจริงพร้อมลงนามหากจำเป็น'
         },
         {
-          name: 'บันทึก PDF A4 (Export PDF)',
-          icon: Download,
-          color: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+          name: 'พิมพ์เอกสาร A4 (Print / บันทึก PDF)',
+          icon: Printer,
+          color: 'bg-white text-slate-800 border-slate-300',
           location: 'ด้านล่างของหน้าต่างพรีวิวเอกสาร',
-          action: 'ดาวน์โหลดไฟล์ PDF ขนาด A4 100% สัดส่วนมาตรฐานลงเครื่อง',
-          linkage: 'ใช้ส่งต่อทางอีเมลหรือเก็บเข้าแฟ้มโครงการ'
+          action: 'สั่งพิมพ์เอกสารขนาด A4 หรือเลือกบันทึกเป็น PDF (Save as PDF) ผ่านระบบพิมพ์ของเบราว์เซอร์',
+          linkage: 'ได้เอกสารทางการขนาด A4 มาตรฐาน พร้อมใช้งานทั้งบน Desktop และ Mobile'
         }
       ],
       tips: [
@@ -652,12 +643,27 @@ export function ManualPage() {
           linkage: 'เปลี่ยนภาษาทั้งระบบ'
         },
         {
+          name: 'ปรับความละเอียดหน้าจอ (Display Density Scale)',
+          icon: Maximize2,
+          color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
+          location: 'หน้าการตั้งค่า / แถบสเกล',
+          action: 'ปรับขนาด UI ทั้งระบบเป็น 80% (กะทัดรัดสมดุล), 90%, 100% (มาตรฐาน), หรือ 110% ให้พอดีกับขนาดจอโน้ตบุ๊ก จอแสดงผลกว้าง และสมาร์ตโฟน',
+          linkage: 'ปรับสเกลแสดงผลทั้งแอปพลิเคชันและจำค่าไว้ในเครื่อง'
+        },
+        {
           name: 'ติดตั้งแอป ProcureSync (Install PWA)',
           icon: Download,
           color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
           location: 'เมนูด้านล่างของแถบข้าง (Sidebar)',
           action: 'ติดตั้งเว็บแอปพลิเคชันลงบนเครื่องคอมพิวเตอร์หรือสมาร์ทโฟน เพื่อเปิดใช้งานแบบเต็มหน้าจอและเร็วขึ้น',
           linkage: 'เพิ่มไอคอนแอปบนเดสก์ท็อป / หน้าจอมือถือ'
+        },
+        {
+          name: 'โหมดนำเสนอ & ลายน้ำ (MVP Presentation Mode)',
+          color: 'bg-slate-100 text-slate-700',
+          location: 'แท็บการแสดงผล ในหน้า Settings',
+          action: 'เปิด/ปิดลายน้ำตัวอย่างระบบและเปิดใช้งานสภาพแวดล้อมจำลอง (Sandbox) สำหรับการนำเสนองานผู้บริหาร',
+          linkage: 'แสดงตราสัญลักษณ์ Demo Watermark'
         },
         {
           name: 'แถบสถานะออฟไลน์ (Offline Indicator)',
@@ -668,7 +674,160 @@ export function ManualPage() {
         }
       ],
       tips: [
-        'บนมือถือ iPhone หรือ Android สามารถกด "ติดตั้งแอป" หรือ "Add to Home Screen" เพื่อใช้งานเสมือนแอปจริงได้โดยไม่ต้องดาวน์โหลดจาก App Store'
+        'บนมือถือ iPhone หรือ Android สามารถกด "ติดตั้งแอป" หรือ "Add to Home Screen" เพื่อใช้งานเสมือนแอปจริงได้โดยไม่ต้องดาวน์โหลดจาก App Store',
+        'หากใช้งานบนจอโน้ตบุ๊ก 13-14 นิ้ว สามารถเลือก Display Scale เป็น 80% เพื่อให้เห็นมุมมองตารางและแดชบอร์ดครบถ้วนโดยไม่ต้องเลื่อนหน้าจอด้านข้าง'
+      ]
+    },
+    {
+      id: 'data-import',
+      title: '9. ศูนย์นำเข้าข้อมูลอัจฉริยะ (Smart Data Import Hub - Excel, CSV & CAD)',
+      titleEn: '9. Smart Data Import Hub (Excel, CSV, JSON & CAD)',
+      icon: UploadCloud,
+      badge: 'นำเข้าข้อมูลความเร็วสูง',
+      role: 'เจ้าหน้าที่สโตร์ / เจ้าหน้าที่จัดซื้อ / ผู้ดูแลระบบ / วิศวกร BOQ',
+      summary: 'ศูนย์กลางนำเข้าข้อมูลปริมาณมาก (Bulk Data Import) รองรับไฟล์ Excel (.xlsx, .xls), CSV, JSON, และแบบจำลอง CAD/DXF สำหรับแปลงข้อมูลปริมาณงานก่อสร้าง พร้อมระบบตรวจจับและจับคู่คอลัมน์อัตโนมัติ (AI Column Mapping) เลือกระบบผสานข้อมูลแบบ Upsert, Overwrite หรือ Append สู่ 5 โมดูลเป้าหมาย (คลังสินค้า, PR, PO, คู่ค้า, CAD) และมีระบบตรวจสอบประวัติการนำเข้าย้อนหลัง (Import Audit History)',
+      summaryEn: 'Smart bulk data import hub supporting Excel (.xlsx, .xls), CSV, JSON, and CAD/DXF files with automatic column mapping, flexible merge modes (Upsert, Overwrite, Append), sample templates, and comprehensive audit history.',
+      route: '/import',
+      linkages: [
+        {
+          from: 'นำเข้าไฟล์ Excel / CSV',
+          to: 'คลังพัสดุก่อสร้างกลาง (Inventory)',
+          description: 'เพิ่มหรืออัปเดตสต็อกพัสดุ รหัส Master SKU บาร์โค้ด และราคากลางเป็นชุดหลายร้อยรายการในไม่กี่วินาที'
+        },
+        {
+          from: 'นำเข้าไฟล์ BOQ Estimate / CAD',
+          to: 'ระบบขอซื้อ (PR) & คำสั่งซื้อ (PO)',
+          description: 'แปลงรายการถอดแบบวัสดุและปริมาณงานเป็นเอกสาร PR หรือ PO ได้ทันทีโดยไม่ต้องพิมพ์ซ้ำ'
+        },
+        {
+          from: 'ประวัติการนำเข้า (Import History)',
+          to: 'ระบบตรวจสอบย้อนหลัง (Audit Log)',
+          description: 'เก็บบันทึกประวัติ วันเวลา ผู้ดำเนินการ จำนวนแถวที่เพิ่ม/อัปเดต เพื่อความโปร่งใส'
+        }
+      ],
+      statuses: [
+        { status: 'Merge (ผสานข้อมูล / Upsert)', color: 'bg-emerald-100 text-emerald-800 border-emerald-300', desc: 'หากพบรหัสเดิมจะทำการอัปเดตข้อมูล และเพิ่มรายการใหม่ต่อท้ายโดยไม่ลบข้อมูลเก่า (แนะนำ)' },
+        { status: 'Append (เพิ่มต่อท้าย)', color: 'bg-blue-100 text-blue-800 border-blue-300', desc: 'เพิ่มข้อมูลใหม่ทั้งหมดต่อท้ายข้อมูลเดิม เหมาะสำหรับการบันทึกประวัติการส่งมอบหรือเอกสารใหม่' },
+        { status: 'Overwrite (เขียนทับทั้งหมด)', color: 'bg-red-100 text-red-800 border-red-300', desc: 'ลบข้อมูลเดิมในโมดูลนั้นทั้งหมดแล้วแทนที่ด้วยข้อมูลจากไฟล์ใหม่ ใช้เฉพาะเมื่อขึ้นรอบบัญชีใหม่' }
+      ],
+      buttons: [
+        {
+          name: 'ดาวน์โหลดเทมเพลตตัวอย่าง (Download Template)',
+          icon: Download,
+          color: 'bg-emerald-600 text-white',
+          location: 'แท็บเทมเพลตตัวอย่าง (Templates Tab)',
+          action: 'ดาวน์โหลดไฟล์ตัวอย่าง Excel (.xlsx) ที่มีหัวคอลัมน์มาตรฐานครบถ้วน เช่น เทมเพลตพัสดุคลังกลาง, รายการ PR BOQ, หรือรายชื่อคู่ค้า',
+          linkage: 'นำไฟล์ไปกรอกข้อมูลก่อนอัปโหลดเข้าระบบ'
+        },
+        {
+          name: 'เลือกไฟล์หรือลากวาง (Drag & Drop / Browse)',
+          icon: Upload,
+          color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
+          location: 'ขั้นตอนที่ 1: อัปโหลดไฟล์',
+          action: 'เลือกไฟล์ Excel, CSV, JSON หรือ CAD/DXF จากคอมพิวเตอร์ ระบบจะอ่านข้อมูลและแสดงจำนวนแถวทันที',
+          linkage: 'เข้าสู่ขั้นตอนตรวจสอบและจับคู่คอลัมน์'
+        },
+        {
+          name: 'จับคู่คอลัมน์อัตโนมัติ (Auto-Map Columns)',
+          icon: Sparkles,
+          color: 'bg-indigo-600 text-white',
+          location: 'ขั้นตอนที่ 2: จับคู่ฟิลด์ข้อมูล',
+          action: 'ระบบจะวิเคราะห์ชื่อหัวตารางในไฟล์และจับคู่เข้ากับฐานข้อมูลของ ProcureSync โดยอัตโนมัติ ผู้ใช้สามารถปรับเปลี่ยนการจับคู่ได้ตามต้องการ',
+          linkage: 'จัดระเบียบโครงสร้างข้อมูลให้ตรงกับระบบ'
+        },
+        {
+          name: 'ยืนยันและนำเข้าข้อมูล (Execute Import)',
+          icon: CheckCircle2,
+          color: 'bg-emerald-600 text-white',
+          location: 'ขั้นตอนที่ 3: ตรวจสอบและบันทึก',
+          action: 'ประมวลผลนำเข้าข้อมูลจริงเข้าสู่ฐานข้อมูล ระบบจะสรุปจำนวนแถวที่เพิ่มใหม่ (Added) และแถวที่อัปเดต (Updated)',
+          linkage: 'ข้อมูลจะปรากฏในหน้านั้นๆ ทันทีแบบ Real-time'
+        },
+        {
+          name: 'ประวัติการนำเข้า (Import History Tab)',
+          icon: History,
+          color: 'bg-white border-slate-300 text-slate-700',
+          location: 'ด้านบนของหน้า Data Import Hub',
+          action: 'ตรวจสอบประวัติย้อนหลังว่าใครเป็นผู้นำเข้าไฟล์ใด วันที่เท่าไร และมีจำนวนรายการสำเร็จกี่แถว',
+          linkage: 'ใช้สำหรับการสอบทานและตรวจสอบการนำเข้า'
+        }
+      ],
+      tips: [
+        'ควรใช้ปุ่ม "ดาวน์โหลดเทมเพลตตัวอย่าง" มาเป็นต้นแบบในการกรอกข้อมูล จะช่วยให้ระบบสามารถตรวจจับหัวตารางและจับคู่อัตโนมัติได้ 100%',
+        'สำหรับโมดูลคลังสินค้า แนะนำให้เลือกโหมด "ผสานข้อมูล (Merge / Upsert)" เพื่อให้อัปเดตราคากลางและยอดสต็อกตามรหัส Master SKU เดิมโดยที่ข้อมูลอื่นไม่สูญหาย'
+      ]
+    },
+    {
+      id: 'integrations',
+      title: '10. การเชื่อมต่อคลาวด์และแจ้งเตือน (Cloud Sync, Integrations & Webhooks)',
+      titleEn: '10. Cloud Sync, Enterprise Integrations & Webhooks',
+      icon: Cloud,
+      badge: 'Enterprise Connectivity',
+      role: 'ผู้ดูแลระบบ (Admin) / เจ้าหน้าที่ไอที / ผู้จัดการโครงการ',
+      summary: 'เชื่อมต่อและซิงก์ข้อมูลระหว่าง ProcureSync กับคลาวด์สตอเรจและแพลตฟอร์มภายนอก รองรับการซิงก์ข้อมูลสองทางกับ Google Sheets ด้วย Google Apps Script, สำรองฐานข้อมูลบน Google Drive และ Dropbox, ระบบแจ้งเตือนอัตโนมัติผ่าน LINE Notify / LINE Alert เข้ากลุ่มไลน์โครงการเมื่อมีเอกสารรออนุมัติหรือตรวจรับสินค้า และสภาพแวดล้อมจำลอง (MVP Presentation Sandbox)',
+      summaryEn: 'Enterprise cloud connectivity featuring two-way Google Sheets synchronization, Google Apps Script webhooks, Google Drive/Dropbox system backups, automated LINE Notify alerts, and interactive MVP presentation sandbox.',
+      route: '/integrations',
+      linkages: [
+        {
+          from: 'Google Sheets สองทาง (Two-Way Sync)',
+          to: 'คลังพัสดุและรายการขอซื้อ (ProcureSync)',
+          description: 'ดึงข้อมูลรายการวัสดุและราคาจาก Google Sheets เข้าสู่ระบบ หรือส่งออกข้อมูลสต็อกไปอัปเดตในชีตแบบ Real-time'
+        },
+        {
+          from: 'ระบบขอซื้อ (PR) & สั่งซื้อ (PO)',
+          to: 'LINE Notify / LINE Alert',
+          description: 'เมื่อมีการเปิด PR หรือสร้าง PO ระบบจะส่งข้อความแจ้งเตือนเข้ากลุ่มแชท LINE ของผู้มีอำนาจอนุมัติทันที'
+        },
+        {
+          from: 'สำรองข้อมูลคลาวด์ (Cloud Backup)',
+          to: 'Google Drive & Dropbox',
+          description: 'ส่งออกไฟล์สำรองฐานข้อมูลระบบฉุกเฉิน (.json) และสร้างลิงก์สำหรับจัดเก็บสำรองบน Cloud Storage'
+        }
+      ],
+      buttons: [
+        {
+          name: 'คัดลอกสคริปต์ Google Apps Script (Copy Script)',
+          icon: FileCode,
+          color: 'bg-indigo-600 text-white',
+          location: 'การ์ด Google Sheets Integration',
+          action: 'คัดลอกโค้ดสคริปต์อัตโนมัติสำหรับนำไปติดตั้งในส่วนขยาย Extensions > Apps Script ใน Google Sheets เพื่อเปิดรับการเชื่อมต่อแบบ Real-time',
+          linkage: 'เชื่อมโยง Google Sheets กับฐานข้อมูลระบบ'
+        },
+        {
+          name: 'ซิงก์ข้อมูล Google Sheets (Sync Now)',
+          icon: RefreshCw,
+          color: 'bg-emerald-600 text-white',
+          location: 'การ์ด Google Sheets Integration',
+          action: 'ดึงข้อมูลล่าสุดจาก Google Sheets ที่ระบุ URL เข้าสู่คลังสินค้าหรือรายการจัดซื้อของระบบทันที',
+          linkage: 'อัปเดตข้อมูลให้ตรงกันทั้งสองฝั่ง'
+        },
+        {
+          name: 'ส่งข้อความทดสอบ LINE (Test LINE Alert)',
+          icon: BellRing,
+          color: 'bg-emerald-500 text-white hover:bg-emerald-600',
+          location: 'การ์ด LINE Notify Integration',
+          action: 'ระบุ Token หรือชื่อกลุ่ม LINE แล้วกดทดสอบ ระบบจะส่งข้อความทดสอบเข้าห้องแชททันที',
+          linkage: 'ยืนยันความพร้อมของระบบแจ้งเตือน'
+        },
+        {
+          name: 'สำรองข้อมูลระบบ (Cloud Backup)',
+          icon: Download,
+          color: 'bg-slate-800 text-white',
+          location: 'การ์ด Google Drive & Dropbox Backup',
+          action: 'สร้างไฟล์ข้อมูลสำรองฉบับสมบูรณ์ (Full JSON Data Snapshot) พร้อมดาวน์โหลดลงเครื่องและเตรียมส่งเข้า Cloud Drive',
+          linkage: 'ป้องกันข้อมูลสูญหายในกรณีฉุกเฉิน'
+        },
+        {
+          name: 'สลับโหมดจำลองนำเสนอ (Toggle MVP Mock Sandbox)',
+          color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
+          location: 'แถบสถานะด้านบนของหน้า Integrations',
+          action: 'เปิดโหมดการจำลองแบบ Sandbox เพื่อสาธิตการเชื่อมต่อและดึงข้อมูลเสมือนจริงให้แก่ผู้บริหารหรือลูกค้าดูได้โดยไม่ต้องเชื่อมต่อระบบจริง',
+          linkage: 'แสดงตัวอย่างผลลัพธ์การซิงก์และป้ายกำกับ Preview'
+        }
+      ],
+      tips: [
+        'ในการสร้าง LINE Notify Token ให้ไปที่ notify-bot.line.me ล็อกอินด้วยบัญชี LINE แล้วกด "Generate Token" เลือกห้องแชทหรือกลุ่มโครงการที่ต้องการรับการแจ้งเตือน แล้วนำ Token มาวางในช่องตั้งค่า',
+        'สามารถใช้ Google Sheets เป็นตัวกลางในการนำเข้าข้อมูลร่วมกับทีมงานภาคสนามที่ไม่สะดวกเข้าใช้ระบบโดยตรง แล้วกด "ซิงก์ข้อมูล" เพื่อดึงเข้าระบบได้ทันที'
       ]
     }
   ];
@@ -738,20 +897,6 @@ export function ManualPage() {
               <Printer className="w-4 h-4 mr-1.5 text-indigo-600" />
               <span>{isEnglish ? 'Print Standard A4' : 'พิมพ์คู่มือมาตรฐาน A4'}</span>
             </button>
-
-            <button
-              onClick={() => handleExportPDF('standard-manual-doc')}
-              disabled={isExporting}
-              className="inline-flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-800/90 hover:bg-slate-700 text-white border border-slate-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
-              title="ดาวน์โหลดคู่มือฉบับเต็มเป็นไฟล์ PDF"
-            >
-              {isExporting ? (
-                <Loader2 className="w-4 h-4 mr-1.5 animate-spin text-indigo-400" />
-              ) : (
-                <FileDown className="w-4 h-4 mr-1.5 text-indigo-400" />
-              )}
-              <span>{isExporting ? (isEnglish ? 'Exporting...' : 'กำลังสร้าง PDF...') : (isEnglish ? 'Export PDF' : 'ดาวน์โหลด PDF')}</span>
-            </button>
           </div>
         </div>
 
@@ -807,7 +952,7 @@ export function ManualPage() {
 
         <div className="text-xs text-slate-500 flex items-center gap-2">
           <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-700">
-            SOP-PROC-2026-001 (Rev. 2.4)
+            SOP-PROC-2026-001 (Rev. 3.0)
           </span>
           <span className="hidden sm:inline">•</span>
           <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
@@ -839,17 +984,10 @@ export function ManualPage() {
               <button
                 onClick={() => handlePrint('standard-manual-doc')}
                 className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                title="พิมพ์คู่มือมาตรฐานขนาด A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
               >
                 <Printer className="w-4 h-4" />
                 <span>พิมพ์เอกสารนี้</span>
-              </button>
-              <button
-                onClick={() => handleExportPDF('standard-manual-doc')}
-                disabled={isExporting}
-                className="px-3.5 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {isExporting ? <Loader2 className="w-4 h-4 animate-spin text-indigo-600" /> : <FileDown className="w-4 h-4 text-indigo-600" />}
-                <span>บันทึก PDF</span>
               </button>
             </div>
           </div>
@@ -1267,6 +1405,46 @@ export function ManualPage() {
               เปิดเบราว์เซอร์บนมือถือ แล้วกดปุ่ม <strong>&ldquo;ติดตั้งแอป ProcureSync&rdquo;</strong> ที่แถบเมนูข้าง หรือกด Share &gt; &ldquo;Add to Home Screen&rdquo; บน Safari / Chrome ระบบจะติดตั้งเป็น PWA บนหน้าจอหลัก ใช้งานได้รวดเร็วเสมือนแอปจริง
             </p>
           </div>
+
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+              5. นำเข้าไฟล์ Excel หรือ BOQ แล้วหัวคอลัมน์ไม่ตรงกับระบบ ทำอย่างไร?
+            </h4>
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+              ในหน้า <strong>&ldquo;ศูนย์นำเข้าข้อมูล (Data Import Hub)&rdquo;</strong> หลังจากอัปโหลดไฟล์ ระบบจะมีขั้นตอน <strong>&ldquo;จับคู่คอลัมน์ (Auto-Map Columns)&rdquo;</strong> ให้ท่านเลือกแมปหัวตารางจากไฟล์ของท่านเข้ากับฟิลด์ของระบบได้อย่างอิสระ หรือสามารถกด <strong>&ldquo;ดาวน์โหลดเทมเพลตมาตรฐาน&rdquo;</strong> ไปใช้เป็นต้นแบบได้
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+              6. ขนาดตัวหนังสือและตารางบนหน้าจอคอมพิวเตอร์ใหญ่หรือเล็กเกินไป?
+            </h4>
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+              ไปที่เมนู <strong>&ldquo;ตั้งค่า (Settings)&rdquo;</strong> ในส่วน <strong>&ldquo;ความละเอียดการแสดงผล (Display Density)&rdquo;</strong> สามารถเลือกปรับสเกลเป็น <strong>80% (กะทัดรัดสมดุล เหมาะกับโน้ตบุ๊ก)</strong>, 90%, 100% หรือ 110% ระบบจะปรับขนาด UI ทันทีและจดจำค่าไว้ตลอดการใช้งาน
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+              7. ป้ายบาร์โค้ด Master SKU รองรับเครื่องพิมพ์และเครื่องยิงแบบใดบ้าง?
+            </h4>
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+              รองรับเครื่องยิงบาร์โค้ดไร้สายทั่วไป (Wireless / USB Barcode Scanner Gun) และกล้องมือถือ สำหรับการพิมพ์ป้าย รองรับทั้งเครื่องพิมพ์สติกเกอร์ความร้อน (Direct Thermal Label Printer เช่น Xprinter, Zebra) ขนาด 50x30 มม., 75x50 มม., ป้ายติดชั้นวาง (Shelf Tag) และเครื่องพิมพ์ A4
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+              8. การตั้งค่าแจ้งเตือนการขออนุมัติเข้ากลุ่ม LINE (LINE Notify)?
+            </h4>
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+              ไปที่เมนู <strong>&ldquo;เชื่อมต่อคลาวด์/API (Cloud Sync)&rdquo;</strong> ในการ์ด LINE Notify นำ Token จาก notify-bot.line.me มาวางและระบุชื่อกลุ่ม จากนั้นกด <strong>&ldquo;ทดสอบส่งข้อความ&rdquo;</strong> ระบบจะส่งแจ้งเตือนข้อความพร้อมลิงก์เอกสารเข้ากลุ่มไลน์ทันทีที่มีคำขออนุมัติใหม่
+            </p>
+          </div>
         </div>
       </div>
 
@@ -1292,7 +1470,7 @@ export function ManualPage() {
                 ตัวอย่างเอกสารคู่มือมาตรฐานการปฏิบัติงาน (Standard A4 SOP Preview)
               </h3>
               <p className="text-[11px] text-slate-500">
-                เอกสารทางการ 8 หน้า • รหัส SOP-PROC-2026-001 (Rev. 2.4)
+                เอกสารทางการ 8 หน้า • รหัส SOP-PROC-2026-001 (Rev. 3.0)
               </p>
             </div>
           </div>
@@ -1301,17 +1479,10 @@ export function ManualPage() {
             <button
               onClick={() => handlePrint('standard-manual-doc-modal')}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+              title="พิมพ์เอกสารมาตรฐาน A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>พิมพ์เอกสาร</span>
-            </button>
-            <button
-              onClick={() => handleExportPDF('standard-manual-doc-modal')}
-              disabled={isExporting}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs cursor-pointer transition-colors disabled:opacity-50"
-            >
-              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" /> : <FileDown className="w-3.5 h-3.5 text-indigo-600" />}
-              <span>บันทึก PDF</span>
             </button>
             <button
               onClick={() => setIsPreviewModalOpen(false)}

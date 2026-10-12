@@ -6,28 +6,23 @@ import {
   Upload, 
   File as FileIcon, 
   AlertCircle, 
-  Sparkles, 
   Building2, 
   Boxes, 
   Zap, 
   Droplets, 
   ShieldCheck, 
   Wrench, 
-  BookmarkCheck, 
   Eye, 
   FileSpreadsheet, 
   CheckCircle2,
-  ChevronDown,
-  Printer,
-  Download
+  Printer
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-import type { PRItem, PurchaseRequest, PRUrgency, PRTemplate } from '../types';
-import { getAllTemplates, saveCustomTemplate } from '../data/prTemplates';
+import type { PRItem, PurchaseRequest, PRUrgency } from '../types';
 import { StandardPRDocument } from './StandardPRDocument';
 import { bahtText } from '../lib/bahtText';
 import { useLanguage } from '../contexts/LanguageContext';
-import { exportToPDF, printA4Document } from '../lib/pdf';
+import { printA4Document } from '../lib/pdf';
 
 interface PRFormModalProps {
   isOpen: boolean;
@@ -68,11 +63,8 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<'form' | 'preview'>('form');
-  const [showTemplateMenu, setShowTemplateMenu] = useState(false);
-  const [saveTemplateName, setSaveTemplateName] = useState('');
-  const [isSavingTemplate, setIsSavingTemplate] = useState(false);
+  const [docZoom, setDocZoom] = useState<'actual' | 'fit'>('actual');
 
-  const templates = useMemo(() => getAllTemplates(), [isOpen, isSavingTemplate]);
   const selectedProject = useMemo(() => MOCK_PROJECTS.find(p => p.name === department), [department]);
 
   // When project changes, auto set default location
@@ -92,24 +84,6 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
   const isOverBudget = selectedProject && totalAmount > availableBudget;
 
   if (!isOpen) return null;
-
-  const handleApplyTemplate = (tpl: PRTemplate) => {
-    if (tpl.defaultDepartment) {
-      handleProjectChange(tpl.defaultDepartment);
-    }
-    if (tpl.defaultJustification) {
-      setJustification(tpl.defaultJustification);
-    }
-    if (tpl.defaultUrgency) {
-      setUrgency(tpl.defaultUrgency);
-    }
-    const newItems: PRItem[] = tpl.items.map((it, idx) => ({
-      ...it,
-      id: `tpl-${Date.now()}-${idx}`
-    }));
-    setItems(newItems);
-    setShowTemplateMenu(false);
-  };
 
   const handleAddItem = () => {
     setItems([
@@ -147,33 +121,6 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
     const newFiles = [...files];
     newFiles.splice(index, 1);
     setFiles(newFiles);
-  };
-
-  const handleSaveAsTemplate = () => {
-    if (!saveTemplateName.trim()) {
-      alert('กรุณากรอกชื่อเทมเพลต');
-      return;
-    }
-    saveCustomTemplate({
-      name: saveTemplateName.trim(),
-      category: 'เทมเพลตที่บันทึกเอง (Custom)',
-      description: `เทมเพลตที่บันทึกจากโครงการ ${department}`,
-      defaultDepartment: department,
-      defaultJustification: justification,
-      defaultUrgency: urgency,
-      items: items.map(i => ({
-        itemCode: i.itemCode,
-        description: i.description,
-        specification: i.specification,
-        quantity: i.quantity,
-        unitPrice: i.unitPrice,
-        unit: i.unit,
-        remark: i.remark
-      }))
-    });
-    alert(`บันทึกเทมเพลต "${saveTemplateName}" สำเร็จ! คุณสามารถเลือกใช้ได้ในครั้งต่อไป`);
-    setSaveTemplateName('');
-    setIsSavingTemplate(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -243,42 +190,53 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto print:p-0">
       <div 
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity print-hidden"
         onClick={onClose}
       />
       
-      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[94vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-slate-200">
+      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[94vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-slate-200 print-area print:shadow-none print:border-none print:max-w-none print:w-full print:max-h-none print:rounded-none">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/70 rounded-t-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              PR
+        <div className="p-3.5 sm:px-6 sm:py-4 border-b border-slate-200 bg-slate-50/70 rounded-t-xl space-y-2.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-4 print-hidden">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm shrink-0">
+                PR
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-sm sm:text-xl font-bold text-slate-800 leading-snug break-words">
+                  {initialData 
+                    ? (isEnglish ? `Edit PR: ${initialData.prNumber}` : `แก้ไขใบขอซื้อ: ${initialData.prNumber}`)
+                    : (isEnglish ? 'Create Purchase Request (PR)' : 'สร้างใบขอซื้อ (Purchase Request)')}
+                </h2>
+                <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-1 sm:line-clamp-none">
+                  {isEnglish 
+                    ? 'Construction standard form with BOQ budget check' 
+                    : 'แบบฟอร์มมาตรฐานจัดซื้อและตรวจสอบงบ BOQ'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                {initialData 
-                  ? (isEnglish ? `Edit Purchase Request: ${initialData.prNumber}` : `แก้ไขใบขอซื้อ: ${initialData.prNumber}`)
-                  : (isEnglish ? 'Create Purchase Request (PR) - Standard Form' : 'สร้างใบขอซื้อ (Purchase Request) ตามมาตรฐาน')}
-              </h2>
-              <p className="text-xs text-slate-500">
-                {isEnglish 
-                  ? 'Supports standard templates, corporate purchasing matrix, and BOQ budget validation' 
-                  : 'รองรับเทมเพลตมาตรฐานงานก่อสร้าง ระบบจัดซื้อ และตรวจสอบกรอบงบประมาณ BOQ'}
-              </p>
-            </div>
+
+            <button 
+              type="button"
+              onClick={onClose} 
+              className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors sm:hidden shrink-0"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
             {/* View Mode Toggle */}
-            <div className="bg-slate-200/80 p-0.5 rounded-lg flex text-xs font-semibold">
+            <div className="bg-slate-200/80 p-0.5 rounded-lg flex text-xs font-semibold w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => setActiveTab('form')}
                 className={cn(
-                  "px-3 py-1.5 rounded-md transition-colors",
-                  activeTab === 'form' ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                  "flex-1 sm:flex-initial px-3 py-1.5 rounded-md transition-colors text-center whitespace-nowrap",
+                  activeTab === 'form' ? "bg-white text-indigo-700 shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"
                 )}
               >
                 {isEnglish ? 'Form Editor' : 'กรอกข้อมูลฟอร์ม'}
@@ -287,155 +245,64 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
                 type="button"
                 onClick={() => setActiveTab('preview')}
                 className={cn(
-                  "px-3 py-1.5 rounded-md transition-colors flex items-center gap-1",
-                  activeTab === 'preview' ? "bg-white text-indigo-700 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                  "flex-1 sm:flex-initial px-3 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1 text-center whitespace-nowrap",
+                  activeTab === 'preview' ? "bg-white text-indigo-700 shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"
                 )}
               >
-                <Eye className="w-3.5 h-3.5" /> {isEnglish ? 'Standard Preview' : 'พรีวิวแบบฟอร์มมาตรฐาน'}
+                <Eye className="w-3.5 h-3.5" /> 
+                <span>{isEnglish ? 'Preview A4' : 'พรีวิวฟอร์ม A4'}</span>
               </button>
             </div>
 
             <button 
+              type="button"
               onClick={onClose} 
-              className="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200 transition-colors"
+              className="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200 transition-colors hidden sm:block shrink-0"
+              aria-label="Close"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        {/* Quick Templates Bar */}
-        <div className="bg-indigo-50/50 border-b border-indigo-100 px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-bold text-indigo-900 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              เทมเพลตมาตรฐานด่วน:
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {templates.slice(0, 4).map((tpl) => (
-                <button
-                  key={tpl.id}
-                  type="button"
-                  onClick={() => handleApplyTemplate(tpl)}
-                  className="px-2.5 py-1 text-xs font-medium rounded-full bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all shadow-2xs"
-                  title={tpl.description}
-                >
-                  {tpl.name.split(' ')[0]} {tpl.name.split(' ')[1] || ''}
-                </button>
-              ))}
-
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowTemplateMenu(!showTemplateMenu)}
-                  className="px-2.5 py-1 text-xs font-semibold rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-all flex items-center gap-1 shadow-2xs"
-                >
-                  ดูเทมเพลตทั้งหมด ({templates.length})
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-
-                {showTemplateMenu && (
-                  <div className="absolute left-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-2 divide-y divide-slate-100">
-                    <div className="p-2 font-bold text-xs text-slate-500 uppercase tracking-wide">
-                      เลือกเทมเพลตมาตรฐานสำหรับสร้าง PR
-                    </div>
-                    <div className="max-h-72 overflow-y-auto space-y-1 py-1">
-                      {templates.map((tpl) => (
-                        <div
-                          key={tpl.id}
-                          onClick={() => handleApplyTemplate(tpl)}
-                          className="p-2 rounded-lg hover:bg-indigo-50 cursor-pointer transition-colors text-left"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs text-slate-800">{tpl.name}</span>
-                            <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded font-medium">
-                              {tpl.items.length} รายการ
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{tpl.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsSavingTemplate(!isSavingTemplate)}
-            className="text-xs text-indigo-700 hover:text-indigo-900 font-semibold flex items-center gap-1 hover:underline"
-          >
-            <BookmarkCheck className="w-3.5 h-3.5" />
-            บันทึกชุดนี้เป็นเทมเพลต
-          </button>
-        </div>
-
-        {/* Save Template Prompt Bar */}
-        {isSavingTemplate && (
-          <div className="bg-amber-50 border-b border-amber-200 px-6 py-2.5 flex items-center gap-3">
-            <span className="text-xs font-bold text-amber-900 flex-shrink-0">
-              ชื่อเทมเพลตใหม่:
-            </span>
-            <input
-              type="text"
-              value={saveTemplateName}
-              onChange={(e) => setSaveTemplateName(e.target.value)}
-              placeholder="เช่น งานสีและตกแต่งภายใน เฟส 1..."
-              className="text-xs px-3 py-1 rounded border border-amber-300 bg-white flex-1 focus:outline-none focus:ring-1 focus:ring-amber-500"
-            />
-            <button
-              type="button"
-              onClick={handleSaveAsTemplate}
-              className="text-xs px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded transition-colors shadow-2xs"
-            >
-              บันทึก
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsSavingTemplate(false)}
-              className="text-xs text-slate-500 hover:text-slate-700"
-            >
-              ยกเลิก
-            </button>
-          </div>
-        )}
-
         {/* Body */}
         {activeTab === 'preview' ? (
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-100">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-100 print:p-0 print:bg-white smooth-scroll">
             {/* Top Toolbar in Preview */}
-            <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 bg-white p-3 rounded-lg border border-slate-200 shadow-2xs">
+            <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5 mb-4 bg-white p-3 rounded-lg border border-slate-200 shadow-2xs print-hidden">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span className="text-xs font-bold text-slate-700">พรีวิวแบบฟอร์มมาตรฐาน A4 (210 x 297 มม.)</span>
-                <span className="text-xs text-slate-400">| สเกล 1:1 ตรงตามเอกสารทางการ</span>
+                <span className="text-xs text-slate-400 hidden sm:inline">| สเกล 1:1 ตรงตามเอกสารทางการ</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setDocZoom(docZoom === 'actual' ? 'fit' : 'actual')}
+                  className="px-2.5 py-1.5 text-xs font-bold rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-indigo-700 transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                  title="สลับขนาดพรีวิวระหว่าง 1:1 A4 และย่อพอดีจอ"
+                >
+                  {docZoom === 'actual' ? '📱 ย่อพอดีหน้าจอ' : '🔍 ขนาดจริง 1:1 A4 (100%)'}
+                </button>
                 <button
                   type="button"
                   onClick={() => printA4Document('preview-pr-doc', `แบบร่าง_ใบขอซื้อ`)}
-                  className="inline-flex items-center px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
-                  title="พิมพ์เอกสารขนาด A4 มาตรฐาน"
+                  className="inline-flex items-center px-3.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+                  title="พิมพ์เอกสารขนาด A4 มาตรฐาน (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
                 >
                   <Printer className="w-3.5 h-3.5 mr-1.5 text-indigo-600" />
                   พิมพ์เอกสาร A4
                 </button>
-                <button
-                  type="button"
-                  onClick={() => exportToPDF('preview-pr-doc', 'Draft_PR_Standard_A4')}
-                  className="inline-flex items-center px-3 py-1.5 border border-emerald-300 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors shadow-2xs cursor-pointer"
-                  title="บันทึกเป็น PDF ขนาด A4 100%"
-                >
-                  <Download className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
-                  บันทึก PDF A4
-                </button>
               </div>
             </div>
 
-            <div className="bg-slate-200/70 p-4 sm:p-8 rounded-xl overflow-x-auto flex justify-center shadow-inner max-w-4xl mx-auto">
-              <StandardPRDocument pr={previewPR} id="preview-pr-doc" />
+            <div className="bg-slate-200/70 p-2 sm:p-6 rounded-xl overflow-x-auto flex justify-center shadow-inner smooth-scroll max-w-5xl mx-auto print:bg-white print:p-0 print:shadow-none">
+              <div className={cn(
+                "transition-all duration-200",
+                docZoom === 'fit' ? "scale-[0.45] xs:scale-[0.55] sm:scale-100 origin-top h-[540px] sm:h-auto" : "scale-100"
+              )}>
+                <StandardPRDocument pr={previewPR} id="preview-pr-doc" />
+              </div>
             </div>
           </div>
         ) : (
@@ -900,7 +767,7 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
         )}
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 rounded-b-xl">
+        <div className="px-6 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 rounded-b-xl print-hidden">
           <div className="text-xs text-slate-500 text-center sm:text-left">
             {isEnglish ? 'Grand Total: ' : 'ยอดรวมสุทธิ: '}
             <span className="font-bold text-slate-800 text-sm font-mono">

@@ -89,6 +89,25 @@ export function ApprovalMatrixDocumentTable({
     colCount === 5 ? 'grid-cols-5' :
     colCount === 6 ? 'grid-cols-6' : 'grid-cols-4';
 
+  const getPositionClass = (pos?: string) => {
+    if (!pos) return 'text-[9.5px]';
+    const len = pos.length;
+    if (len > 32) return 'text-[7.5px] tracking-tighter';
+    if (len > 24) return 'text-[8px] tracking-tight';
+    if (len > 18) return 'text-[8.5px] tracking-tight';
+    if (len > 12) return 'text-[9px]';
+    return 'text-[9.5px]';
+  };
+
+  const getNameClass = (name?: string) => {
+    if (!name) return 'text-[10.5px]';
+    const len = name.length;
+    if (len > 26) return 'text-[8.5px] tracking-tight';
+    if (len > 20) return 'text-[9px] tracking-tight';
+    if (len > 14) return 'text-[9.5px]';
+    return 'text-[10.5px]';
+  };
+
   return (
     <div className={cn("border border-slate-300 rounded-sm bg-white mb-3 text-center text-xs select-text overflow-hidden shadow-2xs", className)}>
       {/* Table Header Bar */}
@@ -128,65 +147,82 @@ export function ApprovalMatrixDocumentTable({
             <div 
               key={step.id || idx} 
               className={cn(
-                "flex flex-col justify-between min-h-[124px] bg-white text-slate-900 transition-colors",
+                "flex flex-col h-full bg-white text-slate-900 transition-colors",
                 !isApplicableForAmount ? "opacity-75 bg-slate-50/40" : ""
               )}
             >
-              {/* Step Header */}
-              <div className="bg-slate-50/80 p-2 border-b border-slate-200">
-                <div className="font-bold text-slate-900 text-[10.5px] leading-tight">
+              {/* Row 1: Step Header (Fixed Height for exact baseline alignment) */}
+              <div className="h-[52px] bg-slate-50/90 px-1.5 py-1 border-b border-slate-200 flex flex-col justify-center items-center text-center">
+                <div className="font-bold text-slate-900 text-[10.5px] leading-tight truncate w-full" title={step.titleTh}>
                   {step.titleTh}
                 </div>
-                <div className="text-[9px] text-slate-500 font-medium uppercase tracking-wider leading-tight mt-0.5">
+                <div className="text-[8.5px] text-slate-500 font-medium uppercase tracking-wider leading-tight truncate w-full mt-0.5" title={step.titleEn}>
                   {step.titleEn}
                 </div>
-                {hasThreshold && (
-                  <div className="mt-1">
-                    <span className="inline-block text-[8.5px] font-mono font-bold text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-300 shadow-2xs">
+                <div className="h-[14px] flex items-center justify-center mt-0.5">
+                  {hasThreshold ? (
+                    <span className="text-[8px] font-mono font-bold text-slate-700 bg-white px-1.5 py-0.2 rounded border border-slate-300 shadow-2xs leading-none">
                       วงเงิน &gt; {step.minAmount?.toLocaleString()} บ.
                     </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Signatory Name & Signature Status */}
-              <div className="p-2.5 my-auto">
-                <div className="font-bold text-slate-900 leading-tight text-[11px]">
-                  {displayedName || '-'}
-                </div>
-                <div className="text-[10px] text-slate-500 mt-0.5 leading-tight">
-                  {displayedPosition || '-'}
-                </div>
-
-                <div className="mt-2 min-h-[26px] flex items-center justify-center">
-                  {isStepSigned ? (
-                    <span className={cn(
-                      "font-bold inline-flex items-center gap-1 px-2.5 py-1 rounded-sm border text-[10px] shadow-2xs",
-                      isLastStep 
-                        ? "stamp-approved bg-emerald-50 text-emerald-700 border-emerald-600" 
-                        : "stamp-reviewed bg-indigo-50 text-indigo-700 border-indigo-600"
-                    )}>
-                      <CheckCircle2 className={cn("w-3.5 h-3.5 shrink-0", isLastStep ? "text-emerald-600" : "text-indigo-600")} />
-                      <span>{isLastStep ? 'อนุมัติโครงการ' : 'ผ่านการตรวจสอบ'}</span>
-                    </span>
-                  ) : isLastStep && isRejected ? (
-                    <span className="stamp-rejected font-bold bg-red-50 text-red-700 border-red-600 px-2.5 py-1 rounded-sm border inline-flex items-center gap-1 text-[10px] shadow-2xs">
-                      <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" /> 
-                      <span>ไม่อนุมัติ</span>
-                    </span>
-                  ) : !isApplicableForAmount ? (
-                    <span className="text-slate-400 text-[9.5px] italic">[ ไม่อยู่ในเกณฑ์วงเงิน ]</span>
                   ) : (
-                    <div className="w-full">
-                      <div className="w-24 border-b border-dashed border-slate-300 mx-auto mb-1" />
-                      <span className="text-slate-400 font-mono text-[9px]">( ลงชื่อผู้มีอำนาจ )</span>
-                    </div>
+                    <span className="text-[8px] text-slate-400 font-medium leading-none">
+                      ทุกวงเงิน
+                    </span>
                   )}
                 </div>
               </div>
 
-              {/* Date Box */}
-              <div className="text-[9.5px] text-slate-600 border-t border-slate-200 py-1.5 px-1 mt-auto font-medium bg-slate-50/50">
+              {/* Row 2: Signatory Details (Equal line height, no-wrap scaling for long titles) */}
+              <div className="h-[42px] px-1 bg-white border-b border-slate-100 flex flex-col justify-center items-center text-center">
+                <div 
+                  className={cn(
+                    "font-bold text-slate-900 leading-tight truncate whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-full px-1",
+                    getNameClass(displayedName)
+                  )}
+                  title={displayedName || '-'}
+                >
+                  {displayedName || '-'}
+                </div>
+                <div 
+                  className={cn(
+                    "font-medium text-slate-500 leading-tight truncate whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-full px-1 mt-0.5",
+                    getPositionClass(displayedPosition)
+                  )}
+                  title={displayedPosition || '-'}
+                >
+                  {displayedPosition || '-'}
+                </div>
+              </div>
+
+              {/* Row 3: Signature Stamp / Line Guideline (Uniform Height) */}
+              <div className="h-[44px] px-1 bg-white flex items-center justify-center">
+                {isStepSigned ? (
+                  <span className={cn(
+                    "font-bold inline-flex items-center gap-1 px-2.5 py-1 rounded-sm border text-[9.5px] shadow-2xs leading-none whitespace-nowrap",
+                    isLastStep 
+                      ? "stamp-approved bg-emerald-50 text-emerald-700 border-emerald-600" 
+                      : "stamp-reviewed bg-indigo-50 text-indigo-700 border-indigo-600"
+                  )}>
+                    <CheckCircle2 className={cn("w-3.5 h-3.5 shrink-0", isLastStep ? "text-emerald-600" : "text-indigo-600")} />
+                    <span>{isLastStep ? 'อนุมัติโครงการ' : 'ผ่านการตรวจสอบ'}</span>
+                  </span>
+                ) : isLastStep && isRejected ? (
+                  <span className="stamp-rejected font-bold bg-red-50 text-red-700 border-red-600 px-2.5 py-1 rounded-sm border inline-flex items-center gap-1 text-[9.5px] shadow-2xs leading-none whitespace-nowrap">
+                    <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" /> 
+                    <span>ไม่อนุมัติ</span>
+                  </span>
+                ) : !isApplicableForAmount ? (
+                  <span className="text-slate-400 text-[9px] italic leading-none whitespace-nowrap">[ ไม่อยู่ในเกณฑ์วงเงิน ]</span>
+                ) : (
+                  <div className="w-full flex flex-col items-center justify-center">
+                    <div className="w-20 border-b border-dashed border-slate-300 mb-1" />
+                    <span className="text-slate-400 font-mono text-[8.5px] leading-none">( ลงชื่อผู้มีอำนาจ )</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Row 4: Date Box (Uniform Height & Border) */}
+              <div className="h-[26px] text-[9px] text-slate-600 border-t border-slate-200 font-medium bg-slate-50/60 px-1 flex items-center justify-center truncate whitespace-nowrap">
                 วันที่: {displayedDate ? formatDate(displayedDate) : '....../....../......'}
               </div>
             </div>

@@ -40,9 +40,9 @@ export function StandardManualDocument({
   id = 'standard-manual-doc',
   className 
 }: StandardManualDocumentProps) {
-  const currentDateStr = '12 ตุลาคม 2569';
+  const currentDateStr = '13 ตุลาคม 2569';
   const docCode = 'SOP-PROC-2026-001';
-  const docRev = 'Rev. 2.4';
+  const docRev = 'Rev. 3.0';
 
   return (
     <div 
@@ -105,8 +105,8 @@ export function StandardManualDocument({
               การจัดซื้อและบริหารคลังสินค้าแบบครบวงจร
             </h2>
             <p className="text-xs text-slate-600 mt-3 max-w-xl mx-auto leading-relaxed">
-              ครอบคลุมทุกฟังก์ชันงาน: การเปิดคำขอซื้อ (PR) • การอนุมัติงบประมาณ (Approval) • การออกใบสั่งซื้อ (PO) • 
-              การตรวจรับสินค้า • การจัดการคลังสต็อก • การสแกนกล้อง QR Code • รายงานวิเคราะห์ต้นทุน
+              ครอบคลุม 10 โมดูลงาน: ขอซื้อ (PR) • อนุมัติงบประมาณ (Approval) • สั่งซื้อ (PO) • ตรวจรับพัสดุหน้างาน • 
+              คลังพัสดุก่อสร้างกลาง (Hub) & บาร์โค้ด SKU • คู่ค้า • นำเข้าข้อมูล (Data Hub) • เชื่อมต่อคลาวด์ & LINE • สิทธิ์ผู้ใช้ • รายงาน
             </p>
           </div>
 
@@ -173,19 +173,19 @@ export function StandardManualDocument({
                 <span className="font-mono font-bold text-indigo-700">หน้า 4</span>
               </div>
               <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 4:</strong> ขั้นตอนการปฏิบัติงานระบบคลังสินค้า (Inventory) และเทคโนโลยีสแกนกล้อง QR Code</span>
+                <span><strong>หมวดที่ 4:</strong> คลังพัสดุก่อสร้างกลาง (Hub), บาร์โค้ด Master SKU และเทคโนโลยีสแกนกล้อง QR Code</span>
                 <span className="font-mono font-bold text-indigo-700">หน้า 5</span>
               </div>
               <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 5:</strong> การจัดการข้อมูลคู่ค้า (Vendors) และระบบรายงานวิเคราะห์ต้นทุน (Reports & Analytics)</span>
+                <span><strong>หมวดที่ 5:</strong> ทะเบียนคู่ค้า (Vendors), ศูนย์นำเข้าข้อมูลอัจฉริยะ (Data Import Hub) และรายงาน (Reports)</span>
                 <span className="font-mono font-bold text-indigo-700">หน้า 6</span>
               </div>
               <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 6:</strong> การจัดการสิทธิ์ผู้ใช้งาน และพจนานุกรมคำอธิบายปุ่มทั้งหมดในระบบ (Master Buttons)</span>
+                <span><strong>หมวดที่ 6:</strong> การจัดการสิทธิ์ผู้ใช้งาน (RBAC 25 สิทธิ์), การเชื่อมต่อคลาวด์ & LINE และพจนานุกรมปุ่ม</span>
                 <span className="font-mono font-bold text-indigo-700">หน้า 7</span>
               </div>
               <div className="flex justify-between items-baseline">
-                <span><strong>หมวดที่ 7:</strong> คำถามที่พบบ่อย (FAQ & Troubleshooting) และประวัติการปรับปรุงเอกสาร (Revision Log)</span>
+                <span><strong>หมวดที่ 7:</strong> คำถามที่พบบ่อย (FAQ & Troubleshooting) และประวัติการปรับปรุงเอกสาร (Revision Log Rev. 3.0)</span>
                 <span className="font-mono font-bold text-indigo-700">หน้า 8</span>
               </div>
             </div>
@@ -628,7 +628,7 @@ export function StandardManualDocument({
             <div>
               <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
                 <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">4</span>
-                <span>4.0 ขั้นตอนการปฏิบัติงานระบบคลังสินค้า (Inventory) และกล้องสแกน QR Code</span>
+                <span>4.0 ขั้นตอนการปฏิบัติงานคลังพัสดุก่อสร้างกลาง (Hub), บาร์โค้ด SKU และการสแกน QR Code</span>
               </h2>
             </div>
 
@@ -636,39 +636,39 @@ export function StandardManualDocument({
             <div>
               <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5 text-indigo-700" />
-                4.1 การจัดการสต็อกและการเคลื่อนไหวพัสดุ (Stock Movements)
+                4.1 การจัดการสต็อกและการเคลื่อนไหวพัสดุ (Central Material Hub & Stock Movements)
               </h3>
               <div className="text-[11px] text-slate-700 leading-relaxed space-y-1">
-                <p>1. <strong>รับของเข้าคลัง (Stock In):</strong> บันทึกเมื่อมีวัสดุสั่งซื้อเข้ามาหรือโอนย้ายมาจากโครงการอื่น</p>
-                <p>2. <strong>เบิกจ่ายไปหน้างาน (Stock Out):</strong> บันทึกเมื่อช่างหรือผู้รับเหมาเบิกวัสดุไปติดตั้งจริง พร้อมระบุชื่อผู้เบิกและโซนงาน</p>
-                <p>3. <strong>ปรับปรุงยอดตรวจนับ (Stock Adjustment):</strong> สำหรับกระทบยอดสต็อกจริง (Physical Count) หลังการตรวจนับประจำเดือน</p>
+                <p>1. <strong>รับของเข้าคลัง (Stock In / PO Receipt):</strong> เพิ่มสต็อกอัตโนมัติเมื่อตรวจรับสินค้าจาก PO หรือโอนย้ายพัสดุระหว่างคลัง</p>
+                <p>2. <strong>เบิกจ่ายไปหน้างาน (Stock Out):</strong> ตัดสต็อกเมื่อช่าง/ผู้รับเหมาเบิกวัสดุไปใช้ ระบุโครงการ ผู้เบิก และโซนงาน</p>
+                <p>3. <strong>ตรวจนับสต็อกหน้างาน (Physical Count):</strong> ยิงบาร์โค้ดนับยอดจริง ระบบคำนวณผลต่าง (+ / -) อัตโนมัติและปรับยอดสต็อก</p>
               </div>
             </div>
 
-            {/* 4.2 QR Code & Camera Scanner */}
+            {/* 4.2 Barcode & QR Code Technology */}
             <div className="pt-1">
               <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                 <QrCode className="w-3.5 h-3.5 text-indigo-700" />
-                4.2 นวัตกรรมระบบป้าย QR Code และการสแกนผ่านกล้องสมาร์ทโฟน
+                4.2 ระบบบาร์โค้ด Master SKU (1D Code 128), กล้องสแกนสด และป้ายสติกเกอร์ความร้อน
               </h3>
               <div className="border border-slate-200 bg-slate-50 rounded p-3 text-[11px] text-slate-700 leading-relaxed space-y-2">
                 <p>
-                  เพื่อลดเวลาในการจดบันทึกและตัดสต็อกผิดพลาด ระบบได้ติดตั้งเทคโนโลยี <strong>QR Code 2 ทาง (Two-way QR Integration)</strong>:
+                  รองรับการทำงานในไซต์งานและโกดังอย่างสมบูรณ์แบบด้วยเทคโนโลยี <strong>Master SKU Barcode & QR Integration</strong>:
                 </p>
                 <div className="grid grid-cols-2 gap-3 text-[10.5px]">
                   <div className="p-2.5 bg-white rounded border border-slate-200">
                     <strong className="text-indigo-900 block mb-1 flex items-center gap-1">
                       <Printer className="w-3.5 h-3.5 text-indigo-600" />
-                      ก. การพิมพ์ป้าย QR Code สติกเกอร์:
+                      ก. พิมพ์ป้ายสติกเกอร์ความร้อน (Thermal Label):
                     </strong>
-                    <p className="text-slate-600">กดปุ่ม <strong>"พิมพ์ป้าย QR Code"</strong> เพื่อพิมพ์สติกเกอร์นำไปแปะที่กล่องพัสดุ หรือชั้นวางในสโตร์</p>
+                    <p className="text-slate-600">กด <strong>"พิมพ์ป้ายบาร์โค้ด SKU"</strong> รองรับสติกเกอร์ความร้อน 50x30 มม., 75x50 มม., ป้ายติดชั้นวาง (Shelf Tag) และชุดพิมพ์ A4 ตามจำนวนสต็อกจริง</p>
                   </div>
                   <div className="p-2.5 bg-white rounded border border-slate-200">
                     <strong className="text-indigo-900 block mb-1 flex items-center gap-1">
                       <Camera className="w-3.5 h-3.5 text-indigo-600" />
-                      ข. สแกนด้วยกล้องมือถือ (Live Scanner):
+                      ข. เครื่องยิงบาร์โค้ดไร้สาย & กล้องมือถือ:
                     </strong>
-                    <p className="text-slate-600">กดปุ่ม <strong>"สแกน QR Code"</strong> เปิดกล้องโทรศัพท์ส่องป้าย ระบบจะค้นหาสินค้าและเปิดหน้าต่างเบิกจ่ายทันทีใน 3 วินาที</p>
+                    <p className="text-slate-600">รองรับทั้งเครื่องยิงบาร์โค้ดไร้สาย (Wireless USB Gun) ยิงอ่าน Master SKU ทันที หรือกด <strong>"สแกนบาร์โค้ด"</strong> เปิดกล้องมือถือส่องป้ายเพื่อเบิกจ่ายใน 3 วินาที</p>
                   </div>
                 </div>
               </div>
@@ -691,28 +691,28 @@ export function StandardManualDocument({
                   </thead>
                   <tbody className="divide-y divide-slate-200">
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-indigo-900">สแกน QR Code (กล้อง)</td>
+                      <td className="py-1.5 px-2.5 font-bold text-indigo-900">สแกนบาร์โค้ด / QR</td>
                       <td className="py-1.5 px-2.5 text-slate-500">แถบเครื่องมือคลัง</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">เปิดกล้องวิดีโอเพื่อส่องอ่านโค้ดสินค้าแบบ Real-time</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">เปิดหน้าต่างเบิกจ่ายของทันที</td>
+                      <td className="py-1.5 px-2.5 text-slate-700">เปิดสแกนเนอร์ รองรับเครื่องยิงไร้สาย กล้องสด และรูปถ่าย</td>
+                      <td className="py-1.5 px-2.5 text-indigo-700">ตรวจพบ Master SKU และเปิดเมนูด่วน</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-emerald-800">รับสินค้าเข้าคลัง</td>
-                      <td className="py-1.5 px-2.5 text-slate-500">มุมขวาบนหน้าคลัง</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">เปิดฟอร์มรับพัสดุเข้า ระบุจำนวนและตำแหน่งจัดเก็บ</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">ยอดคงเหลือเพิ่มขึ้นทันที</td>
+                      <td className="py-1.5 px-2.5 font-bold text-emerald-800">รับเข้า / เบิกออก</td>
+                      <td className="py-1.5 px-2.5 text-slate-500">แถบเครื่องมือ / สแกน</td>
+                      <td className="py-1.5 px-2.5 text-slate-700">บันทึกรับพัสดุเข้าคลัง หรือเบิกจ่ายวัสดุไปไซต์งานก่อสร้าง</td>
+                      <td className="py-1.5 px-2.5 text-indigo-700">ปรับยอดสต็อกกลางแบบ Real-time</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-amber-800">เบิกจ่ายสินค้า</td>
-                      <td className="py-1.5 px-2.5 text-slate-500">ในการ์ดสินค้า</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">บันทึกการตัดของออกจากคลังไประบุใช้ในไซต์งาน</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">ยอดสต็อกลดลงอัตโนมัติ</td>
+                      <td className="py-1.5 px-2.5 font-bold text-indigo-900">พิมพ์ป้ายบาร์โค้ด SKU</td>
+                      <td className="py-1.5 px-2.5 text-slate-500">การ์ดสินค้า / รายละเอียด</td>
+                      <td className="py-1.5 px-2.5 text-slate-700">เลือกขนาดสติกเกอร์ความร้อน (50x30, 75x50) แล้วสั่งพิมพ์</td>
+                      <td className="py-1.5 px-2.5 text-indigo-700">ได้สติกเกอร์สำหรับแปะพัสดุและชั้นวาง</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-slate-800">ส่งออก Excel</td>
-                      <td className="py-1.5 px-2.5 text-slate-500">แถบตัวกรอง</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">ดาวน์โหลดรายงานสินค้าคงเหลือเป็นไฟล์ .xlsx</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">นำไปใช้สอบทานกับฝ่ายบัญชี</td>
+                      <td className="py-1.5 px-2.5 font-bold text-emerald-800">ตรวจนับสต็อก (Count)</td>
+                      <td className="py-1.5 px-2.5 text-slate-500">คอลัมน์การจัดการ</td>
+                      <td className="py-1.5 px-2.5 text-slate-700">บันทึกยอดนับจริงหน้างาน คำนวณผลต่าง (+ / -) อัตโนมัติ</td>
+                      <td className="py-1.5 px-2.5 text-indigo-700">ปรับยอดคงเหลือให้ตรงความจริง</td>
                     </tr>
                   </tbody>
                 </table>
@@ -721,7 +721,7 @@ export function StandardManualDocument({
 
             {/* Inventory Tips */}
             <div className="p-2.5 rounded bg-amber-50/70 border border-amber-200 text-[10px] text-amber-900 leading-relaxed">
-              <strong>ข้อควรระวังในการเบิกจ่าย:</strong> เมื่อสแกน QR Code เพื่อเบิกจ่ายสินค้า ให้ตรวจสอบหน่วยนับ (เช่น เมตร, ถุง, กล่อง) ให้ตรงกับความเป็นจริง หากยอดคงเหลือต่ำกว่าเกณฑ์ความปลอดภัย (Safety Stock) ระบบจะแสดงแถบเตือนสีส้มเพื่อเตือนให้เปิด PR สั่งซื้อรอบใหม่
+              <strong>ข้อควรระวังในการเบิกจ่าย:</strong> เมื่อสแกนบาร์โค้ด SKU หรือ QR Code เพื่อเบิกจ่าย ให้ตรวจสอบหน่วยนับ (เช่น เมตร, ถุง, แผ่น) ให้ตรงกับวัสดุจริง หากยอดคงเหลือต่ำกว่าเกณฑ์ความปลอดภัย (Safety Stock) ระบบจะแสดงแถบเตือนสีส้มเพื่อเตือนให้เปิด PR สั่งซื้อรอบใหม่
             </div>
 
           </div>
@@ -743,86 +743,108 @@ export function StandardManualDocument({
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
             <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 5: คู่ค้าและระบบรายงานวิเคราะห์ต้นทุน</div>
+            <div className="font-semibold text-slate-700">หมวดที่ 5: คู่ค้า, นำเข้าข้อมูลอัจฉริยะ และรายงานวิเคราะห์</div>
             <div>หน้า 6 จาก 8</div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             <div>
               <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
                 <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">5</span>
-                <span>5.0 การจัดการข้อมูลคู่ค้า (Vendors) และระบบรายงานวิเคราะห์ (Reports & Analytics)</span>
+                <span>5.0 ทะเบียนคู่ค้า (Vendors), ศูนย์นำเข้าข้อมูลอัจฉริยะ (Data Hub) และรายงาน (Reports)</span>
               </h2>
             </div>
 
-            {/* 5.1 Vendor Management */}
-            <div>
-              <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <Store className="w-3.5 h-3.5 text-indigo-700" />
-                5.1 ทะเบียนคู่ค้าและการประเมินผู้ขาย (Vendor Master Management)
-              </h3>
-              <div className="text-[11px] text-slate-700 leading-relaxed space-y-1">
-                <p>1. บันทึกข้อมูลบริษัทผู้ค้า เลขประจำตัวผู้เสียภาษี เงื่อนไขเครดิตเทอม และช่องทางติดต่อ</p>
-                <p>2. ระบบจะจัดเก็บประวัติการสั่งซื้อย้อนหลัง (Purchase History) รวบยอดจากใบสั่งซื้อ PO ทั้งหมดที่เคยสั่งกับผู้ค้ารายนั้น</p>
-                <p>3. มีระบบให้คะแนนและเกรดผู้ขาย (Vendor Rating) เพื่อช่วยในการตัดสินใจคัดเลือกผู้ค้าในโครงการถัดไป</p>
+            {/* 5.1 Vendor & Import Hub Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* 5.1 Vendor Management */}
+              <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <Store className="w-3.5 h-3.5 text-indigo-700" />
+                  5.1 ทะเบียนคู่ค้าและประเมินผู้ขาย (Vendors)
+                </h3>
+                <div className="text-[10.5px] text-slate-700 leading-relaxed space-y-1">
+                  <p>• บันทึกเลขประจำตัวผู้เสียภาษี เงื่อนไขเครดิตเทอม และช่องทางติดต่อ</p>
+                  <p>• เก็บประวัติการจัดซื้อย้อนหลัง เชื่อมโยงใบสั่งซื้อ PO อัตโนมัติ</p>
+                  <p>• ประเมินผลงานคู่ค้า (Vendor Rating A/B/C) ด้านคุณภาพและความตรงต่อเวลา</p>
+                </div>
+              </div>
+
+              {/* 5.2 Smart Data Import Hub */}
+              <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-700" />
+                  5.2 ศูนย์นำเข้าข้อมูลอัจฉริยะ (Data Import Hub)
+                </h3>
+                <div className="text-[10.5px] text-slate-700 leading-relaxed space-y-1">
+                  <p>• นำเข้าชุดใหญ่จาก Excel (.xlsx), CSV, JSON และแบบจำลอง CAD/DXF</p>
+                  <p>• ระบบจับคู่คอลัมน์อัตโนมัติ (AI Column Mapping) ไม่ต้องแปลงฟิลด์เอง</p>
+                  <p>• โหมดผสานข้อมูลแบบ Upsert (ปรับยอดเดิม เพิ่มของใหม่) หรือ Append</p>
+                </div>
               </div>
             </div>
 
-            {/* 5.2 Executive Reports */}
-            <div className="pt-1">
-              <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+            {/* 5.3 Executive Reports */}
+            <div className="pt-0.5">
+              <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                 <BarChart3 className="w-3.5 h-3.5 text-indigo-700" />
-                5.2 รายงานและสารสนเทศสำหรับผู้บริหาร (Executive Reports & Analytics)
+                5.3 รายงานวิเคราะห์สารสนเทศผู้บริหาร (Executive Reports & Analytics)
               </h3>
               <div className="grid grid-cols-2 gap-3 text-[10.5px]">
                 <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
-                  <strong className="text-slate-900 block mb-1">รายงานการใช้จ่ายตามหมวดหมู่ (Spend Analysis):</strong>
-                  <p className="text-slate-600 leading-relaxed">
-                    วิเคราะห์ยอดเงินจัดซื้อแยกตามประเภทวัสดุ (เช่น เหล็ก ปูน ระบบไฟฟ้า) เปรียบเทียบกับกรอบงบประมาณ BOQ ของโครงการ
+                  <strong className="text-slate-900 block mb-0.5">รายงานการใช้จ่ายตามหมวดหมู่ (Spend Analysis):</strong>
+                  <p className="text-slate-600 leading-relaxed text-[10px]">
+                    วิเคราะห์ยอดเงินจัดซื้อแยกตามประเภทวัสดุ (เหล็ก, ปูน, งานระบบ) เทียบกับกรอบงบประมาณ BOQ ของโครงการ
                   </p>
                 </div>
                 <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
-                  <strong className="text-slate-900 block mb-1">รายงานสรุปค้างรับ-ค้างส่ง (Aging & Outstanding):</strong>
-                  <p className="text-slate-600 leading-relaxed">
-                    ตรวจสอบยอด PO ที่ยังส่งของไม่ครบ หรือ PR ที่รอการอนุมัติ เพื่อติดตามงานและเร่งรัดผู้ขายให้ทันกำหนดเวลา
+                  <strong className="text-slate-900 block mb-0.5">รายงานยอดคงค้างและการส่งมอบ (Aging & Outstanding):</strong>
+                  <p className="text-slate-600 leading-relaxed text-[10px]">
+                    ติดตามยอด PO ที่รอส่งมอบ และ PR รออนุมัติ เพื่อเร่งรัดผู้ขายให้ทันแผนงานก่อสร้างหน้างาน
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Reports & Vendors Button Guide */}
-            <div className="pt-1">
-              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-                ตารางสรุปปุ่มฟังก์ชันและการเชื่อมโยง (Button & Action Guide: Vendors & Reports)
+            <div className="pt-0.5">
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">
+                ตารางสรุปปุ่มฟังก์ชันและการเชื่อมโยง (Button Guide: Vendors, Import & Reports)
               </h3>
-              <div className="border border-slate-300 rounded overflow-hidden text-[10px]">
+              <div className="border border-slate-300 rounded overflow-hidden text-[9.5px]">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-800 text-white font-bold">
-                      <th className="py-1.5 px-2.5 w-36">ชื่อปุ่มในระบบ</th>
-                      <th className="py-1.5 px-2.5 w-32">ตำแหน่ง</th>
-                      <th className="py-1.5 px-2.5">คำสั่งที่เกิดขึ้นเมื่อกด (Action)</th>
-                      <th className="py-1.5 px-2.5 w-44">ผลลัพธ์และการเชื่อมโยง</th>
+                      <th className="py-1 px-2.5 w-36">ชื่อปุ่มในระบบ</th>
+                      <th className="py-1 px-2.5 w-32">ตำแหน่ง</th>
+                      <th className="py-1 px-2.5">คำสั่งที่เกิดขึ้นเมื่อกด (Action)</th>
+                      <th className="py-1 px-2.5 w-44">ผลลัพธ์และการเชื่อมโยง</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200">
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-indigo-900">+ เพิ่มคู่ค้าใหม่</td>
-                      <td className="py-1.5 px-2.5 text-slate-500">มุมขวาบนหน้า Vendors</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">เปิดฟอร์มกรอกข้อมูลบริษัท เงื่อนไขเครดิต เลขภาษี</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">พร้อมดึงไปเลือกในใบสั่งซื้อ PO</td>
+                      <td className="py-1 px-2.5 font-bold text-indigo-900">+ เพิ่มคู่ค้าใหม่</td>
+                      <td className="py-1 px-2.5 text-slate-500">มุมขวาบนหน้า Vendors</td>
+                      <td className="py-1 px-2.5 text-slate-700">เปิดฟอร์มกรอกข้อมูลบริษัท เงื่อนไขเครดิต เลขภาษี</td>
+                      <td className="py-1 px-2.5 text-indigo-700">พร้อมดึงไปเลือกในใบสั่งซื้อ PO</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-emerald-800">ส่งออก Excel (Reports)</td>
-                      <td className="py-1.5 px-2.5 text-slate-500">หน้ารายงานสรุป</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">แปลงข้อมูลสถิติเป็นไฟล์สเปรดชีตสำหรับการคำนวณขั้นสูง</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">ส่งต่อให้ฝ่ายตรวจสอบบัญชี</td>
+                      <td className="py-1 px-2.5 font-bold text-indigo-900">ดาวน์โหลดเทมเพลต</td>
+                      <td className="py-1 px-2.5 text-slate-500">หน้า Data Import Hub</td>
+                      <td className="py-1 px-2.5 text-slate-700">ดาวน์โหลดไฟล์ Excel ตัวอย่างที่มีหัวคอลัมน์มาตรฐานครบถ้วน</td>
+                      <td className="py-1 px-2.5 text-indigo-700">นำไปกรอกข้อมูลก่อนนำเข้า</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2.5 font-bold text-slate-800">พิมพ์รายงานผู้บริหาร</td>
-                      <td className="py-1.5 px-2.5 text-slate-500">หน้ารายงาน</td>
-                      <td className="py-1.5 px-2.5 text-slate-700">จัดรูปแบบรายงานเป็นเอกสารพร้อมกราฟและตารางสรุป</td>
-                      <td className="py-1.5 px-2.5 text-indigo-700">ใช้เสนอในที่ประชุมประจำเดือน</td>
+                      <td className="py-1 px-2.5 font-bold text-emerald-800">ยืนยันนำเข้าข้อมูล</td>
+                      <td className="py-1 px-2.5 text-slate-500">หน้า Data Import Hub</td>
+                      <td className="py-1 px-2.5 text-slate-700">ประมวลผลแมปคอลัมน์และบันทึกเข้าสต็อก/PR/PO อัตโนมัติ</td>
+                      <td className="py-1 px-2.5 text-indigo-700">เพิ่ม/อัปเดตข้อมูลเป็นชุดใน 2 วินาที</td>
+                    </tr>
+                    <tr>
+                      <td className="py-1 px-2.5 font-bold text-emerald-800">ส่งออก Excel / PDF</td>
+                      <td className="py-1 px-2.5 text-slate-500">หน้ารายงานสรุป</td>
+                      <td className="py-1 px-2.5 text-slate-700">แปลงข้อมูลสถิติเป็นไฟล์สเปรดชีตหรือจัดหน้าพิมพ์ PDF</td>
+                      <td className="py-1 px-2.5 text-indigo-700">ใช้เสนอในที่ประชุมประจำเดือน</td>
                     </tr>
                   </tbody>
                 </table>
@@ -830,8 +852,8 @@ export function StandardManualDocument({
             </div>
 
             {/* Reporting Policy */}
-            <div className="p-2.5 rounded bg-slate-50 border border-slate-200 text-[10px] text-slate-600 leading-relaxed">
-              <strong className="text-slate-800">ข้อกำหนดการตัดรอบรายงานบัญชี:</strong> ข้อมูลในหน้ารายงานเป็น Real-time Sync โดยยอดเงินจะอัปเดตทันทีที่มีการอนุมัติหรือตรวจรับสินค้า โดยสามารถกรองช่วงเวลา (Date Filter) เพื่อดูเปรียบเทียบเป็นรายสัปดาห์ รายเดือน หรือตลอดทั้งอายุโครงการได้
+            <div className="p-2 rounded bg-slate-50 border border-slate-200 text-[9.5px] text-slate-600 leading-relaxed">
+              <strong className="text-slate-800">ข้อกำหนดการตัดรอบและตรวจสอบข้อมูล:</strong> ข้อมูลในหน้ารายงานเป็น Real-time Sync โดยยอดเงินจะอัปเดตทันทีที่มีการอนุมัติหรือตรวจรับสินค้า โดยสามารถกรองช่วงเวลา (Date Filter) เพื่อดูเปรียบเทียบเป็นรายสัปดาห์ รายเดือน หรือตลอดทั้งอายุโครงการได้
             </div>
 
           </div>
@@ -853,113 +875,145 @@ export function StandardManualDocument({
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
             <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 6: สิทธิ์ผู้ใช้และพจนานุกรมปุ่มทั้งระบบ</div>
+            <div className="font-semibold text-slate-700">หมวดที่ 6: สิทธิ์ผู้ใช้, เชื่อมต่อคลาวด์ & LINE และพจนานุกรมปุ่ม</div>
             <div>หน้า 7 จาก 8</div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
               <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
                 <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">6</span>
-                <span>6.0 การจัดการสิทธิ์ผู้ใช้งาน และพจนานุกรมปุ่มและการสั่งการทั้งระบบ (Master Buttons)</span>
+                <span>6.0 การจัดการสิทธิ์ผู้ใช้งาน (RBAC), การเชื่อมต่อคลาวด์ & LINE และพจนานุกรมคำสั่ง</span>
               </h2>
             </div>
 
-            {/* 6.1 Role Matrix */}
-            <div>
-              <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-indigo-700" />
-                6.1 ตารางกำหนดสิทธิ์การเข้าถึงแยกตามบทบาทหน้าที่ (Access Rights Matrix)
-              </h3>
-              <div className="border border-slate-300 rounded overflow-hidden text-[10px]">
-                <table className="w-full text-center border-collapse">
-                  <thead>
-                    <tr className="bg-slate-100 border-b border-slate-300 text-slate-700 font-bold">
-                      <th className="py-1.5 px-2 text-left w-36">บทบาทผู้ใช้งาน (Role)</th>
-                      <th className="py-1.5 px-2">เปิดขอซื้อ (PR)</th>
-                      <th className="py-1.5 px-2">อนุมัติ (Approve)</th>
-                      <th className="py-1.5 px-2">ออกใบสั่งซื้อ (PO)</th>
-                      <th className="py-1.5 px-2">คลัง/สแกน QR</th>
-                      <th className="py-1.5 px-2">รายงานผู้บริหาร</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 text-slate-700">
-                    <tr>
-                      <td className="py-1.5 px-2 text-left font-semibold">วิศวกรสนาม (Site Engineer)</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ เต็มสิทธิ์</td>
-                      <td className="py-1.5 px-2 text-slate-300">-</td>
-                      <td className="py-1.5 px-2 text-slate-400">ดูอย่างเดียว</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ สแกน/เบิก</td>
-                      <td className="py-1.5 px-2 text-slate-300">-</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-left font-semibold">เจ้าหน้าที่จัดซื้อ (Buyer)</td>
-                      <td className="py-1.5 px-2 text-slate-400">ดูอย่างเดียว</td>
-                      <td className="py-1.5 px-2 text-slate-300">-</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ เต็มสิทธิ์</td>
-                      <td className="py-1.5 px-2 text-slate-400">ดูอย่างเดียว</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ สรุปจัดซื้อ</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-left font-semibold">ผู้จัดการโครงการ (Site PM)</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ เต็มสิทธิ์</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ อนุมัติ Lv.1</td>
-                      <td className="py-1.5 px-2 text-slate-400">ดูอย่างเดียว</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ ตรวจรับ</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ ดูรายงาน</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-left font-semibold">ผู้ดูแลระบบ (Administrator)</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ จัดการ</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ จัดการ</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ จัดการ</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ จัดการ</td>
-                      <td className="py-1.5 px-2 text-emerald-600 font-bold">✓ จัดการ</td>
-                    </tr>
-                  </tbody>
-                </table>
+            {/* 6.1 Role Matrix & Cloud Integrations Split */}
+            <div className="grid grid-cols-12 gap-3">
+              {/* 6.1 Role Matrix */}
+              <div className="col-span-7">
+                <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-indigo-700" />
+                  6.1 สิทธิ์การเข้าถึงแยกตามบทบาทหน้าที่ (RBAC 25 สิทธิ์)
+                </h3>
+                <div className="border border-slate-300 rounded overflow-hidden text-[9px]">
+                  <table className="w-full text-center border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100 border-b border-slate-300 text-slate-700 font-bold">
+                        <th className="py-1 px-1.5 text-left w-32">บทบาท (Role)</th>
+                        <th className="py-1 px-1">ขอซื้อ PR</th>
+                        <th className="py-1 px-1">อนุมัติ</th>
+                        <th className="py-1 px-1">สั่งซื้อ PO</th>
+                        <th className="py-1 px-1">คลัง/บาร์โค้ด</th>
+                        <th className="py-1 px-1">รายงาน</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 text-slate-700">
+                      <tr>
+                        <td className="py-1 px-1.5 text-left font-semibold">วิศวกรสนาม (Site Eng)</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ เต็มสิทธิ์</td>
+                        <td className="py-1 px-1 text-slate-300">-</td>
+                        <td className="py-1 px-1 text-slate-400">ดูอย่างเดียว</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ สแกน/เบิก</td>
+                        <td className="py-1 px-1 text-slate-300">-</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1 px-1.5 text-left font-semibold">เจ้าหน้าที่จัดซื้อ (Buyer)</td>
+                        <td className="py-1 px-1 text-slate-400">ดูอย่างเดียว</td>
+                        <td className="py-1 px-1 text-slate-300">-</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ เต็มสิทธิ์</td>
+                        <td className="py-1 px-1 text-slate-400">ดูอย่างเดียว</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ สรุปจัดซื้อ</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1 px-1.5 text-left font-semibold">ผู้จัดการโครงการ (PM)</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ เต็มสิทธิ์</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ อนุมัติ Lv.1</td>
+                        <td className="py-1 px-1 text-slate-400">ดูอย่างเดียว</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ ตรวจรับ</td>
+                        <td className="py-1 px-1 text-emerald-600 font-bold">✓ ดูรายงาน</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1 px-1.5 text-left font-semibold">ผู้ดูแลระบบ (Admin)</td>
+                        <td className="py-1 px-1 text-purple-700 font-bold">✓ 100%</td>
+                        <td className="py-1 px-1 text-purple-700 font-bold">✓ 100%</td>
+                        <td className="py-1 px-1 text-purple-700 font-bold">✓ 100%</td>
+                        <td className="py-1 px-1 text-purple-700 font-bold">✓ 100%</td>
+                        <td className="py-1 px-1 text-purple-700 font-bold">✓ 100%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 6.2 Cloud & Integrations */}
+              <div className="col-span-5 p-2 rounded bg-slate-50 border border-slate-200 text-[9.5px] space-y-1">
+                <h3 className="font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1 text-[10px]">
+                  <Settings className="w-3.5 h-3.5 text-indigo-700" />
+                  6.2 เชื่อมต่อคลาวด์ & แจ้งเตือน LINE
+                </h3>
+                <p className="text-slate-600 leading-relaxed">
+                  <strong>• Google Sheets Sync:</strong> ซิงก์ข้อมูลคลังและจัดซื้อสองทางด้วย Google Apps Script Webhook
+                </p>
+                <p className="text-slate-600 leading-relaxed">
+                  <strong>• LINE Notify:</strong> แจ้งเตือนอนุมัติ PR/PO และตรวจรับของเข้ากลุ่มไลน์ทันที
+                </p>
+                <p className="text-slate-600 leading-relaxed">
+                  <strong>• Cloud Backup:</strong> สำรองฐานข้อมูลฉุกเฉินบน Google Drive & Dropbox
+                </p>
               </div>
             </div>
 
-            {/* 6.2 Master Button Reference */}
-            <div className="pt-1">
-              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-                6.2 พจนานุกรมคำสั่งและปุ่มสำคัญทั้งหมดของระบบ (Master Action Directory)
+            {/* 6.3 Master Button Reference */}
+            <div className="pt-0.5">
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">
+                6.3 พจนานุกรมคำสั่งและปุ่มสำคัญทั้งหมดของระบบ (Master Action Directory)
               </h3>
-              <div className="border border-slate-300 rounded overflow-hidden text-[9.5px]">
+              <div className="border border-slate-300 rounded overflow-hidden text-[9px]">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-800 text-white font-bold">
-                      <th className="py-1.5 px-2 w-36">ปุ่ม / การสั่งการ</th>
-                      <th className="py-1.5 px-2 w-28">โมดูลที่อยู่</th>
-                      <th className="py-1.5 px-2">หน้าที่การทำงาน (Action)</th>
-                      <th className="py-1.5 px-2 w-44">ผลลัพธ์เชื่อมโยง (System Linkage)</th>
+                      <th className="py-1 px-2 w-36">ปุ่ม / การสั่งการ</th>
+                      <th className="py-1 px-2 w-28">โมดูลที่อยู่</th>
+                      <th className="py-1 px-2">หน้าที่การทำงาน (Action)</th>
+                      <th className="py-1 px-2 w-44">ผลลัพธ์เชื่อมโยง (System Linkage)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200">
                     <tr>
-                      <td className="py-1.5 px-2 font-bold text-indigo-900">ค้นหา (Global Search)</td>
-                      <td className="py-1.5 px-2 text-slate-500">แถบ Header ด้านบน</td>
-                      <td className="py-1.5 px-2 text-slate-700">ค้นหาด่วนด้วยเลข PR, PO, ชนิดสินค้า, ผู้ขาย</td>
-                      <td className="py-1.5 px-2 text-indigo-700">กระโดดไปยังเอกสารนั้นทันที</td>
+                      <td className="py-1 px-2 font-bold text-indigo-900">ค้นหา (Global Search)</td>
+                      <td className="py-1 px-2 text-slate-500">Header ด้านบน</td>
+                      <td className="py-1 px-2 text-slate-700">ค้นหาด่วนด้วยเลข PR, PO, ชนิดสินค้า, ผู้ขาย</td>
+                      <td className="py-1 px-2 text-indigo-700">กระโดดไปยังเอกสารนั้นทันที</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2 font-bold text-indigo-900">สลับภาษา (TH / EN)</td>
-                      <td className="py-1.5 px-2 text-slate-500">ด้านล่างแถบเมนู</td>
-                      <td className="py-1.5 px-2 text-slate-700">เปลี่ยนภาษาข้อความและเอกสารทั้งระบบ</td>
-                      <td className="py-1.5 px-2 text-indigo-700">รองรับทีมงานชาวต่างชาติ</td>
+                      <td className="py-1 px-2 font-bold text-indigo-900">สลับภาษา (TH / EN)</td>
+                      <td className="py-1 px-2 text-slate-500">แถบเมนูข้าง / Header</td>
+                      <td className="py-1 px-2 text-slate-700">เปลี่ยนภาษาข้อความและเอกสารทั้งระบบ</td>
+                      <td className="py-1 px-2 text-indigo-700">รองรับทีมงานชาวต่างชาติ</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2 font-bold text-indigo-900">ติดตั้งแอป (PWA)</td>
-                      <td className="py-1.5 px-2 text-slate-500">ด้านล่างแถบเมนู</td>
-                      <td className="py-1.5 px-2 text-slate-700">ติดตั้งแอปลงบนหน้าจอโทรศัพท์หรือคอมพิวเตอร์</td>
-                      <td className="py-1.5 px-2 text-indigo-700">เปิดใช้งานได้ทันทีไม่ต้องโหลดสโตร์</td>
+                      <td className="py-1 px-2 font-bold text-indigo-900">ปรับสเกลหน้าจอ (Display Scale)</td>
+                      <td className="py-1 px-2 text-slate-500">เมนู Settings</td>
+                      <td className="py-1 px-2 text-slate-700">ปรับความละเอียด UI เป็น 80%, 90%, 100%, 110%</td>
+                      <td className="py-1 px-2 text-indigo-700">พอดีกับจอโน้ตบุ๊กและมือถือ</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-2 font-bold text-indigo-900">คู่มือการใช้งาน (Manual)</td>
-                      <td className="py-1.5 px-2 text-slate-500">เมนูหลักก่อนตั้งค่า</td>
-                      <td className="py-1.5 px-2 text-slate-700">เปิดเอกสารคู่มือมาตรฐานและพจนานุกรมคำสั่ง</td>
-                      <td className="py-1.5 px-2 text-indigo-700">สั่งพิมพ์เป็นเอกสารทางการได้</td>
+                      <td className="py-1 px-2 font-bold text-emerald-800">ศูนย์นำเข้าข้อมูล (Data Hub)</td>
+                      <td className="py-1 px-2 text-slate-500">แถบเมนูด้านข้าง</td>
+                      <td className="py-1 px-2 text-slate-700">อัปโหลด Excel, CSV, CAD พร้อม Auto Column Mapping</td>
+                      <td className="py-1 px-2 text-indigo-700">นำเข้าสต็อกและ PR เป็นชุด</td>
+                    </tr>
+                    <tr>
+                      <td className="py-1 px-2 font-bold text-emerald-800">ทดสอบแจ้งเตือน LINE</td>
+                      <td className="py-1 px-2 text-slate-500">เมนู Integrations</td>
+                      <td className="py-1 px-2 text-slate-700">ส่งข้อความทดสอบและเปิดรับการแจ้งเตือนอนุมัติ</td>
+                      <td className="py-1 px-2 text-indigo-700">ส่งแจ้งเตือนเข้าสมาร์ตโฟนทันที</td>
+                    </tr>
+                    <tr>
+                      <td className="py-1 px-2 font-bold text-indigo-900">ติดตั้งแอป (PWA)</td>
+                      <td className="py-1 px-2 text-slate-500">แถบเมนูด้านข้าง</td>
+                      <td className="py-1 px-2 text-slate-700">ติดตั้งแอปลงบนหน้าจอโทรศัพท์หรือคอมพิวเตอร์</td>
+                      <td className="py-1 px-2 text-indigo-700">เปิดใช้งานได้ทันทีไม่ต้องโหลดสโตร์</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1004,63 +1058,76 @@ export function StandardManualDocument({
                 7.1 ปัญหาที่พบบ่อยหน้างานและวิธีแก้ไข (Troubleshooting Guide)
               </h3>
               
-              <div className="space-y-2 text-[10.5px]">
-                <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
-                  <h4 className="font-bold text-slate-800">1. ทำไมเปิดกล้องสแกน QR Code แล้วหน้าจอเป็นสีดำหรือไม่ทำงาน?</h4>
-                  <p className="text-slate-600 mt-0.5 leading-relaxed">
-                    <strong>วิธีแก้ไข:</strong> อุปกรณ์ของท่านอาจยังไม่ได้ให้สิทธิ์เบราว์เซอร์เข้าถึงกล้อง ให้กดที่ไอคอนรูปแม่กุญแจหน้า URL บนเบราว์เซอร์ แล้วเลือก <strong>อนุญาตการเข้าถึงกล้อง (Allow Camera)</strong> จากนั้นรีเฟรชหน้าเว็บอีกครั้ง
+              <div className="grid grid-cols-2 gap-2 text-[10px]">
+                <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                  <h4 className="font-bold text-slate-800">1. ทำไมเปิดกล้องสแกน QR / บาร์โค้ดแล้วไม่ทำงาน?</h4>
+                  <p className="text-slate-600 mt-0.5 leading-relaxed text-[9.5px]">
+                    <strong>วิธีแก้ไข:</strong> อนุญาตการเข้าถึงกล้อง (Allow Camera) ในเบราว์เซอร์ หรือสลับไปใช้แท็บ <strong>"อัปโหลดรูปภาพ"</strong> หรือใช้ <strong>เครื่องยิงบาร์โค้ดไร้สาย (Barcode Gun)</strong> ยิงเข้าช่องค้นหาได้ทันที
                   </p>
                 </div>
 
-                <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <div className="p-2 rounded bg-slate-50 border border-slate-200">
                   <h4 className="font-bold text-slate-800">2. สินค้ามาส่งไม่ครบตามยอดใน PO ทำอย่างไร?</h4>
-                  <p className="text-slate-600 mt-0.5 leading-relaxed">
-                    <strong>วิธีแก้ไข:</strong> สามารถกด "ตรวจรับสินค้า" แล้วกรอกเฉพาะจำนวนที่รับจริงในงวดนั้น ระบบจะปรับสถานะเป็น Partially Received และจดจำยอดค้างส่งไว้ให้ตรวจรับต่อในงวดถัดไปได้ทันที
+                  <p className="text-slate-600 mt-0.5 leading-relaxed text-[9.5px]">
+                    <strong>วิธีแก้ไข:</strong> กด <strong>"ตรวจรับสินค้า"</strong> แล้วกรอกเฉพาะจำนวนที่รับจริงในงวดนั้น ระบบจะปรับสถานะเป็น Partially Received และจำยอดค้างส่งไว้ให้ตรวจรับต่อในงวดถัดไป
                   </p>
                 </div>
 
-                <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
-                  <h4 className="font-bold text-slate-800">3. หากสัญญาณอินเทอร์เน็ตหน้างานขัดข้อง สามารถเปิดดูข้อมูลได้หรือไม่?</h4>
-                  <p className="text-slate-600 mt-0.5 leading-relaxed">
-                    <strong>วิธีแก้ไข:</strong> ระบบรองรับโหมดออฟไลน์ (Offline Mode) สามารถดูข้อมูลสินค้า สต็อก และเอกสารล่าสุดที่แคชไว้ได้ และเมื่อต่อเน็ตระบบจะซิงก์ข้อมูลกลับสู่คลาวด์อัตโนมัติ
+                <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                  <h4 className="font-bold text-slate-800">3. นำเข้าไฟล์ Excel หรือ BOQ แล้วหัวคอลัมน์ไม่ตรง?</h4>
+                  <p className="text-slate-600 mt-0.5 leading-relaxed text-[9.5px]">
+                    <strong>วิธีแก้ไข:</strong> ในหน้า <strong>"Data Import Hub"</strong> ใช้ระบบ <strong>"Auto-Map Columns"</strong> จับคู่ฟิลด์ หรือดาวน์โหลดเทมเพลตมาตรฐานไปใช้เป็นต้นแบบก่อนอัปโหลด
+                  </p>
+                </div>
+
+                <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                  <h4 className="font-bold text-slate-800">4. สัญญาณเน็ตหน้างานขัดข้อง หรือเปิดบนจอเล็ก?</h4>
+                  <p className="text-slate-600 mt-0.5 leading-relaxed text-[9.5px]">
+                    <strong>วิธีแก้ไข:</strong> ระบบรองรับ Offline Mode สำหรับเปิดดูข้อมูลแคช และสามารถปรับ Display Density เป็น 80% เพื่อให้พอดีกับจอโน้ตบุ๊ก 13-14 นิ้ว
                   </p>
                 </div>
               </div>
             </div>
 
             {/* 7.2 Revision History */}
-            <div className="pt-1">
-              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
+            <div className="pt-0.5">
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">
                 7.2 บันทึกประวัติการแก้ไขและปรับปรุงเอกสาร (Document Revision History)
               </h3>
-              <div className="border border-slate-300 rounded overflow-hidden text-[10px]">
+              <div className="border border-slate-300 rounded overflow-hidden text-[9.5px]">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-100 border-b border-slate-300 text-slate-700 font-bold">
-                      <th className="py-1.5 px-3 w-20">ฉบับ (Rev)</th>
-                      <th className="py-1.5 px-3 w-28">วันที่มีผลบังคับใช้</th>
-                      <th className="py-1.5 px-3">รายละเอียดการแก้ไข / เพิ่มเติม</th>
-                      <th className="py-1.5 px-3 w-28">ผู้รับผิดชอบ</th>
+                      <th className="py-1 px-2.5 w-16">ฉบับ (Rev)</th>
+                      <th className="py-1 px-2.5 w-24">มีผลบังคับใช้</th>
+                      <th className="py-1 px-2.5">รายละเอียดการแก้ไข / เพิ่มเติม</th>
+                      <th className="py-1 px-2.5 w-24">ผู้รับผิดชอบ</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 text-slate-700">
                     <tr>
-                      <td className="py-1.5 px-3 font-mono font-bold text-slate-800">1.0</td>
-                      <td className="py-1.5 px-3">1 มกราคม 2569</td>
-                      <td className="py-1.5 px-3">เปิดตัวระบบจัดซื้อ ProcureSync เริ่มต้นใช้งานโมดูล PR และ Approvals</td>
-                      <td className="py-1.5 px-3">ทีมพัฒนาระบบ</td>
+                      <td className="py-1 px-2.5 font-mono font-bold text-slate-800">1.0</td>
+                      <td className="py-1 px-2.5">1 ม.ค. 2569</td>
+                      <td className="py-1 px-2.5">เปิดตัวระบบจัดซื้อ ProcureSync เริ่มต้นใช้งานโมดูล PR และ Approvals</td>
+                      <td className="py-1 px-2.5">ทีมพัฒนาระบบ</td>
                     </tr>
                     <tr>
-                      <td className="py-1.5 px-3 font-mono font-bold text-slate-800">2.0</td>
-                      <td className="py-1.5 px-3">15 พฤษภาคม 2569</td>
-                      <td className="py-1.5 px-3">เพิ่มระบบคลังสินค้า (Inventory), การออกใบสั่งซื้อ (PO), และระบบคู่ค้า</td>
-                      <td className="py-1.5 px-3">ฝ่ายจัดซื้อกลาง</td>
+                      <td className="py-1 px-2.5 font-mono font-bold text-slate-800">2.0</td>
+                      <td className="py-1 px-2.5">15 พ.ค. 2569</td>
+                      <td className="py-1 px-2.5">เพิ่มระบบคลังสินค้า (Inventory), การออกใบสั่งซื้อ (PO), และระบบคู่ค้า</td>
+                      <td className="py-1 px-2.5">ฝ่ายจัดซื้อกลาง</td>
                     </tr>
-                    <tr className="bg-indigo-50/40">
-                      <td className="py-1.5 px-3 font-mono font-bold text-indigo-900">2.4</td>
-                      <td className="py-1.5 px-3 font-bold text-indigo-900">{currentDateStr}</td>
-                      <td className="py-1.5 px-3 font-medium text-indigo-900">เพิ่มกล้องสแกน QR Code แบบ Real-time, ปรับฟอร์แมตเอกสาร A4 และคู่มือ SOP</td>
-                      <td className="py-1.5 px-3 text-indigo-900">ฝ่ายพัฒนาระบบ SOP</td>
+                    <tr>
+                      <td className="py-1 px-2.5 font-mono font-bold text-slate-800">2.4</td>
+                      <td className="py-1 px-2.5">12 ต.ค. 2569</td>
+                      <td className="py-1 px-2.5">เพิ่มกล้องสแกน QR Code แบบ Real-time, ปรับฟอร์แมตเอกสาร A4 และคู่มือ SOP</td>
+                      <td className="py-1 px-2.5">ฝ่ายพัฒนาระบบ SOP</td>
+                    </tr>
+                    <tr className="bg-indigo-50/50">
+                      <td className="py-1 px-2.5 font-mono font-bold text-indigo-900">3.0</td>
+                      <td className="py-1 px-2.5 font-bold text-indigo-900">{currentDateStr}</td>
+                      <td className="py-1 px-2.5 font-medium text-indigo-900">เพิ่มศูนย์นำเข้าข้อมูล (Data Hub - Excel/CSV/CAD), ซิงก์คลาวด์ Google Sheets & LINE Alert, บาร์โค้ด SKU ไร้สาย และ Display Scale</td>
+                      <td className="py-1 px-2.5 text-indigo-900 font-semibold">ฝ่ายควบคุมระบบสารสนเทศ</td>
                     </tr>
                   </tbody>
                 </table>

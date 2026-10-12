@@ -108,8 +108,9 @@ export const exportToPDF = async (elementId: string, filename: string) => {
 };
 
 /**
- * Triggers native browser print for the document using an isolated iframe.
- * Guarantees 100% exact A4 paper scale without modal distortion, clipping, or auto-shrinking.
+ * Triggers native browser print for the document.
+ * On Mobile: Invokes native window.print() (AirPrint / Save as PDF) directly with calibrated @media print styles.
+ * On Desktop: Uses an isolated iframe to guarantee 100% exact A4 paper scale without modal distortion or clipping.
  */
 export const printA4Document = (elementId: string, docTitle?: string) => {
   const element = document.getElementById(elementId);
@@ -119,20 +120,50 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
     return;
   }
 
-  // Create an invisible iframe for isolated printing
+  // Set document title temporarily for clean PDF filename in "Save as PDF"
+  const originalTitle = document.title;
+  if (docTitle) {
+    document.title = docTitle;
+  }
+
+  // Detect mobile or small touch screen devices
+  const isMobile = typeof navigator !== 'undefined' && (
+    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (typeof window !== 'undefined' && window.innerWidth < 768)
+  );
+
+  if (isMobile) {
+    // Mobile browsers (Safari iOS, Chrome Mobile) restrict iframe printing.
+    // Trigger window.print() directly so native AirPrint / Save as PDF uses @media print styles.
+    window.print();
+    if (docTitle) {
+      setTimeout(() => {
+        document.title = originalTitle;
+      }, 1500);
+    }
+    return;
+  }
+
+  // Desktop: Create an isolated iframe for clean, unclipped print output
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.right = '0';
   iframe.style.bottom = '0';
-  iframe.style.width = '0';
-  iframe.style.height = '0';
+  iframe.style.width = '1px';
+  iframe.style.height = '1px';
   iframe.style.border = '0';
-  iframe.style.visibility = 'hidden';
+  iframe.style.opacity = '0.01';
+  iframe.style.pointerEvents = 'none';
   document.body.appendChild(iframe);
 
   const iframeDoc = iframe.contentWindow?.document;
   if (!iframeDoc) {
     window.print();
+    if (docTitle) {
+      setTimeout(() => {
+        document.title = originalTitle;
+      }, 1000);
+    }
     return;
   }
 
@@ -146,14 +177,14 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
     <html lang="th">
       <head>
         <meta charset="utf-8" />
-        <title>${docTitle || 'เอกสารใบขอซื้อมาตรฐาน A4'}</title>
+        <title>${docTitle || 'เอกสารจัดซื้อมาตรฐาน A4'}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
           @page {
             size: A4 portrait;
-            margin: 8mm;
+            margin: 8mm 6mm;
           }
           * {
             box-sizing: border-box;
@@ -165,7 +196,7 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
             padding: 0;
             background: #ffffff;
             color: #000000;
-            font-family: 'Inter', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 11pt;
             line-height: 1.5;
             word-break: break-word;
@@ -180,6 +211,7 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
             border: none !important;
             box-shadow: none !important;
             background-color: #ffffff !important;
+            transform: none !important;
           }
           table {
             border-collapse: collapse;
@@ -212,6 +244,9 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
       console.error('Iframe print error, falling back to window.print()', e);
       window.print();
     } finally {
+      if (docTitle) {
+        document.title = originalTitle;
+      }
       // Clean up iframe after print dialog finishes
       setTimeout(() => {
         if (document.body.contains(iframe)) {

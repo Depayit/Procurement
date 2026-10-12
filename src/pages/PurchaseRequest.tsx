@@ -8,7 +8,6 @@ import {
   Edit, 
   AlertCircle, 
   Printer, 
-  Download,
   Sparkles, 
   BookmarkCheck, 
   Clock, 
@@ -28,7 +27,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PRFormModal } from '../components/PRFormModal';
 import { DetailsModal } from '../components/DetailsModal';
 import { StandardPRDocument } from '../components/StandardPRDocument';
-import { exportToPDF, printA4Document } from '../lib/pdf';
+import { printA4Document } from '../lib/pdf';
 import { getAllTemplates } from '../data/prTemplates';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
@@ -772,14 +771,6 @@ export function PurchaseRequestPage() {
               >
                 <Printer className="h-4 w-4 mr-1.5 text-indigo-600" />
                 พิมพ์เอกสาร A4
-              </button>
-              <button 
-                onClick={() => exportToPDF('standard-pr-doc', `${viewPR?.prNumber}_Standard_PR`)}
-                className="inline-flex items-center px-3.5 py-2 border border-emerald-300 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors shadow-2xs cursor-pointer"
-                title="บันทึกไฟล์เป็น PDF ขนาด A4 100% สัดส่วนมาตรฐาน"
-              >
-                <Download className="h-4 w-4 mr-1.5 text-emerald-600" />
-                บันทึก PDF A4
               </button>
               <button 
                 onClick={() => setViewPR(null)}

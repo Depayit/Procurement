@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { CheckCircle2, XCircle, Clock, FileText, Printer, Download, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck, ShieldAlert, Lock } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, FileText, Printer, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck, ShieldAlert, Lock } from 'lucide-react';
 import type { ApprovalTask, PurchaseRequest } from '../types';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailsModal } from '../components/DetailsModal';
 import { StandardPRDocument } from '../components/StandardPRDocument';
 import { StandardPODocument } from '../components/StandardPODocument';
 import { ApprovalMatrixDocumentTable } from '../components/ApprovalMatrixDocumentTable';
-import { exportToPDF, printA4Document } from '../lib/pdf';
+import { printA4Document } from '../lib/pdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useProcurement } from '../contexts/ProcurementContext';
@@ -764,18 +764,10 @@ export function ApprovalPage() {
               <button 
                 onClick={() => printA4Document('standard-pr-doc-approval', `ใบขอซื้อ_${viewTask.documentId}`)}
                 className="inline-flex items-center px-3.5 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
-                title="พิมพ์เอกสารขนาด A4 มาตราฐานโดยตรง"
+                title="พิมพ์เอกสารขนาด A4 มาตราฐานโดยตรง (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
               >
                 <Printer className="h-4 w-4 mr-1.5 text-indigo-600" />
                 พิมพ์เอกสาร A4
-              </button>
-              <button 
-                onClick={() => exportToPDF('standard-pr-doc-approval', `Approval_${viewTask.documentId}`)}
-                className="inline-flex items-center px-3.5 py-2 border border-emerald-300 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors shadow-2xs cursor-pointer"
-                title="บันทึกไฟล์เป็น PDF ขนาด A4 100% สัดส่วนมาตรฐาน"
-              >
-                <Download className="h-4 w-4 mr-1.5 text-emerald-600" />
-                บันทึก PDF A4
               </button>
             </div>
 

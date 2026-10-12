@@ -25,7 +25,6 @@ import {
   Cell,
   Legend
 } from 'recharts';
-import { exportToPDF } from '../lib/pdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
 
@@ -89,15 +88,6 @@ export function ReportsPage() {
     ];
   }, [isEnglish, totalSpend]);
 
-  const handleExportPDF = async () => {
-    setIsExporting(true);
-    try {
-      await exportToPDF('report-content', `Procurement_Report_${new Date().toISOString().split('T')[0]}`);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   const handleExportExcel = () => {
     // Generate simple CSV for vendor performance
     const headers = ['Vendor Name', 'Total Orders', 'On-Time Delivery (%)', 'Rating', 'Total Spend (THB)'];
@@ -113,6 +103,14 @@ export function ReportsPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleExportPDF = () => {
+    setIsExporting(true);
+    setTimeout(() => {
+      window.print();
+      setIsExporting(false);
+    }, 200);
   };
 
   return (

@@ -127,7 +127,7 @@ export function Dashboard() {
                   {isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-num">{totalPRCount}</div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{totalPRCount}</div>
                   <div className="flex items-baseline text-[10px] sm:text-[11px] font-bold text-green-700 px-1.5 sm:px-2 py-0.5 bg-green-50 border border-green-200/60 rounded-md tracking-wide">
                     <TrendingUp className="self-center flex-shrink-0 h-3 w-3 mr-0.5 sm:mr-1 text-green-700" aria-hidden="true" />
                     Live
@@ -153,7 +153,7 @@ export function Dashboard() {
                   {isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-num">{pendingApprovalCount}</div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{pendingApprovalCount}</div>
                   <span className={cn(
                     "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-wide",
                     pendingApprovalCount > 0 
@@ -183,7 +183,7 @@ export function Dashboard() {
                   {isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-num">{lowStockCount}</div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{lowStockCount}</div>
                   <span className={cn(
                     "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-wide",
                     lowStockCount > 0 
@@ -213,7 +213,7 @@ export function Dashboard() {
                   {isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-num">{activePOCount}</div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{activePOCount}</div>
                   <span className="text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200/80 rounded-md tracking-wide">
                     {isEnglish ? 'In Progress' : 'รอดำเนินการ'}
                   </span>

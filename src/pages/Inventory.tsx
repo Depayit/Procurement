@@ -28,7 +28,6 @@ import {
   SkuBarcode
 } from '../components/InventoryModals';
 import { DetailsModal } from '../components/DetailsModal';
-import { exportToPDF } from '../lib/pdf';
 import * as xlsx from 'xlsx';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
@@ -676,11 +675,12 @@ export function InventoryPage() {
         footer={
           <div className="flex gap-2 w-full justify-end">
             <button 
-              onClick={() => exportToPDF('pdf-content', `InventoryItem_${viewItem?.sku || viewItem?.code}`)}
-              className="inline-flex items-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-2xs"
+              onClick={() => window.print()}
+              className="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+              title="พิมพ์ข้อมูลสินค้า (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
             >
-              <Printer className="h-4 w-4 mr-2" />
-              Export PDF / พิมพ์
+              <Printer className="h-4 w-4 mr-1.5 text-indigo-600" />
+              พิมพ์ข้อมูลสินค้า
             </button>
             <button 
               onClick={() => setViewItem(null)}
