@@ -68,7 +68,7 @@ export function Header({
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-6 z-10 w-full shrink-0">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-6 relative z-30 w-full shrink-0">
       <div className="flex items-center flex-1 gap-2 sm:gap-4 min-w-0">
         <button 
           onClick={onMenuClick}
@@ -111,7 +111,10 @@ export function Header({
         <div className="relative" ref={notifRef}>
           <button 
             type="button"
-            onClick={() => setShowNotifications(!showNotifications)}
+            onClick={() => {
+              setShowNotifications(prev => !prev);
+              setShowUserMenu(false);
+            }}
             className="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg transition-colors cursor-pointer"
             title={isEnglish ? 'Notifications' : 'การแจ้งเตือน'}
           >
@@ -125,7 +128,7 @@ export function Header({
           </button>
 
           {showNotifications && (
-            <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-1.5rem)] sm:w-84 md:w-96 max-w-sm bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-1.5rem)] sm:w-84 md:w-96 max-w-sm bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100dvh-5rem)] flex flex-col">
               {/* Header */}
               <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
                 <div className="flex items-center gap-2">
@@ -149,7 +152,7 @@ export function Header({
               </div>
 
               {/* Notification List */}
-              <div className="max-h-[380px] overflow-y-auto bg-white divide-y divide-slate-100">
+              <div className="flex-1 overflow-y-auto bg-white divide-y divide-slate-100 max-h-[min(380px,calc(100dvh-12rem))]">
                 {notifications.length > 0 ? (
                   <div className="p-2 space-y-2">
                     {(['system', 'approval', 'inventory', 'po', 'other'] as NotificationType[]).map(groupType => {
@@ -257,7 +260,10 @@ export function Header({
         <div className="relative" ref={userMenuRef}>
           <button 
             type="button"
-            onClick={() => setShowUserMenu(!showUserMenu)}
+            onClick={() => {
+              setShowUserMenu(prev => !prev);
+              setShowNotifications(false);
+            }}
             className="flex items-center space-x-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl p-1.5 transition-all hover:bg-slate-100/80 cursor-pointer border border-transparent hover:border-slate-200"
             title={isEnglish ? 'Switch user / role' : 'สลับบทบาทผู้ใช้งาน'}
           >
@@ -276,27 +282,27 @@ export function Header({
           </button>
 
           {showUserMenu && (
-            <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-1.5rem)] sm:w-80 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-              {/* Header Details */}
-              <div className="p-4 bg-gradient-to-br from-indigo-50/80 via-slate-50 to-white border-b border-slate-100">
+            <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-1.5rem)] sm:w-84 max-w-sm bg-white rounded-2xl shadow-2xl border border-slate-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100dvh-5rem)] flex flex-col">
+              {/* Header Details (Sticky Profile Summary) */}
+              <div className="p-3.5 bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white border-b border-slate-100 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100 shrink-0">
                     {currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-slate-900 text-sm truncate">{currentUser.name}</p>
-                    <p className="text-xs text-slate-500 truncate">{currentUser.email}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700">
+                    <p className="font-bold text-slate-900 text-xs sm:text-sm truncate leading-snug">{currentUser.name}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
+                    <span className="inline-block mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700">
                       {currentUser.department || 'สำนักงานใหญ่'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Persona / Role Selector */}
-              <div className="p-3 bg-slate-50/50 border-b border-slate-100">
-                <div className="flex items-center justify-between mb-2 px-1">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              {/* Persona / Role Selector (Scrollable Middle Section) */}
+              <div className="p-2.5 sm:p-3 bg-slate-50/50 border-b border-slate-100 flex flex-col min-h-0 flex-1 overflow-hidden">
+                <div className="flex items-center justify-between mb-2 px-1 shrink-0">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                     <Shield className="w-3.5 h-3.5 text-indigo-600" />
                     {isEnglish ? 'Switch Persona (Demo & Testing)' : 'สลับบทบาทจำลอง (ทดสอบการทำงาน)'}
                   </span>
@@ -305,7 +311,8 @@ export function Header({
                   </span>
                 </div>
                 
-                <div className="space-y-1.5">
+                {/* Scrollable list with thin scrollbar and comfortable max-height */}
+                <div className="space-y-1.5 overflow-y-auto max-h-48 sm:max-h-56 pr-1 scroll-smooth overscroll-contain">
                   {availableRoles.map(item => {
                     const isSelected = activeRole === item.role;
                     return (
@@ -317,20 +324,20 @@ export function Header({
                           setShowUserMenu(false);
                         }}
                         className={cn(
-                          "w-full text-left p-2.5 rounded-xl text-xs flex items-center gap-2.5 transition-all cursor-pointer border",
+                          "w-full text-left p-2 rounded-xl text-xs flex items-center gap-2.5 transition-all cursor-pointer border",
                           isSelected
                             ? "bg-indigo-600 text-white border-indigo-600 shadow-xs font-semibold"
                             : "bg-white text-slate-700 border-slate-200/80 hover:bg-indigo-50/50 hover:border-indigo-200"
                         )}
                       >
                         <span className={cn(
-                          "w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0",
+                          "w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-bold shrink-0",
                           isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
                         )}>
                           {item.avatarText}
                         </span>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate leading-tight font-medium">
+                          <p className="truncate leading-tight font-medium text-xs">
                             {isEnglish ? item.titleEn : item.titleTh}
                           </p>
                           <p className={cn(
@@ -340,22 +347,22 @@ export function Header({
                             {isEnglish ? item.descEn : item.descTh}
                           </p>
                         </div>
-                        {isSelected && <Check className="w-4 h-4 text-white shrink-0" />}
+                        {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Quick Links */}
-              <div className="p-2 bg-white flex flex-col gap-0.5 text-xs font-medium">
+              {/* Quick Links (Pinned to bottom) */}
+              <div className="p-2 bg-white flex flex-col gap-0.5 text-xs font-medium shrink-0">
                 <Link
                   to="/users"
                   onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
+                  className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
                 >
                   <span className="flex items-center gap-2">
-                    <UserCheck className="w-4 h-4 text-slate-400" />
+                    <UserCheck className="w-3.5 h-3.5 text-slate-400" />
                     {isEnglish ? 'User & Role Management' : 'จัดการผู้ใช้งานและสิทธิ์'}
                   </span>
                   <span className="text-[11px] text-slate-400">&rarr;</span>
@@ -363,7 +370,7 @@ export function Header({
                 <Link
                   to="/settings"
                   onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
+                  className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
                 >
                   <span>{isEnglish ? 'System Settings' : 'ตั้งค่าระบบ'}</span>
                   <span className="text-[11px] text-slate-400">&rarr;</span>
@@ -371,10 +378,10 @@ export function Header({
                 <Link
                   to="/manual"
                   onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-2 rounded-lg text-indigo-600 hover:bg-indigo-50 flex items-center justify-between transition-colors font-semibold"
+                  className="px-3 py-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 flex items-center justify-between transition-colors font-semibold"
                 >
                   <span className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-indigo-500" />
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
                     {isEnglish ? 'User Manual & Guides' : 'คู่มือการใช้งานระบบ'}
                   </span>
                   <span className="text-[11px] text-indigo-500">&rarr;</span>

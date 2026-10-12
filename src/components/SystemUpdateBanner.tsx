@@ -51,7 +51,7 @@ export function SystemUpdateBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-500/30 px-4 py-2.5 sm:py-3 shadow-md relative z-30 transition-all duration-300">
+    <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-500/30 px-4 py-2.5 sm:py-3 shadow-md relative z-10 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
         
         {/* Left: Badge + Summary */}
