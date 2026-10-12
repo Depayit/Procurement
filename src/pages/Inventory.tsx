@@ -318,40 +318,40 @@ export function InventoryPage() {
       </div>
 
       {/* KPI Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
-          <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4">
+          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase line-clamp-1">
             {isEnglish ? 'Total Stock Items' : 'รายการพัสดุทั้งหมด'}
           </h3>
-          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">
+          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">
             {filteredInventory.length} <span className="text-xs font-normal text-slate-500">SKUs</span>
           </p>
         </div>
         
-        <div className={cn("bg-white rounded-xl shadow-xs border p-4 relative overflow-hidden", lowStockItems > 0 ? "border-red-200" : "border-slate-200")}>
+        <div className={cn("bg-white rounded-xl shadow-xs border p-3 sm:p-4 relative overflow-hidden", lowStockItems > 0 ? "border-red-200" : "border-slate-200")}>
           {lowStockItems > 0 && <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500"></div>}
-          <h3 className={cn("text-xs font-bold tracking-wide uppercase", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
+          <h3 className={cn("text-[11px] sm:text-xs font-bold tracking-wide uppercase line-clamp-1", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
             {isEnglish ? 'Low Stock Alerts' : 'เตือนสต็อกต่ำ'}
           </h3>
-          <p className={cn("text-xl sm:text-2xl font-bold font-mono tabular-nums mt-1", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>
+          <p className={cn("text-lg sm:text-2xl font-bold font-mono tabular-nums mt-1", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>
             {lowStockItems}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
-          <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4">
+          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase line-clamp-1">
             {isEnglish ? 'Central Warehouse Locations' : 'โซนจัดเก็บในคลังกลาง'}
           </h3>
-          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-indigo-700 mt-1">
+          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-indigo-700 mt-1">
             {locations.length} <span className="text-xs font-normal text-slate-500">จุดเก็บ/แร็ค</span>
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
-          <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4">
+          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase line-clamp-1">
             {isEnglish ? 'Site Fulfillment Rate' : 'ความพร้อมจ่ายวัสดุหน้างาน'}
           </h3>
-          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-emerald-600 mt-1 flex items-center gap-1.5">
+          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-emerald-600 mt-1 flex items-center gap-1.5">
             98.5% <span className="text-xs font-normal text-slate-500">พร้อมเบิกจ่าย</span>
           </p>
         </div>

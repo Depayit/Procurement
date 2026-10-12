@@ -87,9 +87,7 @@ export function SettingsPage() {
     } catch {
       // ignore
     }
-    if (window.innerWidth >= 1024) {
-      document.documentElement.style.zoom = scale;
-    }
+    document.documentElement.style.zoom = scale;
   };
 
   // Company Profile State

@@ -61,13 +61,11 @@ export default function App() {
     testConnection();
   }, []);
 
-  // Initialize UI display density scale for desktop
+  // Initialize UI display density scale across all devices
   useEffect(() => {
     try {
       const savedScale = localStorage.getItem('procuresync_ui_scale') || '80%';
-      if (window.innerWidth >= 1024) {
-        document.documentElement.style.zoom = savedScale;
-      }
+      document.documentElement.style.zoom = savedScale;
     } catch {
       // ignore
     }

@@ -7,10 +7,8 @@
 
 /* Global Typography, Proportions & Balanced Line Breaks */
 html {
-  /* Calibrated scale for desktop enterprise density matching user reference (80%) */
-  @media (min-width: 1024px) {
-    zoom: 80%;
-  }
+  /* Universal calibrated scale matching compact Desktop reference across all devices */
+  zoom: 80%;
 }
 
 body {
