@@ -115,6 +115,9 @@ export function InventoryTransactionModal({ isOpen, onClose, onSave, items, defa
 
 export { QRCodeScannerModal } from './QRCodeScannerModal';
 export type { QRCodeScannerModalProps } from './QRCodeScannerModal';
+export { SkuBarcodeLabelModal } from './SkuBarcodeLabelModal';
+export type { SkuBarcodeLabelModalProps } from './SkuBarcodeLabelModal';
+export { SkuBarcode } from './SkuBarcode';
 
 
 interface PhysicalCountModalProps {

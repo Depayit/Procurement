@@ -18,6 +18,7 @@ import {
   Wifi,
   RotateCw,
   QrCode,
+  Barcode,
   FileText,
   ShoppingCart,
   Download,
@@ -548,11 +549,11 @@ export function SettingsPage() {
 
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
                     <div className="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0">
-                      <QrCode className="w-4 h-4" />
+                      <Barcode className="w-4 h-4" />
                     </div>
                     <div>
-                      <strong className="text-slate-900 block font-bold">2. สแกนคลัง (QR)</strong>
-                      <span className="text-slate-500 text-[11px]">เปิดกล้องส่องเบิกของทันที</span>
+                      <strong className="text-slate-900 block font-bold">2. สแกนบาร์โค้ด SKU</strong>
+                      <span className="text-slate-500 text-[11px]">ยิงบาร์โค้ด/กล้องส่องเบิกของ</span>
                     </div>
                   </div>
 

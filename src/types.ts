@@ -95,12 +95,17 @@ export interface ApprovalTask {
 export interface InventoryItem {
   id: string;
   code: string;
+  sku?: string;               // Master SKU (แกนกลางเชื่อมโยงทุกแพลตฟอร์ม)
+  barcode?: string;           // 1D Barcode (Code 128 / EAN สำหรับเครื่องยิงบาร์โค้ด)
   name: string;
   category: string;
   quantity: number;
   unit: string;
   minStockLevel: number;
-  location: string;
+  location: string;           // คลังสินค้า / ตำแหน่งจัดเก็บ
+  binLocation?: string;       // โซนจัดเก็บย่อยในคลัง (เช่น Zone A-01 / Rack 2)
+  centralWarehouse?: string;  // คลังสินค้ากลาง (Single Central Warehouse Hub)
+  platforms?: string[];       // แพลตฟอร์มที่เชื่อมโยง เช่น ['Shopee', 'Lazada', 'TikTok Shop', 'POS']
   unitPrice?: number;
 }
 

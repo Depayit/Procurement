@@ -19,7 +19,10 @@ import {
   Package, 
   MapPin, 
   Loader2,
-  Scan
+  Scan,
+  Barcode,
+  Store,
+  Tag
 } from 'lucide-react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats, CameraDevice } from 'html5-qrcode';
 import { cn } from '../lib/utils';
@@ -32,6 +35,7 @@ export interface QRCodeScannerModalProps {
   onScan: (code: string) => void;
   items?: InventoryItem[];
   onSelectAction?: (action: 'transact' | 'count' | 'view', item: InventoryItem) => void;
+  onPrintLabel?: (item: InventoryItem) => void;
 }
 
 interface ScannedResult {
@@ -46,7 +50,8 @@ export function QRCodeScannerModal({
   onClose, 
   onScan, 
   items = [], 
-  onSelectAction 
+  onSelectAction,
+  onPrintLabel
 }: QRCodeScannerModalProps) {
   const { isEnglish } = useLanguage();
   
@@ -123,7 +128,7 @@ export function QRCodeScannerModal({
     try {
       if (text.startsWith('http://') || text.startsWith('https://')) {
         const url = new URL(text);
-        const qCode = url.searchParams.get('code') || url.searchParams.get('sku') || url.searchParams.get('id');
+        const qCode = url.searchParams.get('code') || url.searchParams.get('sku') || url.searchParams.get('id') || url.searchParams.get('barcode');
         if (qCode) return qCode.trim();
         const segments = url.pathname.split('/').filter(Boolean);
         if (segments.length > 0) return decodeURIComponent(segments[segments.length - 1]).trim();
@@ -136,8 +141,8 @@ export function QRCodeScannerModal({
     if (text.startsWith('{') && text.endsWith('}')) {
       try {
         const obj = JSON.parse(text);
-        if (obj.code || obj.sku || obj.id) {
-          return String(obj.code || obj.sku || obj.id).trim();
+        if (obj.sku || obj.barcode || obj.code || obj.id) {
+          return String(obj.sku || obj.barcode || obj.code || obj.id).trim();
         }
       } catch {
         // ignore JSON parsing
@@ -145,7 +150,7 @@ export function QRCodeScannerModal({
     }
 
     // Strip common prefixes
-    text = text.replace(/^(item|sku|code|mat):/i, '').trim();
+    text = text.replace(/^(item|sku|code|mat|barcode):/i, '').trim();
     return text;
   }, []);
 
@@ -157,12 +162,15 @@ export function QRCodeScannerModal({
     }
 
     const code = parseScannedText(rawText);
+    const cleanLower = code.toLowerCase();
     
-    // Look up in inventory items
+    // Look up in central inventory items by SKU, Barcode, Code, ID, or Name
     const matched = items.find(i => 
-      i.code.toLowerCase() === code.toLowerCase() || 
-      i.id.toLowerCase() === code.toLowerCase() ||
-      i.name.toLowerCase() === code.toLowerCase()
+      (i.sku && i.sku.toLowerCase() === cleanLower) ||
+      (i.barcode && i.barcode.toLowerCase() === cleanLower) ||
+      i.code.toLowerCase() === cleanLower || 
+      i.id.toLowerCase() === cleanLower ||
+      i.name.toLowerCase() === cleanLower
     ) || null;
 
     setScannedResult({
@@ -175,6 +183,44 @@ export function QRCodeScannerModal({
     // Pause camera when showing result
     stopScanner();
   }, [items, parseScannedText, playBeep, stopScanner]);
+
+  // Hardware USB/Bluetooth Barcode Scanner Gun Listener
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let buffer = '';
+    let lastKeyTime = Date.now();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is deliberately typing in a text field
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        return;
+      }
+
+      const now = Date.now();
+      // Hardware scanners typically dump characters with < 50ms intervals
+      if (now - lastKeyTime > 160) {
+        buffer = '';
+      }
+      lastKeyTime = now;
+
+      if (e.key === 'Enter') {
+        const trimmed = buffer.trim();
+        if (trimmed.length >= 2) {
+          e.preventDefault();
+          handleDecoded(trimmed);
+          buffer = '';
+        }
+      } else if (e.key.length === 1) {
+        buffer += e.key;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, handleDecoded]);
 
   // Start camera
   const startCamera = useCallback(async (cameraId?: string) => {
@@ -426,10 +472,10 @@ export function QRCodeScannerModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-800">
-                {isEnglish ? 'Scan QR Code / Barcode' : 'สแกน QR Code & Barcode'}
+                {isEnglish ? 'Scan SKU Barcode & QR Code' : 'สแกนบาร์โค้ด SKU & QR Code'}
               </h2>
               <p className="text-xs text-slate-500 font-medium">
-                {isEnglish ? 'Live camera, file upload, or manual SKU search' : 'สแกนจากกล้องสด อัปโหลดรูป หรือค้นหารหัส'}
+                {isEnglish ? 'Camera, USB Barcode Gun, or manual SKU search' : 'กล้องสด, เครื่องยิงบาร์โค้ด หรือค้นหารหัส Master SKU'}
               </p>
             </div>
           </div>
@@ -527,22 +573,55 @@ export function QRCodeScannerModal({
               {scannedResult.item ? (
                 <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
+                    <div className="flex items-start gap-2.5">
+                      <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 mt-0.5">
                         <Package className="w-5 h-5" />
                       </div>
                       <div>
                         <h4 className="font-bold text-slate-800 text-sm leading-snug">
                           {scannedResult.item.name}
                         </h4>
-                        <span className="inline-block mt-0.5 px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-semibold">
-                          {scannedResult.item.category}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                          <span className="inline-flex items-center gap-1 font-mono text-[11px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">
+                            <Tag className="w-3 h-3 text-indigo-600" />
+                            {scannedResult.item.sku || scannedResult.item.code}
+                          </span>
+                          {scannedResult.item.barcode && (
+                            <span className="inline-flex items-center gap-1 font-mono text-[11px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                              <Barcode className="w-3 h-3 text-slate-500" />
+                              {scannedResult.item.barcode}
+                            </span>
+                          )}
+                          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-semibold">
+                            {scannedResult.item.category}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
+                  {/* Multi-Platform Central Warehouse Indicator */}
+                  <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+                    <div className="flex items-center justify-between text-[11px] mb-1">
+                      <span className="font-bold text-slate-600 flex items-center gap-1">
+                        <Store className="w-3 h-3 text-emerald-600" />
+                        {scannedResult.item.centralWarehouse || 'คลังสินค้ากลาง (Central WH)'}
+                      </span>
+                      <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                        Single Physical Hub
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1 pt-1 border-t border-slate-200/60">
+                      <span className="text-[10px] text-slate-400 font-medium">ตัดสต็อกร่วม:</span>
+                      {(scannedResult.item.platforms || ['Shopee', 'Lazada', 'TikTok Shop', 'POS']).map(p => (
+                        <span key={p} className="text-[9.5px] font-bold bg-white text-slate-700 px-1.5 py-0.2 rounded border border-slate-200">
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
                     <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
                       <span className="text-slate-500 font-medium block">
                         {isEnglish ? 'Stock Balance' : 'ยอดคงเหลือ'}
@@ -565,7 +644,7 @@ export function QRCodeScannerModal({
                         {isEnglish ? 'Location' : 'สถานที่จัดเก็บ'}
                       </span>
                       <span className="font-bold text-slate-800 text-sm block mt-0.5 truncate">
-                        {scannedResult.item.location}
+                        {scannedResult.item.binLocation || scannedResult.item.location}
                       </span>
                       <span className="text-[10px] text-slate-400 block mt-0.5">
                         {isEnglish ? `Min: ${scannedResult.item.minStockLevel} ${scannedResult.item.unit}` : `ขั้นต่ำ: ${scannedResult.item.minStockLevel} ${scannedResult.item.unit}`}
@@ -610,20 +689,35 @@ export function QRCodeScannerModal({
                         <span>{isEnglish ? 'Physical Stock Count' : 'ตรวจนับสต็อกจริง'}</span>
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (onSelectAction && scannedResult.item) {
-                            onSelectAction('view', scannedResult.item);
-                          } else {
-                            onScan(scannedResult.code);
-                          }
-                        }}
-                        className="flex items-center justify-center gap-2 py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-bold transition-colors"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-slate-500" />
-                        <span>{isEnglish ? 'View Item Details' : 'ดูข้อมูลสินค้า'}</span>
-                      </button>
+                      {onPrintLabel ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (scannedResult.item) {
+                              onPrintLabel(scannedResult.item);
+                            }
+                          }}
+                          className="flex items-center justify-center gap-2 py-2 px-3 border border-indigo-200 bg-indigo-50/70 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-colors"
+                        >
+                          <Barcode className="w-3.5 h-3.5 text-indigo-600" />
+                          <span>{isEnglish ? 'Print SKU Barcode' : 'พิมพ์ป้ายบาร์โค้ด SKU'}</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (onSelectAction && scannedResult.item) {
+                              onSelectAction('view', scannedResult.item);
+                            } else {
+                              onScan(scannedResult.code);
+                            }
+                          }}
+                          className="flex items-center justify-center gap-2 py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-bold transition-colors"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-slate-500" />
+                          <span>{isEnglish ? 'View Item Details' : 'ดูข้อมูลสินค้า'}</span>
+                        </button>
+                      )}
 
                       <button
                         type="button"

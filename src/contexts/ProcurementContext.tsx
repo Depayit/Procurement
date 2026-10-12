@@ -159,11 +159,86 @@ const SEED_POS: PurchaseOrder[] = [
 ];
 
 const SEED_INVENTORY: InventoryItem[] = [
-  { id: '1', code: 'MAT-CEM-01', name: 'ปูนซีเมนต์ปอร์ตแลนด์ (ตราช้าง)', category: 'วัสดุก่อสร้าง', quantity: 450, unit: 'ถุง', minStockLevel: 100, location: 'ไซโล 1', unitPrice: 155 },
-  { id: '2', code: 'MAT-STL-24', name: 'เหล็กเส้นกลม SR24', category: 'วัสดุก่อสร้าง', quantity: 15, unit: 'ตัน', minStockLevel: 20, location: 'ลานเก็บ B', unitPrice: 24500 },
-  { id: '3', code: 'TOL-DRL-01', name: 'สว่านโรตารี่', category: 'เครื่องมือช่าง', quantity: 2, unit: 'เครื่อง', minStockLevel: 5, location: 'ห้องช่าง', unitPrice: 3850 },
-  { id: '4', code: 'SAF-HLM-01', name: 'หมวกนิรภัย', category: 'อุปกรณ์เซฟตี้', quantity: 120, unit: 'ใบ', minStockLevel: 50, location: 'ห้องสโตร์', unitPrice: 280 },
-  { id: '5', code: 'MAT-TILE-60', name: 'กระเบื้องแกรนิตโต้ 60x60 ซม.', category: 'วัสดุก่อสร้าง', quantity: 120, unit: 'กล่อง', minStockLevel: 50, location: 'โกดัง A', unitPrice: 425 }
+  { 
+    id: '1', 
+    code: 'MAT-CEM-01', 
+    sku: 'SKU-CEM-B100', 
+    barcode: '8851928001014', 
+    name: 'ปูนซีเมนต์ปอร์ตแลนด์ (ตราช้าง)', 
+    category: 'วัสดุก่อสร้าง', 
+    quantity: 450, 
+    unit: 'ถุง', 
+    minStockLevel: 100, 
+    location: 'คลังสินค้ากลาง (Central WH)', 
+    binLocation: 'ไซโล 1 (Bay C-01)', 
+    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
+    platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน', 'B2B'], 
+    unitPrice: 155 
+  },
+  { 
+    id: '2', 
+    code: 'MAT-STL-24', 
+    sku: 'SKU-STL-SR24', 
+    barcode: '8851928002028', 
+    name: 'เหล็กเส้นกลม SR24 (มอก.)', 
+    category: 'วัสดุก่อสร้าง', 
+    quantity: 15, 
+    unit: 'ตัน', 
+    minStockLevel: 20, 
+    location: 'คลังสินค้ากลาง (Central WH)', 
+    binLocation: 'ลานเก็บ B (Zone B-04)', 
+    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
+    platforms: ['Shopee', 'Lazada', 'POS หน้าร้าน', 'B2B'], 
+    unitPrice: 24500 
+  },
+  { 
+    id: '3', 
+    code: 'TOL-DRL-01', 
+    sku: 'SKU-TOL-DRL01', 
+    barcode: '8851928003035', 
+    name: 'สว่านโรตารี่ 800W 3 ระบบ', 
+    category: 'เครื่องมือช่าง', 
+    quantity: 12, 
+    unit: 'เครื่อง', 
+    minStockLevel: 5, 
+    location: 'คลังสินค้ากลาง (Central WH)', 
+    binLocation: 'ห้องช่าง (Shelf T-12)', 
+    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
+    platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน'], 
+    unitPrice: 3850 
+  },
+  { 
+    id: '4', 
+    code: 'SAF-HLM-01', 
+    sku: 'SKU-SAF-HLM01', 
+    barcode: '8851928004042', 
+    name: 'หมวกนิรภัย มอก. รองใน 6 จุด ปรับหมุน', 
+    category: 'อุปกรณ์เซฟตี้', 
+    quantity: 120, 
+    unit: 'ใบ', 
+    minStockLevel: 50, 
+    location: 'คลังสินค้ากลาง (Central WH)', 
+    binLocation: 'สโตร์กลาง (Rack S-03)', 
+    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
+    platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'B2B'], 
+    unitPrice: 280 
+  },
+  { 
+    id: '5', 
+    code: 'MAT-TILE-60', 
+    sku: 'SKU-MAT-TL60', 
+    barcode: '8851928005059', 
+    name: 'กระเบื้องแกรนิตโต้ 60x60 ซม. นาโนไวท์', 
+    category: 'วัสดุก่อสร้าง', 
+    quantity: 120, 
+    unit: 'กล่อง', 
+    minStockLevel: 50, 
+    location: 'คลังสินค้ากลาง (Central WH)', 
+    binLocation: 'โกดัง A (Pallet P-09)', 
+    centralWarehouse: 'คลังสินค้ากลาง (Central Hub)', 
+    platforms: ['Shopee', 'Lazada', 'POS หน้าร้าน', 'B2B'], 
+    unitPrice: 425 
+  }
 ];
 
 const SEED_VENDORS: Vendor[] = [
@@ -666,7 +741,7 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     let success = false;
 
     setInventory(prev => prev.map(item => {
-      if (item.id === codeOrId || item.code === codeOrId) {
+      if (item.id === codeOrId || item.code === codeOrId || item.sku === codeOrId || item.barcode === codeOrId) {
         let newQty = item.quantity;
         if (type === 'IN') {
           newQty += deltaQty;

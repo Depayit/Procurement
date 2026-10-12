@@ -10,8 +10,26 @@ export interface AuditLogEntry {
   ip: string;
 }
 
-export async function logSystemAction(user: string, action: string, detail: string) {
+export async function logSystemAction(userOrAction: string, actionOrDetail: string, detailOrMeta?: any) {
   try {
+    let user = 'System';
+    let action = userOrAction;
+    let detail = actionOrDetail;
+
+    if (detailOrMeta !== undefined) {
+      if (typeof detailOrMeta === 'string') {
+        user = userOrAction;
+        action = actionOrDetail;
+        detail = detailOrMeta;
+      } else {
+        user = 'System';
+        action = userOrAction;
+        detail = typeof actionOrDetail === 'string' 
+          ? `${actionOrDetail} ${JSON.stringify(detailOrMeta)}` 
+          : JSON.stringify(actionOrDetail);
+      }
+    }
+
     const logsRef = collection(db, 'audit_logs');
     await addDoc(logsRef, {
       user,

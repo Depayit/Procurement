@@ -1,9 +1,29 @@
-import { Package, ArrowDownUp, QrCode, AlertTriangle, CheckSquare, Printer, FileSpreadsheet, Download, X } from 'lucide-react';
-import { useState, useRef, useEffect, ChangeEvent } from 'react';
-import QRCode from 'qrcode';
+import { 
+  Package, 
+  ArrowDownUp, 
+  AlertTriangle, 
+  CheckSquare, 
+  Printer, 
+  FileSpreadsheet, 
+  Barcode, 
+  Store, 
+  Tag, 
+  Search, 
+  CheckCircle2, 
+  Box,
+  Layers,
+  Sparkles
+} from 'lucide-react';
+import { useState, useRef, ChangeEvent } from 'react';
 import type { InventoryItem } from '../types';
 import { cn } from '../lib/utils';
-import { InventoryTransactionModal, QRCodeScannerModal, PhysicalCountModal } from '../components/InventoryModals';
+import { 
+  InventoryTransactionModal, 
+  QRCodeScannerModal, 
+  PhysicalCountModal,
+  SkuBarcodeLabelModal,
+  SkuBarcode
+} from '../components/InventoryModals';
 import { DetailsModal } from '../components/DetailsModal';
 import { exportToPDF } from '../lib/pdf';
 import * as xlsx from 'xlsx';
@@ -13,31 +33,50 @@ import { useAuth } from '../contexts/AuthContext';
 
 export function InventoryPage() {
   const { t, isEnglish } = useLanguage();
-  const { inventory, addInventoryItem, updateInventoryItem, transactInventory } = useProcurement();
+  const { inventory, addInventoryItem, transactInventory } = useProcurement();
   const { currentUser } = useAuth();
+  
+  // Modals state
   const [isTransactOpen, setIsTransactOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [countItem, setCountItem] = useState<InventoryItem | null>(null);
   const [viewItem, setViewItem] = useState<InventoryItem | null>(null);
   const [transactDefaultId, setTransactDefaultId] = useState<string | undefined>();
+  const [barcodeModalItem, setBarcodeModalItem] = useState<InventoryItem | null>(null);
+  const [isBarcodeModalOpen, setIsBarcodeModalOpen] = useState(false);
+  
+  // Search & Filter state
   const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [itemQrDataUrl, setItemQrDataUrl] = useState<string>('');
-  const [isQrLabelOpen, setIsQrLabelOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (viewItem) {
-      QRCode.toDataURL(viewItem.code, { width: 300, margin: 2 })
-        .then(setItemQrDataUrl)
-        .catch(() => setItemQrDataUrl(''));
-    } else {
-      setItemQrDataUrl('');
-    }
-  }, [viewItem]);
-
-
   const locations = Array.from(new Set(inventory.map(i => i.location)));
-  const filteredInventory = selectedLocation ? inventory.filter(i => i.location === selectedLocation) : inventory;
+  
+  // Filter inventory by location and search query (SKU, barcode, name, category, binLocation)
+  const filteredInventory = inventory.filter(item => {
+    const matchesLocation = !selectedLocation || item.location === selectedLocation;
+    if (!matchesLocation) return false;
+
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase().trim();
+    const itemSku = (item.sku || '').toLowerCase();
+    const itemBarcode = (item.barcode || '').toLowerCase();
+    const itemCode = (item.code || '').toLowerCase();
+    const itemName = (item.name || '').toLowerCase();
+    const itemCat = (item.category || '').toLowerCase();
+    const itemBin = (item.binLocation || '').toLowerCase();
+    const itemPlatforms = (item.platforms || []).join(' ').toLowerCase();
+
+    return (
+      itemSku.includes(query) ||
+      itemBarcode.includes(query) ||
+      itemCode.includes(query) ||
+      itemName.includes(query) ||
+      itemCat.includes(query) ||
+      itemBin.includes(query) ||
+      itemPlatforms.includes(query)
+    );
+  });
 
   const handleImport = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,17 +91,26 @@ export function InventoryPage() {
         const ws = wb.Sheets[wsname];
         const data = xlsx.utils.sheet_to_json(ws);
         
-        const newItems: InventoryItem[] = (data as any[]).map(row => ({
-          id: Math.random().toString(36).substr(2, 9),
-          code: row.code || row['รหัส'] || `ITEM-${Math.floor(Math.random()*1000)}`,
-          name: row.name || row['ชื่อสินค้า'] || 'นำเข้าใหม่',
-          category: row.category || row['หมวดหมู่'] || 'ทั่วไป',
-          quantity: Number(row.quantity || row['จำนวน'] || 0),
-          unit: row.unit || row['หน่วย'] || 'ชิ้น',
-          minStockLevel: Number(row.minStockLevel || row['ขั้นต่ำ'] || 0),
-          location: row.location || row['สถานที่'] || 'คลังหลัก',
-          unitPrice: Number(row.unitPrice || row['ราคา'] || 0),
-        }));
+        const newItems: InventoryItem[] = (data as any[]).map(row => {
+          const itemCode = row.code || row['รหัส'] || `ITEM-${Math.floor(Math.random() * 1000)}`;
+          const itemSku = row.sku || row['SKU'] || `SKU-${itemCode}`;
+          return {
+            id: Math.random().toString(36).substr(2, 9),
+            code: itemCode,
+            sku: itemSku,
+            barcode: String(row.barcode || row['บาร์โค้ด'] || row.sku || itemCode),
+            name: row.name || row['ชื่อสินค้า'] || 'นำเข้าใหม่',
+            category: row.category || row['หมวดหมู่'] || 'ทั่วไป',
+            quantity: Number(row.quantity || row['จำนวน'] || 0),
+            unit: row.unit || row['หน่วย'] || 'ชิ้น',
+            minStockLevel: Number(row.minStockLevel || row['ขั้นต่ำ'] || 0),
+            location: row.location || row['สถานที่'] || 'คลังสินค้ากลาง (Central WH)',
+            binLocation: row.binLocation || row['จุดเก็บ'] || 'โซนจัดเก็บ A-01',
+            centralWarehouse: 'คลังสินค้ากลาง (Central Hub)',
+            platforms: ['Shopee', 'Lazada', 'TikTok Shop', 'POS หน้าร้าน', 'B2B'],
+            unitPrice: Number(row.unitPrice || row['ราคา'] || 0),
+          };
+        });
 
         newItems.forEach(item => addInventoryItem(item));
         alert(`นำเข้าข้อมูล ${newItems.length} รายการสำเร็จ`);
@@ -93,12 +141,17 @@ export function InventoryPage() {
         } else {
           addInventoryItem({
             code: sourceItem.code,
+            sku: sourceItem.sku,
+            barcode: sourceItem.barcode,
             name: sourceItem.name,
             category: sourceItem.category,
             quantity: data.quantity,
             unit: sourceItem.unit,
             minStockLevel: sourceItem.minStockLevel,
             location: data.location,
+            binLocation: sourceItem.binLocation,
+            centralWarehouse: sourceItem.centralWarehouse,
+            platforms: sourceItem.platforms,
             unitPrice: sourceItem.unitPrice
           });
         }
@@ -108,10 +161,14 @@ export function InventoryPage() {
     setIsTransactOpen(false);
   };
 
-  const handleScanSuccess = (code: string) => {
+  const handleScanSuccess = (scannedCode: string) => {
+    const clean = scannedCode.toLowerCase().trim();
     const item = inventory.find(i => 
-      i.code.toLowerCase() === code.toLowerCase() || 
-      i.id.toLowerCase() === code.toLowerCase()
+      (i.sku && i.sku.toLowerCase() === clean) ||
+      (i.barcode && i.barcode.toLowerCase() === clean) ||
+      i.code.toLowerCase() === clean || 
+      i.id.toLowerCase() === clean ||
+      i.name.toLowerCase() === clean
     );
     setIsScannerOpen(false);
     if (item) {
@@ -120,7 +177,9 @@ export function InventoryPage() {
         setIsTransactOpen(true);
       }, 300);
     } else {
-      alert(isEnglish ? `Item with code "${code}" not found in system` : `ไม่พบสินค้ารหัส "${code}" ในระบบ`);
+      alert(isEnglish 
+        ? `Item with SKU / Barcode "${scannedCode}" not found in central warehouse` 
+        : `ไม่พบสินค้าที่มีรหัส Master SKU หรือ Barcode "${scannedCode}" ในระบบคลังกลาง`);
     }
   };
 
@@ -138,6 +197,11 @@ export function InventoryPage() {
     }, 250);
   };
 
+  const handleOpenBarcodeModal = (item: InventoryItem) => {
+    setBarcodeModalItem(item);
+    setIsBarcodeModalOpen(true);
+  };
+
   const handlePhysicalCount = (itemId: string, newQuantity: number, note: string) => {
     transactInventory(itemId, newQuantity, 'ADJUST', note || 'ตรวจนับยอดคงเหลือจริงหน้างาน');
     alert('บันทึกยอดตรวจนับเรียบร้อย');
@@ -148,23 +212,28 @@ export function InventoryPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
+      
       {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800">{t('inventory.title')}</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">{t('inventory.subtitle')}</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800">
+              {isEnglish ? 'Central Warehouse & SKU Barcode System' : 'คลังสินค้ากลางและระบบบาร์โค้ด SKU'}
+            </h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
+              <Store className="w-3 h-3" />
+              Single Warehouse Hub
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            {isEnglish 
+              ? 'Single physical warehouse stock pool, synchronized across multi-platform channels (Shopee, Lazada, TikTok, POS)' 
+              : 'คลังสินค้ามีจุดเดียว • ควบคุมสต็อกคงเหลือจริงแบบ Real-time ตัดสต็อกร่วมกับหลากหลายแพลตฟอร์ม'}
+          </p>
         </div>
+
+        {/* Header Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          <select 
-            value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-            className="flex-1 sm:flex-none px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="">{isEnglish ? 'All Sites / Locations' : 'ทุกไซต์งาน / สถานที่'}</option>
-            {locations.map(loc => (
-              <option key={loc} value={loc}>{loc}</option>
-            ))}
-          </select>
           <input 
             type="file" 
             ref={fileInputRef} 
@@ -175,17 +244,21 @@ export function InventoryPage() {
           <button 
             onClick={() => fileInputRef.current?.click()}
             className="inline-flex items-center px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs hover:bg-slate-50 transition-colors"
+            title="นำเข้าไฟล์ Excel/CSV พร้อม SKU และบาร์โค้ด"
           >
             <FileSpreadsheet className="h-4 w-4 mr-1.5 text-slate-500" />
-            <span>{isEnglish ? 'Import' : 'นำเข้า'}</span>
+            <span>{isEnglish ? 'Import' : 'นำเข้า Excel'}</span>
           </button>
+          
           <button 
             onClick={() => setIsScannerOpen(true)}
-            className="inline-flex items-center px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center px-3.5 py-2 border border-indigo-200 rounded-lg text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50/70 shadow-2xs hover:bg-indigo-100 transition-colors"
+            title="สแกนบาร์โค้ด SKU ด้วยกล้องหรือเครื่องยิงบาร์โค้ด"
           >
-            <QrCode className="h-4 w-4 mr-1.5 text-slate-500" />
-            <span>{isEnglish ? 'Scan QR' : 'สแกน QR'}</span>
+            <Barcode className="h-4 w-4 mr-1.5 text-indigo-600" />
+            <span>{isEnglish ? 'Scan SKU Barcode' : 'สแกนบาร์โค้ด SKU'}</span>
           </button>
+
           <button 
             onClick={() => { setTransactDefaultId(undefined); setIsTransactOpen(true); }}
             className="inline-flex items-center px-3 py-2 border border-transparent rounded-lg shadow-2xs text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
@@ -196,50 +269,158 @@ export function InventoryPage() {
         </div>
       </div>
 
-      {/* KPI Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
-          <h3 className="text-xs sm:text-sm font-bold text-slate-500 tracking-wide uppercase">{isEnglish ? 'Total Stock Items' : 'รายการทั้งหมด'}</h3>
-          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">{filteredInventory.length}</p>
+      {/* Central Warehouse & Multi-Platform Architecture Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 border border-slate-800 shadow-sm relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-indigo-500/30 text-indigo-300">
+                <Store className="w-4 h-4" />
+              </span>
+              <h2 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                สถาปัตยกรรมคลังสินค้ากลางจุดเดียว (Single Central Hub • Multi-Platform Sync)
+              </h2>
+            </div>
+            <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+              สินค้าทั้งหมดถูกจัดเก็บอยู่ที่ <strong>คลังสินค้ากลางแห่งเดียว</strong> โดยใช้ <strong>Master SKU Barcode (Code 128)</strong> เป็นแกนกลางในการเชื่อมโยงออเดอร์ เมื่อมีคำสั่งซื้อจากแพลตฟอร์มใดก็ตาม สต็อกจริงในคลังนี้จะถูกตัดยอดทันที
+            </p>
+          </div>
+
+          {/* Connected Multi-Platforms Badge Group */}
+          <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/15 shrink-0">
+            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-300" />
+              แพลตฟอร์มที่เชื่อมโยงสต็อกกลาง (Omnichannel Pool):
+            </span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {[
+                { name: 'Shopee', color: 'bg-orange-500/20 text-orange-200 border-orange-500/40' },
+                { name: 'Lazada', color: 'bg-blue-500/20 text-blue-200 border-blue-500/40' },
+                { name: 'TikTok Shop', color: 'bg-rose-500/20 text-rose-200 border-rose-500/40' },
+                { name: 'POS หน้าร้าน', color: 'bg-emerald-500/20 text-emerald-200 border-emerald-500/40' },
+                { name: 'B2B Procurement', color: 'bg-purple-500/20 text-purple-200 border-purple-500/40' },
+              ].map(p => (
+                <span 
+                  key={p.name}
+                  className={cn("inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md border", p.color)}
+                >
+                  <CheckCircle2 className="w-2.5 h-2.5" />
+                  {p.name}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* KPI Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
+          <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+            {isEnglish ? 'Total Stock Items' : 'รายการสินค้าทั้งหมด'}
+          </h3>
+          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">
+            {filteredInventory.length} <span className="text-xs font-normal text-slate-500">SKUs</span>
+          </p>
+        </div>
+        
         <div className={cn("bg-white rounded-xl shadow-xs border p-4 relative overflow-hidden", lowStockItems > 0 ? "border-red-200" : "border-slate-200")}>
           {lowStockItems > 0 && <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500"></div>}
-          <h3 className={cn("text-xs sm:text-sm font-bold tracking-wide uppercase", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
+          <h3 className={cn("text-xs font-bold tracking-wide uppercase", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
             {isEnglish ? 'Low Stock Alerts' : 'เตือนสต็อกต่ำ'}
           </h3>
-          <p className={cn("text-xl sm:text-2xl font-bold font-mono tabular-nums mt-1", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>{lowStockItems}</p>
+          <p className={cn("text-xl sm:text-2xl font-bold font-mono tabular-nums mt-1", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>
+            {lowStockItems}
+          </p>
         </div>
+
         <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
-          <h3 className="text-xs sm:text-sm font-bold text-slate-500 tracking-wide uppercase">{isEnglish ? 'Pending Audits' : 'รอตรวจนับตรวจสอบ'}</h3>
-          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">4</p>
+          <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+            {isEnglish ? 'Central Warehouse Locations' : 'โซนจัดเก็บในคลังกลาง'}
+          </h3>
+          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-indigo-700 mt-1">
+            {locations.length} <span className="text-xs font-normal text-slate-500">จุดเก็บ/แร็ค</span>
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
+          <h3 className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+            {isEnglish ? 'Multi-Platform Sync Rate' : 'สถานะการเชื่อมต่อแพลตฟอร์ม'}
+          </h3>
+          <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums text-emerald-600 mt-1 flex items-center gap-1.5">
+            100% <span className="text-xs font-normal text-slate-500">ซิงค์สต็อกรวม</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Search & Location Filter Toolbar */}
+      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="relative w-full sm:w-80">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="ค้นหาชื่อสินค้า, Master SKU, บาร์โค้ด, หมวดหมู่..."
+            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+            >
+              ล้าง
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <select 
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
+            className="w-full sm:w-auto px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">{isEnglish ? 'All Storage Zones in Warehouse' : 'ทุกโซนจัดเก็บในคลังกลาง'}</option>
+            {locations.map(loc => (
+              <option key={loc} value={loc}>{loc}</option>
+            ))}
+          </select>
         </div>
       </div>
 
       {/* Inventory Container */}
       <div className="bg-white shadow-xs border border-slate-200 rounded-xl overflow-hidden">
+        
         {/* Mobile Cards View (Visible on < md screens) */}
         <div className="md:hidden divide-y divide-slate-100">
           {filteredInventory.map((item) => {
             const isLow = (item.quantity ?? 0) <= (item.minStockLevel ?? 0);
+            const masterSku = item.sku || item.code;
+            const barcodeVal = item.barcode || masterSku;
+            const binLoc = item.binLocation || item.location;
+
             return (
               <div key={item.id} className={cn("p-4 transition-colors space-y-3", isLow ? "bg-amber-50/30" : "bg-white")}>
                 {/* Item Top Row */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start gap-2.5 min-w-0">
                     <div className={cn(
-                      "flex-shrink-0 h-8 w-8 border rounded-lg flex items-center justify-center mt-0.5 shadow-2xs", 
+                      "flex-shrink-0 h-9 w-9 border rounded-lg flex items-center justify-center mt-0.5 shadow-2xs", 
                       isLow ? "bg-red-50 border-red-200 text-red-600" : "bg-slate-50 text-slate-600 border-slate-200"
                     )}>
                       {isLow ? <AlertTriangle className="h-4 w-4" /> : <Package className="h-4 w-4" />}
                     </div>
                     <div className="min-w-0">
                       <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">{item.name}</h4>
-                      <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                        <span className="font-mono text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 whitespace-nowrap">
-                          {item.code}
+                      <div className="flex flex-wrap items-center gap-1 mt-1">
+                        <span className="font-mono text-[11px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 whitespace-nowrap flex items-center gap-1">
+                          <Tag className="w-2.5 h-2.5" />
+                          {masterSku}
                         </span>
-                        <span className="text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded whitespace-nowrap">
-                          {item.category}
+                        <span className="font-mono text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap flex items-center gap-1">
+                          <Barcode className="w-2.5 h-2.5" />
+                          {barcodeVal}
                         </span>
                       </div>
                     </div>
@@ -260,10 +441,10 @@ export function InventoryPage() {
                   </div>
                 </div>
 
-                {/* Stock & Location Row */}
+                {/* Stock & Storage Bin Row */}
                 <div className="grid grid-cols-2 gap-2 bg-slate-50/70 p-2.5 rounded-lg border border-slate-100 text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase block">คงเหลือ</span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">คงเหลือในคลัง</span>
                     <span className="font-bold text-slate-900 font-mono tabular-nums text-sm">
                       {(item.quantity ?? 0).toLocaleString()} <span className="font-sans text-xs text-slate-500 font-normal">{item.unit}</span>
                     </span>
@@ -272,28 +453,46 @@ export function InventoryPage() {
                     </span>
                   </div>
                   <div className="border-l border-slate-200/80 pl-2.5">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ราคา & สถานที่</span>
-                    <span className="font-medium text-slate-800 text-[11px] block truncate">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">จุดเก็บในคลัง</span>
+                    <span className="font-bold text-emerald-700 text-[11px] block truncate">
+                      {binLoc}
+                    </span>
+                    <span className="text-[10px] text-slate-500 block truncate mt-0.5">
                       @{(item.unitPrice ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ./{item.unit}
                     </span>
-                    <span className="text-[11px] text-slate-500 block truncate mt-0.5">
-                      {item.location}
-                    </span>
                   </div>
+                </div>
+
+                {/* Multi-Platform Badges */}
+                <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                  <span className="text-[10px] font-semibold text-slate-400">ซิงค์:</span>
+                  {(item.platforms || ['Shopee', 'Lazada', 'TikTok', 'POS']).map(p => (
+                    <span key={p} className="text-[10px] font-bold bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded border border-slate-200">
+                      {p}
+                    </span>
+                  ))}
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-end gap-2 pt-1">
                   <button 
+                    onClick={() => handleOpenBarcodeModal(item)}
+                    className="flex-1 py-1.5 px-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1"
+                    title="สั่งพิมพ์ป้ายบาร์โค้ด SKU"
+                  >
+                    <Barcode className="h-3.5 w-3.5 text-indigo-600" />
+                    <span>ป้ายบาร์โค้ด</span>
+                  </button>
+                  <button 
                     onClick={() => setCountItem(item)}
-                    className="flex-1 py-1.5 px-3 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+                    className="flex-1 py-1.5 px-2 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1"
                   >
                     <CheckSquare className="h-3.5 w-3.5 text-slate-500" />
                     <span>ตรวจนับ</span>
                   </button>
                   <button 
                     onClick={() => setViewItem(item)}
-                    className="flex-1 py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 hover:border-indigo-600 border border-indigo-200 rounded-lg transition-colors shadow-2xs text-center"
+                    className="flex-1 py-1.5 px-2 text-xs font-bold text-slate-800 hover:text-white hover:bg-slate-800 bg-slate-100 border border-slate-300 rounded-lg transition-colors shadow-2xs text-center"
                   >
                     รายละเอียด
                   </button>
@@ -305,75 +504,106 @@ export function InventoryPage() {
 
         {/* Desktop Table View (Visible on >= md screens) */}
         <div className="hidden md:block overflow-x-auto smooth-scroll">
-          <table className="w-full divide-y divide-slate-200 text-left border-collapse min-w-[880px]">
+          <table className="w-full divide-y divide-slate-200 text-left border-collapse min-w-[960px]">
             <thead className="bg-slate-100/90 border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
               <tr>
-                <th scope="col" className="px-4 py-3.5 min-w-[260px]">รหัสและรายละเอียดพัสดุ</th>
+                <th scope="col" className="px-4 py-3.5 min-w-[280px]">สินค้า & Master SKU (บาร์โค้ด 1D)</th>
                 <th scope="col" className="px-3 py-3.5 whitespace-nowrap w-[130px]">หมวดหมู่</th>
-                <th scope="col" className="px-4 py-3.5 whitespace-nowrap w-[160px]">สถานที่จัดเก็บ</th>
-                <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">จำนวนคงเหลือ</th>
-                <th scope="col" className="px-3 py-3.5 text-center whitespace-nowrap w-[140px]">สถานะสต็อก</th>
-                <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[160px]">การจัดการ</th>
+                <th scope="col" className="px-4 py-3.5 whitespace-nowrap w-[180px]">จุดจัดเก็บในคลังกลาง</th>
+                <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[140px]">สต็อกคลังกลาง</th>
+                <th scope="col" className="px-3 py-3.5 whitespace-nowrap w-[180px]">แพลตฟอร์มที่เชื่อมโยง</th>
+                <th scope="col" className="px-4 py-3.5 text-right whitespace-nowrap w-[180px]">การจัดการ</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-100 text-xs sm:text-sm">
               {filteredInventory.map((item) => {
                 const isLow = (item.quantity ?? 0) <= (item.minStockLevel ?? 0);
+                const masterSku = item.sku || item.code;
+                const barcodeVal = item.barcode || masterSku;
+                const binLoc = item.binLocation || item.location;
+                const platforms = item.platforms || ['Shopee', 'Lazada', 'TikTok Shop', 'POS'];
+
                 return (
                   <tr key={item.id} className={cn("hover:bg-slate-50/80 transition-colors", isLow ? "bg-amber-50/20" : "")}>
                     <td className="px-4 py-3.5 align-top">
                       <div className="flex items-start gap-3">
                         <div className={cn(
-                          "flex-shrink-0 h-9 w-9 border rounded-lg flex items-center justify-center shadow-2xs mt-0.5", 
+                          "flex-shrink-0 h-10 w-10 border rounded-lg flex items-center justify-center shadow-2xs mt-0.5", 
                           isLow ? "bg-red-50 border-red-200 text-red-600" : "bg-slate-50 text-slate-600 border-slate-200"
                         )}>
-                          {isLow ? <AlertTriangle className="h-4 w-4" /> : <Package className="h-4 w-4" />}
+                          {isLow ? <AlertTriangle className="h-4 w-4" /> : <Package className="h-5 w-5" />}
                         </div>
                         <div>
                           <div className="text-sm font-bold text-slate-900 leading-snug break-words">{item.name}</div>
                           <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                            <span className="font-mono text-xs text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 font-semibold whitespace-nowrap">
-                              {item.code}
+                            <span className="font-mono text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 font-bold whitespace-nowrap flex items-center gap-1">
+                              <Tag className="w-3 h-3 text-indigo-600" />
+                              {masterSku}
+                            </span>
+                            <span className="font-mono text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-semibold whitespace-nowrap flex items-center gap-1">
+                              <Barcode className="w-3 h-3 text-slate-500" />
+                              {barcodeVal}
                             </span>
                             <span className="text-xs text-slate-500 font-medium whitespace-nowrap">
-                              • ราคา @{(item.unitPrice ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ./{item.unit}
+                              • @{(item.unitPrice ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บ./{item.unit}
                             </span>
                           </div>
                         </div>
                       </div>
                     </td>
+                    
                     <td className="px-3 py-3.5 align-top whitespace-nowrap">
                       <span className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
                         {item.category}
                       </span>
                     </td>
+
                     <td className="px-4 py-3.5 align-top whitespace-nowrap text-slate-700">
-                      <div className="font-medium text-slate-900 text-sm leading-snug">{item.location}</div>
-                      <div className="text-xs text-slate-500 mt-0.5">คลังหลัก / หน้างาน</div>
+                      <div className="font-bold text-emerald-800 text-sm leading-snug flex items-center gap-1">
+                        <Box className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        {binLoc}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        {item.centralWarehouse || item.location}
+                      </div>
                     </td>
+
                     <td className="px-4 py-3.5 align-top whitespace-nowrap text-right">
                       <div className="text-sm font-bold font-mono tabular-nums text-slate-900 leading-tight">
                         {(item.quantity ?? 0).toLocaleString()} <span className="font-sans font-normal text-xs text-slate-600">{item.unit}</span>
                       </div>
                       <div className={cn("text-xs mt-1 font-medium whitespace-nowrap", isLow ? "text-red-600 font-semibold" : "text-slate-500")}>
-                        ขั้นต่ำ: {(item.minStockLevel ?? 0).toLocaleString()} {item.unit}
+                        {isLow ? '⚠️ สต็อกต่ำกว่าเกณฑ์' : `ขั้นต่ำ: ${(item.minStockLevel ?? 0).toLocaleString()} ${item.unit}`}
                       </div>
                     </td>
-                    <td className="px-3 py-3.5 align-top whitespace-nowrap text-center">
-                      {isLow ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200 leading-none whitespace-nowrap">
-                          <AlertTriangle className="w-3 h-3 mr-1 text-red-500" />
-                          สต็อกต่ำกว่าเกณฑ์
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 leading-none whitespace-nowrap">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                          พร้อมใช้งานปกติ
-                        </span>
-                      )}
+
+                    <td className="px-3 py-3.5 align-top">
+                      <div className="flex flex-wrap gap-1 max-w-[190px]">
+                        {platforms.map(p => (
+                          <span 
+                            key={p} 
+                            className="text-[10px] font-bold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-200"
+                          >
+                            {p}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-emerald-600 font-semibold block mt-1">
+                        ● ตัดสต็อกคลังกลาง
+                      </span>
                     </td>
+
                     <td className="px-4 py-3.5 align-top whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button 
+                          onClick={() => handleOpenBarcodeModal(item)}
+                          className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg transition-colors shadow-2xs flex items-center gap-1"
+                          title="พิมพ์ป้ายสติกเกอร์บาร์โค้ด SKU"
+                        >
+                          <Barcode className="h-3.5 w-3.5" />
+                          <span>ป้ายบาร์โค้ด</span>
+                        </button>
+
                         <button 
                           onClick={() => setCountItem(item)}
                           className="px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors shadow-2xs flex items-center"
@@ -382,9 +612,10 @@ export function InventoryPage() {
                           <CheckSquare className="h-3.5 w-3.5 mr-1 text-slate-500" />
                           <span>ตรวจนับ</span>
                         </button>
+
                         <button 
                           onClick={() => setViewItem(item)}
-                          className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 hover:border-indigo-600 border border-indigo-200 rounded-lg transition-colors shadow-2xs"
+                          className="px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 border border-slate-300 rounded-lg transition-colors shadow-2xs"
                         >
                           รายละเอียด
                         </button>
@@ -398,22 +629,23 @@ export function InventoryPage() {
         </div>
       </div>
 
+      {/* Item Details Modal */}
       <DetailsModal 
         isOpen={!!viewItem} 
         onClose={() => setViewItem(null)} 
-        title={`รายละเอียดสินค้า: ${viewItem?.code}`}
+        title={`รายละเอียดสินค้า: ${viewItem?.sku || viewItem?.code}`}
         footer={
           <div className="flex gap-2 w-full justify-end">
             <button 
-              onClick={() => exportToPDF('pdf-content', `InventoryItem_${viewItem?.code}`)}
-              className="inline-flex items-center px-4 py-2 border border-slate-200 rounded text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm"
+              onClick={() => exportToPDF('pdf-content', `InventoryItem_${viewItem?.sku || viewItem?.code}`)}
+              className="inline-flex items-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-2xs"
             >
               <Printer className="h-4 w-4 mr-2" />
               Export PDF / พิมพ์
             </button>
             <button 
               onClick={() => setViewItem(null)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-xs"
             >
               ปิด
             </button>
@@ -423,186 +655,157 @@ export function InventoryPage() {
         {viewItem && (
           <div className="space-y-6">
             <div className="flex items-center space-x-4">
-              <div className={cn("flex-shrink-0 h-16 w-16 border rounded-lg flex items-center justify-center", viewItem.quantity <= viewItem.minStockLevel ? "bg-red-50 border-red-200 text-red-500" : "bg-slate-50 text-slate-500 border-slate-200")}>
+              <div className={cn(
+                "flex-shrink-0 h-16 w-16 border rounded-xl flex items-center justify-center", 
+                viewItem.quantity <= viewItem.minStockLevel ? "bg-red-50 border-red-200 text-red-500" : "bg-slate-50 text-slate-500 border-slate-200"
+              )}>
                 {viewItem.quantity <= viewItem.minStockLevel ? <AlertTriangle className="h-8 w-8" /> : <Package className="h-8 w-8" />}
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">{viewItem.name}</h3>
-                <p className="text-sm font-medium text-slate-500">{viewItem.category}</p>
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                  <span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1">
+                    <Tag className="w-3 h-3 text-indigo-600" />
+                    Master SKU: {viewItem.sku || viewItem.code}
+                  </span>
+                  <span className="font-mono text-xs text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 flex items-center gap-1">
+                    <Barcode className="w-3 h-3 text-slate-500" />
+                    บาร์โค้ด: {viewItem.barcode || viewItem.sku || viewItem.code}
+                  </span>
+                  <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                    {viewItem.category}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Central Warehouse & Platform Linkage Info */}
+            <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 rounded-xl shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
+                    <Store className="w-4 h-4 text-emerald-400" />
+                    <span>{viewItem.centralWarehouse || 'คลังสินค้ากลาง (Central WH)'}</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span className="text-emerald-400">Single Stock Hub</span>
+                  </div>
+                  <div className="text-xs text-slate-200 mt-1">
+                    จุดจัดเก็บ: <span className="font-bold text-amber-300 font-mono">{viewItem.binLocation || viewItem.location}</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-300 block mb-1">ซิงค์ตัดสต็อกช่องทาง:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {(viewItem.platforms || ['Shopee', 'Lazada', 'TikTok Shop', 'POS']).map(p => (
+                      <span key={p} className="text-[10px] font-bold bg-white/15 px-2 py-0.5 rounded text-white border border-white/20">
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-               <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">สถานที่เก็บ</p>
-                 <p className="font-bold text-slate-800">{viewItem.location}</p>
-               </div>
-               <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">จำนวนคงเหลือ</p>
-                 <p className={cn("text-xl font-black", viewItem.quantity <= viewItem.minStockLevel ? "text-red-700" : "text-indigo-700")}>
-                   {viewItem.quantity} <span className="text-sm font-bold">{viewItem.unit}</span>
-                 </p>
-               </div>
-               <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">ระดับขั้นต่ำ</p>
-                 <p className="font-bold text-slate-800">{viewItem.minStockLevel} {viewItem.unit}</p>
-               </div>
-               <div 
-                 onClick={() => setIsQrLabelOpen(true)}
-                 className="bg-slate-50 hover:bg-indigo-50/60 p-2.5 rounded-lg border border-slate-200 hover:border-indigo-300 flex flex-col items-center justify-center cursor-pointer transition-colors group relative"
-                 title={isEnglish ? "Click to view / print QR Label" : "คลิกเพื่อดูและพิมพ์ป้าย QR Code"}
-               >
-                 {itemQrDataUrl ? (
-                   <img src={itemQrDataUrl} alt={`QR for ${viewItem.code}`} className="h-16 w-16 object-contain" />
-                 ) : (
-                   <QrCode className="h-10 w-10 text-slate-300" />
-                 )}
-                 <span className="text-[10px] text-slate-500 font-bold group-hover:text-indigo-600 mt-1 flex items-center gap-1">
-                   <Printer className="w-3 h-3" /> {isEnglish ? 'Print QR' : 'พิมพ์ป้าย QR'}
-                 </span>
-               </div>
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">ตำแหน่งเก็บ</p>
+                <p className="font-bold text-slate-800">{viewItem.binLocation || viewItem.location}</p>
+              </div>
+              
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">จำนวนคงเหลือ</p>
+                <p className={cn("text-xl font-black", viewItem.quantity <= viewItem.minStockLevel ? "text-red-700" : "text-indigo-700")}>
+                  {viewItem.quantity} <span className="text-sm font-bold">{viewItem.unit}</span>
+                </p>
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">ระดับขั้นต่ำ</p>
+                <p className="font-bold text-slate-800">{viewItem.minStockLevel} {viewItem.unit}</p>
+              </div>
+
+              {/* 1D Barcode Quick Print Trigger */}
+              <div 
+                onClick={() => handleOpenBarcodeModal(viewItem)}
+                className="bg-white hover:bg-indigo-50/80 p-2.5 rounded-lg border-2 border-indigo-200 hover:border-indigo-400 flex flex-col items-center justify-center cursor-pointer transition-colors group relative shadow-2xs"
+                title={isEnglish ? "Click to view / print Master SKU Barcode Label" : "คลิกเพื่อดูและพิมพ์ป้ายบาร์โค้ด SKU คลังกลาง"}
+              >
+                <div className="w-full flex items-center justify-center overflow-hidden py-1">
+                  <SkuBarcode 
+                    value={viewItem.barcode || viewItem.sku || viewItem.code}
+                    format="CODE128"
+                    width={1.6}
+                    height={38}
+                    displayValue={false}
+                  />
+                </div>
+                <span className="font-mono text-[11px] font-black text-slate-900 tracking-wider">
+                  {viewItem.sku || viewItem.code}
+                </span>
+                <span className="text-[10px] text-indigo-700 font-bold group-hover:text-indigo-900 mt-1 flex items-center gap-1">
+                  <Printer className="w-3 h-3" /> 
+                  {isEnglish ? 'Print Barcode Label' : 'พิมพ์ป้ายบาร์โค้ด SKU'}
+                </span>
+              </div>
             </div>
 
+            {/* Movement Logs Simulated */}
             <div className="border border-slate-200 rounded-lg overflow-hidden">
-               <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-                 <h3 className="text-sm font-bold text-slate-800">ประวัติการเคลื่อนไหวล่าสุด (จำลอง)</h3>
-                 <span className="text-xs font-medium text-slate-500">5 รายการล่าสุด</span>
-               </div>
-               <ul className="divide-y divide-slate-100 max-h-[300px] overflow-y-auto bg-white">
-                 <li className="p-4 flex items-center justify-between">
-                   <div className="flex items-center">
-                     <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mr-3">
-                       <ArrowDownUp className="h-4 w-4" />
-                     </span>
-                     <div>
-                       <p className="text-sm font-bold text-slate-800">รับเข้าสต็อก</p>
-                       <p className="text-xs text-slate-500">2 ชั่วโมงที่แล้ว • PO-2025-089</p>
-                     </div>
-                   </div>
-                   <span className="text-sm font-bold text-emerald-700">+50 {viewItem.unit}</span>
-                 </li>
-                 <li className="p-4 flex items-center justify-between">
-                   <div className="flex items-center">
-                     <span className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mr-3">
-                       <ArrowDownUp className="h-4 w-4" />
-                     </span>
-                     <div>
-                       <p className="text-sm font-bold text-slate-800">เบิกออกไซต์งาน</p>
-                       <p className="text-xs text-slate-500">1 วันที่แล้ว • ไซต์งานสุขุมวิท</p>
-                     </div>
-                   </div>
-                   <span className="text-sm font-bold text-amber-700">-20 {viewItem.unit}</span>
-                 </li>
-               </ul>
+              <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+                <h3 className="text-sm font-bold text-slate-800">ประวัติการเคลื่อนไหวสต็อก (Stock Movement History)</h3>
+                <span className="text-xs font-medium text-slate-500">Real-time Central Log</span>
+              </div>
+              <ul className="divide-y divide-slate-100 max-h-[260px] overflow-y-auto bg-white">
+                <li className="p-4 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mr-3">
+                      <ArrowDownUp className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-slate-800">รับเข้าคลังสินค้ากลาง (Stock In)</p>
+                      <p className="text-xs text-slate-500">2 ชั่วโมงที่แล้ว • PO-2025-089 (GR บันทึกรับ)</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-emerald-700">+50 {viewItem.unit}</span>
+                </li>
+                <li className="p-4 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mr-3">
+                      <Barcode className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-slate-800">ตัดสต็อกออเดอร์แพลตฟอร์ม (Shopee / SPX)</p>
+                      <p className="text-xs text-slate-500">4 ชั่วโมงที่แล้ว • ยิงบาร์โค้ด Master SKU ยืนยันแพ็ค</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-blue-700">-10 {viewItem.unit}</span>
+                </li>
+                <li className="p-4 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mr-3">
+                      <ArrowDownUp className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-slate-800">เบิกออกไซต์งาน / โครงการ (Stock Out)</p>
+                      <p className="text-xs text-slate-500">1 วันที่แล้ว • ไซต์งานสุขุมวิท</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-amber-700">-20 {viewItem.unit}</span>
+                </li>
+              </ul>
             </div>
           </div>
         )}
       </DetailsModal>
 
-      {/* QR Code Sticker Label Print Modal */}
-      {isQrLabelOpen && viewItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={() => setIsQrLabelOpen(false)} />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 z-10 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-bold text-slate-800 text-sm">
-                {isEnglish ? 'Inventory QR Sticker Label' : 'ป้ายสติกเกอร์สต็อกสินค้า (QR Label)'}
-              </h3>
-              <button 
-                onClick={() => setIsQrLabelOpen(false)} 
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* SKU Barcode Label Modal (Multi-Platform Central Warehouse) */}
+      <SkuBarcodeLabelModal
+        isOpen={isBarcodeModalOpen}
+        onClose={() => setIsBarcodeModalOpen(false)}
+        item={barcodeModalItem || viewItem}
+      />
 
-            {/* Sticker Preview Card */}
-            <div className="my-5 p-5 rounded-2xl border-2 border-dashed border-indigo-200 bg-slate-50/70 flex flex-col items-center text-center shadow-inner">
-              <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                PROCURESYNC INVENTORY
-              </p>
-              
-              <div className="my-3 p-3 bg-white rounded-xl shadow-xs border border-slate-100">
-                {itemQrDataUrl && (
-                  <img src={itemQrDataUrl} alt={viewItem.code} className="w-36 h-36" />
-                )}
-              </div>
-
-              <p className="text-lg font-mono font-black text-slate-900 tracking-wider">
-                {viewItem.code}
-              </p>
-              <p className="text-xs font-bold text-slate-700 mt-1 max-w-[240px] truncate">
-                {viewItem.name}
-              </p>
-              
-              <div className="flex items-center gap-2 mt-2 text-[11px] text-slate-500">
-                <span className="bg-slate-200/80 px-2 py-0.5 rounded font-medium">{viewItem.category}</span>
-                <span>•</span>
-                <span className="font-semibold text-slate-700">{viewItem.location}</span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2.5">
-              {itemQrDataUrl && (
-                <a 
-                  href={itemQrDataUrl} 
-                  download={`QR_${viewItem.code}.png`}
-                  className="flex-1 py-2.5 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl text-center transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
-                >
-                  <Download className="w-4 h-4 text-slate-500" />
-                  <span>{isEnglish ? 'Save PNG' : 'ดาวน์โหลดรูป'}</span>
-                </a>
-              )}
-              <button
-                type="button"
-                onClick={() => {
-                  const printWin = window.open('', '_blank');
-                  if (printWin) {
-                    printWin.document.write(`
-                      <!DOCTYPE html>
-                      <html>
-                        <head>
-                          <meta charset="utf-8" />
-                          <title>Print Label - ${viewItem.code}</title>
-                          <style>
-                            @page { size: auto; margin: 10mm; }
-                            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #fff; }
-                            .label { border: 2px dashed #94a3b8; padding: 24px; border-radius: 16px; text-align: center; width: 260px; page-break-inside: avoid; }
-                            .brand { font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
-                            .qr { width: 160px; height: 160px; margin: 12px auto; display: block; }
-                            .code { font-size: 22px; font-weight: 900; font-family: monospace; letter-spacing: 1px; color: #0f172a; margin-top: 4px; }
-                            .name { font-size: 13px; font-weight: 700; margin-top: 4px; color: #334155; }
-                            .loc { font-size: 11px; color: #64748b; margin-top: 8px; font-weight: 600; }
-                          </style>
-                        </head>
-                        <body>
-                          <div class="label">
-                            <div class="brand">PROCURESYNC WAREHOUSE</div>
-                            <img class="qr" src="${itemQrDataUrl}" />
-                            <div class="code">${viewItem.code}</div>
-                            <div class="name">${viewItem.name}</div>
-                            <div class="loc">${viewItem.category} • ${viewItem.location}</div>
-                          </div>
-                          <script>
-                            window.onload = function() { window.print(); window.close(); }
-                          </script>
-                        </body>
-                      </html>
-                    `);
-                    printWin.document.close();
-                  }
-                }}
-                className="flex-1 py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl text-center transition-colors shadow-xs flex items-center justify-center gap-1.5"
-              >
-                <Printer className="w-4 h-4" />
-                <span>{isEnglish ? 'Print Label' : 'สั่งพิมพ์ป้าย'}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* Inventory Transaction Modal */}
       <InventoryTransactionModal 
         isOpen={isTransactOpen}
         onClose={() => setIsTransactOpen(false)}
@@ -611,14 +814,17 @@ export function InventoryPage() {
         defaultItemId={transactDefaultId}
       />
       
+      {/* Barcode & QR Scanner Modal */}
       <QRCodeScannerModal
         isOpen={isScannerOpen}
         onClose={() => setIsScannerOpen(false)}
         onScan={handleScanSuccess}
         items={inventory}
         onSelectAction={handleScannerAction}
+        onPrintLabel={handleOpenBarcodeModal}
       />
 
+      {/* Physical Count Modal */}
       <PhysicalCountModal
         isOpen={!!countItem}
         onClose={() => setCountItem(null)}

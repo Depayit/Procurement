@@ -14,6 +14,7 @@ import {
   Users, 
   Settings, 
   QrCode, 
+  Barcode,
   Camera, 
   Download, 
   Upload, 
@@ -379,39 +380,39 @@ export function ManualPage() {
     },
     {
       id: 'inventory',
-      title: '4. คลังสินค้าและสแกนเนอร์กล้องสด (Inventory & Live QR/Barcode)',
-      titleEn: '4. Inventory & Live QR/Barcode Scanner',
+      title: '4. คลังสินค้ากลางและระบบบาร์โค้ด SKU (Central Warehouse & SKU Barcode)',
+      titleEn: '4. Central Warehouse & Master SKU Barcode Scanner',
       icon: Package,
-      badge: 'จัดการสต็อก & กล้องสด',
-      role: 'เจ้าหน้าที่สโตร์ / เจ้าหน้าที่คลังสินค้า / วิศวกรเบิกจ่าย',
-      summary: 'ควบคุมจำนวนสต็อกคงเหลือ จุดสั่งซื้อซ้ำ (Min Stock) การเบิกจ่าย โอนย้ายไซต์งาน พร้อมระบบสแกน QR Code/Barcode ด้วยกล้องจริง และระบบพิมพ์ป้ายสติกเกอร์สต็อก',
-      summaryEn: 'Real-time inventory control, low-stock alerts, live camera barcode/QR scanner, physical count, and printable QR sticker labels.',
+      badge: 'คลังสินค้ากลาง & บาร์โค้ด SKU',
+      role: 'เจ้าหน้าที่สโตร์ / ผู้จัดการคลังสินค้า / พนักงานแพ็คของ',
+      summary: 'ควบคุมจำนวนสต็อกคงเหลือของคลังสินค้ากลางจุดเดียว (Single Central Warehouse Hub) ที่ตัดสต็อกร่วมกับหลากหลายแพลตฟอร์ม (Shopee, Lazada, TikTok, POS) ด้วยระบบ Master SKU Barcode (1D Code 128) รองรับทั้งเครื่องยิงบาร์โค้ดไร้สาย กล้องสด และระบบพิมพ์ป้ายสติกเกอร์ความร้อน',
+      summaryEn: 'Centralized inventory control for single-warehouse multi-platform operations (Shopee, Lazada, TikTok, POS) using 1D Master SKU Barcodes, wireless barcode guns, and printable thermal labels.',
       route: '/inventory',
       linkages: [
         {
           from: 'ตรวจรับของจาก PO',
-          to: 'คลังสินค้า (Inventory)',
-          description: 'สต็อกจะเพิ่มขึ้นอัตโนมัติตามจำนวนที่ตรวจรับ'
+          to: 'คลังสินค้ากลาง (Central WH)',
+          description: 'สต็อกจะเพิ่มขึ้นอัตโนมัติตามจำนวนที่ตรวจรับเข้าคลังกลาง'
         },
         {
-          from: 'สแกน QR สินค้า',
+          from: 'สแกน SKU Barcode',
           to: 'หน้าต่างรับเข้า / เบิกออก / ตรวจนับ',
-          description: 'สแกนป้ายเพื่อเลือกทำรายการรับเข้า เบิกออก หรือตรวจนับได้ทันที'
+          description: 'ยิงบาร์โค้ดสินค้าเพื่อยืนยันออเดอร์จาก Shopee/Lazada หรือทำรายการเบิกออกได้ทันที'
         },
         {
           from: 'สต็อกต่ำกว่าระดับขั้นต่ำ (Low Stock)',
           to: 'ระบบขอซื้อ (PR)',
-          description: 'แจ้งเตือนบนแดชบอร์ดเพื่อให้วิศวกรเปิด PR สั่งซื้อเติมสต็อก'
+          description: 'แจ้งเตือนบนแดชบอร์ดเพื่อให้จัดซื้อเปิด PR สั่งซื้อเติมสต็อกคลังกลาง'
         }
       ],
       buttons: [
         {
-          name: '📷 สแกน QR (Scan QR)',
-          icon: QrCode,
+          name: '📷 สแกนบาร์โค้ด SKU (Scan Barcode)',
+          icon: Barcode,
           color: 'bg-white border-slate-300 text-slate-700',
           location: 'แถบเครื่องมือด้านบนหน้าคลังสินค้า',
-          action: 'เปิดหน้าต่างสแกนเนอร์กล้องจริง (Webcam & มือถือ) มีระบบเสียง Beep และสั่นเตือน รองรับ QR Code และ Barcode ทุกประเภท',
-          linkage: 'ตรวจพบสินค้าและเปิดเมนูดำเนินการด่วนทันที'
+          action: 'เปิดหน้าต่างสแกนเนอร์ รองรับทั้งเครื่องยิงบาร์โค้ดจริง (USB/Bluetooth Scanner Gun) และกล้องสมาร์ตโฟน/Webcam รองรับบาร์โค้ด 1D Code 128, EAN-13 และ QR Code',
+          linkage: 'ตรวจพบสินค้าด้วย Master SKU และเปิดเมนูดำเนินการด่วนทันที'
         },
         {
           name: 'สลับกล้อง / เปิดไฟฉาย (Camera Tools)',
@@ -422,56 +423,56 @@ export function ManualPage() {
           linkage: 'เพิ่มความแม่นยำในการสแกน'
         },
         {
-          name: 'อัปโหลดรูปภาพ QR (Upload Image Tab)',
+          name: 'อัปโหลดรูปภาพบาร์โค้ด (Upload Image Tab)',
           icon: Upload,
           color: 'bg-slate-100 text-slate-700',
           location: 'แท็บในหน้าต่างสแกนเนอร์',
-          action: 'เลือกรูปถ่ายหรือแคปหน้าจอ QR Code เพื่อให้ระบบถอดรหัสทันที',
+          action: 'เลือกรูปถ่ายบาร์โค้ดสินค้าหรือแคปหน้าจอเพื่อให้ระบบถอดรหัสทันที',
           linkage: 'ใช้งานได้แม้ไม่มีกล้องเชื่อมต่อ'
         },
         {
-          name: 'กรอกรหัส / ทดสอบตัวอย่าง (Manual Code Tab)',
+          name: 'ค้นหา Master SKU (Manual Search Tab)',
           color: 'bg-slate-100 text-slate-700',
           location: 'แท็บในหน้าต่างสแกนเนอร์',
-          action: 'พิมพ์รหัส SKU ด้วยตนเอง หรือคลิกปุ่มตัวอย่างรหัสสินค้าในสต็อกเพื่อทดสอบในคลิกเดียว',
-          linkage: 'ทดสอบระบบได้สะดวกรวดเร็ว'
+          action: 'พิมพ์รหัส Master SKU หรือเลขบาร์โค้ดด้วยตนเองเพื่อค้นหาสินค้าในคลังกลางทันที',
+          linkage: 'ค้นหาสินค้าได้รวดเร็ว'
         },
         {
           name: 'รับเข้า / เบิกออก (Receive / Issue)',
           icon: ArrowDownUp,
           color: 'bg-indigo-600 text-white',
-          location: 'แถบเครื่องมือ / ปุ่มหลังสแกน QR',
-          action: 'บันทึกการรับเข้าสต็อก, เบิกออกไปใช้ในไซต์งาน หรือโอนย้ายระหว่างสถานที่จัดเก็บ',
-          linkage: 'ปรับปรุงยอดสต็อกและบันทึกประวัติการเคลื่อนไหว'
+          location: 'แถบเครื่องมือ / ปุ่มหลังสแกนบาร์โค้ด',
+          action: 'บันทึกการรับเข้าสต็อก, เบิกออกไปแพ็คออเดอร์ หรือโอนย้ายระหว่างจุดจัดเก็บในคลัง',
+          linkage: 'ปรับปรุงยอดสต็อกกลางและบันทึกประวัติการเคลื่อนไหว'
         },
         {
           name: 'ตรวจนับสต็อก (Physical Count)',
           icon: CheckSquare,
           color: 'bg-emerald-600 text-white',
-          location: 'คอลัมน์การจัดการในตารางสินค้า / ปุ่มหลังสแกน QR',
+          location: 'คอลัมน์การจัดการในตารางสินค้า / ปุ่มหลังสแกนบาร์โค้ด',
           action: 'บันทึกยอดนับจริงหน้างาน คำนวณผลต่าง (+ / -) อัตโนมัติ พร้อมระบุหมายเหตุสาเหตุส่วนต่าง',
           linkage: 'ปรับยอดคงเหลือให้ตรงกับความเป็นจริง'
         },
         {
-          name: 'พิมพ์ป้าย QR (Print QR Sticker Label)',
+          name: 'พิมพ์ป้ายบาร์โค้ด SKU (Print SKU Barcode Label)',
           icon: Printer,
           color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
-          location: 'หน้าต่างรายละเอียดสินค้า (Details Modal)',
-          action: 'เปิดตัวอย่างป้ายสติกเกอร์คลังสินค้าขนาดมาตรฐาน สั่งพิมพ์ผ่านเครื่องพิมพ์สติกเกอร์ หรือดาวน์โหลดเป็นไฟล์ภาพ PNG',
-          linkage: 'นำป้ายไปแปะที่กล่องหรือชั้นวางเพื่อนำมาสแกนได้จริง'
+          location: 'คอลัมน์การจัดการในตารางสินค้า / หน้าต่างรายละเอียดสินค้า',
+          action: 'เปิดตัวออกแบบและพิมพ์ป้ายบาร์โค้ด SKU รองรับขนาดสติกเกอร์ความร้อน (50x30 mm), ป้ายคลังกลาง (75x50 mm), ป้ายติดชั้นวาง (Shelf Tag) และชุดพิมพ์แผ่น A4 พร้อมระบุจำนวนดวงตามสต็อกจริง',
+          linkage: 'นำสติกเกอร์ไปแปะที่ตัวสินค้า กล่อง หรือชั้นวางในคลังกลาง'
         },
         {
           name: 'นำเข้า Excel (Import Spreadsheet)',
           icon: FileSpreadsheet,
           color: 'bg-white border-slate-300 text-slate-700',
           location: 'แถบเครื่องมือด้านบนหน้าคลังสินค้า',
-          action: 'เลือกไฟล์ .xlsx หรือ .csv เพื่อนำเข้ารายการสินค้าหลายสิบรายการเข้าสู่ระบบพร้อมกัน',
+          action: 'เลือกไฟล์ .xlsx หรือ .csv เพื่อนำเข้ารายการสินค้าพร้อมระบุ Master SKU และบาร์โค้ดเข้าสู่ระบบพร้อมกัน',
           linkage: 'เพิ่มรายการสินค้าในสต็อกเป็นชุด'
         }
       ],
       tips: [
-        'สามารถใช้สมาร์ทโฟนเปิดระบบผ่านเบราว์เซอร์ แล้วกด "สแกน QR" เพื่อเดินสแกนป้ายพัสดุในโกดังหรือหน้างานก่อสร้างได้แบบเรียลไทม์',
-        'หากต้องการสแกนต่อเนื่องหลายรายการ เมื่อสแกนพบชิ้นแรกแล้ว ให้กดปุ่ม "สแกนชิ้นถัดไป (Scan Next Item)" กล้องจะเปิดทำงานต่อทันที'
+        'พนักงานแพ็คของสามารถเสียบเครื่องยิงบาร์โค้ดไร้สาย (Wireless Barcode Gun) แล้วยิงบาร์โค้ดบนกล่องสินค้าได้ทันที ระบบจะค้นหา Master SKU และแสดงยอดสต็อกคลังกลางโดยอัตโนมัติ',
+        'ป้ายบาร์โค้ด SKU รองรับการพิมพ์ผ่านเครื่องพิมพ์สติกเกอร์ความร้อนความเร็วสูง (Direct Thermal Printers เช่น Xprinter, Zebra) สำหรับแปะพัสดุก่อนส่งขนส่ง Shopee, Lazada, TikTok, Flash, SPX'
       ]
     },
     {

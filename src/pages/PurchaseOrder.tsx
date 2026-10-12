@@ -149,7 +149,7 @@ export function PurchaseOrderPage() {
     
     const receiptItems = Object.entries(receiveQuantities)
       .filter(([_, qty]) => qty > 0)
-      .map(([poItemId, quantity]) => ({ poItemId, quantity }));
+      .map(([poItemId, quantity]) => ({ itemId: poItemId, quantity }));
 
     if (receiptItems.length === 0) {
       alert('กรุณาระบุจำนวนสินค้าที่ได้รับเข้าในรอบนี้อย่างน้อย 1 รายการ');
@@ -160,8 +160,8 @@ export function PurchaseOrderPage() {
       receivingPO.id,
       receiptItems,
       currentUser.name || 'สมชาย คลังสินค้า',
-      isDirectToSite,
-      deliveryNoteFiles.map(f => f.name)
+      isDirectToSite ? 'ส่งตรงหน้างาน (Direct-to-Site)' : 'คลังสินค้ากลาง (Central WH)',
+      deliveryNoteFiles.map(f => f.name).join(', ')
     );
 
     setReceivingPO(null);
