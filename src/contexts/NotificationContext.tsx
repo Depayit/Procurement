@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
-export type NotificationType = 'approval' | 'inventory' | 'po' | 'other';
+export type NotificationType = 'approval' | 'inventory' | 'po' | 'system' | 'other';
 
 export interface AppNotification {
   id: string;
@@ -29,6 +29,7 @@ interface NotificationContextType {
     link?: string;
     time?: string;
   }) => void;
+  broadcastSystemUpdate: (version?: string, details?: string) => void;
   requestPermission: () => Promise<boolean>;
   sendSystemNotification: (title: string, options?: NotificationOptions) => Promise<boolean>;
 }
@@ -36,6 +37,16 @@ interface NotificationContextType {
 const STORAGE_KEY = 'procuresync_notifications';
 
 const INITIAL_NOTIFICATIONS: AppNotification[] = [
+  { 
+    id: 'sys-update-v25', 
+    title: 'อัพเดตระบบ v2.5: แบบฟอร์มขาว/ดำ & สายการอนุมัติ', 
+    message: 'อัพเดตแบบฟอร์มเอกสารทางการ A4 เป็นสีขาว/ดำ (PR/PO ISO 9001:2015), ระบบ Approval Matrix ปรับแต่งได้ตามองค์กร และบาร์โค้ด SKU คลังกลาง', 
+    time: 'เมื่อสักครู่', 
+    timestamp: Date.now(), 
+    type: 'system', 
+    isRead: false, 
+    link: '/settings' 
+  },
   { 
     id: '1', 
     title: 'รอการอนุมัติ: PR-2025-001', 
@@ -77,11 +88,12 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Normalize any old links
-          return parsed.map(n => ({
+          const hasSysUpdate = parsed.some(n => n.id === 'sys-update-v25');
+          const normalized = parsed.map(n => ({
             ...n,
             link: n.link === '/purchase-orders' ? '/po' : n.link
           }));
+          return hasSysUpdate ? normalized : [INITIAL_NOTIFICATIONS[0], ...normalized];
         }
       }
     } catch {
@@ -203,6 +215,16 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     });
   }, [sendSystemNotification]);
 
+  const broadcastSystemUpdate = useCallback((version = '2.5.0', details?: string) => {
+    addNotification({
+      title: `อัพเดตระบบ v${version}: แบบฟอร์มขาว/ดำ & สายการอนุมัติ`,
+      message: details || 'ระบบได้รับการปรับปรุงแบบฟอร์มเอกสารมาตรฐานขาว/ดำ (PR/PO A4 ISO 9001:2015), ระบบ Approval Matrix และบาร์โค้ด SKU เรียบร้อยแล้ว',
+      type: 'system',
+      link: '/settings',
+      time: 'เมื่อสักครู่'
+    });
+  }, [addNotification]);
+
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
@@ -217,6 +239,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         removeNotification,
         clearAll,
         addNotification,
+        broadcastSystemUpdate,
         requestPermission,
         sendSystemNotification,
       }}

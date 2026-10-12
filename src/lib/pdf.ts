@@ -164,13 +164,19 @@ export const printA4Document = (elementId: string, docTitle?: string) => {
             margin: 0;
             padding: 0;
             background: #ffffff;
-            color: #0f172a;
+            color: #000000;
             font-family: 'Inter', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 11pt;
             line-height: 1.5;
             word-break: break-word;
             overflow-wrap: break-word;
             width: 100%;
+          }
+          .standard-a4-doc,
+          .standard-a4-doc * {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #000000 !important;
           }
           .standard-a4-doc {
             width: 100% !important;

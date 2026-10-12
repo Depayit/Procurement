@@ -6,9 +6,12 @@ import type {
   ApprovalTask, 
   Vendor,
   POItem,
-  POReceipt
+  POReceipt,
+  ApprovalMatrixStep,
+  CompanyProfile
 } from '../types';
 import { logSystemAction } from '../lib/auditLog';
+import { DEFAULT_APPROVAL_MATRIX } from '../data/defaultApprovalMatrix';
 
 // Storage Keys
 const STORAGE_PREFIX = 'procuresync_store_';
@@ -16,6 +19,20 @@ const PR_STORAGE_KEY = `${STORAGE_PREFIX}prs`;
 const PO_STORAGE_KEY = `${STORAGE_PREFIX}pos`;
 const INVENTORY_STORAGE_KEY = `${STORAGE_PREFIX}inventory`;
 const VENDOR_STORAGE_KEY = `${STORAGE_PREFIX}vendors`;
+const APPROVAL_MATRIX_STORAGE_KEY = `${STORAGE_PREFIX}approval_matrix`;
+const COMPANY_PROFILE_STORAGE_KEY = `${STORAGE_PREFIX}company_profile`;
+
+export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
+  nameTh: 'บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด',
+  nameEn: 'PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.',
+  taxId: '0105566012345',
+  address: '888 อาคารเอ็มไพร์ทาวเวอร์ ชั้น 24 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพฯ 10120',
+  phone: '02-123-4567',
+  email: 'pr@procuresync.co.th',
+  logoUrl: '',
+  docFormatPR: 'PR-YYYY-XXX',
+  docFormatPO: 'PO-YYYY-XXX',
+};
 
 // Seed Data
 const SEED_PRS: PurchaseRequest[] = [
@@ -339,6 +356,19 @@ interface ProcurementContextType {
     location?: string
   ) => boolean;
 
+  // Approval Matrix State & Actions
+  approvalMatrix: ApprovalMatrixStep[];
+  updateApprovalMatrix: (matrix: ApprovalMatrixStep[]) => void;
+  updateApprovalStep: (stepId: string, updates: Partial<ApprovalMatrixStep>) => void;
+  addApprovalStep: (step: Omit<ApprovalMatrixStep, 'id' | 'stepNumber'>) => void;
+  removeApprovalStep: (stepId: string) => void;
+  resetApprovalMatrix: () => void;
+
+  // Company Profile & Branding
+  companyProfile: CompanyProfile;
+  updateCompanyProfile: (profile: Partial<CompanyProfile>) => void;
+  resetCompanyProfile: () => void;
+
   // Reset/Utility
   resetToSeedData: () => void;
 }
@@ -383,6 +413,24 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   });
 
+  const [approvalMatrix, setApprovalMatrix] = useState<ApprovalMatrixStep[]>(() => {
+    try {
+      const saved = localStorage.getItem(APPROVAL_MATRIX_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : DEFAULT_APPROVAL_MATRIX;
+    } catch {
+      return DEFAULT_APPROVAL_MATRIX;
+    }
+  });
+
+  const [companyProfile, setCompanyProfile] = useState<CompanyProfile>(() => {
+    try {
+      const saved = localStorage.getItem(COMPANY_PROFILE_STORAGE_KEY);
+      return saved ? { ...DEFAULT_COMPANY_PROFILE, ...JSON.parse(saved) } : DEFAULT_COMPANY_PROFILE;
+    } catch {
+      return DEFAULT_COMPANY_PROFILE;
+    }
+  });
+
   // 2. Persist to localStorage whenever state changes
   useEffect(() => {
     try {
@@ -416,9 +464,32 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [vendors]);
 
-  // 3. Derived Approval Tasks dynamically synchronized from PRs
+  useEffect(() => {
+    try {
+      localStorage.setItem(APPROVAL_MATRIX_STORAGE_KEY, JSON.stringify(approvalMatrix));
+    } catch (e) {
+      console.warn('Failed to save Approval Matrix to localStorage:', e);
+    }
+  }, [approvalMatrix]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(COMPANY_PROFILE_STORAGE_KEY, JSON.stringify(companyProfile));
+    } catch (e) {
+      console.warn('Failed to save Company Profile to localStorage:', e);
+    }
+  }, [companyProfile]);
+
+  // 3. Derived Approval Tasks dynamically synchronized from PRs and Approval Matrix
   const approvalTasks: ApprovalTask[] = prs.map(pr => {
-    const level = pr.totalAmount > 500000 ? 3 : pr.totalAmount > 50000 ? 2 : 1;
+    // Dynamic level calculation based on organization's Approval Matrix
+    const applicableSteps = approvalMatrix.filter(s => s.appliesTo.includes('PR'));
+    const matchedSteps = applicableSteps.filter(s => {
+      const minOk = s.minAmount === undefined || pr.totalAmount >= s.minAmount;
+      const maxOk = s.maxAmount === undefined || pr.totalAmount <= s.maxAmount;
+      return minOk && maxOk;
+    });
+    const level = Math.max(1, matchedSteps.length);
     const taskStatus = pr.status === 'Approved' 
       ? 'Approved' 
       : pr.status === 'Rejected' 
@@ -594,7 +665,23 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       expectedDeliveryDate: expectedDeliveryDate || targetPR.requiredDate,
       deliveryLocation: targetPR.deliveryLocation,
       paymentTerms,
-      items: poItems
+      items: poItems,
+      signatures: targetPR.signatures ? {
+        ...targetPR.signatures,
+        requestedBy: targetPR.signatures.requestedBy || {
+          name: targetPR.requesterName,
+          position: targetPR.requesterPosition || 'ผู้ขอซื้อ',
+          date: targetPR.requestDate,
+          signed: true
+        }
+      } : {
+        requestedBy: {
+          name: 'ฝ่ายจัดซื้อและพัสดุ (Buyer)',
+          position: 'เจ้าหน้าที่จัดซื้อ',
+          date: new Date().toISOString(),
+          signed: true
+        }
+      }
     };
 
     // Update PO state
@@ -775,6 +862,81 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // ==========================================
+  // Approval Matrix Actions
+  // ==========================================
+  const updateApprovalMatrix = (matrix: ApprovalMatrixStep[]) => {
+    const formatted = matrix.map((s, idx) => ({ ...s, stepNumber: idx + 1 }));
+    setApprovalMatrix(formatted);
+    logSystemAction(
+      'UPDATE_APPROVAL_MATRIX',
+      'ปรับปรุงตารางสายการอนุมัติ (Approval Matrix)',
+      { stepsCount: formatted.length }
+    );
+  };
+
+  const updateApprovalStep = (stepId: string, updates: Partial<ApprovalMatrixStep>) => {
+    setApprovalMatrix(prev => prev.map(s => s.id === stepId ? { ...s, ...updates } : s));
+  };
+
+  const addApprovalStep = (step: Omit<ApprovalMatrixStep, 'id' | 'stepNumber'>) => {
+    setApprovalMatrix(prev => {
+      const newStep: ApprovalMatrixStep = {
+        ...step,
+        id: `step-${Date.now()}`,
+        stepNumber: prev.length + 1
+      };
+      return [...prev, newStep];
+    });
+  };
+
+  const removeApprovalStep = (stepId: string) => {
+    setApprovalMatrix(prev => {
+      const filtered = prev.filter(s => s.id !== stepId);
+      return filtered.map((s, idx) => ({ ...s, stepNumber: idx + 1 }));
+    });
+  };
+
+  const resetApprovalMatrix = () => {
+    setApprovalMatrix(DEFAULT_APPROVAL_MATRIX);
+    try {
+      localStorage.removeItem(APPROVAL_MATRIX_STORAGE_KEY);
+    } catch (e) {
+      console.warn('Failed to reset Approval Matrix:', e);
+    }
+  };
+
+  // ==========================================
+  // Company Profile Actions
+  // ==========================================
+  const updateCompanyProfile = (updates: Partial<CompanyProfile>) => {
+    setCompanyProfile(prev => {
+      const next = { ...prev, ...updates };
+      logSystemAction({
+        action: 'UPDATE_COMPANY_PROFILE',
+        entityType: 'SETTINGS',
+        entityId: 'company_profile',
+        details: 'อัปเดตข้อมูลและตราสัญลักษณ์บริษัท (Company Profile & Logo)'
+      });
+      return next;
+    });
+  };
+
+  const resetCompanyProfile = () => {
+    setCompanyProfile(DEFAULT_COMPANY_PROFILE);
+    try {
+      localStorage.removeItem(COMPANY_PROFILE_STORAGE_KEY);
+    } catch (e) {
+      console.warn('Failed to reset Company Profile:', e);
+    }
+    logSystemAction({
+      action: 'RESET_COMPANY_PROFILE',
+      entityType: 'SETTINGS',
+      entityId: 'company_profile',
+      details: 'คืนค่าข้อมูลบริษัทและตราสัญลักษณ์เริ่มต้น'
+    });
+  };
+
+  // ==========================================
   // Reset Utility
   // ==========================================
   const resetToSeedData = () => {
@@ -782,10 +944,14 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setPos(SEED_POS);
     setInventory(SEED_INVENTORY);
     setVendors(SEED_VENDORS);
+    setApprovalMatrix(DEFAULT_APPROVAL_MATRIX);
+    setCompanyProfile(DEFAULT_COMPANY_PROFILE);
     localStorage.removeItem(PR_STORAGE_KEY);
     localStorage.removeItem(PO_STORAGE_KEY);
     localStorage.removeItem(INVENTORY_STORAGE_KEY);
     localStorage.removeItem(VENDOR_STORAGE_KEY);
+    localStorage.removeItem(APPROVAL_MATRIX_STORAGE_KEY);
+    localStorage.removeItem(COMPANY_PROFILE_STORAGE_KEY);
   };
 
   return (
@@ -795,6 +961,15 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       inventory,
       vendors,
       approvalTasks,
+      approvalMatrix,
+      updateApprovalMatrix,
+      updateApprovalStep,
+      addApprovalStep,
+      removeApprovalStep,
+      resetApprovalMatrix,
+      companyProfile,
+      updateCompanyProfile,
+      resetCompanyProfile,
       createPR,
       updatePR,
       deletePR,

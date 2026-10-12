@@ -1,4 +1,4 @@
-import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles } from 'lucide-react';
+import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,17 @@ import { useAuth, UserRole } from '../contexts/AuthContext';
 import { LanguageToggle } from './LanguageToggle';
 import { PWAInstallButton } from './PWAInstallButton';
 
-export function Header({ onMenuClick }: { onMenuClick: () => void }) {
+export interface HeaderProps {
+  onMenuClick: () => void;
+  isSidebarCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+}
+
+export function Header({ 
+  onMenuClick,
+  isSidebarCollapsed = false,
+  onToggleCollapse
+}: HeaderProps) {
   const { t, isEnglish } = useLanguage();
   const { currentUser, activeRole, switchRole, availableRoles } = useAuth();
   const { 
@@ -39,6 +49,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
 
   const getIcon = (type: NotificationType) => {
     switch(type) {
+      case 'system': return <Sparkles className="h-4 w-4 text-purple-600" />;
       case 'approval': return <Check className="h-4 w-4 text-indigo-500" />;
       case 'inventory': return <AlertCircle className="h-4 w-4 text-amber-500" />;
       case 'po': return <ShoppingCart className="h-4 w-4 text-emerald-500" />;
@@ -48,6 +59,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
 
   const getGroupTitle = (type: NotificationType) => {
     switch(type) {
+      case 'system': return isEnglish ? 'System Updates' : 'อัพเดตระบบ';
       case 'approval': return isEnglish ? 'Approvals' : 'การอนุมัติเอกสาร';
       case 'inventory': return isEnglish ? 'Inventory Alerts' : 'เตือนสต็อกพัสดุ';
       case 'po': return isEnglish ? 'Purchase Orders' : 'สถานะใบสั่งซื้อ (PO)';
@@ -65,6 +77,19 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
           <span className="sr-only">Open sidebar</span>
           <Menu className="h-6 w-6" />
         </button>
+
+        {/* Desktop Collapse / Expand Toggle */}
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="hidden lg:flex items-center justify-center p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
+            title={isSidebarCollapsed ? (isEnglish ? 'Expand sidebar (show menu)' : 'ขยายแถบเมนู (แสดงชื่อเมนู)') : (isEnglish ? 'Collapse sidebar (more workspace)' : 'ย่อแถบเมนู (เพิ่มพื้นที่ทำงาน)')}
+          >
+            {isSidebarCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+          </button>
+        )}
+
         <div className="relative w-full max-w-md hidden sm:block">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-4 w-4 text-slate-400" />
@@ -126,7 +151,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
               <div className="max-h-[380px] overflow-y-auto bg-white divide-y divide-slate-100">
                 {notifications.length > 0 ? (
                   <div className="p-2 space-y-2">
-                    {(['approval', 'inventory', 'po', 'other'] as NotificationType[]).map(groupType => {
+                    {(['system', 'approval', 'inventory', 'po', 'other'] as NotificationType[]).map(groupType => {
                       const groupNotifs = notifications.filter(n => (n.type || 'other') === groupType);
                       if (groupNotifs.length === 0) return null;
                       

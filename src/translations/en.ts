@@ -189,6 +189,7 @@ export const en: Record<string, string> = {
   'settings.subtitle': 'Manage personal profile, display language, and system configuration',
   'settings.tabProfile': 'Personal Profile',
   'settings.tabCompany': 'Company Info',
+  'settings.tabApprovalMatrix': 'Approval Matrix',
   'settings.tabNotifications': 'Notifications',
   'settings.tabSecurity': 'Security & Privacy',
   'settings.tabLanguage': 'Language & Region',

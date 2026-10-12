@@ -189,6 +189,7 @@ export const th = {
   'settings.subtitle': 'จัดการข้อมูลส่วนตัว ภาษา และการตั้งค่าพื้นฐานของระบบ',
   'settings.tabProfile': 'ข้อมูลส่วนตัว',
   'settings.tabCompany': 'ข้อมูลบริษัท',
+  'settings.tabApprovalMatrix': 'สายการอนุมัติ (Approval Matrix)',
   'settings.tabNotifications': 'การแจ้งเตือน',
   'settings.tabSecurity': 'ความปลอดภัย',
   'settings.tabLanguage': 'ภาษาและภูมิภาค (Language)',

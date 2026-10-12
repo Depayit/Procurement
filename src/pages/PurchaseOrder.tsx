@@ -8,6 +8,8 @@ import type { PurchaseOrder as PO, POItem, POStatus, PRItem } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
 import { useAuth } from '../contexts/AuthContext';
+import { ApprovalMatrixDocumentTable } from '../components/ApprovalMatrixDocumentTable';
+import { StandardPODocument } from '../components/StandardPODocument';
 
 const statusColors: Record<string, string> = {
   'Draft': 'bg-slate-100 text-slate-800',
@@ -29,7 +31,7 @@ const statusLabels: Record<string, string> = {
 
 export function PurchaseOrderPage() {
   const { t, isEnglish } = useLanguage();
-  const { pos, prs, vendors, createPOFromPR, receivePOGoods, updatePO, deletePO } = useProcurement();
+  const { pos, prs, vendors, createPOFromPR, receivePOGoods, updatePO, deletePO, approvalMatrix } = useProcurement();
   const { currentUser, canCreatePO } = useAuth();
   
   const [isCreating, setIsCreating] = useState(false);
@@ -53,6 +55,7 @@ export function PurchaseOrderPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isConfirmCreateOpen, setIsConfirmCreateOpen] = useState(false);
   const [viewPO, setViewPO] = useState<PO | null>(null);
+  const [docZoom, setDocZoom] = useState<'fit' | 'actual'>('fit');
   const [cancelPO, setCancelPO] = useState<PO | null>(null);
   const [expandedGR, setExpandedGR] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -836,142 +839,32 @@ export function PurchaseOrderPage() {
         }
       >
         {viewPO && (
-          <div id="po-document-view" className="space-y-6 standard-a4-doc bg-white p-6 rounded-lg border border-slate-200 break-words [overflow-wrap:anywhere]">
-            <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs">
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">ผู้ขาย (Vendor)</p>
-                <div className="flex items-center font-bold text-slate-900 mt-1 break-words leading-snug">
-                  <Store className="h-4 w-4 mr-1.5 text-indigo-500 flex-shrink-0" />
-                  <span>{viewPO.vendorName}</span>
-                </div>
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span className="font-bold text-slate-700">ขนาดกระดาษมาตรฐาน A4 (210 x 297 มม.)</span>
+                <span className="text-slate-300 hidden sm:inline">|</span>
+                <span className="hidden sm:inline">สเกล 1:1 แบบฟอร์มทางการ ขาว/ดำ มาตรฐาน ISO 9001:2015</span>
               </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">อ้างอิง PR</p>
-                <p className="font-mono font-bold text-indigo-700 mt-1">{viewPO.prNumber}</p>
-              </div>
-              <div className="col-span-2">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">คำอธิบาย</p>
-                <p className="font-medium text-slate-900 mt-1 break-words leading-relaxed">{viewPO.poDescription || '-'}</p>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">วันที่</p>
-                <p className="font-medium text-slate-800 mt-1">{new Date(viewPO.date).toLocaleDateString('th-TH')}</p>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">สถานะ</p>
-                <span className={cn(
-                  "inline-flex px-2 py-0.5 mt-1 rounded text-[10px] font-bold uppercase tracking-wide",
-                  statusColors[viewPO.status] || "bg-slate-100 text-slate-800"
-                )}>
-                  {statusLabels[viewPO.status] || viewPO.status}
-                </span>
+              <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setDocZoom(docZoom === 'fit' ? 'actual' : 'fit')}
+                  className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-slate-300 rounded-md shadow-2xs hover:bg-slate-50 text-indigo-700 transition-colors cursor-pointer"
+                >
+                  {docZoom === 'fit' ? '🔍 ซูม 100% (ขนาดจริง)' : '📱 ย่อพอดีหน้าจอ'}
+                </button>
+                <span className="font-mono text-[11px] text-slate-400 hidden sm:inline">ProcureSync Engine</span>
               </div>
             </div>
 
-            <div>
-              <h3 className="text-sm font-bold text-slate-800 mb-3 block border-b border-slate-200 pb-2">
-                รายการสินค้าที่สั่งซื้อ ({viewPO.items.length})
-              </h3>
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="w-full text-xs sm:text-sm text-left border-collapse">
-                  <thead className="bg-slate-100/90 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                    <tr>
-                      <th className="px-3 py-2.5 w-10 text-center"></th>
-                      <th className="px-4 py-2.5 min-w-[200px]">รายละเอียดสินค้า</th>
-                      <th className="px-3 py-2.5 text-right w-24">จำนวนสั่ง</th>
-                      <th className="px-3 py-2.5 text-right w-24 text-emerald-800">รับแล้ว</th>
-                      <th className="px-3 py-2.5 text-center w-16">หน่วย</th>
-                      <th className="px-4 py-2.5 text-right w-28">ราคา/หน่วย</th>
-                      <th className="px-4 py-2.5 text-right w-32">รวมเป็นเงิน</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white">
-                    {viewPO.items.map((item, idx) => (
-                      <React.Fragment key={item.id || idx}>
-                        <tr 
-                          className={cn("transition-colors hover:bg-slate-50/70", item.receipts && item.receipts.length > 0 ? "cursor-pointer" : "")}
-                          onClick={() => {
-                            if (item.receipts && item.receipts.length > 0) {
-                              setExpandedGR(prev => ({ ...prev, [item.id]: !prev[item.id] }))
-                            }
-                          }}
-                        >
-                          <td className="px-3 py-3 align-top text-center">
-                            {item.receipts && item.receipts.length > 0 && (
-                              <button className="p-1 text-slate-400 hover:text-slate-700 rounded-md hover:bg-slate-200/50 transition-colors">
-                                {expandedGR[item.id] ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                              </button>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 align-top">
-                            <div className="font-semibold text-slate-900 leading-snug">{item.description}</div>
-                            {item.specification && (
-                              <div className="text-xs text-slate-500 mt-0.5 leading-normal">{item.specification}</div>
-                            )}
-                          </td>
-                          <td className="px-3 py-3 align-top text-right font-mono tabular-nums text-slate-800">{Number(item.quantity).toLocaleString()}</td>
-                          <td className="px-3 py-3 align-top text-right font-mono tabular-nums text-emerald-700 font-bold">{Number(item.receivedQuantity || 0).toLocaleString()}</td>
-                          <td className="px-3 py-3 align-top text-center text-slate-600">{item.unit}</td>
-                          <td className="px-4 py-3 align-top text-right font-mono tabular-nums text-slate-700">{Number(item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                          <td className="px-4 py-3 align-top text-right font-mono tabular-nums font-bold text-slate-900">{((Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        </tr>
-                        {expandedGR[item.id] && item.receipts && item.receipts.length > 0 && (
-                          <tr className="bg-slate-50/50">
-                            <td colSpan={7} className="px-12 py-4 border-b border-t border-slate-100 bg-[linear-gradient(90deg,transparent_46px,#f8fafc_46px)]">
-                              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 flex items-center">
-                                <Truck className="h-3.5 w-3.5 mr-1.5" />
-                                Goods Receipt (GR) History
-                              </h4>
-                              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-                                <table className="w-full text-sm text-left">
-                                  <thead className="bg-slate-50 text-xs text-slate-500 font-bold uppercase tracking-wide border-b border-slate-200">
-                                    <tr>
-                                      <th className="px-4 py-2">วันที่รับ</th>
-                                      <th className="px-4 py-2">จำนวนรับ</th>
-                                      <th className="px-4 py-2">ผู้รับสินค้า</th>
-                                      <th className="px-4 py-2 text-center">เข้าไซต์งานตรง</th>
-                                      <th className="px-4 py-2">ใบส่งของ</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-100">
-                                    {item.receipts.map(rcpt => (
-                                      <tr key={rcpt.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-4 py-2 text-slate-600">{new Date(rcpt.date).toLocaleString('th-TH')}</td>
-                                        <td className="px-4 py-2 text-emerald-600 font-bold">{rcpt.quantity} {item.unit}</td>
-                                        <td className="px-4 py-2 text-slate-600">{rcpt.receivedBy}</td>
-                                        <td className="px-4 py-2 text-center">
-                                          {rcpt.isDirectToSite ? <Check className="h-4 w-4 text-emerald-600 mx-auto" /> : '-'}
-                                        </td>
-                                        <td className="px-4 py-2 text-slate-600">
-                                          {rcpt.deliveryNotes && rcpt.deliveryNotes.length > 0 ? (
-                                            <div className="flex flex-col gap-1">
-                                              {rcpt.deliveryNotes.map((note, i) => (
-                                                <span key={i} className="inline-flex items-center text-xs text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer">
-                                                  <FileText className="h-3 w-3 mr-1" />
-                                                  {note}
-                                                </span>
-                                              ))}
-                                            </div>
-                                          ) : '-'}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </tbody>
-                  <tfoot className="bg-slate-50 border-t border-slate-200">
-                    <tr>
-                      <td colSpan={6} className="px-4 py-3 text-right font-bold text-slate-600 uppercase text-xs tracking-wide">ยอดรวมสุทธิ</td>
-                      <td className="px-4 py-3 text-right font-bold text-indigo-700">{(viewPO.totalAmount ?? 0).toLocaleString()} บาท</td>
-                    </tr>
-                  </tfoot>
-                </table>
+            <div className="bg-slate-200/70 p-2 sm:p-6 rounded-xl overflow-x-auto flex justify-center shadow-inner smooth-scroll">
+              <div className={cn(
+                "transition-all duration-200",
+                docZoom === 'fit' ? "scale-[0.45] xs:scale-[0.55] sm:scale-100 origin-top h-[540px] sm:h-auto" : ""
+              )}>
+                <StandardPODocument po={viewPO} id="po-document-view" />
               </div>
             </div>
           </div>

@@ -52,6 +52,77 @@ p, span, td, th {
   text-rendering: optimizeLegibility;
 }
 
+/* ==========================================================================
+   STRICT MONOCHROME DOCUMENT ENFORCEMENT
+   All official documents (PR, PO, Approval Matrix) must strictly be Black & White.
+   No colors allowed. Background must strictly be pure white (#ffffff) across the entire document.
+   ========================================================================== */
+.standard-a4-doc,
+.standard-a4-doc table,
+.standard-a4-doc thead,
+.standard-a4-doc tbody,
+.standard-a4-doc tfoot,
+.standard-a4-doc tr,
+.standard-a4-doc th,
+.standard-a4-doc td,
+.standard-a4-doc div,
+.standard-a4-doc span,
+.standard-a4-doc p,
+.standard-a4-doc h1,
+.standard-a4-doc h2,
+.standard-a4-doc h3,
+.standard-a4-doc h4 {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.standard-a4-doc svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* ==========================================================================
+   OFFICIAL COLOR EXCEPTION FOR APPROVAL SEALS & COMPANY LOGO
+   Forms remain clean pure white/black, but approval matrix stamps & seals
+   (e.g. อนุมัติโครงการ, ผ่านการตรวจสอบ, ไม่อนุมัติ, รออนุมัติ)
+   and company logo retain their authentic official colors.
+   ========================================================================== */
+.standard-a4-doc img {
+  background-color: transparent !important;
+}
+
+.standard-a4-doc .stamp-approved,
+.standard-a4-doc .stamp-approved * {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #059669 !important;
+  stroke: #047857 !important;
+}
+
+.standard-a4-doc .stamp-reviewed,
+.standard-a4-doc .stamp-reviewed * {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+  border-color: #4f46e5 !important;
+  stroke: #4338ca !important;
+}
+
+.standard-a4-doc .stamp-pending,
+.standard-a4-doc .stamp-pending * {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: #d97706 !important;
+  stroke: #b45309 !important;
+}
+
+.standard-a4-doc .stamp-rejected,
+.standard-a4-doc .stamp-rejected * {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #dc2626 !important;
+  stroke: #b91c1c !important;
+}
 
 /* Standard A4 Page Setup for Browser Print */
 @page {
@@ -83,6 +154,8 @@ p, span, td, th {
   /* Isolate only the standard A4 document during print */
   #standard-pr-doc,
   #standard-pr-doc *,
+  #po-document-view,
+  #po-document-view *,
   #standard-pr-doc-approval,
   #standard-pr-doc-approval *,
   #preview-pr-doc,
@@ -97,6 +170,7 @@ p, span, td, th {
   }
 
   #standard-pr-doc,
+  #po-document-view,
   #standard-pr-doc-approval,
   #preview-pr-doc,
   .standard-a4-doc {

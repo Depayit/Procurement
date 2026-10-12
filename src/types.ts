@@ -13,34 +13,35 @@ export interface PRItem {
   remark?: string;
 }
 
+export interface SignatureEntry {
+  name: string;
+  position: string;
+  date?: string;
+  signed?: boolean;
+  comments?: string;
+}
+
 export interface PRSignatures {
-  requestedBy: {
-    name: string;
-    position: string;
-    date: string;
-    signed: boolean;
-  };
-  checkedBy?: {
-    name: string;
-    position: string;
-    date?: string;
-    signed?: boolean;
-    comments?: string;
-  };
-  budgetCheckedBy?: {
-    name: string;
-    position: string;
-    date?: string;
-    signed?: boolean;
-    comments?: string;
-  };
-  approvedBy?: {
-    name: string;
-    position: string;
-    date?: string;
-    signed?: boolean;
-    comments?: string;
-  };
+  requestedBy: SignatureEntry;
+  checkedBy?: SignatureEntry;
+  budgetCheckedBy?: SignatureEntry;
+  approvedBy?: SignatureEntry;
+  [key: string]: SignatureEntry | undefined;
+}
+
+export interface ApprovalMatrixStep {
+  id: string;
+  stepNumber: number;
+  roleKey: string;           // 'requestedBy' | 'checkedBy' | 'budgetCheckedBy' | 'approvedBy' | custom key
+  titleTh: string;           // e.g. 'ผู้ขอซื้อ', 'ผู้ตรวจสอบ', 'ผู้ตรวจสอบงบประมาณ', 'ผู้อนุมัติ'
+  titleEn: string;           // e.g. 'Requested By', 'Technical Checked By', 'Budget / Cost Control', 'Approved By'
+  defaultName: string;       // e.g. 'สมชาย ช่างก่อสร้าง'
+  defaultPosition: string;   // e.g. 'วิศวกรสนาม (Site Engineer)'
+  department?: string;       // e.g. 'ฝ่ายปฏิบัติการ / ไซต์งาน'
+  minAmount?: number;        // e.g. 0
+  maxAmount?: number;        // e.g. 50000, 500000 (undefined = unlimited)
+  appliesTo: ('PR' | 'PO')[]; // Document types requiring this step
+  isRequired: boolean;
 }
 
 export interface PurchaseRequest {
@@ -141,6 +142,7 @@ export interface PurchaseOrder {
   deliveryLocation?: string;
   paymentTerms?: string;
   items: POItem[];
+  signatures?: PRSignatures;
 }
 
 export interface Vendor {
@@ -240,5 +242,17 @@ export interface RoleConfig {
   isAdmin?: boolean;
   permissions: PermissionKey[];
   usersCount?: number;
+}
+
+export interface CompanyProfile {
+  nameTh: string;
+  nameEn: string;
+  taxId: string;
+  address: string;
+  phone: string;
+  email: string;
+  logoUrl?: string;
+  docFormatPR?: string;
+  docFormatPO?: string;
 }
 
