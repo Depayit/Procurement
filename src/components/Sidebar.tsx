@@ -11,30 +11,41 @@ import {
   Users,
   BookOpen,
   LogOut,
-  X
+  X,
+  Lock
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import { LanguageToggle } from './LanguageToggle';
 import { PWAInstallButton } from './PWAInstallButton';
+import type { PermissionKey } from '../types';
 
-const navItems = [
-  { key: 'nav.dashboard', path: '/', icon: LayoutDashboard },
-  { key: 'nav.pr', path: '/pr', icon: ShoppingCart },
-  { key: 'nav.approvals', path: '/approvals', icon: ClipboardCheck },
-  { key: 'nav.inventory', path: '/inventory', icon: Package },
-  { key: 'nav.po', path: '/po', icon: FileText },
-  { key: 'nav.vendors', path: '/vendors', icon: Store },
-  { key: 'nav.reports', path: '/reports', icon: BarChart3 },
-  { key: 'nav.users', path: '/users', icon: Users },
+interface NavItem {
+  key: string;
+  path: string;
+  icon: any;
+  requiredPerm?: PermissionKey;
+}
+
+const navItems: NavItem[] = [
+  { key: 'nav.dashboard', path: '/', icon: LayoutDashboard, requiredPerm: 'dashboard:view' },
+  { key: 'nav.pr', path: '/pr', icon: ShoppingCart, requiredPerm: 'pr:view' },
+  { key: 'nav.approvals', path: '/approvals', icon: ClipboardCheck, requiredPerm: 'approvals:view' },
+  { key: 'nav.inventory', path: '/inventory', icon: Package, requiredPerm: 'inventory:view' },
+  { key: 'nav.po', path: '/po', icon: FileText, requiredPerm: 'po:view' },
+  { key: 'nav.vendors', path: '/vendors', icon: Store, requiredPerm: 'vendors:view' },
+  { key: 'nav.reports', path: '/reports', icon: BarChart3, requiredPerm: 'reports:view' },
+  { key: 'nav.users', path: '/users', icon: Users, requiredPerm: 'users:view' },
   { key: 'nav.manual', path: '/manual', icon: BookOpen },
-  { key: 'nav.settings', path: '/settings', icon: Settings },
+  { key: 'nav.settings', path: '/settings', icon: Settings, requiredPerm: 'settings:view' },
 ];
 
 export function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (val: boolean) => void }) {
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t, isEnglish } = useLanguage();
+  const { hasPermission, isAdmin, activeRoleConfig } = useAuth();
 
   useEffect(() => {
     setIsOpen(false);
@@ -71,6 +82,24 @@ export function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (va
           const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
           const Icon = item.icon;
           const label = t(item.key);
+          const isPermitted = isAdmin || !item.requiredPerm || hasPermission(item.requiredPerm);
+
+          if (!isPermitted) {
+            return (
+              <div
+                key={item.key}
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-50/70 cursor-not-allowed select-none opacity-60"
+                title={isEnglish ? `Access restricted by Admin for ${activeRoleConfig.titleTh || 'this position'}` : `แอดมินจำกัดสิทธิ์สำหรับตำแหน่ง ${activeRoleConfig.titleTh || 'นี้'}`}
+              >
+                <div className="flex items-center min-w-0">
+                  <Icon className="mr-3 h-4 w-4 shrink-0 text-slate-300" />
+                  <span className="truncate">{label}</span>
+                </div>
+                <Lock className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1" />
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.key}

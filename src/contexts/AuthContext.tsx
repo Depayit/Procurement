@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { UserProfile } from '../types';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import type { UserProfile, PermissionKey, PermissionModule, RoleConfig } from '../types';
+import { DEFAULT_ROLES_CONFIG, ALL_PERMISSION_KEYS } from '../lib/permissions';
+import { logSystemAction } from '../lib/auditLog';
 
 export type UserRole = 
   | 'Site Engineer' 
@@ -7,22 +9,71 @@ export type UserRole =
   | 'Purchasing Manager' 
   | 'Approver' 
   | 'Inventory Control' 
-  | 'Admin';
+  | 'Admin'
+  | string;
+
+export interface AvailableRoleItem {
+  role: UserRole;
+  titleTh: string;
+  titleEn: string;
+  descTh: string;
+  descEn: string;
+  avatarText: string;
+  color?: string;
+  isAdmin?: boolean;
+}
 
 export interface AuthContextType {
   currentUser: UserProfile;
   activeRole: UserRole;
+  activeRoleConfig: RoleConfig;
+  roles: RoleConfig[];
   switchRole: (role: UserRole) => void;
-  availableRoles: { role: UserRole; titleTh: string; titleEn: string; descTh: string; descEn: string; avatarText: string }[];
-  canApprove: boolean;
+  availableRoles: AvailableRoleItem[];
+  
+  // RBAC Permission Checker
+  hasPermission: (key: PermissionKey) => boolean;
+  canViewModule: (module: PermissionModule) => boolean;
+  
+  // Specific permission helpers
+  isAdmin: boolean;
+  canCreatePR: boolean;
+  canEditPR: boolean;
+  canDeletePR: boolean;
+  canExportPR: boolean;
+  canApprovePR: boolean;
+  canApprovePO: boolean;
+  canRejectApproval: boolean;
+  canApprove: boolean; // General approval permission (PR or PO)
   canCreatePO: boolean;
+  canIssuePO: boolean;
+  canCancelPO: boolean;
+  canExportPO: boolean;
   canManageInventory: boolean;
+  canReceiveGR: boolean;
+  canScanQR: boolean;
+  canAdjustStock: boolean;
+  canManageVendors: boolean;
+  canRateVendors: boolean;
+  canViewReports: boolean;
+  canExportReports: boolean;
   canManageUsers: boolean;
+  canManageRoles: boolean;
+  canViewAuditLogs: boolean;
+  canManageSettings: boolean;
+
+  // Role management for Admin
+  updateRolePermissions: (roleId: string, permissions: PermissionKey[]) => void;
+  updateRole: (roleId: string, data: Partial<RoleConfig>) => void;
+  addRole: (roleData: Omit<RoleConfig, 'id'>) => RoleConfig;
+  deleteRole: (roleId: string) => boolean;
+  resetRolesToDefault: () => void;
 }
 
-const STORAGE_KEY = 'procuresync_active_user';
+const STORAGE_USER_KEY = 'procuresync_active_user';
+const STORAGE_ROLES_KEY = 'procuresync_roles_v2';
 
-const PRESET_USERS: Record<UserRole, UserProfile> = {
+const PRESET_USERS: Record<string, UserProfile> = {
   'Site Engineer': {
     id: 'usr-se-1',
     name: 'สมชาย ช่างก่อสร้าง',
@@ -74,60 +125,43 @@ const PRESET_USERS: Record<UserRole, UserProfile> = {
     email: 'admin@procuresync.local',
     role: 'Admin',
     status: 'Active',
-    department: 'เทคโนโลยีสารสนเทศ (IT ERP)',
+    department: 'เทคโนโลยีสารสนเทศ (IT ERP & Governance)',
     lastLogin: new Date().toISOString()
   }
 };
 
-const ROLE_INFO = [
-  { 
-    role: 'Site Engineer' as UserRole, 
-    titleTh: 'วิศวกรสนาม (Site Engineer)', 
-    titleEn: 'Site Engineer',
-    descTh: 'เปิดใบขอซื้อ (PR) ตรวจเช็กรายการและสเปกวัสดุหน้างาน',
-    descEn: 'Create PRs, track site specs, and material needs',
-    avatarText: 'SE' 
-  },
-  { 
-    role: 'Purchasing Staff' as UserRole, 
-    titleTh: 'เจ้าหน้าที่จัดซื้อ (Buyer)', 
-    titleEn: 'Purchasing Staff',
-    descTh: 'ออกใบสั่งซื้อ (PO) จาก PR ที่อนุมัติแล้ว และเทียบราคาผู้ขาย',
-    descEn: 'Issue POs from approved PRs, evaluate vendor quotes',
-    avatarText: 'PS' 
-  },
-  { 
-    role: 'Approver' as UserRole, 
-    titleTh: 'ผู้อนุมัติโครงการ (PM / Director)', 
-    titleEn: 'Approver / PM',
-    descTh: 'พิจารณาอนุมัติใบขอซื้อ (PR) และใบสั่งซื้อ (PO) ตามงบประมาณ',
-    descEn: 'Review & approve PR/PO within budget thresholds',
-    avatarText: 'AP' 
-  },
-  { 
-    role: 'Inventory Control' as UserRole, 
-    titleTh: 'ผู้ดูแลคลังพัสดุ (Store Keeper)', 
-    titleEn: 'Inventory Control',
-    descTh: 'บันทึกรับของ (GR), สแกน QR ตรวจรับ และจัดการสต็อกคงเหลือ',
-    descEn: 'Goods receipt (GR), QR scanning, stock transactions',
-    avatarText: 'IC' 
-  },
-  { 
-    role: 'Admin' as UserRole, 
-    titleTh: 'ผู้ดูแลระบบ (System Admin)', 
-    titleEn: 'System Admin',
-    descTh: 'เข้าถึงทุกโมดูล จัดการผู้ใช้ สิทธิ์ และ Audit Logs ทั้งหมด',
-    descEn: 'Full system access, user management, and audit logs',
-    avatarText: 'AD' 
-  }
-];
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // 1. Roles Configuration State
+  const [roles, setRoles] = useState<RoleConfig[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_ROLES_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load roles from storage:', e);
+    }
+    return DEFAULT_ROLES_CONFIG;
+  });
+
+  // Save roles to localStorage whenever modified
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_ROLES_KEY, JSON.stringify(roles));
+    } catch (e) {
+      console.error('Failed to save roles:', e);
+    }
+  }, [roles]);
+
+  // 2. Current User State
   const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(STORAGE_USER_KEY);
       if (saved) {
         return JSON.parse(saved);
       }
@@ -139,34 +173,258 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentUser));
+      localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(currentUser));
     } catch {
       // ignore
     }
   }, [currentUser]);
 
-  const switchRole = (role: UserRole) => {
-    const newUser = PRESET_USERS[role] || PRESET_USERS['Admin'];
-    setCurrentUser(newUser);
-  };
-
+  // Active Role determination
   const activeRole = currentUser.role;
 
-  const canApprove = ['Admin', 'Approver', 'Purchasing Manager'].includes(activeRole);
-  const canCreatePO = ['Admin', 'Purchasing Staff', 'Purchasing Manager'].includes(activeRole);
-  const canManageInventory = ['Admin', 'Inventory Control', 'Purchasing Staff'].includes(activeRole);
-  const canManageUsers = ['Admin'].includes(activeRole);
+  // Active Role Config object
+  const activeRoleConfig = useMemo<RoleConfig>(() => {
+    const found = roles.find(r => r.name.toLowerCase() === activeRole.toLowerCase());
+    if (found) return found;
+
+    // Fallback: if not found, create a safe fallback
+    if (activeRole.toLowerCase() === 'admin') {
+      return {
+        id: 'role-admin',
+        name: 'Admin',
+        titleTh: 'ผู้ดูแลระบบสูงสุด',
+        titleEn: 'System Administrator',
+        descTh: 'เข้าถึงทุกระบบ 100%',
+        descEn: 'Full system superuser',
+        avatarText: 'AD',
+        color: 'bg-indigo-600 text-white',
+        isSystem: true,
+        isAdmin: true,
+        permissions: [...ALL_PERMISSION_KEYS]
+      };
+    }
+
+    return {
+      id: `role-custom-${activeRole}`,
+      name: activeRole,
+      titleTh: activeRole,
+      titleEn: activeRole,
+      descTh: 'บทบาทกำหนดเอง',
+      descEn: 'Custom Role',
+      avatarText: activeRole.slice(0, 2).toUpperCase(),
+      color: 'bg-slate-600 text-white',
+      isSystem: false,
+      permissions: ['dashboard:view', 'pr:view']
+    };
+  }, [roles, activeRole]);
+
+  // Switch Role function
+  const switchRole = useCallback((roleName: UserRole) => {
+    let presetUser = PRESET_USERS[roleName];
+    if (!presetUser) {
+      // Dynamic profile for custom roles
+      presetUser = {
+        id: `usr-custom-${Math.random().toString(36).substr(2, 6)}`,
+        name: `ผู้ใช้งาน (${roleName})`,
+        email: `user.${roleName.toLowerCase().replace(/\s+/g, '')}@procuresync.local`,
+        role: roleName,
+        status: 'Active',
+        department: 'สายงานปฏิบัติการโครงการ',
+        lastLogin: new Date().toISOString()
+      };
+    }
+    setCurrentUser(presetUser);
+    logSystemAction(presetUser.name, 'Switch Persona', `สลับบทบาทการทำงานเป็น: ${roleName}`);
+  }, []);
+
+  // 3. Permission Evaluation Engine
+  const hasPermission = useCallback((key: PermissionKey): boolean => {
+    // Admin superuser override: Admin always has full access
+    if (activeRoleConfig.isAdmin || activeRole.toLowerCase() === 'admin') {
+      return true;
+    }
+    return activeRoleConfig.permissions.includes(key);
+  }, [activeRoleConfig, activeRole]);
+
+  const canViewModule = useCallback((module: PermissionModule): boolean => {
+    if (activeRoleConfig.isAdmin || activeRole.toLowerCase() === 'admin') return true;
+    return activeRoleConfig.permissions.some(p => p.startsWith(`${module}:`));
+  }, [activeRoleConfig, activeRole]);
+
+  // Granular Helpers
+  const isAdmin = Boolean(activeRoleConfig.isAdmin || activeRole.toLowerCase() === 'admin');
+  const canCreatePR = hasPermission('pr:create');
+  const canEditPR = hasPermission('pr:edit');
+  const canDeletePR = hasPermission('pr:delete');
+  const canExportPR = hasPermission('pr:export');
+
+  const canApprovePR = hasPermission('approvals:approve_pr');
+  const canApprovePO = hasPermission('approvals:approve_po');
+  const canRejectApproval = hasPermission('approvals:reject');
+  const canApprove = canApprovePR || canApprovePO || isAdmin;
+
+  const canCreatePO = hasPermission('po:create');
+  const canIssuePO = hasPermission('po:issue');
+  const canCancelPO = hasPermission('po:cancel');
+  const canExportPO = hasPermission('po:export');
+
+  const canManageInventory = hasPermission('inventory:adjust_stock') || hasPermission('inventory:receive_gr') || isAdmin;
+  const canReceiveGR = hasPermission('inventory:receive_gr');
+  const canScanQR = hasPermission('inventory:qr_scan');
+  const canAdjustStock = hasPermission('inventory:adjust_stock');
+
+  const canManageVendors = hasPermission('vendors:manage');
+  const canRateVendors = hasPermission('vendors:rate');
+
+  const canViewReports = hasPermission('reports:view');
+  const canExportReports = hasPermission('reports:export');
+
+  const canManageUsers = hasPermission('users:manage_users') || isAdmin;
+  const canManageRoles = hasPermission('users:manage_roles') || isAdmin;
+  const canViewAuditLogs = hasPermission('users:audit_logs') || isAdmin;
+
+  const canManageSettings = hasPermission('settings:manage') || isAdmin;
+
+  // Available roles for header switcher and modals
+  const availableRoles = useMemo<AvailableRoleItem[]>(() => {
+    return roles.map(r => ({
+      role: r.name,
+      titleTh: r.titleTh,
+      titleEn: r.titleEn,
+      descTh: r.descTh,
+      descEn: r.descEn,
+      avatarText: r.avatarText,
+      color: r.color,
+      isAdmin: r.isAdmin
+    }));
+  }, [roles]);
+
+  // 4. Role Management Functions (for Admin)
+  const updateRolePermissions = useCallback((roleId: string, permissions: PermissionKey[]) => {
+    setRoles(prevRoles => prevRoles.map(r => {
+      if (r.id === roleId) {
+        // Security safeguard: If Admin role, ensure it keeps admin powers or superuser flag
+        const isTargetAdmin = r.isAdmin || r.name.toLowerCase() === 'admin';
+        const finalPermissions = isTargetAdmin 
+          ? [...ALL_PERMISSION_KEYS] 
+          : permissions;
+
+        logSystemAction(
+          currentUser.name,
+          'Update Role Permissions',
+          `อัปเดตสิทธิ์บทบาท: ${r.titleTh || r.name} (เปิดสิทธิ์ ${finalPermissions.length} รายการ)`
+        );
+
+        return {
+          ...r,
+          permissions: finalPermissions
+        };
+      }
+      return r;
+    }));
+  }, [currentUser.name]);
+
+  const updateRole = useCallback((roleId: string, data: Partial<RoleConfig>) => {
+    setRoles(prev => prev.map(r => {
+      if (r.id === roleId) {
+        logSystemAction(
+          currentUser.name,
+          'Update Role Details',
+          `แก้ไขข้อมูลบทบาท: ${data.name || r.name}`
+        );
+        return { ...r, ...data };
+      }
+      return r;
+    }));
+  }, [currentUser.name]);
+
+  const addRole = useCallback((roleData: Omit<RoleConfig, 'id'>): RoleConfig => {
+    const newId = `role-${Math.random().toString(36).substr(2, 9)}`;
+    const newRole: RoleConfig = {
+      ...roleData,
+      id: newId,
+      isSystem: false,
+      usersCount: 0
+    };
+
+    setRoles(prev => [...prev, newRole]);
+    logSystemAction(
+      currentUser.name,
+      'Create New Role',
+      `สร้างบทบาทใหม่ในระบบ: ${newRole.name} (${newRole.titleTh || ''})`
+    );
+
+    return newRole;
+  }, [currentUser.name]);
+
+  const deleteRole = useCallback((roleId: string): boolean => {
+    const roleToDelete = roles.find(r => r.id === roleId);
+    if (!roleToDelete) return false;
+
+    // Security Safeguard: Cannot delete system roles or admin
+    if (roleToDelete.isSystem || roleToDelete.isAdmin || roleToDelete.name.toLowerCase() === 'admin') {
+      alert('ไม่สามารถลบบทบาทมาตรฐานของระบบ (System Role) หรือบทบาท Admin ได้เพื่อความปลอดภัย');
+      return false;
+    }
+
+    setRoles(prev => prev.filter(r => r.id !== roleId));
+    logSystemAction(
+      currentUser.name,
+      'Delete Role',
+      `ลบบทบาท: ${roleToDelete.name}`
+    );
+    return true;
+  }, [roles, currentUser.name]);
+
+  const resetRolesToDefault = useCallback(() => {
+    setRoles(DEFAULT_ROLES_CONFIG);
+    logSystemAction(
+      currentUser.name,
+      'Reset Roles to Default',
+      'คืนค่าโครงสร้างสิทธิ์ทุกตำแหน่งเป็นค่ามาตรฐานโรงงาน'
+    );
+  }, [currentUser.name]);
 
   return (
     <AuthContext.Provider value={{
       currentUser,
       activeRole,
+      activeRoleConfig,
+      roles,
       switchRole,
-      availableRoles: ROLE_INFO,
+      availableRoles,
+      hasPermission,
+      canViewModule,
+      isAdmin,
+      canCreatePR,
+      canEditPR,
+      canDeletePR,
+      canExportPR,
+      canApprovePR,
+      canApprovePO,
+      canRejectApproval,
       canApprove,
       canCreatePO,
+      canIssuePO,
+      canCancelPO,
+      canExportPO,
       canManageInventory,
-      canManageUsers
+      canReceiveGR,
+      canScanQR,
+      canAdjustStock,
+      canManageVendors,
+      canRateVendors,
+      canViewReports,
+      canExportReports,
+      canManageUsers,
+      canManageRoles,
+      canViewAuditLogs,
+      canManageSettings,
+      updateRolePermissions,
+      updateRole,
+      addRole,
+      deleteRole,
+      resetRolesToDefault
     }}>
       {children}
     </AuthContext.Provider>

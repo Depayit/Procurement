@@ -560,46 +560,69 @@ export function ManualPage() {
     },
     {
       id: 'users',
-      title: '7. ผู้ใช้งานและสิทธิ์การเข้าถึง (Users & Roles)',
-      titleEn: '7. Users & Role-Based Permissions',
+      title: '7. ผู้ใช้งานและสิทธิ์การเข้าถึง (Users & Role-Based Permissions)',
+      titleEn: '7. Users & Role-Based Permission Matrix (RBAC)',
       icon: Users,
-      badge: 'ความปลอดภัยระบบ',
+      badge: 'ความปลอดภัยระบบ (RBAC Enterprise)',
       role: 'ผู้ดูแลระบบ (System Administrator)',
-      summary: 'จัดการบัญชีผู้ใช้งาน กำหนดบทบาทหน้าที่ (Roles) และขอบเขตการเข้าถึงข้อมูลตามไซต์งาน เพื่อรักษาความปลอดภัยและความถูกต้องของข้อมูลองค์กร',
-      summaryEn: 'User administration, role-based access control (RBAC), and site permissions.',
+      summary: 'จัดการบัญชีผู้ใช้งาน กำหนดบทบาทหน้าที่แต่ละตำแหน่ง (Site Engineer, Buyer, PM, Approver, Storekeeper, Admin) และเครื่องมือกำหนดสิทธิ์ Role Matrix 25 สิทธิ์ระดับ Granular พร้อมระบบตรวจสอบประวัติ Audit Trail',
+      summaryEn: 'Enterprise user management, role-based access control (RBAC), granular 25-point permission matrix, and full audit trail monitoring.',
       route: '/users',
       linkages: [
         {
-          from: 'สิทธิ์ของผู้ใช้งาน (User Role)',
-          to: 'ทุกฟังก์ชันในระบบ',
-          description: 'ควบคุมว่าใครสามารถสร้าง PR, อนุมัติเอกสาร, ออก PO หรือจัดการคลังสินค้าได้'
+          from: 'การกำหนดสิทธิ์ของแอดมิน (Admin Role Matrix)',
+          to: 'ทุกโมดูลในระบบ (PR, PO, Approvals, Inventory, Reports)',
+          description: 'ควบคุมและล็อกปุ่มฟังก์ชันต่างๆ ตามบทบาทจริง เช่น บังคับให้เฉพาะ Approver/Manager ที่มีสิทธิ์อนุมัติเอกสารได้ และซ่อน/ล็อกเมนูที่ไม่มีสิทธิ์'
+        },
+        {
+          from: 'การสลับ Persona (Persona Switcher)',
+          to: 'แถบส่วนหัวด้านบน (Header User Menu)',
+          description: 'จำลองสลับเข้าสู่บทบาทตำแหน่งต่างๆ ได้ทันที เพื่อทดสอบการมองเห็นและสิทธิ์การเข้าถึงของแต่ละตำแหน่ง'
         }
       ],
       statuses: [
-        { status: 'Admin', color: 'bg-purple-100 text-purple-800', desc: 'ผู้ดูแลระบบ มีสิทธิ์เข้าถึงและจัดการทุกส่วนของระบบ' },
-        { status: 'Approver', color: 'bg-indigo-100 text-indigo-800', desc: 'ผู้มีอำนาจอนุมัติเอกสาร (ผู้จัดการโครงการ / ผู้บริหาร)' },
-        { status: 'Purchaser', color: 'bg-blue-100 text-blue-800', desc: 'เจ้าหน้าที่จัดซื้อ สามารถออก PO และจัดการคู่ค้า' },
-        { status: 'Requester', color: 'bg-slate-100 text-slate-800', desc: 'ผู้ขอซื้อหน้างาน สามารถสร้างและติดตามสถานะ PR ของตนเอง' }
+        { status: 'Admin (ผู้ดูแลระบบสูงสุด)', color: 'bg-purple-100 text-purple-800', desc: 'มีสิทธิ์สูงสุด 100% ดูแลผู้ใช้งาน กำหนด Permission Matrix ปรับแต่งระบบ และได้รับการคุ้มครองด้วยกลไก Self-Protection' },
+        { status: 'Purchasing Manager (ผู้จัดการจัดซื้อ)', color: 'bg-amber-100 text-amber-800', desc: 'อนุมัติ PR/PO, สร้างและควบคุม PO, ดูแลทะเบียนคู่ค้า และเข้าถึงรายงานงบประมาณทั้งหมด' },
+        { status: 'Purchasing Staff (เจ้าหน้าที่จัดซื้อ)', color: 'bg-blue-100 text-blue-800', desc: 'สร้าง PR, ออกใบสั่งซื้อ PO จาก PR ที่อนุมัติแล้ว, บันทึกส่ง PO ให้คู่ค้า และประสานงานรับพัสดุ' },
+        { status: 'Approver (ผู้อนุมัติโครงการ)', color: 'bg-violet-100 text-violet-800', desc: 'พิจารณาอนุมัติ/ปฏิเสธ PR และ PO ตามวงเงินอำนาจดำเนินการ ตรวจสอบงบประมาณและดูรายงานวิเคราะห์' },
+        { status: 'Site Engineer (วิศวกรสนาม)', color: 'bg-cyan-100 text-cyan-800', desc: 'เปิดใบขอซื้อ (PR) ระบุสเปกวัสดุหน้างาน ตรวจสอบสต็อกพัสดุ และสแกน QR Code ตรวจสอบของ' },
+        { status: 'Inventory Control (คลังพัสดุ)', color: 'bg-emerald-100 text-emerald-800', desc: 'บันทึกตรวจรับสินค้า (Goods Receipt - GR), สแกน QR ตรวจรับ และปรับปรุงยอดสต็อกคงเหลือ' }
       ],
       buttons: [
+        {
+          name: 'กำหนดสิทธิ์บทบาทนี้ (Configure Permissions)',
+          color: 'bg-indigo-50 text-indigo-700',
+          location: 'การ์ดบทบาท ในแท็บ Roles & Permissions',
+          action: 'เปิดหน้าต่าง Permission Matrix Editor เพื่อเลือกเปิด/ปิดสิทธิ์ย่อยทั้ง 25 สิทธิ์แยกตาม 9 โมดูลงานของแต่ละบทบาท',
+          linkage: 'บันทึกสิทธิ์ลงระบบและมีผลทันที'
+        },
+        {
+          name: 'ตารางเปรียบเทียบสิทธิ์ (Matrix Table View)',
+          color: 'bg-white border-slate-200 text-slate-700',
+          location: 'แถบเครื่องมือแท็บ Roles & Permissions',
+          action: 'เปิดมุมมองตาราง Matrix ภาพรวม เปรียบเทียบสิทธิ์ของทุกตำแหน่งพร้อมกันในหน้าเดียวเพื่อการตรวจสอบของฝ่ายบริหาร',
+          linkage: 'แสดงตาราง Matrix และสั่งพิมพ์ได้'
+        },
         {
           name: '+ เพิ่มผู้ใช้งานใหม่ (Add User)',
           icon: Plus,
           color: 'bg-indigo-600 text-white',
-          location: 'มุมบนขวาของหน้า Users',
-          action: 'สร้างบัญชีผู้ใช้งานใหม่ กำหนดชื่อ อีเมล บทบาท และแผนก/ไซต์งานที่สังกัด',
-          linkage: 'สร้างบัญชีเข้าใช้งานระบบ'
+          location: 'มุมบนขวาของแท็บ Users',
+          action: 'สร้างบัญชีผู้ใช้งานใหม่ กำหนดชื่อ อีเมล แผนก/ไซต์งาน และมอบหมายบทบาท (Role)',
+          linkage: 'บันทึกผู้ใช้ลงระบบพร้อมใช้งาน'
         },
         {
-          name: 'แก้ไขสิทธิ์ / บทบาท (Edit Role)',
-          color: 'text-indigo-600 hover:text-indigo-800',
-          location: 'ตารางรายชื่อผู้ใช้งาน',
-          action: 'ปรับเปลี่ยนบทบาท เช่น เลื่อนระดับจาก Requester เป็น Approver',
-          linkage: 'อัปเดตสิทธิ์การใช้งานทันที'
+          name: '+ สร้างบทบาทใหม่ (Create Custom Role)',
+          icon: Plus,
+          color: 'bg-indigo-600 text-white',
+          location: 'แถบเครื่องมือแท็บ Roles & Permissions',
+          action: 'สร้างบทบาทเฉพาะขององค์กร เช่น ผู้ตรวจสอบคุณภาพ (QA) หรือ นักบัญชี พร้อมกำหนดสิทธิ์อย่างอิสระ',
+          linkage: 'เพิ่มบทบาทใหม่ในระบบ'
         }
       ],
       tips: [
-        'ควรกำหนดสิทธิ์ให้ตรงตามหน้าที่จริงในหน้างาน เพื่อป้องกันการอนุมัติเอกสารข้ามสายงานโดยไม่ได้รับอนุญาต'
+        'บทบาท Admin มีกลไกความปลอดภัยพิเศษ (Self-Protection) ล็อกไม่ให้ลบตัวเองหรือปิดสิทธิ์หลัก เพื่อป้องกันระบบล็อกเอาท์ถาวร',
+        'สามารถใช้ปุ่ม "สลับใช้" หรือเมนูมุมบนขวา เพื่อทดสอบดูว่าพนักงานตำแหน่งนั้นๆ เห็นเมนูและปุ่มใดได้บ้าง'
       ]
     },
     {

@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle, Clock, FileText, Printer, Download, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, FileText, Printer, Download, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck, ShieldAlert, Lock } from 'lucide-react';
 import type { ApprovalTask, PurchaseRequest } from '../types';
 import { useState, useMemo } from 'react';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -220,6 +220,19 @@ export function ApprovalPage() {
         </button>
       </div>
 
+      {!canApprove && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3.5 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2.5">
+            <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              {isEnglish 
+                ? `Read-only mode: Your current position (${currentUser.role}) does not have approval authority. Document approval is restricted by Administrator.` 
+                : `โหมดดูข้อมูลเท่านั้น: ตำแหน่งปัจจุบันของคุณ (${currentUser.role}) ไม่มีสิทธิ์อนุมัติเอกสาร (จำกัดสิทธิ์เฉพาะ Approver / Purchasing Manager / Admin)`}
+            </span>
+          </div>
+        </div>
+      )}
+
       {activeTab === 'pending' ? (
         viewMode === 'table' ? (
           /* Table View for Pending Approvals */
@@ -286,14 +299,26 @@ export function ApprovalPage() {
                     <div className="flex items-center gap-1.5">
                       <button 
                         onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}
-                        className="inline-flex items-center justify-center px-3 py-1.5 border border-slate-300 shadow-2xs text-xs font-semibold rounded-lg text-red-700 bg-white hover:bg-red-50 transition-colors"
+                        disabled={!canApprove}
+                        className={cn(
+                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-semibold rounded-lg transition-colors",
+                          canApprove 
+                            ? "border-slate-300 text-red-700 bg-white hover:bg-red-50 cursor-pointer" 
+                            : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
+                        )}
                       >
                         <XCircle className="h-3.5 w-3.5 mr-1 text-red-500" />
                         {t('approvals.rejectBtn')}
                       </button>
                       <button 
                         onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'approve' })}
-                        className="inline-flex items-center justify-center px-3 py-1.5 border border-transparent shadow-2xs text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                        disabled={!canApprove}
+                        className={cn(
+                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-bold rounded-lg transition-colors",
+                          canApprove 
+                            ? "border-transparent text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
+                            : "border-transparent text-white bg-slate-300 cursor-not-allowed opacity-60"
+                        )}
                       >
                         <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
                         {t('approvals.approveBtn')}
@@ -390,14 +415,26 @@ export function ApprovalPage() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button 
                             onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}
-                            className="inline-flex items-center justify-center px-2.5 py-1.5 border border-slate-300 shadow-2xs text-xs font-semibold rounded-lg text-red-700 bg-white hover:bg-red-50 focus:outline-none transition-colors"
+                            disabled={!canApprove}
+                            className={cn(
+                              "inline-flex items-center justify-center px-2.5 py-1.5 border shadow-2xs text-xs font-semibold rounded-lg transition-colors",
+                              canApprove 
+                                ? "border-slate-300 text-red-700 bg-white hover:bg-red-50 cursor-pointer" 
+                                : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
+                            )}
                           >
                             <XCircle className="h-3.5 w-3.5 mr-1 text-red-500" />
                             {t('approvals.rejectBtn')}
                           </button>
                           <button 
                             onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'approve' })}
-                            className="inline-flex items-center justify-center px-2.5 py-1.5 border border-transparent shadow-2xs text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors"
+                            disabled={!canApprove}
+                            className={cn(
+                              "inline-flex items-center justify-center px-2.5 py-1.5 border shadow-2xs text-xs font-bold rounded-lg transition-colors",
+                              canApprove 
+                                ? "border-transparent text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
+                                : "border-transparent text-white bg-slate-300 cursor-not-allowed opacity-60"
+                            )}
                           >
                             <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
                             {t('approvals.approveBtn')}
@@ -454,13 +491,27 @@ export function ApprovalPage() {
                     <div className="mt-2 flex gap-2">
                       <button 
                         onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}
-                        className="inline-flex items-center justify-center px-3 py-1.5 border border-slate-300 shadow-2xs text-xs font-semibold rounded-lg text-red-700 bg-white hover:bg-red-50 focus:outline-none transition-colors">
+                        disabled={!canApprove}
+                        className={cn(
+                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-semibold rounded-lg transition-colors",
+                          canApprove 
+                            ? "border-slate-300 text-red-700 bg-white hover:bg-red-50 cursor-pointer" 
+                            : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
+                        )}
+                      >
                         <XCircle className="h-4 w-4 mr-1 text-red-500" />
                         {t('approvals.rejectBtn')}
                       </button>
                       <button 
                         onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'approve' })}
-                        className="inline-flex items-center justify-center px-3 py-1.5 border border-transparent shadow-2xs text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                        disabled={!canApprove}
+                        className={cn(
+                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-bold rounded-lg transition-colors",
+                          canApprove 
+                            ? "border-transparent text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
+                            : "border-transparent text-white bg-slate-300 cursor-not-allowed opacity-60"
+                        )}
+                      >
                         <CheckCircle2 className="h-4 w-4 mr-1" />
                         {t('approvals.approveBtn')}
                       </button>
@@ -673,14 +724,26 @@ export function ApprovalPage() {
             <div className="flex gap-2">
               <button 
                 onClick={() => { const id = viewTask.id; setViewTask(null); setConfirmState({ isOpen: true, taskId: id, action: 'reject' }); }}
-                className="inline-flex items-center justify-center px-4 py-2 border border-slate-300 shadow-2xs text-xs font-bold rounded-lg text-red-700 bg-white hover:bg-red-50 transition-colors cursor-pointer"
+                disabled={!canApprove}
+                className={cn(
+                  "inline-flex items-center justify-center px-4 py-2 border shadow-2xs text-xs font-bold rounded-lg transition-colors",
+                  canApprove 
+                    ? "border-slate-300 text-red-700 bg-white hover:bg-red-50 cursor-pointer" 
+                    : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
+                )}
               >
                 <XCircle className="h-4 w-4 mr-1 text-red-500" />
                 ปฏิเสธคำขอ
               </button>
               <button 
                 onClick={() => { const id = viewTask.id; setViewTask(null); setConfirmState({ isOpen: true, taskId: id, action: 'approve' }); }}
-                className="inline-flex items-center justify-center px-5 py-2 border border-transparent shadow-sm text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors cursor-pointer"
+                disabled={!canApprove}
+                className={cn(
+                  "inline-flex items-center justify-center px-5 py-2 border shadow-sm text-xs font-bold rounded-lg transition-colors",
+                  canApprove 
+                    ? "border-transparent text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
+                    : "border-transparent text-white bg-slate-300 cursor-not-allowed opacity-60"
+                )}
               >
                 <CheckCircle2 className="h-4 w-4 mr-1" />
                 อนุมัติคำขอ

@@ -189,7 +189,7 @@ const urgencyBadges: Record<string, { label: string; color: string }> = {
 export function PurchaseRequestPage() {
   const { t, isThai, isEnglish } = useLanguage();
   const { prs, createPR, updatePR, deletePR } = useProcurement();
-  const { currentUser } = useAuth();
+  const { currentUser, canCreatePR } = useAuth();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -337,8 +337,23 @@ export function PurchaseRequestPage() {
           </button>
 
           <button 
-            onClick={handleCreateNew}
-            className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 bg-indigo-600 text-white hover:bg-indigo-700 h-10 px-4 py-2 shadow-sm"
+            onClick={() => {
+              if (!canCreatePR) {
+                alert(isEnglish 
+                  ? `Permission Denied: Your current role (${currentUser.role}) does not have permission to create PRs.` 
+                  : `ไม่มีสิทธิ์: ตำแหน่งปัจจุบันของคุณ (${currentUser.role}) ไม่ได้รับอนุญาตให้สร้างใบขอซื้อ`);
+                return;
+              }
+              handleCreateNew();
+            }}
+            disabled={!canCreatePR}
+            className={cn(
+              "inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-colors h-10 px-4 py-2 shadow-sm",
+              canCreatePR 
+                ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" 
+                : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60"
+            )}
+            title={!canCreatePR ? (isEnglish ? 'Requires PR Create permission' : 'ต้องได้รับสิทธิ์สร้างใบขอซื้อ') : undefined}
           >
             <Plus className="mr-1.5 h-4 w-4" />
             {isEnglish ? 'New PR' : 'สร้าง PR ใหม่'}

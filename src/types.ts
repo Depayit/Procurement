@@ -155,8 +155,85 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
-  role: 'Site Engineer' | 'Purchasing Staff' | 'Purchasing Manager' | 'Approver' | 'Inventory Control' | 'Admin';
+  role: 'Site Engineer' | 'Purchasing Staff' | 'Purchasing Manager' | 'Approver' | 'Inventory Control' | 'Admin' | string;
   status: 'Active' | 'Inactive';
   lastLogin?: string;
   department?: string;
 }
+
+export type PermissionKey =
+  // Dashboard
+  | 'dashboard:view'
+  // Purchase Request (PR)
+  | 'pr:view'
+  | 'pr:create'
+  | 'pr:edit'
+  | 'pr:delete'
+  | 'pr:export'
+  // Approval Workflow
+  | 'approvals:view'
+  | 'approvals:approve_pr'
+  | 'approvals:approve_po'
+  | 'approvals:reject'
+  // Purchase Order (PO)
+  | 'po:view'
+  | 'po:create'
+  | 'po:issue'
+  | 'po:cancel'
+  | 'po:export'
+  // Inventory & Receiving
+  | 'inventory:view'
+  | 'inventory:receive_gr'
+  | 'inventory:qr_scan'
+  | 'inventory:adjust_stock'
+  // Vendors
+  | 'vendors:view'
+  | 'vendors:manage'
+  | 'vendors:rate'
+  // Reports & Analytics
+  | 'reports:view'
+  | 'reports:export'
+  // Users & Roles (Admin focus)
+  | 'users:view'
+  | 'users:manage_users'
+  | 'users:manage_roles'
+  | 'users:audit_logs'
+  // System Settings
+  | 'settings:view'
+  | 'settings:manage';
+
+export type PermissionModule = 
+  | 'dashboard' 
+  | 'pr' 
+  | 'approvals' 
+  | 'po' 
+  | 'inventory' 
+  | 'vendors' 
+  | 'reports' 
+  | 'users' 
+  | 'settings';
+
+export interface PermissionDefinition {
+  key: PermissionKey;
+  module: PermissionModule;
+  labelTh: string;
+  labelEn: string;
+  descTh: string;
+  descEn: string;
+}
+
+export interface RoleConfig {
+  id: string;
+  name: string;
+  titleTh: string;
+  titleEn: string;
+  descTh: string;
+  descEn: string;
+  avatarText: string;
+  color: string;
+  isSystem: boolean;
+  isAdmin?: boolean;
+  permissions: PermissionKey[];
+  usersCount?: number;
+}
+
