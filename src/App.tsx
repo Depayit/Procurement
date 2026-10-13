@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { AuthProvider } from './contexts/AuthContext';
@@ -8,20 +8,21 @@ import { Layout } from './components/Layout';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './lib/firebase';
+import { lazyWithRetry } from './lib/lazyRetry';
 
-// Route-level Code Splitting for ultra-fast initial load
-const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
-const PurchaseRequestPage = lazy(() => import('./pages/PurchaseRequest').then(m => ({ default: m.PurchaseRequestPage })));
-const ApprovalPage = lazy(() => import('./pages/Approval').then(m => ({ default: m.ApprovalPage })));
-const InventoryPage = lazy(() => import('./pages/Inventory').then(m => ({ default: m.InventoryPage })));
-const PurchaseOrderPage = lazy(() => import('./pages/PurchaseOrder').then(m => ({ default: m.PurchaseOrderPage })));
-const VendorsPage = lazy(() => import('./pages/Vendors').then(m => ({ default: m.VendorsPage })));
-const SettingsPage = lazy(() => import('./pages/Settings').then(m => ({ default: m.SettingsPage })));
-const ReportsPage = lazy(() => import('./pages/Reports').then(m => ({ default: m.ReportsPage })));
-const UsersPage = lazy(() => import('./pages/Users').then(m => ({ default: m.UsersPage })));
-const ManualPage = lazy(() => import('./pages/Manual').then(m => ({ default: m.ManualPage })));
-const DataImportHub = lazy(() => import('./pages/DataImportHub').then(m => ({ default: m.DataImportHub })));
-const IntegrationsPage = lazy(() => import('./pages/Integrations').then(m => ({ default: m.IntegrationsPage })));
+// Route-level Code Splitting with automatic new-deployment chunk recovery
+const Dashboard = lazyWithRetry(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })), 'Dashboard');
+const PurchaseRequestPage = lazyWithRetry(() => import('./pages/PurchaseRequest').then(m => ({ default: m.PurchaseRequestPage })), 'PurchaseRequest');
+const ApprovalPage = lazyWithRetry(() => import('./pages/Approval').then(m => ({ default: m.ApprovalPage })), 'Approval');
+const InventoryPage = lazyWithRetry(() => import('./pages/Inventory').then(m => ({ default: m.InventoryPage })), 'Inventory');
+const PurchaseOrderPage = lazyWithRetry(() => import('./pages/PurchaseOrder').then(m => ({ default: m.PurchaseOrderPage })), 'PurchaseOrder');
+const VendorsPage = lazyWithRetry(() => import('./pages/Vendors').then(m => ({ default: m.VendorsPage })), 'Vendors');
+const SettingsPage = lazyWithRetry(() => import('./pages/Settings').then(m => ({ default: m.SettingsPage })), 'Settings');
+const ReportsPage = lazyWithRetry(() => import('./pages/Reports').then(m => ({ default: m.ReportsPage })), 'Reports');
+const UsersPage = lazyWithRetry(() => import('./pages/Users').then(m => ({ default: m.UsersPage })), 'Users');
+const ManualPage = lazyWithRetry(() => import('./pages/Manual').then(m => ({ default: m.ManualPage })), 'Manual');
+const DataImportHub = lazyWithRetry(() => import('./pages/DataImportHub').then(m => ({ default: m.DataImportHub })), 'DataImportHub');
+const IntegrationsPage = lazyWithRetry(() => import('./pages/Integrations').then(m => ({ default: m.IntegrationsPage })), 'Integrations');
 
 function PageLoadingSkeleton() {
   return (
