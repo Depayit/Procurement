@@ -147,7 +147,7 @@ export function PRFormModal({ isOpen, onClose, onSave, initialData }: PRFormModa
   // Simulated PR object for live preview
   const previewPR: PurchaseRequest = {
     id: initialData?.id || 'preview-id',
-    prNumber: initialData?.prNumber || 'PR-2025-XXX',
+    prNumber: initialData?.prNumber || `PR-${new Date().getFullYear()}-XXX`,
     requesterName,
     requesterPosition,
     contactPhone,

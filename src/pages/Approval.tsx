@@ -16,15 +16,15 @@ import { cn } from '../lib/utils';
 
 const MOCK_PR_1: PurchaseRequest = {
   id: 'pr-1',
-  prNumber: 'PR-2025-001',
+  prNumber: 'PR-2026-001',
   requesterName: 'สมชาย ช่างก่อสร้าง',
   requesterPosition: 'วิศวกรสนาม (Site Engineer)',
   department: 'โครงการ คอนโดสุขุมวิท 101',
   projectCode: 'PRJ-SKV101',
   contactPhone: '081-987-6543',
   deliveryLocation: 'ไซต์งานคอนโดสุขุมวิท 101 ประตู 2',
-  requestDate: '2025-05-18T10:00:00Z',
-  requiredDate: '2025-05-25T00:00:00Z',
+  requestDate: '2026-05-18T10:00:00Z',
+  requiredDate: '2026-05-25T00:00:00Z',
   urgency: 'urgent',
   status: 'Pending Approval',
   justification: 'ขอสั่งซื้อวัสดุสำหรับงานเทคอนกรีตฐานรากและเสาตอม่อ ชั้นใต้ดินตามแผนงานงวดที่ 2 อ้างอิง BOQ งานโครงสร้าง',
@@ -43,20 +43,20 @@ const MOCK_PR_1: PurchaseRequest = {
     requestedBy: {
       name: 'สมชาย ช่างก่อสร้าง',
       position: 'วิศวกรสนาม',
-      date: '2025-05-18T10:00:00Z',
+      date: '2026-05-18T10:00:00Z',
       signed: true
     },
     checkedBy: {
       name: 'นายอภิสิทธิ์ กลิ่นสุคนธ์',
       position: 'วิศวกรโครงการ (Project Engineer)',
-      date: '2025-05-18T14:30:00Z',
+      date: '2026-05-18T14:30:00Z',
       signed: true,
       comments: 'ตรวจสอบสเปกวัสดุตรงตามแบบวิศวกรรมแล้ว'
     },
     budgetCheckedBy: {
       name: 'นางสาวกัญญา พงษ์ศิริ',
       position: 'เจ้าหน้าที่ควบคุมต้นทุน (Cost Control)',
-      date: '2025-05-18T16:00:00Z',
+      date: '2026-05-18T16:00:00Z',
       signed: true,
       comments: 'ยอดสั่งซื้ออยู่ในกรอบงบประมาณ BOQ งานโครงสร้าง'
     },
@@ -71,10 +71,10 @@ const MOCK_PR_1: PurchaseRequest = {
 const MOCK_APPROVALS: ApprovalTask[] = [
   {
     id: 'a1',
-    documentId: 'PR-2025-001',
+    documentId: 'PR-2026-001',
     documentType: 'PR',
     requester: 'สมชาย ช่างก่อสร้าง (ไซต์งาน สุขุมวิท 101)',
-    requestDate: '2025-05-18T10:00:00Z',
+    requestDate: '2026-05-18T10:00:00Z',
     amount: 374500,
     status: 'Pending',
     level: 1,
@@ -82,10 +82,10 @@ const MOCK_APPROVALS: ApprovalTask[] = [
   },
   {
     id: 'a2',
-    documentId: 'PO-2025-089',
+    documentId: 'PO-2026-089',
     documentType: 'PO',
     requester: 'ฝ่ายจัดซื้อ (ส่วนกลาง)',
-    requestDate: '2025-05-18T13:20:00Z',
+    requestDate: '2026-05-18T13:20:00Z',
     amount: 120000,
     status: 'Pending',
     level: 2,

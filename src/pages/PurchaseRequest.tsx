@@ -36,15 +36,15 @@ import { useAuth } from '../contexts/AuthContext';
 const INITIAL_MOCK_PRS: PurchaseRequest[] = [
   {
     id: 'pr-1',
-    prNumber: 'PR-2025-001',
+    prNumber: 'PR-2026-001',
     requesterName: 'สมชาย ช่างก่อสร้าง',
     requesterPosition: 'วิศวกรสนาม (Site Engineer)',
     department: 'โครงการ คอนโดสุขุมวิท 101',
     projectCode: 'PRJ-SKV101',
     contactPhone: '081-987-6543',
     deliveryLocation: 'ไซต์งานคอนโดสุขุมวิท 101 ประตู 2',
-    requestDate: '2025-05-18T10:00:00Z',
-    requiredDate: '2025-05-25T00:00:00Z',
+    requestDate: '2026-05-18T10:00:00Z',
+    requiredDate: '2026-05-25T00:00:00Z',
     urgency: 'urgent',
     status: 'Pending Approval',
     justification: 'ขอสั่งซื้อวัสดุสำหรับงานเทคอนกรีตฐานรากและเสาตอม่อ ชั้นใต้ดินตามแผนงานงวดที่ 2 อ้างอิง BOQ งานโครงสร้าง',
@@ -63,20 +63,20 @@ const INITIAL_MOCK_PRS: PurchaseRequest[] = [
       requestedBy: {
         name: 'สมชาย ช่างก่อสร้าง',
         position: 'วิศวกรสนาม',
-        date: '2025-05-18T10:00:00Z',
+        date: '2026-05-18T10:00:00Z',
         signed: true
       },
       checkedBy: {
         name: 'นายอภิสิทธิ์ กลิ่นสุคนธ์',
         position: 'วิศวกรโครงการ (Project Engineer)',
-        date: '2025-05-18T14:30:00Z',
+        date: '2026-05-18T14:30:00Z',
         signed: true,
         comments: 'ตรวจสอบสเปกวัสดุตรงตามแบบวิศวกรรมแล้ว'
       },
       budgetCheckedBy: {
         name: 'นางสาวกัญญา พงษ์ศิริ',
         position: 'เจ้าหน้าที่ควบคุมต้นทุน (Cost Control)',
-        date: '2025-05-18T16:00:00Z',
+        date: '2026-05-18T16:00:00Z',
         signed: true,
         comments: 'ยอดสั่งซื้ออยู่ในกรอบงบประมาณ BOQ งานโครงสร้าง'
       },
@@ -89,15 +89,15 @@ const INITIAL_MOCK_PRS: PurchaseRequest[] = [
   },
   {
     id: 'pr-2',
-    prNumber: 'PR-2025-002',
+    prNumber: 'PR-2026-002',
     requesterName: 'วิชัย คุมงาน',
     requesterPosition: 'โฟร์แมนอาวุโส (Senior Foreman)',
     department: 'โครงการ หมู่บ้านจัดสรร บางนา',
     projectCode: 'PRJ-BNG02',
     contactPhone: '086-555-4321',
     deliveryLocation: 'ไซต์บางนา กม.14 ซอยจัดสรร 3',
-    requestDate: '2025-05-17T14:30:00Z',
-    requiredDate: '2025-05-22T00:00:00Z',
+    requestDate: '2026-05-17T14:30:00Z',
+    requiredDate: '2026-05-22T00:00:00Z',
     urgency: 'normal',
     status: 'Approved',
     justification: 'สั่งซื้ออิฐมวลเบาและปูนก่อฉาบสำหรับผนังห้องบ้านเดี่ยวเฟส 2 จำนวน 4 ยูนิต',
@@ -115,25 +115,25 @@ const INITIAL_MOCK_PRS: PurchaseRequest[] = [
       requestedBy: {
         name: 'วิชัย คุมงาน',
         position: 'โฟร์แมนอาวุโส',
-        date: '2025-05-17T14:30:00Z',
+        date: '2026-05-17T14:30:00Z',
         signed: true
       },
       checkedBy: {
         name: 'นายเกรียงไกร ช่างเอก',
         position: 'วิศวกรประจำโครงการ',
-        date: '2025-05-17T16:00:00Z',
+        date: '2026-05-17T16:00:00Z',
         signed: true
       },
       budgetCheckedBy: {
         name: 'ฝ่ายควบคุมต้นทุนโครงการ',
         position: 'Cost Controller',
-        date: '2025-05-17T17:00:00Z',
+        date: '2026-05-17T17:00:00Z',
         signed: true
       },
       approvedBy: {
         name: 'นายสิทธิชัย อำนวยการ',
         position: 'ผู้จัดการโครงการ',
-        date: '2025-05-18T09:00:00Z',
+        date: '2026-05-18T09:00:00Z',
         signed: true,
         comments: 'อนุมัติสั่งซื้อตามแผนงานก่อสร้าง'
       }
@@ -141,15 +141,15 @@ const INITIAL_MOCK_PRS: PurchaseRequest[] = [
   },
   {
     id: 'pr-3',
-    prNumber: 'PR-2025-003',
+    prNumber: 'PR-2026-003',
     requesterName: 'สมปอง จัดซื้อ',
     requesterPosition: 'เจ้าหน้าที่จัดซื้อ (Purchasing Officer)',
     department: 'โครงการ อาคารสำนักงาน พระราม 9',
     projectCode: 'PRJ-RM9-03',
     contactPhone: '089-123-4567',
     deliveryLocation: 'ไซต์อาคารสำนักงาน สี่แยกพระราม 9',
-    requestDate: '2025-05-15T09:15:00Z',
-    requiredDate: '2025-05-20T00:00:00Z',
+    requestDate: '2026-05-15T09:15:00Z',
+    requiredDate: '2026-05-20T00:00:00Z',
     urgency: 'normal',
     status: 'PO Created',
     justification: 'จัดซื้อสายไฟฟ้า THW และท่อร้อยสายไฟ uPVC สำหรับชั้น 3-4',

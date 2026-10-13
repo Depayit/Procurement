@@ -142,7 +142,7 @@ export function DataImportHub() {
 
       if (demoType === 'inventory') {
         mockResult = {
-          fileName: 'Master_Central_Inventory_2025.xlsx',
+          fileName: 'Master_Central_Inventory_2026.xlsx',
           fileType: 'excel',
           fileSizeFormatted: '48.5 KB',
           sheets: ['คลังพัสดุกลาง'],

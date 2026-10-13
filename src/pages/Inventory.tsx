@@ -822,7 +822,7 @@ export function InventoryPage() {
                     </span>
                     <div>
                       <p className="text-sm font-bold text-slate-800">รับเข้าคลังสินค้ากลาง (Stock In)</p>
-                      <p className="text-xs text-slate-500">2 ชั่วโมงที่แล้ว • PO-2025-089 (GR บันทึกรับ)</p>
+                      <p className="text-xs text-slate-500">2 ชั่วโมงที่แล้ว • PO-2026-089 (GR บันทึกรับ)</p>
                     </div>
                   </div>
                   <span className="text-sm font-bold text-emerald-700">+50 {viewItem.unit}</span>

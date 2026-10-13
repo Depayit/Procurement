@@ -9,8 +9,10 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { lazyWithRetry } from './lib/lazyRetry';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Route-level Code Splitting with automatic new-deployment chunk recovery
+const LoginPage = lazyWithRetry(() => import('./pages/Login').then(m => ({ default: m.LoginPage })), 'Login');
 const Dashboard = lazyWithRetry(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })), 'Dashboard');
 const PurchaseRequestPage = lazyWithRetry(() => import('./pages/PurchaseRequest').then(m => ({ default: m.PurchaseRequestPage })), 'PurchaseRequest');
 const ApprovalPage = lazyWithRetry(() => import('./pages/Approval').then(m => ({ default: m.ApprovalPage })), 'Approval');
@@ -81,7 +83,19 @@ export default function App() {
           <ProcurementProvider>
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Layout />}>
+                {/* Public Authentication Route */}
+                <Route path="/login" element={
+                  <Suspense fallback={<PageLoadingSkeleton />}>
+                    <LoginPage />
+                  </Suspense>
+                } />
+
+                {/* Protected Application Routes */}
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }>
                   <Route index element={
                     <Suspense fallback={<PageLoadingSkeleton />}>
                       <Dashboard />

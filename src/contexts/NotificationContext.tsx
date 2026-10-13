@@ -49,7 +49,7 @@ const INITIAL_NOTIFICATIONS: AppNotification[] = [
   },
   { 
     id: '1', 
-    title: 'รอการอนุมัติ: PR-2025-001', 
+    title: 'รอการอนุมัติ: PR-2026-001', 
     message: 'คุณมีใบขอซื้อใหม่รอการพิจารณาอนุมัติจำนวน 1 รายการ (งานเทคอนกรีตฐานราก)', 
     time: '10 นาทีที่แล้ว', 
     timestamp: Date.now() - 10 * 60 * 1000, 
@@ -69,7 +69,7 @@ const INITIAL_NOTIFICATIONS: AppNotification[] = [
   },
   { 
     id: '3', 
-    title: 'รับสินค้าแล้ว: PO-2025-090', 
+    title: 'รับสินค้าแล้ว: PO-2026-090', 
     message: 'คุณวิชัยรับ เหล็กเส้นเพิ่มเติมสำหรับลานจอดรถ แล้ว (จำนวน 50 เส้น)', 
     time: '2 ชั่วโมงที่แล้ว', 
     timestamp: Date.now() - 2 * 60 * 60 * 1000, 

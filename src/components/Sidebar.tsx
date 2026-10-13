@@ -60,7 +60,7 @@ export function Sidebar({
 }: SidebarProps) {
   const location = useLocation();
   const { t, isEnglish } = useLanguage();
-  const { hasPermission, isAdmin, activeRoleConfig } = useAuth();
+  const { hasPermission, isAdmin, activeRoleConfig, logout } = useAuth();
   const { companyProfile } = useProcurement();
 
   useEffect(() => {
@@ -234,13 +234,19 @@ export function Sidebar({
         </div>
 
         <button 
+          type="button"
+          onClick={() => {
+            if (window.confirm(isEnglish ? 'Are you sure you want to log out?' : 'คุณต้องการออกจากระบบใช่หรือไม่?')) {
+              logout();
+            }
+          }}
           title={t('nav.logout')}
           className={cn(
-            "flex items-center w-full text-sm font-medium text-slate-500 rounded-lg hover:bg-slate-50 hover:text-slate-700 transition-colors group relative",
+            "flex items-center w-full text-sm font-medium text-slate-500 rounded-lg hover:bg-rose-50 hover:text-rose-600 transition-colors group relative cursor-pointer",
             isCollapsed ? "lg:justify-center lg:px-2 lg:py-2 px-3 py-2" : "px-3 py-2"
           )}
         >
-          <LogOut className={cn("h-5 w-5 text-slate-400 shrink-0", isCollapsed ? "lg:mr-0 mr-3" : "mr-3")} />
+          <LogOut className={cn("h-5 w-5 text-slate-400 group-hover:text-rose-600 shrink-0", isCollapsed ? "lg:mr-0 mr-3" : "mr-3")} />
           <span className={cn("truncate", isCollapsed ? "lg:hidden" : "block")}>
             {t('nav.logout')}
           </span>

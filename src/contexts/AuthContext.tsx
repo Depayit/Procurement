@@ -31,6 +31,11 @@ export interface AuthContextType {
   switchRole: (role: UserRole) => void;
   availableRoles: AvailableRoleItem[];
   
+  // Authentication
+  isAuthenticated: boolean;
+  login: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => void;
+
   // RBAC Permission Checker
   hasPermission: (key: PermissionKey) => boolean;
   canViewModule: (module: PermissionModule) => boolean;
@@ -70,14 +75,15 @@ export interface AuthContextType {
   resetRolesToDefault: () => void;
 }
 
-const STORAGE_USER_KEY = 'procuresync_active_user';
-const STORAGE_ROLES_KEY = 'procuresync_roles_v2';
+const STORAGE_USER_KEY = 'coneragestore_active_user';
+const STORAGE_ROLES_KEY = 'coneragestore_roles_v2';
+const STORAGE_AUTH_KEY = 'coneragestore_is_authenticated';
 
-const PRESET_USERS: Record<string, UserProfile> = {
+export const PRESET_USERS: Record<string, UserProfile> = {
   'Site Engineer': {
     id: 'usr-se-1',
     name: 'สมชาย ช่างก่อสร้าง',
-    email: 'somchai.eng@procuresync.local',
+    email: 'somchai.eng@coneragestore.local',
     role: 'Site Engineer',
     status: 'Active',
     department: 'โครงการ คอนโดสุขุมวิท 101',
@@ -86,7 +92,7 @@ const PRESET_USERS: Record<string, UserProfile> = {
   'Purchasing Staff': {
     id: 'usr-buy-1',
     name: 'สมปอง จัดซื้อ',
-    email: 'sompong.buyer@procuresync.local',
+    email: 'sompong.buyer@coneragestore.local',
     role: 'Purchasing Staff',
     status: 'Active',
     department: 'ฝ่ายจัดซื้อและสัญญา (ส่วนกลาง)',
@@ -95,7 +101,7 @@ const PRESET_USERS: Record<string, UserProfile> = {
   'Purchasing Manager': {
     id: 'usr-pm-1',
     name: 'วิภาวี สุขขี',
-    email: 'wipawee.pm@procuresync.local',
+    email: 'wipawee.pm@coneragestore.local',
     role: 'Purchasing Manager',
     status: 'Active',
     department: 'ฝ่ายบริหารงานจัดซื้อ',
@@ -104,7 +110,7 @@ const PRESET_USERS: Record<string, UserProfile> = {
   'Approver': {
     id: 'usr-appr-1',
     name: 'นายธีรภัทร บริหารงาน',
-    email: 'teerapat.dir@procuresync.local',
+    email: 'teerapat.dir@coneragestore.local',
     role: 'Approver',
     status: 'Active',
     department: 'คณะกรรมการบริหารและอนุมัติโครงการ',
@@ -113,7 +119,7 @@ const PRESET_USERS: Record<string, UserProfile> = {
   'Inventory Control': {
     id: 'usr-inv-1',
     name: 'บุญมี สต๊อก',
-    email: 'boonmee.wh@procuresync.local',
+    email: 'boonmee.wh@coneragestore.local',
     role: 'Inventory Control',
     status: 'Active',
     department: 'คลังพัสดุและจัดเก็บกลาง',
@@ -121,8 +127,8 @@ const PRESET_USERS: Record<string, UserProfile> = {
   },
   'Admin': {
     id: 'usr-adm-1',
-    name: 'ผู้ดูแลระบบสูงสุด',
-    email: 'admin@procuresync.local',
+    name: 'ผู้ดูแลระบบสูงสุด (Admin)',
+    email: 'admin@coneragestore.local',
     role: 'Admin',
     status: 'Active',
     department: 'เทคโนโลยีสารสนเทศ (IT ERP & Governance)',
@@ -170,6 +176,95 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     return PRESET_USERS['Admin'];
   });
+
+  // 3. Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_AUTH_KEY);
+      if (saved !== null) {
+        return saved === 'true';
+      }
+    } catch {
+      // ignore
+    }
+    return true;
+  });
+
+  const login = useCallback(async (email: string, _password?: string): Promise<{ success: boolean; error?: string }> => {
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // 1. Match from PRESET_USERS
+    const presetMatch = Object.values(PRESET_USERS).find(u => 
+      u.email.toLowerCase() === cleanEmail || 
+      u.role.toLowerCase() === cleanEmail ||
+      u.name.toLowerCase().includes(cleanEmail)
+    );
+
+    let userToSet = presetMatch;
+
+    // 2. Match from persisted users in users list if any
+    if (!userToSet) {
+      try {
+        const savedUsersStr = localStorage.getItem('procuresync_users_list_v2');
+        if (savedUsersStr) {
+          const parsedUsers = JSON.parse(savedUsersStr);
+          if (Array.isArray(parsedUsers)) {
+            const found = parsedUsers.find((u: any) => 
+              u.email?.toLowerCase() === cleanEmail ||
+              u.role?.toLowerCase() === cleanEmail ||
+              u.name?.toLowerCase().includes(cleanEmail)
+            );
+            if (found) {
+              userToSet = {
+                id: found.id || `usr-${Date.now()}`,
+                name: found.name,
+                email: found.email,
+                role: found.role,
+                status: found.status || 'Active',
+                department: found.department,
+                lastLogin: new Date().toISOString()
+              };
+            }
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // 3. Admin fallback (e.g. if typing admin)
+    if (!userToSet && (cleanEmail === 'admin' || cleanEmail === 'admin@coneragestore.local')) {
+      userToSet = PRESET_USERS['Admin'];
+    }
+
+    if (userToSet) {
+      setCurrentUser(userToSet);
+      setIsAuthenticated(true);
+      try {
+        localStorage.setItem(STORAGE_AUTH_KEY, 'true');
+        localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(userToSet));
+      } catch {
+        // ignore
+      }
+      logSystemAction(userToSet.name, 'Login', `เข้าสู่ระบบสำเร็จในบทบาท ${userToSet.role}`);
+      return { success: true };
+    }
+
+    return { 
+      success: false, 
+      error: 'ไม่พบบัญชีผู้ใช้งานหรืออีเมลไม่ถูกต้อง กรุณาเลือกบัญชีจากปุ่มเข้าสู่ระบบด่วน หรือตรวจสอบข้อมูลอีกครั้ง' 
+    };
+  }, []);
+
+  const logout = useCallback(() => {
+    logSystemAction(currentUser.name, 'Logout', 'ออกจากระบบการใช้งาน');
+    setIsAuthenticated(false);
+    try {
+      localStorage.setItem(STORAGE_AUTH_KEY, 'false');
+    } catch {
+      // ignore
+    }
+  }, [currentUser.name]);
 
   useEffect(() => {
     try {
@@ -393,6 +488,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       roles,
       switchRole,
       availableRoles,
+      isAuthenticated,
+      login,
+      logout,
       hasPermission,
       canViewModule,
       isAdmin,

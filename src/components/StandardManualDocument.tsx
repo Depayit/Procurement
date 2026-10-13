@@ -22,7 +22,7 @@ import {
   ShieldCheck,
   FileCheck
 } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, getCurrentThaiDateString, getCurrentYearCE } from '../lib/utils';
 import { useProcurement } from '../contexts/ProcurementContext';
 
 interface StandardManualDocumentProps {
@@ -42,8 +42,8 @@ export function StandardManualDocument({
   className 
 }: StandardManualDocumentProps) {
   const { companyProfile } = useProcurement();
-  const currentDateStr = '13 ตุลาคม 2569';
-  const docCode = 'SOP-PROC-2026-001';
+  const currentDateStr = getCurrentThaiDateString();
+  const docCode = `SOP-PROC-${getCurrentYearCE()}-001`;
   const docRev = 'Rev. 3.0';
 
   return (

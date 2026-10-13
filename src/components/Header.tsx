@@ -1,4 +1,4 @@
-import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen, Store } from 'lucide-react';
+import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen, Store, LogOut } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
@@ -21,7 +21,7 @@ export function Header({
   onToggleCollapse
 }: HeaderProps) {
   const { t, isEnglish } = useLanguage();
-  const { currentUser, activeRole, switchRole, availableRoles } = useAuth();
+  const { currentUser, activeRole, switchRole, availableRoles, logout } = useAuth();
   const { companyProfile } = useProcurement();
   const { 
     notifications, 
@@ -403,6 +403,25 @@ export function Header({
                   </span>
                   <span className="text-[11px] text-indigo-500">&rarr;</span>
                 </Link>
+
+                <div className="pt-1 mt-1 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      if (window.confirm(isEnglish ? 'Are you sure you want to log out?' : 'คุณต้องการออกจากระบบใช่หรือไม่?')) {
+                        logout();
+                      }
+                    }}
+                    className="w-full px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 flex items-center justify-between transition-colors font-medium cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                      {isEnglish ? 'Log Out' : 'ออกจากระบบ'}
+                    </span>
+                    <span className="text-[10px] text-rose-400">Exit</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

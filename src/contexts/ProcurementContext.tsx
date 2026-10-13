@@ -56,15 +56,15 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
 const SEED_PRS: PurchaseRequest[] = [
   {
     id: 'pr-1',
-    prNumber: 'PR-2025-001',
+    prNumber: 'PR-2026-001',
     requesterName: 'สมชาย ช่างก่อสร้าง',
     requesterPosition: 'วิศวกรสนาม (Site Engineer)',
     department: 'โครงการ คอนโดสุขุมวิท 101',
     projectCode: 'PRJ-SKV101',
     contactPhone: '081-987-6543',
     deliveryLocation: 'ไซต์งานคอนโดสุขุมวิท 101 ประตู 2',
-    requestDate: '2025-05-18T10:00:00Z',
-    requiredDate: '2025-05-25T00:00:00Z',
+    requestDate: '2026-05-18T10:00:00Z',
+    requiredDate: '2026-05-25T00:00:00Z',
     urgency: 'urgent',
     status: 'Pending Approval',
     justification: 'ขอสั่งซื้อวัสดุสำหรับงานเทคอนกรีตฐานรากและเสาตอม่อ ชั้นใต้ดินตามแผนงานงวดที่ 2 อ้างอิง BOQ งานโครงสร้าง',
@@ -83,20 +83,20 @@ const SEED_PRS: PurchaseRequest[] = [
       requestedBy: {
         name: 'สมชาย ช่างก่อสร้าง',
         position: 'วิศวกรสนาม',
-        date: '2025-05-18T10:00:00Z',
+        date: '2026-05-18T10:00:00Z',
         signed: true
       },
       checkedBy: {
         name: 'นายอภิสิทธิ์ กลิ่นสุคนธ์',
         position: 'วิศวกรโครงการ (Project Engineer)',
-        date: '2025-05-18T14:30:00Z',
+        date: '2026-05-18T14:30:00Z',
         signed: true,
         comments: 'ตรวจสอบสเปกวัสดุตรงตามแบบวิศวกรรมแล้ว'
       },
       budgetCheckedBy: {
         name: 'นางสาวกัญญา พงษ์ศิริ',
         position: 'เจ้าหน้าที่ควบคุมต้นทุน (Cost Control)',
-        date: '2025-05-18T16:00:00Z',
+        date: '2026-05-18T16:00:00Z',
         signed: true,
         comments: 'ยอดสั่งซื้ออยู่ในกรอบงบประมาณ BOQ งานโครงสร้าง'
       }
@@ -104,15 +104,15 @@ const SEED_PRS: PurchaseRequest[] = [
   },
   {
     id: 'pr-2',
-    prNumber: 'PR-2025-002',
+    prNumber: 'PR-2026-002',
     requesterName: 'วิศรุต ควบคุมงาน',
     requesterPosition: 'วิศวกรไฟฟ้า (M&E Engineer)',
     department: 'โครงการ รถไฟฟ้าสายสีส้ม สัญญา 3',
     projectCode: 'PRJ-ORANGE03',
     contactPhone: '089-111-2233',
     deliveryLocation: 'สถานีรามคำแหง 12 โกดังเก็บอุปกรณ์ M&E',
-    requestDate: '2025-05-19T09:00:00Z',
-    requiredDate: '2025-05-26T00:00:00Z',
+    requestDate: '2026-05-19T09:00:00Z',
+    requiredDate: '2026-05-26T00:00:00Z',
     urgency: 'normal',
     status: 'Approved',
     justification: 'สั่งซื้อสายไฟและท่อร้อยสายไฟ EMT สำหรับงานเดินระบบไฟฟ้าแสงสว่างและเต้ารับชั้นชานชาลา',
@@ -125,21 +125,21 @@ const SEED_PRS: PurchaseRequest[] = [
       { id: '2', itemCode: 'ELE-PIP-EMT-1/2', description: 'ท่อร้อยสายไฟ EMT 1/2 นิ้ว', specification: 'หนา 1.07 มม. มอก. 770-2533 ยาว 3 เมตร ยี่ห้อพานาโซนิค', quantity: 150, unitPrice: 165, unit: 'ท่อน', remark: 'เดินลอยใต้เพดาน' }
     ],
     signatures: {
-      requestedBy: { name: 'วิศรุต ควบคุมงาน', position: 'วิศวกรไฟฟ้า', date: '2025-05-19T09:00:00Z', signed: true },
-      approvedBy: { name: 'นายธีรภัทร บริหารงาน', position: 'ผู้จัดการโครงการ', date: '2025-05-19T17:00:00Z', signed: true, comments: 'อนุมัติเรียบร้อย' }
+      requestedBy: { name: 'วิศรุต ควบคุมงาน', position: 'วิศวกรไฟฟ้า', date: '2026-05-19T09:00:00Z', signed: true },
+      approvedBy: { name: 'นายธีรภัทร บริหารงาน', position: 'ผู้จัดการโครงการ', date: '2026-05-19T17:00:00Z', signed: true, comments: 'อนุมัติเรียบร้อย' }
     }
   },
   {
     id: 'pr-3',
-    prNumber: 'PR-2025-003',
+    prNumber: 'PR-2026-003',
     requesterName: 'ณภัทร สถาปัตย์',
     requesterPosition: 'วิศวกรตกแต่งภายใน',
     department: 'โครงการ หมู่บ้านจัดสรร พระราม 2',
     projectCode: 'PRJ-RAMA2',
     contactPhone: '086-444-5566',
     deliveryLocation: 'บ้านตัวอย่างหลังที่ 5 ซอย 3',
-    requestDate: '2025-05-19T11:30:00Z',
-    requiredDate: '2025-05-24T00:00:00Z',
+    requestDate: '2026-05-19T11:30:00Z',
+    requiredDate: '2026-05-24T00:00:00Z',
     urgency: 'normal',
     status: 'PO Created',
     justification: 'สั่งซื้อกระเบื้องปูพื้นสำหรับบ้านตัวอย่าง',
@@ -156,8 +156,8 @@ const SEED_PRS: PurchaseRequest[] = [
 const SEED_POS: PurchaseOrder[] = [
   {
     id: 'po1',
-    poNumber: 'PO-2025-089',
-    prNumber: 'PR-2025-003',
+    poNumber: 'PO-2026-089',
+    prNumber: 'PR-2026-003',
     prId: 'pr-3',
     vendorName: 'ดีดี อินเตอร์เทรดวัสดุ',
     vendorId: 'v3',
@@ -165,8 +165,8 @@ const SEED_POS: PurchaseOrder[] = [
     department: 'โครงการ หมู่บ้านจัดสรร พระราม 2',
     totalAmount: 85000,
     status: 'Partially Received',
-    date: '2025-05-19',
-    expectedDeliveryDate: '2025-05-24',
+    date: '2026-05-19',
+    expectedDeliveryDate: '2026-05-24',
     deliveryLocation: 'บ้านตัวอย่างหลังที่ 5 ซอย 3',
     paymentTerms: 'Credit 30 Days',
     items: [
@@ -181,7 +181,7 @@ const SEED_POS: PurchaseOrder[] = [
         receipts: [
           {
             id: 'rcpt-1',
-            date: '2025-05-21',
+            date: '2026-05-21',
             quantity: 120,
             receivedBy: 'ณภัทร สถาปัตย์',
             isDirectToSite: true,

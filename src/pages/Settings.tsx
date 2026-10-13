@@ -1140,7 +1140,7 @@ export function SettingsPage() {
                     type="button"
                     onClick={() => {
                       addNotification({
-                        title: isEnglish ? 'Test Alert: PR-2025-001 Approved' : 'ทดสอบแจ้งเตือน: PR-2025-001 ได้รับอนุมัติ',
+                        title: isEnglish ? 'Test Alert: PR-2026-001 Approved' : 'ทดสอบแจ้งเตือน: PR-2026-001 ได้รับอนุมัติ',
                         message: isEnglish ? 'Conerage store PWA notification system is working perfectly!' : 'ระบบแจ้งเตือนของ Conerage store PWA ทำงานได้อย่างถูกต้องและสมบูรณ์แบบ',
                         type: 'approval',
                         link: '/approvals'

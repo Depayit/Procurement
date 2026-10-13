@@ -87,7 +87,7 @@ export function InventoryTransactionModal({ isOpen, onClose, onSave, items, defa
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">เอกสารอ้างอิง (PR/PO/Job)</label>
-              <input type="text" value={refDoc} onChange={(e) => setRefDoc(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="เช่น PO-2025-089" />
+              <input type="text" value={refDoc} onChange={(e) => setRefDoc(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="เช่น PO-2026-089" />
             </div>
           </div>
 
