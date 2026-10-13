@@ -102,7 +102,7 @@ export function Dashboard() {
             </h1>
             <span className="heading-badge heading-badge-primary shadow-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              {isEnglish ? 'Construction ERP Hub' : 'ศูนย์ควบคุมจัดซื้อและคลังก่อสร้าง'}
+              {isEnglish ? 'ERP Hub' : 'ระบบจัดซื้อ ERP'}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
@@ -115,111 +115,103 @@ export function Dashboard() {
         {/* Card 1: Total PR */}
         <Link 
           to="/pr" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white group-hover:border-[#1e40af] transition-colors">
-              <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+          <div className="flex items-center justify-between gap-1.5 mb-2.5">
+            <div className="bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white transition-colors shrink-0">
+              <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             </div>
-            <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
-              <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-slate-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}>
-                  {isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}
-                </dt>
-                <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{totalPRCount}</div>
-                  <div className="flex items-baseline text-[10px] sm:text-[11px] font-bold text-[#1e40af] px-1.5 sm:px-2 py-0.5 bg-blue-50 border border-blue-200/80 rounded-md tracking-wide">
-                    <TrendingUp className="self-center flex-shrink-0 h-3 w-3 mr-0.5 sm:mr-1 text-[#1e40af]" aria-hidden="true" />
-                    Live
-                  </div>
-                </dd>
-              </dl>
+            <span className="inline-flex items-center text-[10px] sm:text-[11px] font-bold text-[#1e40af] px-1.5 sm:px-2 py-0.5 bg-blue-50 border border-blue-200/80 rounded-md tracking-tight shrink-0">
+              <TrendingUp className="h-3 w-3 mr-0.5 text-[#1e40af]" aria-hidden="true" />
+              Live
+            </span>
+          </div>
+          <div className="min-w-0">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums truncate">
+              {totalPRCount}
             </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-600 truncate mt-0.5" title={isEnglish ? 'Purchase Requests' : 'ใบขอซื้อ (PR)'}>
+              {isEnglish ? 'Purchase Requests' : 'ใบขอซื้อ (PR)'}
+            </p>
           </div>
         </Link>
 
         {/* Card 2: Pending Approvals */}
         <Link 
           to="/approvals" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white group-hover:border-[#1e40af] transition-colors">
-              <ClipboardCheck className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+          <div className="flex items-center justify-between gap-1.5 mb-2.5">
+            <div className="bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white transition-colors shrink-0">
+              <ClipboardCheck className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             </div>
-            <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
-              <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-slate-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}>
-                  {isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}
-                </dt>
-                <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{pendingApprovalCount}</div>
-                  <span className={cn(
-                    "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-wide",
-                    pendingApprovalCount > 0 
-                      ? "bg-amber-50 text-amber-900 border-amber-300" 
-                      : "bg-emerald-50 text-emerald-800 border-emerald-200/80"
-                  )}>
-                    {pendingApprovalCount > 0 ? (isEnglish ? 'Action Required' : 'ต้องพิจารณา') : (isEnglish ? 'Clear' : 'เรียบร้อย')}
-                  </span>
-                </dd>
-              </dl>
+            <span className={cn(
+              "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-tight shrink-0 truncate max-w-[85px] sm:max-w-none text-center",
+              pendingApprovalCount > 0 
+                ? "bg-amber-50 text-amber-900 border-amber-300" 
+                : "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+            )}>
+              {pendingApprovalCount > 0 ? (isEnglish ? 'Pending' : 'รออนุมัติ') : (isEnglish ? 'Clear' : 'เรียบร้อย')}
+            </span>
+          </div>
+          <div className="min-w-0">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums truncate">
+              {pendingApprovalCount}
             </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-600 truncate mt-0.5" title={isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}>
+              {isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}
+            </p>
           </div>
         </Link>
 
         {/* Card 3: Low Stock */}
         <Link 
           to="/inventory" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white group-hover:border-[#1e40af] transition-colors">
-              <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+          <div className="flex items-center justify-between gap-1.5 mb-2.5">
+            <div className="bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white transition-colors shrink-0">
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             </div>
-            <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
-              <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-slate-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}>
-                  {isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}
-                </dt>
-                <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{lowStockCount}</div>
-                  <span className={cn(
-                    "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-wide",
-                    lowStockCount > 0 
-                      ? "bg-rose-50 text-rose-800 border-rose-200" 
-                      : "bg-emerald-50 text-emerald-800 border-emerald-200/80"
-                  )}>
-                    {lowStockCount > 0 ? (isEnglish ? 'Need Reorder' : 'ต้องสั่งเพิ่ม') : (isEnglish ? 'Normal' : 'ปกติ')}
-                  </span>
-                </dd>
-              </dl>
+            <span className={cn(
+              "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-tight shrink-0 truncate max-w-[85px] sm:max-w-none text-center",
+              lowStockCount > 0 
+                ? "bg-rose-50 text-rose-800 border-rose-200" 
+                : "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+            )}>
+              {lowStockCount > 0 ? (isEnglish ? 'Reorder' : 'ต้องสั่งเพิ่ม') : (isEnglish ? 'Normal' : 'ปกติ')}
+            </span>
+          </div>
+          <div className="min-w-0">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums truncate">
+              {lowStockCount}
             </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-600 truncate mt-0.5" title={isEnglish ? 'Low Stock' : 'พัสดุใกล้หมด'}>
+              {isEnglish ? 'Low Stock' : 'พัสดุใกล้หมด'}
+            </p>
           </div>
         </Link>
 
         {/* Card 4: Active POs */}
         <Link 
           to="/po" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-200 p-3 sm:p-4 lg:p-5 group hover:border-[#1e40af] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white group-hover:border-[#1e40af] transition-colors">
-              <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+          <div className="flex items-center justify-between gap-1.5 mb-2.5">
+            <div className="bg-blue-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 text-[#1e40af] border border-blue-200/80 group-hover:bg-[#1e40af] group-hover:text-white transition-colors shrink-0">
+              <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             </div>
-            <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
-              <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-slate-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}>
-                  {isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}
-                </dt>
-                <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums">{activePOCount}</div>
-                  <span className="text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 bg-blue-50 text-[#1e40af] border border-blue-200/80 rounded-md tracking-wide">
-                    {isEnglish ? 'In Progress' : 'รอดำเนินการ'}
-                  </span>
-                </dd>
-              </dl>
+            <span className="text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 bg-blue-50 text-[#1e40af] border border-blue-200/80 rounded-md tracking-tight shrink-0 truncate max-w-[85px] sm:max-w-none text-center">
+              {isEnglish ? 'In Progress' : 'รอดำเนินการ'}
+            </span>
+          </div>
+          <div className="min-w-0">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono text-slate-900 tabular-nums truncate">
+              {activePOCount}
             </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-600 truncate mt-0.5" title={isEnglish ? 'Active POs' : 'ใบสั่งซื้อ (PO)'}>
+              {isEnglish ? 'Active POs' : 'ใบสั่งซื้อ (PO)'}
+            </p>
           </div>
         </Link>
       </div>

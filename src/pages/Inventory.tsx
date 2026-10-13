@@ -220,17 +220,17 @@ export function InventoryPage() {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800">
-              {isEnglish ? 'Central Construction Material Warehouse & Barcode' : 'คลังพัสดุและวัสดุก่อสร้างกลาง (Central Material Hub)'}
+              {isEnglish ? 'Material Warehouse' : 'คลังพัสดุและวัสดุก่อสร้าง'}
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
               <Building2 className="w-3 h-3" />
-              Central Construction Hub
+              {isEnglish ? 'Central Hub' : 'คลังกลาง'}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             {isEnglish 
-              ? 'Central material warehouse controlling stock, tools, and construction supplies dispatched across contractor project sites' 
-              : 'คลังพัสดุและวัสดุก่อสร้างกลาง • ควบคุมสต็อกพัสดุ เครื่องมือ และวัสดุงานก่อสร้าง จัดเก็บและเบิกจ่ายไปยังไซต์งาน/โครงการต่างๆ'}
+              ? 'Central material warehouse controlling stock, tools, and site requisitions' 
+              : 'ควบคุมสต็อกพัสดุ เครื่องมือ และการเบิกจ่ายไปยังไซต์งาน'}
           </p>
         </div>
 
@@ -246,7 +246,7 @@ export function InventoryPage() {
           <Link 
             to="/import?target=inventory"
             className="inline-flex items-center justify-center px-2 sm:px-3 py-2 border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-2xs hover:bg-slate-50 transition-colors text-center w-full sm:w-auto"
-            title="นำเข้าไฟล์หลายรูปแบบ (Excel, CSV, CAD, PDF, Word, JSON) พร้อมจับคู่คอลัมน์อัตโนมัติ"
+            title="นำเข้าไฟล์"
           >
             <UploadCloud className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-indigo-600 shrink-0" />
             <span className="truncate">{isEnglish ? 'Import' : 'นำเข้าไฟล์'}</span>
@@ -255,7 +255,7 @@ export function InventoryPage() {
           <button 
             onClick={() => setIsScannerOpen(true)}
             className="inline-flex items-center justify-center px-2 sm:px-3.5 py-2 border border-indigo-200 rounded-lg text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50/70 shadow-2xs hover:bg-indigo-100 transition-colors text-center w-full sm:w-auto"
-            title="สแกนบาร์โค้ด SKU ด้วยกล้องหรือเครื่องยิงบาร์โค้ด"
+            title="สแกนบาร์โค้ด SKU"
           >
             <Barcode className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-indigo-600 shrink-0" />
             <span className="truncate">{isEnglish ? 'Scan Barcode' : 'สแกน SKU'}</span>
@@ -272,54 +272,51 @@ export function InventoryPage() {
       </div>
 
       {/* Central Warehouse Architecture Banner */}
-      <div className="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#1e3a8a] text-white rounded-3xl p-5 sm:p-6 border border-slate-700/60 shadow-xs relative overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center relative z-10">
+      <div className="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#1e3a8a] text-white rounded-2xl p-4 sm:p-5 border border-slate-700/60 shadow-xs relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-6 items-center relative z-10">
           
-          {/* Left Column: Title & Architecture Explanation (7 cols) */}
-          <div className="lg:col-span-7 space-y-2">
-            <div className="flex items-center gap-2.5">
-              <span className="p-2 rounded-xl bg-white/10 text-white border border-white/20 shrink-0">
-                <Building2 className="w-5 h-5 text-blue-300" />
+          {/* Left Column (7 cols) */}
+          <div className="lg:col-span-7 space-y-1.5 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 rounded-lg bg-white/10 text-white border border-white/20 shrink-0">
+                <Building2 className="w-4 h-4 text-blue-300" />
               </span>
-              <div>
-                <h2 className="text-sm sm:text-base font-bold text-white tracking-wide" style={{ textWrap: 'pretty' }}>
-                  สถาปัตยกรรมคลังพัสดุก่อสร้างกลาง
-                </h2>
-                <p className="text-[11px] text-blue-200 font-medium">
-                  Central Construction Material Hub • Site Requisition & Real-time Sync
-                </p>
-              </div>
+              <h2 className="text-sm font-bold text-white tracking-wide truncate">
+                {isEnglish ? 'Central Material Hub Architecture' : 'คลังพัสดุก่อสร้างกลาง (Central Hub)'}
+              </h2>
             </div>
-            <p className="text-xs text-slate-200 leading-relaxed pr-0 lg:pr-2">
-              พัสดุและวัสดุก่อสร้างทั้งหมดถูกควบคุมอยู่ที่ <strong>คลังพัสดุก่อสร้างกลางแห่งเดียว</strong> โดยใช้ <strong>Master SKU Barcode (Code 128)</strong> เป็นรหัสมาตรฐาน เมื่อวิศวกรหรือโฟร์แมนทำรายการเบิกจ่ายไปหน้างาน หรือตรวจรับพัสดุเข้าคลังจากใบสั่งซื้อ (PO Receipt) สต็อกจริงในคลังกลางจะถูกอัปเดตแบบ Real-time ทันที
+            <p className="text-xs text-slate-200 leading-relaxed">
+              {isEnglish 
+                ? 'Centralized stock using Master SKU Barcode (Code 128) with real-time updates upon receiving and dispatch.' 
+                : 'ควบคุมพัสดุด้วยรหัส Master SKU Barcode (Code 128) อัปเดตสต็อกเรียลไทม์เมื่อรับเข้าและเบิกจ่าย'}
             </p>
           </div>
 
           {/* Right Column: Connected Project Sites Group (5 cols) */}
-          <div className="lg:col-span-5 bg-white/10 p-3.5 rounded-2xl border border-white/15">
-            <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-white/10">
-              <span className="text-[11px] font-bold text-blue-100 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-blue-300" />
-                ไซต์งานและโครงการที่เชื่อมโยงเบิกใช้วัสดุ
+          <div className="lg:col-span-5 bg-white/10 p-2.5 sm:p-3 rounded-xl border border-white/15 min-w-0">
+            <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-white/10">
+              <span className="text-[10px] font-bold text-blue-100 uppercase tracking-wider flex items-center gap-1 truncate">
+                <Sparkles className="w-3 h-3 text-blue-300 shrink-0" />
+                <span>{isEnglish ? 'Active Sites' : 'ไซต์งานที่เชื่อมโยง'}</span>
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-200 border border-blue-400/30 font-mono">
-                5 Sites Active
+              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-200 border border-blue-400/30 font-mono shrink-0">
+                5 Sites
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {[
                 'คอนโดสุขุมวิท 101',
                 'โรงพยาบาลบางนา',
-                'อาคารสำนักงานพระราม 9',
-                'งานระบบ MEP & เครื่องมือช่าง',
-                'งานโครงสร้างและวิศวกรรมฐานราก',
+                'พระราม 9',
+                'งานระบบ MEP',
+                'งานโครงสร้าง',
               ].map(siteName => (
                 <span 
                   key={siteName}
-                  className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md border border-white/10 bg-black/20 text-blue-100"
+                  className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded border border-white/10 bg-black/20 text-blue-100 truncate max-w-[140px]"
                 >
                   <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-blue-300" />
-                  <span className="whitespace-nowrap">{siteName}</span>
+                  <span className="truncate">{siteName}</span>
                 </span>
               ))}
             </div>
@@ -330,39 +327,39 @@ export function InventoryPage() {
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4">
-          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase line-clamp-1">
-            {isEnglish ? 'Total Stock Items' : 'รายการพัสดุทั้งหมด'}
+          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase truncate">
+            {isEnglish ? 'Total Items' : 'พัสดุทั้งหมด'}
           </h3>
-          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1">
-            {filteredInventory.length} <span className="text-xs font-normal text-slate-500">SKUs</span>
+          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-slate-800 mt-1 truncate">
+            {filteredInventory.length} <span className="text-xs font-normal text-slate-500">รายการ</span>
           </p>
         </div>
         
-        <div className={cn("bg-white rounded-xl shadow-xs border p-3 sm:p-4 relative overflow-hidden", lowStockItems > 0 ? "border-red-200" : "border-slate-200")}>
+        <div className={cn("bg-white rounded-xl shadow-xs border p-3 sm:p-4 relative overflow-hidden min-w-0", lowStockItems > 0 ? "border-red-200" : "border-slate-200")}>
           {lowStockItems > 0 && <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500"></div>}
-          <h3 className={cn("text-[11px] sm:text-xs font-bold tracking-wide uppercase line-clamp-1", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
-            {isEnglish ? 'Low Stock Alerts' : 'เตือนสต็อกต่ำ'}
+          <h3 className={cn("text-[11px] sm:text-xs font-bold tracking-wide uppercase truncate", lowStockItems > 0 ? "text-red-600" : "text-slate-500")}>
+            {isEnglish ? 'Low Stock' : 'สต็อกต่ำ'}
           </h3>
-          <p className={cn("text-lg sm:text-2xl font-bold font-mono tabular-nums mt-1", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>
-            {lowStockItems}
+          <p className={cn("text-lg sm:text-2xl font-bold font-mono tabular-nums mt-1 truncate", lowStockItems > 0 ? "text-red-700" : "text-slate-800")}>
+            {lowStockItems} <span className="text-xs font-normal text-slate-500">รายการ</span>
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4">
-          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase line-clamp-1">
-            {isEnglish ? 'Central Warehouse Locations' : 'โซนจัดเก็บในคลังกลาง'}
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4 min-w-0 overflow-hidden">
+          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase truncate">
+            {isEnglish ? 'Storage Zones' : 'โซนจัดเก็บ'}
           </h3>
-          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-indigo-700 mt-1">
-            {locations.length} <span className="text-xs font-normal text-slate-500">จุดเก็บ/แร็ค</span>
+          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-[#1e40af] mt-1 truncate">
+            {locations.length} <span className="text-xs font-normal text-slate-500">จุด</span>
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4">
-          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase line-clamp-1">
-            {isEnglish ? 'Site Fulfillment Rate' : 'ความพร้อมจ่ายวัสดุหน้างาน'}
+        <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-3 sm:p-4 min-w-0 overflow-hidden">
+          <h3 className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-wide uppercase truncate">
+            {isEnglish ? 'Fulfillment' : 'ความพร้อมจ่าย'}
           </h3>
-          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-emerald-600 mt-1 flex items-center gap-1.5">
-            98.5% <span className="text-xs font-normal text-slate-500">พร้อมเบิกจ่าย</span>
+          <p className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-emerald-600 mt-1 truncate">
+            98.5%
           </p>
         </div>
       </div>

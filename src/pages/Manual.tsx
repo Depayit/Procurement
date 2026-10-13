@@ -109,73 +109,73 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
   {
     id: 'part-1',
     partNumber: 1,
-    titleTh: 'ส่วนที่ 1: ภาพรวมระบบและผังเชื่อมโยงทั้งวงจร',
-    titleEn: 'Part 1: Architecture & Lifecycle Flow',
+    titleTh: 'ส่วนที่ 1: ภาพรวมระบบ',
+    titleEn: 'Part 1: Overview',
     icon: Layers,
     color: 'bg-[#1e40af] text-white',
     badgeClass: 'bg-blue-50 text-blue-800 border-blue-200',
-    summaryTh: 'สถาปัตยกรรมระบบ ผังเชื่อมโยงข้อมูล 7 ขั้นตอน และมาตรฐานการควบคุมต้นทุนโครงการ',
-    summaryEn: 'Core architecture, 7-step lifecycle map, and project cost governance',
+    summaryTh: 'ผังวงจรการทำงานและโครงสร้างระบบ',
+    summaryEn: 'Core architecture and lifecycle flow',
     moduleCount: 1
   },
   {
     id: 'part-2',
     partNumber: 2,
-    titleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
-    titleEn: 'Part 2: Procurement & Approval Pipeline',
+    titleTh: 'ส่วนที่ 2: จัดซื้อและอนุมัติ',
+    titleEn: 'Part 2: Procurement',
     icon: ShoppingCart,
     color: 'bg-[#0284c7] text-white',
     badgeClass: 'bg-sky-50 text-sky-800 border-sky-200',
-    summaryTh: 'การเปิดใบขอซื้อ (PR), ตรวจสอบงบประมาณ BOQ, สายการอนุมัติ 3 ระดับ และการออกใบสั่งซื้อ (PO)',
-    summaryEn: 'Purchase requests, BOQ verification, multi-tier approvals, and PO generation',
+    summaryTh: 'ใบขอซื้อ (PR) การอนุมัติ และใบสั่งซื้อ (PO)',
+    summaryEn: 'PR requests, approvals, and PO generation',
     moduleCount: 3
   },
   {
     id: 'part-3',
     partNumber: 3,
-    titleTh: 'ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ',
-    titleEn: 'Part 3: Inventory Control & Suppliers',
+    titleTh: 'ส่วนที่ 3: คลังสินค้าและตรวจรับ',
+    titleEn: 'Part 3: Inventory',
     icon: Package,
     color: 'bg-[#0d9488] text-white',
     badgeClass: 'bg-teal-50 text-teal-800 border-teal-200',
-    summaryTh: 'ตรวจรับสินค้าหน้างาน (GR), คลังพัสดุก่อสร้างกลาง (Hub), Master SKU Barcode, กล้องสแกนสด และทะเบียนคู่ค้า',
-    summaryEn: 'Goods receiving, Central Material Hub, Master SKU barcode scanning, and vendor rating',
+    summaryTh: 'ตรวจรับสินค้า สต็อกพัสดุ และสแกน QR',
+    summaryEn: 'Goods receiving, stock control, and QR scan',
     moduleCount: 2
   },
   {
     id: 'part-4',
     partNumber: 4,
-    titleTh: 'ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์',
-    titleEn: 'Part 4: Smart Data Hub & Cloud Integrations',
+    titleTh: 'ส่วนที่ 4: นำเข้าข้อมูลและคลาวด์',
+    titleEn: 'Part 4: Data & Cloud',
     icon: UploadCloud,
     color: 'bg-[#4f46e5] text-white',
     badgeClass: 'bg-indigo-50 text-indigo-800 border-indigo-200',
-    summaryTh: 'นำเข้าไฟล์ Excel, CSV, CAD DXF พร้อมระบบซิงก์ Google Sheets, Cloud Storage และแจ้งเตือน LINE Notify',
-    summaryEn: 'Bulk import of Excel, CSV, CAD DXF with Google Sheets sync and automated LINE alerts',
+    summaryTh: 'นำเข้า Excel/CSV และเชื่อมต่อระบบ',
+    summaryEn: 'Bulk import and cloud integrations',
     moduleCount: 2
   },
   {
     id: 'part-5',
     partNumber: 5,
-    titleTh: 'ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน',
-    titleEn: 'Part 5: Administration, Settings & Reports',
+    titleTh: 'ส่วนที่ 5: สิทธิ์และรายงาน',
+    titleEn: 'Part 5: Permissions',
     icon: ShieldCheck,
     color: 'bg-[#334155] text-white',
     badgeClass: 'bg-slate-100 text-slate-800 border-slate-200',
-    summaryTh: 'โครงสร้างสิทธิ์ RBAC 25 สิทธิ์, บันทึกการตรวจสอบ (Audit Log), ติดตั้งแอป PWA และรายงานวิเคราะห์งบประมาณ',
-    summaryEn: 'RBAC 25 permission keys, audit trail logging, PWA settings, and executive cost analytics',
+    summaryTh: 'กำหนดสิทธิ์ผู้ใช้และรายงานสรุป',
+    summaryEn: 'User permissions and analytics reports',
     moduleCount: 3
   },
   {
     id: 'part-6',
     partNumber: 6,
-    titleTh: 'ส่วนที่ 6: AI ผู้ช่วยและศูนย์ซ่อมแซมระบบตนเอง',
-    titleEn: 'Part 6: AI Copilot & 1-Click Auto-Repair',
+    titleTh: 'ส่วนที่ 6: ผู้ช่วย AI',
+    titleEn: 'Part 6: AI Assistant',
     icon: Bot,
     color: 'bg-[#1e40af] text-white',
     badgeClass: 'bg-blue-50 text-blue-800 border-blue-200',
-    summaryTh: 'AI Copilot 24 ชม., การตรวจเช็คฮาร์ดแวร์ 5 จุด, แก้ปัญหากล้องและแคชค้าง 1-Click โดยไม่ต้องพึ่งพาแอดมิน',
-    summaryEn: '24/7 AI Copilot troubleshooting, 5-point hardware diagnostics, and 1-click self-healing repair without waiting for IT admin',
+    summaryTh: 'AI ตอบคำถามและตรวจเช็คระบบ',
+    summaryEn: 'AI assistant and system diagnostics',
     moduleCount: 1
   }
 ];
@@ -1108,38 +1108,38 @@ export function ManualPage() {
         <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-indigo-50/60 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/90 border border-blue-200/90 text-[#1e40af] text-xs font-bold tracking-wide">
-              <BookOpen className="w-3.5 h-3.5 text-[#1e40af]" />
-              <span>{isEnglish ? 'Conerage store System Documentation & SOP' : 'คู่มือการปฏิบัติงานมาตรฐานระบบจัดซื้อและคลังสินค้า (SOP)'}</span>
+          <div className="space-y-1.5 max-w-2xl min-w-0">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/90 border border-blue-200/90 text-[#1e40af] text-xs font-bold tracking-wide">
+              <BookOpen className="w-3.5 h-3.5 text-[#1e40af] shrink-0" />
+              <span className="truncate">{isEnglish ? 'Standard Operating Procedure (SOP)' : 'คู่มือการปฏิบัติงานมาตรฐาน (SOP)'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-tight">
-              {isEnglish ? 'Complete System User Manual' : 'คู่มือการใช้งานระบบฉบับสมบูรณ์'}
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-slate-900 leading-tight">
+              {isEnglish ? 'System User Manual' : 'คู่มือการใช้งานระบบ'}
             </h1>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               {isEnglish 
-                ? 'Comprehensive guide detailing every module, button action, status workflow, and feature integration across the Conerage store platform.'
-                : 'รวบรวมคำอธิบายทุกฟีเจอร์ ทุกปุ่มการทำงาน ผังการเชื่อมโยงข้อมูลระหว่างโมดูล (PR -> PO -> คลัง -> สแกน QR) และมาตรฐานการปฏิบัติงาน'}
+                ? 'Overview of procurement workflows, inventory control, and system operations.'
+                : 'ขั้นตอนการใช้งานระบบจัดซื้อ คลังสินค้า และมาตรฐานการปฏิบัติงาน'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 relative z-10">
+          <div className="flex flex-wrap items-center gap-2 relative z-10 shrink-0">
             <button
               onClick={() => setIsPreviewModalOpen(true)}
-              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-[#1e40af] hover:bg-[#1e3a8a] text-white border border-[#1e40af] transition-all shadow-xs cursor-pointer"
-              title="ดูตัวอย่างเอกสารคู่มือฉบับจริง A4"
+              className="inline-flex items-center px-3.5 py-2 rounded-full text-xs font-bold bg-[#1e40af] hover:bg-[#1e3a8a] text-white border border-[#1e40af] transition-all shadow-xs cursor-pointer"
+              title="ดูตัวอย่างเอกสาร A4"
             >
-              <Eye className="w-4 h-4 mr-1.5 text-white" />
-              <span>{isEnglish ? 'Preview A4 Document' : 'ดูตัวอย่างเอกสาร A4'}</span>
+              <Eye className="w-3.5 h-3.5 mr-1.5 text-white" />
+              <span>{isEnglish ? 'Preview A4' : 'ดูตัวอย่าง A4'}</span>
             </button>
 
             <button
               onClick={() => handlePrint('standard-manual-doc')}
-              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 transition-colors shadow-xs cursor-pointer"
-              title="สั่งพิมพ์คู่มือฉบับมาตรฐาน A4 (8 หน้า)"
+              className="inline-flex items-center px-3.5 py-2 rounded-full text-xs font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 transition-colors shadow-xs cursor-pointer"
+              title="พิมพ์เอกสารมาตรฐาน A4"
             >
-              <Printer className="w-4 h-4 mr-1.5 text-slate-700" />
-              <span>{isEnglish ? 'Print Standard A4' : 'พิมพ์คู่มือมาตรฐาน A4'}</span>
+              <Printer className="w-3.5 h-3.5 mr-1.5 text-slate-700" />
+              <span>{isEnglish ? 'Print A4' : 'พิมพ์เอกสาร A4'}</span>
             </button>
           </div>
         </div>
@@ -1277,23 +1277,23 @@ export function ManualPage() {
                   setSelectedModule('all');
                 }}
                 className={cn(
-                  "p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between",
+                  "p-2.5 sm:p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-w-0 overflow-hidden",
                   selectedPart === 'all'
                     ? "bg-[#1e40af] text-white border-[#1e40af] shadow-xs"
                     : "bg-white hover:bg-blue-50/40 border-slate-200 hover:border-[#1e40af] text-slate-800 shadow-xs"
                 )}
               >
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
+                <div className="min-w-0">
+                  <div className="flex items-center justify-between mb-1.5 gap-1">
                     <span className={cn(
-                      "text-[10px] font-bold px-1.5 py-0.5 rounded",
+                      "text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0",
                       selectedPart === 'all' ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700 border border-slate-200"
                     )}>
                       ALL
                     </span>
-                    <span className="text-[10px] opacity-75 font-mono">12 โมดูล</span>
+                    <span className="text-[10px] opacity-75 font-mono shrink-0">12 โมดูล</span>
                   </div>
-                  <p className="font-bold text-xs leading-tight">
+                  <p className="font-bold text-xs leading-tight truncate">
                     {isEnglish ? 'All Parts' : 'ดูทุกส่วนงาน'}
                   </p>
                 </div>
@@ -1313,33 +1313,33 @@ export function ManualPage() {
                       setSelectedModule('all');
                     }}
                     className={cn(
-                      "p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between group",
+                      "p-2.5 sm:p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between group min-w-0 overflow-hidden",
                       isSelected
                         ? "bg-[#1e40af] text-white border-[#1e40af] shadow-xs"
                         : "bg-white hover:bg-blue-50/40 border-slate-200 hover:border-[#1e40af] text-slate-800 shadow-xs"
                     )}
                   >
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
+                    <div className="min-w-0">
+                      <div className="flex items-center justify-between mb-1.5 gap-1">
                         <span className={cn(
-                          "w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold border",
+                          "w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold border shrink-0",
                           isSelected ? "bg-white text-[#1e40af] border-white" : "bg-slate-100 text-slate-700 border-slate-200"
                         )}>
                           {p.partNumber}
                         </span>
                         <span className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded border",
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0",
                           isSelected ? "bg-white/20 text-white border-white/20" : "bg-slate-100 text-slate-700 border-slate-200"
                         )}>
-                          {p.moduleCount} โมดูล
+                          {p.moduleCount}
                         </span>
                       </div>
-                      <p className="font-bold text-xs leading-tight line-clamp-1">
-                        {isEnglish ? p.titleEn.split(':')[1] || p.titleEn : p.titleTh.split(':')[1] || p.titleTh}
+                      <p className="font-bold text-xs leading-tight truncate">
+                        {isEnglish ? (p.titleEn.split(':')[1]?.trim() || p.titleEn) : (p.titleTh.split(':')[1]?.trim() || p.titleTh)}
                       </p>
                     </div>
                     <p className={cn(
-                      "text-[10px] mt-1.5 line-clamp-1 leading-normal",
+                      "text-[10px] mt-1.5 truncate leading-normal",
                       isSelected ? "text-blue-100" : "text-slate-500 group-hover:text-slate-900"
                     )}>
                       {isEnglish ? p.summaryEn : p.summaryTh}

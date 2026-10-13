@@ -167,49 +167,46 @@ export function AIToolsHub() {
       <div className="bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]/70 text-slate-900 rounded-3xl p-6 sm:p-8 shadow-xs border border-slate-200 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-blue-100/50 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1.5 min-w-0 max-w-2xl">
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-[#1e40af] border border-blue-200 flex items-center gap-1.5">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-[#1e40af] border border-blue-200 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#1e40af]" />
-                {isEnglish ? 'Enterprise AI Self-Service' : 'ระบบ AI ผู้ช่วยและศูนย์ซ่อมแซมตัวเอง'}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 font-mono">
-                24/7 Always-On
+                {isEnglish ? 'AI Diagnostics' : 'ตรวจเช็คระบบ'}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
-              {isEnglish ? 'AI Copilot & Auto-Repair Hub' : 'ศูนย์ผู้ช่วย AI และระบบตรวจสอบ-ซ่อมแซมตนเอง'}
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-slate-900">
+              {isEnglish ? 'AI Assistant & System Diagnostics' : 'ผู้ช่วย AI และตรวจเช็คระบบ'}
             </h1>
-            <p className="text-slate-600 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
               {isEnglish 
-                ? 'Empowering teams to diagnose issues, resolve camera/cache blockers, and manage procurement operations without relying solely on IT admins.'
-                : 'ช่วยให้พนักงานและผู้ใช้งานทุกคนสามารถตรวจสอบ แก้ไขปัญหาทางเทคนิค และจัดการเครื่องมือได้ด้วยตนเองทันที โดยไม่ต้องรอแอดมิน'}
+                ? 'Diagnose hardware, resolve camera/cache issues, and ask procurement questions.'
+                : 'ตรวจสอบปัญหาฮาร์ดแวร์ กล้อง และสอบถามข้อมูลระบบผ่าน AI'}
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
             <button
               type="button"
               onClick={handleRunScan}
               disabled={isScanning}
-              className="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-800 rounded-full text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer border border-slate-200 shadow-xs"
+              className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 rounded-full text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200 shadow-xs"
             >
-              <RefreshCw className={`w-4 h-4 text-slate-700 ${isScanning ? 'animate-spin' : ''}`} />
-              <span>{isEnglish ? 'Scan System' : 'ตรวจสภาพระบบ'}</span>
+              <RefreshCw className={`w-3.5 h-3.5 text-slate-700 ${isScanning ? 'animate-spin' : ''}`} />
+              <span>{isEnglish ? 'Scan System' : 'ตรวจสภาพ'}</span>
             </button>
             <button
               type="button"
               onClick={handleRepairAll}
               disabled={repairingKey === 'all'}
-              className="px-4 py-2.5 bg-[#1e40af] hover:bg-[#1e3a8a] text-white rounded-full text-xs font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer border border-[#1e40af]"
+              className="px-3.5 py-2 bg-[#1e40af] hover:bg-[#1e3a8a] text-white rounded-full text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer border border-[#1e40af]"
             >
               {repairingKey === 'all' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
               ) : (
-                <ShieldCheck className="w-4 h-4 text-white" />
+                <ShieldCheck className="w-3.5 h-3.5 text-white" />
               )}
-              <span>{isEnglish ? '1-Click Auto-Repair All' : 'ซ่อมแซมระบบทั้งหมดอัตโนมัติ'}</span>
+              <span>{isEnglish ? 'Auto-Repair' : 'ซ่อมแซมอัตโนมัติ'}</span>
             </button>
           </div>
         </div>

@@ -220,64 +220,60 @@ export function IntegrationsPage() {
   return (
     <div className="space-y-6 pb-16 w-full">
       {/* MVP Mock Sandbox Notice */}
-      <div className="bg-slate-50 border border-slate-200 text-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#1e40af] text-white font-bold shrink-0">
-            <Sparkles className="w-5 h-5 text-white" />
+      <div className="bg-slate-50 border border-slate-200 text-slate-800 p-3 sm:p-3.5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-lg bg-[#1e40af] text-white font-bold shrink-0">
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xs sm:text-sm font-bold text-slate-900">
-                ระบบจำลองเพื่อการนำเสนอ (MVP Mock Preview & Simulation Sandbox)
+                {isEnglish ? 'Simulation Sandbox (Demo Only)' : 'โหมดจำลองสำหรับทดสอบ (Mock Sandbox)'}
               </h2>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-[#1e40af] border border-blue-200 uppercase">
-                Demo Only
-              </span>
             </div>
-            <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-              ฟังก์ชันเชื่อมต่อ API และคลาวด์ทั้งหมดถูกกำหนดให้อยู่ในโหมดจำลอง (Mock Sandbox) สำหรับการนำเสนอผู้บริหาร/ผู้มีส่วนได้ส่วนเสีย ไม่มีการส่งข้อมูลจริงไปยังระบบภายนอก
+            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+              {isEnglish ? 'Simulated API connectors for testing. No external data is transmitted.' : 'ฟังก์ชันจำลองสำหรับทดสอบการทำงาน ไม่มีการส่งข้อมูลจริงไปยังภายนอก'}
             </p>
           </div>
         </div>
         <div className="shrink-0 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs shadow-2xs">
-            <ShieldCheck className="w-4 h-4 text-[#1e40af]" />
-            Sandbox Locked
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold text-xs shadow-2xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#1e40af]" />
+            Sandbox
           </span>
         </div>
       </div>
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]/70 text-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-2 max-w-2xl">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="p-2 rounded-xl bg-blue-50 text-[#1e40af] border border-blue-200/80">
-                <Cloud className="w-5 h-5 text-[#1e40af]" />
+      <div className="bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]/70 text-slate-900 p-5 sm:p-7 rounded-3xl border border-slate-200 shadow-xs relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-1.5 max-w-2xl min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="p-1.5 rounded-lg bg-blue-50 text-[#1e40af] border border-blue-200/80">
+                <Cloud className="w-4 h-4 text-[#1e40af]" />
               </span>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                {isEnglish ? 'Serverless Cloud & Plugins Integration' : 'ศูนย์เชื่อมต่อคลาวด์และปลั๊กอิน (Cloud & Plugins)'}
+                {isEnglish ? 'Cloud Integrations' : 'เชื่อมต่อระบบภายนอก (Integrations)'}
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-[#1e40af] border border-blue-200 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#1e40af]" />
-                100% Serverless • ไม่ต้องมีเซิร์ฟเวอร์
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-[#1e40af] border border-blue-200 flex items-center gap-1">
+                Serverless
               </span>
             </div>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               {isEnglish 
-                ? 'Connect easily to Google Sheets as a live database, Google Drive, Dropbox, and LINE Notify directly from your browser. Perfect for construction teams without dedicated IT infrastructure.' 
-                : 'เชื่อมต่อเครื่องมือที่ทุกคนใช้งานง่าย: ใช้ Google Sheets เป็นฐานข้อมูลสด, Google Drive และ Dropbox สำหรับเก็บเอกสารและแบบ CAD, พร้อมระบบแจ้งเตือนเข้ากลุ่ม LINE หน้างาน ทำงานได้ทันทีบนคอมพิวเตอร์ของคุณโดยไม่ต้องเช่าเซิร์ฟเวอร์ราคาแพง'}
+                ? 'Connect with Google Sheets, Google Drive, Dropbox, and LINE alerts directly from your browser.' 
+                : 'เชื่อมต่อ Google Sheets, Google Drive, Dropbox และการแจ้งเตือน LINE'}
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             <button
               type="button"
               onClick={handleCloudBackup}
-              className="px-4 py-2.5 rounded-full bg-[#1e40af] hover:bg-[#1e3a8a] text-white text-xs font-bold shadow-xs flex items-center gap-2 cursor-pointer transition-all"
+              className="px-4 py-2 rounded-full bg-[#1e40af] hover:bg-[#1e3a8a] text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
             >
-              <Download className="w-4 h-4 text-white" />
-              {isEnglish ? 'Instant Cloud Backup' : 'สำรองข้อมูลทั้งระบบ (1-Click Backup)'}
+              <Download className="w-3.5 h-3.5 text-white" />
+              {isEnglish ? 'Cloud Backup' : 'สำรองข้อมูล'}
             </button>
           </div>
         </div>

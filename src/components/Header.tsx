@@ -7,7 +7,6 @@ import { useNotifications, NotificationType } from '../contexts/NotificationCont
 import { useAuth, UserRole } from '../contexts/AuthContext';
 import { useProcurement } from '../contexts/ProcurementContext';
 import { LanguageToggle } from './LanguageToggle';
-import { PWAInstallButton } from './PWAInstallButton';
 
 export interface HeaderProps {
   onMenuClick: () => void;
@@ -121,9 +120,6 @@ export function Header({
       </div>
       
       <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
-        {/* PWA Install Button */}
-        <PWAInstallButton />
-
         {/* Notifications Dropdown */}
         <div className="relative" ref={notifRef}>
           <button 
@@ -350,7 +346,7 @@ export function Header({
                 <div className="flex items-center justify-between mb-2 px-1 shrink-0">
                   <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                     <Shield className="w-3.5 h-3.5 text-indigo-600" />
-                    {isEnglish ? 'Switch Persona (Demo & Testing)' : 'สลับบทบาทจำลอง (ทดสอบการทำงาน)'}
+                    {isEnglish ? 'Switch Persona' : 'สลับบทบาทจำลอง'}
                   </span>
                   <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">
                     Active
@@ -407,9 +403,9 @@ export function Header({
                   onClick={() => setShowUserMenu(false)}
                   className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
                 >
-                  <span className="flex items-center gap-2">
-                    <UserCheck className="w-3.5 h-3.5 text-slate-400" />
-                    {isEnglish ? 'User & Role Management' : 'จัดการผู้ใช้งานและสิทธิ์'}
+                  <span className="flex items-center gap-2 truncate">
+                    <UserCheck className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <span>{isEnglish ? 'Users & Roles' : 'ผู้ใช้งานและสิทธิ์'}</span>
                   </span>
                   <span className="text-[11px] text-slate-400">&rarr;</span>
                 </Link>
@@ -418,7 +414,7 @@ export function Header({
                   onClick={() => setShowUserMenu(false)}
                   className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
                 >
-                  <span>{isEnglish ? 'System Settings' : 'ตั้งค่าระบบ'}</span>
+                  <span className="truncate">{isEnglish ? 'Settings' : 'ตั้งค่าระบบ'}</span>
                   <span className="text-[11px] text-slate-400">&rarr;</span>
                 </Link>
                 <Link
@@ -426,9 +422,9 @@ export function Header({
                   onClick={() => setShowUserMenu(false)}
                   className="px-3 py-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 flex items-center justify-between transition-colors font-semibold"
                 >
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                    {isEnglish ? 'User Manual & Guides' : 'คู่มือการใช้งานระบบ'}
+                  <span className="flex items-center gap-2 truncate">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                    <span>{isEnglish ? 'User Manual' : 'คู่มือระบบ'}</span>
                   </span>
                   <span className="text-[11px] text-indigo-500">&rarr;</span>
                 </Link>
@@ -437,9 +433,9 @@ export function Header({
                   onClick={() => setShowUserMenu(false)}
                   className="px-3 py-1.5 rounded-lg text-purple-700 hover:bg-purple-50 flex items-center justify-between transition-colors font-semibold"
                 >
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                    {isEnglish ? 'AI Copilot & Auto-Repair' : 'AI ผู้ช่วย & ซ่อมแซมระบบ'}
+                  <span className="flex items-center gap-2 truncate">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <span>{isEnglish ? 'AI Assistant' : 'ผู้ช่วย AI'}</span>
                   </span>
                   <span className="text-[11px] text-purple-500">&rarr;</span>
                 </Link>
@@ -449,16 +445,16 @@ export function Header({
                     type="button"
                     onClick={() => {
                       setShowUserMenu(false);
-                      if (window.confirm(isEnglish ? 'Load Enterprise Sales Demo Preset (Sample Thai Contractor sites, PRs, POs, Inventory)?' : 'โหลดชุดข้อมูลสาธิตระดับองค์กรสำหรับนำเสนอขาย (โครงการก่อสร้าง, PR, PO, คลังสินค้า)?')) {
+                      if (window.confirm(isEnglish ? 'Load Enterprise Sales Demo Preset?' : 'โหลดชุดข้อมูลสาธิตระดับองค์กร?')) {
                         loadEnterpriseDemoPreset();
                         window.location.reload();
                       }
                     }}
                     className="w-full px-3 py-1.5 rounded-lg text-amber-800 bg-amber-50 hover:bg-amber-100/80 flex items-center justify-between transition-colors font-semibold text-xs cursor-pointer border border-amber-200/60"
                   >
-                    <span className="flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-amber-600" />
-                      {isEnglish ? 'Load Enterprise Demo Preset' : 'โหลดชุดข้อมูลสาธิตสำหรับขาย'}
+                    <span className="flex items-center gap-2 truncate">
+                      <Layers className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>{isEnglish ? 'Load Demo Preset' : 'โหลดข้อมูลสาธิต'}</span>
                     </span>
                     <span className="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-bold">1-Click</span>
                   </button>
@@ -476,8 +472,8 @@ export function Header({
                     className="w-full px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 flex items-center justify-between transition-colors font-medium cursor-pointer"
                   >
                     <span className="flex items-center gap-2">
-                      <LogOut className="w-3.5 h-3.5 text-rose-500" />
-                      {isEnglish ? 'Log Out' : 'ออกจากระบบ'}
+                      <LogOut className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                      <span>{isEnglish ? 'Log Out' : 'ออกจากระบบ'}</span>
                     </span>
                     <span className="text-[10px] text-rose-400">Exit</span>
                   </button>

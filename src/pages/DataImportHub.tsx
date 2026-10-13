@@ -315,18 +315,18 @@ export function DataImportHub() {
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                {isEnglish ? 'Universal Data Import & Integration Hub' : 'ศูนย์นำเข้าข้อมูลและผสานระบบองค์กร'}
+              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                {isEnglish ? 'Universal Data Import' : 'ศูนย์นำเข้าข้อมูล (Data Import)'}
               </h1>
               <span className="heading-badge heading-badge-emerald shadow-2xs">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                {isEnglish ? 'AI Auto-Detect & Map' : 'ระบบจับคู่อัตโนมัติ'}
+                {isEnglish ? 'Auto-Detect' : 'จับคู่อัตโนมัติ'}
               </span>
             </div>
             <p className="text-sm text-slate-500 mt-1 max-w-2xl">
               {isEnglish 
-                ? 'Import master company data seamlessly across Excel (.xlsx), CSV, CAD (.dxf, .dwg), PDF, Word (.docx), and JSON into Inventory, PR/BOQ, and Vendors.' 
-                : 'รองรับการนำเข้าไฟล์เอกสารและสายงานก่อสร้างทุกรูปแบบ Excel (.xlsx), CSV, CAD (.dxf, .dwg), PDF, Word (.docx) และ JSON เพื่อเชื่อมต่อไปยังระบบคลังสินค้า, ใบขอซื้อ/BOQ และคู่ค้าอัตโนมัติ'}
+                ? 'Import master data via Excel, CSV, CAD, PDF, Word, or JSON into Inventory and Vendors.' 
+                : 'นำเข้าสต็อก พัสดุ BOQ และคู่ค้า จากไฟล์ Excel, CSV, CAD, PDF หรือ JSON'}
             </p>
           </div>
         </div>
