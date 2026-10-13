@@ -2128,7 +2128,7 @@ export function SettingsPage() {
                 <button
                   type="button"
                   onClick={resetToDefaultTheme}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition-colors shrink-0 cursor-pointer self-start sm:self-auto"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 sm:py-1.5 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition-colors shrink-0 cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
                   {isEnglish ? 'Reset to Default' : 'คืนค่าธีมเริ่มต้น'}
@@ -2243,24 +2243,24 @@ export function SettingsPage() {
               </div>
 
               {/* Eye Comfort Warmth Filter Section */}
-              <div className="p-5 rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/60 to-orange-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200 shadow-2xs mt-0.5">
-                    <Sun className="w-5 h-5 text-amber-600" />
+              <div className="p-4 sm:p-5 rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/60 to-orange-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex items-start gap-3 min-w-0">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200 shadow-2xs mt-0.5">
+                    <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-bold text-slate-900">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-900">
                         {isEnglish ? 'Eye Comfort Filter (True-Tone Warmth)' : 'โหมดถนอมสายตา (ตัวกรองแสงสีฟ้า / True Tone)'}
                       </h4>
                       <span className={cn(
-                        "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                        "text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0",
                         eyeComfortMode ? "bg-amber-600 text-white" : "bg-slate-200 text-slate-700"
                       )}>
                         {eyeComfortMode ? (isEnglish ? 'Active' : 'เปิดใช้งาน') : (isEnglish ? 'Off' : 'ปิด')}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed max-w-xl">
+                    <p className="text-[11px] sm:text-xs text-slate-600 mt-1 leading-relaxed max-w-xl">
                       {isEnglish
                         ? 'Applies a calibrated warm tone across the UI to filter out high-energy visible blue light (HEV). Recommended when working for hours in indoor LED lighting or at night.'
                         : 'ปรับเฉดสีทั้งระบบให้อุ่นนวลขึ้นแบบ True-Tone ช่วยกรองแสงสีฟ้าความถี่สูง (HEV Blue Light) จากหน้าจอ เหมาะสำหรับผู้ที่ต้องนั่งทำงานหน้าจอนานกว่า 6-8 ชั่วโมงต่อวัน หรือทำงานช่วงเย็น/ค่ำ'}
@@ -2268,7 +2268,10 @@ export function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2.5 sm:pt-0 border-t border-amber-200/60 sm:border-t-0">
+                  <span className="text-xs font-semibold text-amber-900 sm:hidden">
+                    {eyeComfortMode ? (isEnglish ? 'True-Tone Enabled' : 'เปิดโหมดอุ่นสายตา') : (isEnglish ? 'True-Tone Disabled' : 'ปิดโหมดอุ่นสายตา')}
+                  </span>
                   <button
                     type="button"
                     onClick={() => setEyeComfortMode(!eyeComfortMode)}
@@ -2432,11 +2435,11 @@ export function SettingsPage() {
           )}
 
           {/* Action Footer */}
-          <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+          <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
             <button 
               onClick={handleSave}
               disabled={isSaving}
-              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-70"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 sm:py-2 bg-indigo-600 text-white rounded-xl sm:rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-70 cursor-pointer"
             >
               {isSaving ? (
                 <>บันทึกข้อมูล...</>

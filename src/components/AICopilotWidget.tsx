@@ -54,28 +54,56 @@ export function AICopilotWidget() {
   // Edge Docking & Touch Slide Gesture State
   const [isHovered, setIsHovered] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchDeltaX, setTouchDeltaX] = useState(0);
+
+  // Mobile drawer swipe-to-dismiss gesture state
+  const [drawerTouchStartX, setDrawerTouchStartX] = useState<number | null>(null);
+  const [drawerTouchStartY, setDrawerTouchStartY] = useState<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
+    setTouchStartY(e.touches[0].clientY);
     setTouchDeltaX(0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
+    if (touchStartX === null || touchStartY === null) return;
     const currentX = e.touches[0].clientX;
-    const diff = touchStartX - currentX; // positive when swiping/dragging left
-    if (diff > 0) {
-      setTouchDeltaX(Math.min(diff, 120));
+    const currentY = e.touches[0].clientY;
+    const diffX = touchStartX - currentX; // positive when swiping/dragging left
+    const diffY = Math.abs(touchStartY - currentY);
+    // Only capture if swipe is predominantly horizontal
+    if (diffX > 0 && diffX > diffY) {
+      setTouchDeltaX(Math.min(diffX, 120));
     }
   };
 
   const handleTouchEnd = () => {
-    if (touchDeltaX > 35) {
+    if (touchDeltaX > 30) {
       setIsOpen(true);
     }
     setTouchStartX(null);
+    setTouchStartY(null);
     setTouchDeltaX(0);
+  };
+
+  const handleDrawerTouchStart = (e: React.TouchEvent) => {
+    setDrawerTouchStartX(e.touches[0].clientX);
+    setDrawerTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleDrawerTouchEnd = (e: React.TouchEvent) => {
+    if (drawerTouchStartX === null || drawerTouchStartY === null) return;
+    const currentX = e.changedTouches[0].clientX;
+    const currentY = e.changedTouches[0].clientY;
+    const diffX = currentX - drawerTouchStartX; // positive when swiping right (towards edge)
+    const diffY = Math.abs(currentY - drawerTouchStartY);
+    if (diffX > 60 && diffX > diffY) {
+      setIsOpen(false);
+    }
+    setDrawerTouchStartX(null);
+    setDrawerTouchStartY(null);
   };
 
   // Chat State
@@ -316,40 +344,44 @@ export function AICopilotWidget() {
             onClick={() => setIsOpen(false)}
           />
 
-          <div className={`relative flex flex-col bg-white shadow-2xl transition-all duration-300 z-10 w-full sm:w-[540px] ${
+          <div 
+            onTouchStart={handleDrawerTouchStart}
+            onTouchEnd={handleDrawerTouchEnd}
+            className={`relative flex flex-col bg-white shadow-2xl transition-all duration-300 z-10 w-full sm:w-[540px] ${
             isExpanded ? 'sm:w-[780px]' : ''
-          } h-[100dvh] border-l border-slate-200 animate-in slide-in-from-right duration-300`}>
+          } h-[100dvh] border-l border-slate-200 animate-in slide-in-from-right duration-300`}
+          >
             
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-950/40 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-md">
-                  <Bot className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-between px-3.5 sm:px-4 py-3 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-950/40 shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-md shrink-0">
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="font-bold text-sm tracking-tight text-white">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="font-bold text-xs sm:text-sm tracking-tight text-white truncate">
                       Conerage AI Copilot
                     </h3>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">
+                    <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">
                       24/7 Active
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-300">
+                  <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
                     {isEnglish ? 'Self-Service Assistant & Auto-Repair' : 'ศูนย์ผู้ช่วยแก้ปัญหาและซ่อมแซมระบบอัตโนมัติ'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-1 px-2.5 py-1 text-xs text-indigo-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer mr-0.5"
+                  className="flex items-center gap-1 px-2 sm:px-2.5 py-1 text-xs text-indigo-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer mr-0.5"
                   title={isEnglish ? 'Fold back to edge' : 'พับเก็บติดขอบจอ'}
                 >
                   <ChevronRight className="w-4 h-4" />
-                  <span className="text-[11px] font-medium hidden sm:inline">{isEnglish ? 'Fold' : 'พับติดขอบจอ'}</span>
+                  <span className="text-[10.5px] sm:text-[11px] font-medium">{isEnglish ? 'Fold' : 'พับติดขอบ'}</span>
                 </button>
                 <button
                   type="button"
@@ -525,7 +557,7 @@ export function AICopilotWidget() {
                 </div>
 
                 {/* Chat Input Bar */}
-                <div className="p-3 bg-white border-t border-slate-200 shrink-0">
+                <div className="p-3 bg-white border-t border-slate-200 shrink-0 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
@@ -822,7 +854,7 @@ export function AICopilotWidget() {
             )}
 
             {/* Footer Status Banner */}
-            <div className="px-4 py-2 bg-slate-100 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
+            <div className="px-4 py-2 bg-slate-100 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 shrink-0 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                 <span>{isEnglish ? 'Conerage AI Engine: Ready' : 'ระบบ AI อัตโนมัติ: พร้อมบริการ 24 ชม.'}</span>
