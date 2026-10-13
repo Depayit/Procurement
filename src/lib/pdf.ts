@@ -108,151 +108,127 @@ export const exportToPDF = async (elementId: string, filename: string) => {
 };
 
 /**
- * Triggers native browser print for the document.
- * On Mobile: Invokes native window.print() (AirPrint / Save as PDF) directly with calibrated @media print styles.
- * On Desktop: Uses an isolated iframe to guarantee 100% exact A4 paper scale without modal distortion or clipping.
+ * Triggers native browser print for standard documents with 100% precision.
+ * Uses an isolated print mount container attached directly to <body>.
+ * Guarantees:
+ * - Document starts immediately on Page 1 (Zero preceding blank pages!)
+ * - Zero excessive top margin drift
+ * - Full fidelity for all Tailwind CSS classes, fonts, SVG icons, and print colors
+ * - Seamless support across all platforms: Android Chrome, iOS Safari, Desktop Chrome/Edge/Firefox
  */
 export const printA4Document = (elementId: string, docTitle?: string) => {
-  const element = document.getElementById(elementId);
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  const element = document.getElementById(elementId) || 
+                  document.querySelector<HTMLElement>(`#${elementId}, .standard-a4-doc, .standard-manual-doc`);
+
   if (!element) {
     console.warn(`Element ${elementId} not found, falling back to window.print()`);
     window.print();
     return;
   }
 
-  // Set document title temporarily for clean PDF filename in "Save as PDF"
   const originalTitle = document.title;
   if (docTitle) {
     document.title = docTitle;
   }
 
-  // Detect mobile or small touch screen devices
-  const isMobile = typeof navigator !== 'undefined' && (
-    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-    (typeof window !== 'undefined' && window.innerWidth < 768)
-  );
-
-  if (isMobile) {
-    // Mobile browsers (Safari iOS, Chrome Mobile) restrict iframe printing.
-    // Trigger window.print() directly so native AirPrint / Save as PDF uses @media print styles.
-    window.print();
-    if (docTitle) {
-      setTimeout(() => {
-        document.title = originalTitle;
-      }, 1500);
-    }
-    return;
+  // Remove any stale print mount container from previous print sessions
+  const existingMount = document.getElementById('procuresync-print-mount');
+  if (existingMount) {
+    existingMount.remove();
   }
 
-  // Desktop: Create an isolated iframe for clean, unclipped print output
-  const iframe = document.createElement('iframe');
-  iframe.style.position = 'fixed';
-  iframe.style.right = '0';
-  iframe.style.bottom = '0';
-  iframe.style.width = '1px';
-  iframe.style.height = '1px';
-  iframe.style.border = '0';
-  iframe.style.opacity = '0.01';
-  iframe.style.pointerEvents = 'none';
-  document.body.appendChild(iframe);
+  // Create clean isolated container directly under <body>
+  const printMount = document.createElement('div');
+  printMount.id = 'procuresync-print-mount';
 
-  const iframeDoc = iframe.contentWindow?.document;
-  if (!iframeDoc) {
-    window.print();
-    if (docTitle) {
-      setTimeout(() => {
-        document.title = originalTitle;
-      }, 1000);
-    }
-    return;
-  }
-
-  // Clone document content and strip out print-hidden items
+  // Deep clone target document element
   const clone = element.cloneNode(true) as HTMLElement;
+
+  // Strip out any UI controls marked as print-hidden (buttons, toggles, zoom pickers)
   clone.querySelectorAll('.print-hidden').forEach(el => el.remove());
 
-  iframeDoc.open();
-  iframeDoc.write(`
-    <!DOCTYPE html>
-    <html lang="th">
-      <head>
-        <meta charset="utf-8" />
-        <title>${docTitle || 'เอกสารจัดซื้อมาตรฐาน A4'}</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-        <style>
-          @page {
-            size: A4 portrait;
-            margin: 8mm 6mm;
-          }
-          * {
-            box-sizing: border-box;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          html, body {
-            margin: 0;
-            padding: 0;
-            background: #ffffff;
-            color: #000000;
-            font-family: 'Inter', 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 11pt;
-            line-height: 1.5;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            width: 100%;
-          }
-          .standard-a4-doc {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 auto !important;
-            padding: 0 !important;
-            border: none !important;
-            box-shadow: none !important;
-            background-color: #ffffff !important;
-            transform: none !important;
-          }
-          table {
-            border-collapse: collapse;
-            width: 100%;
-          }
-          th, td {
-            box-sizing: border-box;
-          }
-          .print-hidden {
-            display: none !important;
-          }
-        </style>
-        ${Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-          .map(style => style.outerHTML)
-          .join('\n')}
-      </head>
-      <body>
-        ${clone.outerHTML}
-      </body>
-    </html>
-  `);
-  iframeDoc.close();
+  // Reset any zoom scales or viewport preview transforms from modal viewports
+  clone.style.transform = 'none';
+  clone.style.width = '100%';
+  clone.style.maxWidth = '100%';
+  clone.style.minWidth = '0';
+  clone.style.minHeight = '0';
+  clone.style.margin = '0 auto';
+  clone.style.padding = '0';
+  clone.style.boxShadow = 'none';
+  clone.style.border = 'none';
 
-  // Wait for fonts and styles to initialize in iframe
+  printMount.appendChild(clone);
+  document.body.appendChild(printMount);
+  document.body.classList.add('procuresync-print-active');
+
+  let cleanedUp = false;
+  const cleanup = () => {
+    if (cleanedUp) return;
+    cleanedUp = true;
+    document.body.classList.remove('procuresync-print-active');
+    const mount = document.getElementById('procuresync-print-mount');
+    if (mount) {
+      mount.remove();
+    }
+    if (docTitle) {
+      document.title = originalTitle;
+    }
+    window.removeEventListener('afterprint', cleanup);
+  };
+
+  window.addEventListener('afterprint', cleanup, { once: true });
+
+  // Brief timeout to allow DOM repaint & stylesheet calculation before triggering native print spooler
   setTimeout(() => {
     try {
-      iframe.contentWindow?.focus();
-      iframe.contentWindow?.print();
-    } catch (e) {
-      console.error('Iframe print error, falling back to window.print()', e);
       window.print();
     } finally {
-      if (docTitle) {
-        document.title = originalTitle;
-      }
-      // Clean up iframe after print dialog finishes
-      setTimeout(() => {
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-      }, 2000);
+      // Fallback cleanup timer (Android and older iOS webviews may occasionally skip the afterprint event)
+      setTimeout(cleanup, 2500);
     }
-  }, 350);
+  }, 80);
 };
+
+// Global listener for native keyboard shortcuts (Ctrl+P / Cmd+P) or browser menu "Print"
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeprint', () => {
+    // Only auto-mount if not already triggered programmatically by printA4Document()
+    if (!document.body.classList.contains('procuresync-print-active')) {
+      const activeDoc = document.querySelector<HTMLElement>(
+        '#preview-pr-doc, #standard-pr-doc, #po-document-view, #standard-pr-doc-approval, #standard-manual-doc-modal, #standard-manual-doc, .standard-a4-doc'
+      );
+      if (activeDoc) {
+        const existingMount = document.getElementById('procuresync-print-mount');
+        if (existingMount) existingMount.remove();
+
+        const printMount = document.createElement('div');
+        printMount.id = 'procuresync-print-mount';
+
+        const clone = activeDoc.cloneNode(true) as HTMLElement;
+        clone.querySelectorAll('.print-hidden').forEach(el => el.remove());
+        clone.style.transform = 'none';
+        clone.style.width = '100%';
+        clone.style.maxWidth = '100%';
+        clone.style.minWidth = '0';
+        clone.style.minHeight = '0';
+        clone.style.margin = '0 auto';
+        clone.style.padding = '0';
+        clone.style.boxShadow = 'none';
+        clone.style.border = 'none';
+
+        printMount.appendChild(clone);
+        document.body.appendChild(printMount);
+        document.body.classList.add('procuresync-print-active');
+      }
+    }
+  });
+
+  window.addEventListener('afterprint', () => {
+    document.body.classList.remove('procuresync-print-active');
+    const mount = document.getElementById('procuresync-print-mount');
+    if (mount) mount.remove();
+  });
+}

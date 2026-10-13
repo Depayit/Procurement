@@ -217,7 +217,7 @@ html {
 /* Standard A4 Page Setup for Browser Print */
 @page {
   size: A4 portrait;
-  margin: 8mm 6mm;
+  margin: 6mm 6mm;
 }
 
 @media print {
@@ -243,84 +243,55 @@ html {
     overflow: visible !important;
   }
 
-  /* Hide app navigation, headers, controls, modals overlays and buttons during print */
-  nav, aside, header, footer, .print-hidden, button, [role="button"], input, select, textarea {
-    display: none !important;
-  }
-
-  /* Unconstrain modals, fixed overlays, and scrollable wrappers so mobile print does not clip */
-  .fixed,
-  .absolute,
-  .modal-backdrop,
-  [role="dialog"],
-  .print-area,
-  .print-area > div,
-  .overflow-y-auto,
-  .overflow-x-auto,
-  .overflow-hidden,
-  main {
-    position: static !important;
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
-    max-width: none !important;
-    width: 100% !important;
-    transform: none !important;
-    padding: 0 !important;
+  /* =========================================================================
+     1. ISOLATED MOUNT PRINTING (Active when printing standard documents)
+     Eliminates preceding blank pages, skips layout offsets, and starts at top of Page 1!
+     ========================================================================= */
+  body.procuresync-print-active {
+    background: #ffffff !important;
     margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    inset: auto !important;
+    padding: 0 !important;
   }
 
-  /* Crucial for Mobile: Reset any scale transforms (e.g. scale-[0.45] on mobile preview screen) */
-  [class*="scale-"],
-  div[class*="scale-"] {
-    transform: none !important;
-    transform-origin: top left !important;
-    height: auto !important;
-    max-height: none !important;
+  /* Completely remove #root and other direct children from layout calculation */
+  body.procuresync-print-active > *:not(#procuresync-print-mount),
+  body.procuresync-print-active #root {
+    display: none !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+  }
+
+  /* Display ONLY the isolated print mount starting immediately on Page 1 */
+  body.procuresync-print-active #procuresync-print-mount {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
     width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  /* Isolate only the standard A4 document targets during print */
-  #standard-pr-doc,
-  #standard-pr-doc *,
-  #po-document-view,
-  #po-document-view *,
-  #standard-pr-doc-approval,
-  #standard-pr-doc-approval *,
-  #preview-pr-doc,
-  #preview-pr-doc *,
-  #standard-manual-doc,
-  #standard-manual-doc *,
-  #standard-manual-doc-modal,
-  #standard-manual-doc-modal *,
-  #pdf-content,
-  #pdf-content *,
-  .standard-a4-doc,
-  .standard-a4-doc *,
-  .standard-manual-doc,
-  .standard-manual-doc * {
+  body.procuresync-print-active #procuresync-print-mount * {
     visibility: visible !important;
   }
 
-  /* Scale document accurately to 100% standard A4 paper width */
-  #standard-pr-doc,
-  #po-document-view,
-  #standard-pr-doc-approval,
-  #preview-pr-doc,
-  #pdf-content,
-  .standard-a4-doc {
+  body.procuresync-print-active #procuresync-print-mount .standard-a4-doc,
+  body.procuresync-print-active #procuresync-print-mount [id*="pr-doc"],
+  body.procuresync-print-active #procuresync-print-mount [id*="po-document"],
+  body.procuresync-print-active #procuresync-print-mount [id*="manual-doc"],
+  body.procuresync-print-active #procuresync-print-mount .standard-manual-doc {
     position: static !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
+    min-height: 0 !important;
     margin: 0 auto !important;
     padding: 0 !important;
     border: none !important;
@@ -329,22 +300,28 @@ html {
     display: block !important;
     box-sizing: border-box !important;
     transform: none !important;
+    break-before: avoid !important;
+    page-break-before: avoid !important;
   }
 
-  /* Multi-page standard manual print flow */
-  #standard-manual-doc,
-  #standard-manual-doc-modal,
-  .standard-manual-doc {
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: #ffffff !important;
-    display: block !important;
-    box-sizing: border-box !important;
+  /* =========================================================================
+     2. DIRECT / IN-PAGE PRINTING (For full page reports like Users or Reports)
+     ========================================================================= */
+  body:not(.procuresync-print-active) nav,
+  body:not(.procuresync-print-active) aside,
+  body:not(.procuresync-print-active) header,
+  body:not(.procuresync-print-active) footer,
+  body:not(.procuresync-print-active) .print-hidden,
+  body:not(.procuresync-print-active) button,
+  body:not(.procuresync-print-active) [role="button"],
+  body:not(.procuresync-print-active) input,
+  body:not(.procuresync-print-active) select,
+  body:not(.procuresync-print-active) textarea {
+    display: none !important;
+  }
+
+  .print-hidden {
+    display: none !important;
   }
 
   .page-break-always {
