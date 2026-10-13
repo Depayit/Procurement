@@ -10,6 +10,7 @@ export const en: Record<string, string> = {
   'nav.reports': 'Reports',
   'nav.users': 'Users',
   'nav.manual': 'User Manual',
+  'nav.aiTools': 'AI Copilot & Auto-Repair',
   'nav.dataImport': 'Data Import Hub',
   'nav.integrations': 'Cloud & Integrations',
   'nav.settings': 'Settings',

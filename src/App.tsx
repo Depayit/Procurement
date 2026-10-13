@@ -7,6 +7,7 @@ import { ProcurementProvider } from './contexts/ProcurementContext';
 import { Layout } from './components/Layout';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { RealtimeUpdateModal } from './components/RealtimeUpdateModal';
+import { AICopilotWidget } from './components/AICopilotWidget';
 import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { lazyWithRetry } from './lib/lazyRetry';
@@ -24,6 +25,7 @@ const SettingsPage = lazyWithRetry(() => import('./pages/Settings').then(m => ({
 const ReportsPage = lazyWithRetry(() => import('./pages/Reports').then(m => ({ default: m.ReportsPage })), 'Reports');
 const UsersPage = lazyWithRetry(() => import('./pages/Users').then(m => ({ default: m.UsersPage })), 'Users');
 const ManualPage = lazyWithRetry(() => import('./pages/Manual').then(m => ({ default: m.ManualPage })), 'Manual');
+const AIToolsHub = lazyWithRetry(() => import('./pages/AIToolsHub').then(m => ({ default: m.AIToolsHub })), 'AIToolsHub');
 const DataImportHub = lazyWithRetry(() => import('./pages/DataImportHub').then(m => ({ default: m.DataImportHub })), 'DataImportHub');
 const IntegrationsPage = lazyWithRetry(() => import('./pages/Integrations').then(m => ({ default: m.IntegrationsPage })), 'Integrations');
 
@@ -152,6 +154,11 @@ export default function App() {
                       <ManualPage />
                     </Suspense>
                   } />
+                  <Route path="ai-tools" element={
+                    <Suspense fallback={<PageLoadingSkeleton />}>
+                      <AIToolsHub />
+                    </Suspense>
+                  } />
                   <Route path="import" element={
                     <Suspense fallback={<PageLoadingSkeleton />}>
                       <DataImportHub />
@@ -172,6 +179,7 @@ export default function App() {
               </Routes>
               <OfflineIndicator />
               <RealtimeUpdateModal />
+              <AICopilotWidget />
             </BrowserRouter>
           </ProcurementProvider>
         </AuthProvider>

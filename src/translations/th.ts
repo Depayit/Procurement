@@ -10,6 +10,7 @@ export const th = {
   'nav.reports': 'รายงาน',
   'nav.users': 'ผู้ใช้งาน',
   'nav.manual': 'คู่มือการใช้งาน',
+  'nav.aiTools': 'AI ผู้ช่วย & ซ่อมแซมระบบ',
   'nav.dataImport': 'ศูนย์นำเข้าข้อมูล (Data Hub)',
   'nav.integrations': 'เชื่อมต่อคลาวด์/API (Cloud Sync)',
   'nav.settings': 'ตั้งค่า',

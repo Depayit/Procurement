@@ -14,7 +14,8 @@ import {
   X, 
   Lock,
   UploadCloud,
-  Cloud
+  Cloud,
+  Bot
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useEffect } from 'react';
@@ -44,6 +45,7 @@ const navItems: NavItem[] = [
   { key: 'nav.reports', path: '/reports', icon: BarChart3, requiredPerm: 'reports:view' },
   { key: 'nav.users', path: '/users', icon: Users, requiredPerm: 'users:view' },
   { key: 'nav.manual', path: '/manual', icon: BookOpen },
+  { key: 'nav.aiTools', path: '/ai-tools', icon: Bot },
   { key: 'nav.settings', path: '/settings', icon: Settings, requiredPerm: 'settings:view' },
 ];
 

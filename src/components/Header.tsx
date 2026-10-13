@@ -270,6 +270,19 @@ export function Header({
           )}
         </div>
         
+        {/* AI Copilot & Diagnostics Quick Trigger */}
+        <button
+          type="button"
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent('app:open-ai-copilot'));
+          }}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 text-indigo-700 border border-indigo-200/80 transition-all cursor-pointer shadow-2xs group"
+          title={isEnglish ? 'Open AI Copilot & Diagnostics' : 'เปิด AI ผู้ช่วยและศูนย์ซ่อมแซมระบบ'}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-bold hidden sm:inline">AI Copilot</span>
+        </button>
+
         {/* Language Switcher */}
         <LanguageToggle />
 
@@ -402,6 +415,17 @@ export function Header({
                     {isEnglish ? 'User Manual & Guides' : 'คู่มือการใช้งานระบบ'}
                   </span>
                   <span className="text-[11px] text-indigo-500">&rarr;</span>
+                </Link>
+                <Link
+                  to="/ai-tools"
+                  onClick={() => setShowUserMenu(false)}
+                  className="px-3 py-1.5 rounded-lg text-purple-700 hover:bg-purple-50 flex items-center justify-between transition-colors font-semibold"
+                >
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                    {isEnglish ? 'AI Copilot & Auto-Repair' : 'AI ผู้ช่วย & ซ่อมแซมระบบ'}
+                  </span>
+                  <span className="text-[11px] text-purple-500">&rarr;</span>
                 </Link>
 
                 <div className="pt-1 mt-1 border-t border-slate-100">

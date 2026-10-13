@@ -1210,7 +1210,7 @@ export function StandardManualDocument({
                 <div className="p-2 rounded bg-slate-50 border border-slate-200">
                   <h4 className="font-bold text-slate-800">1. ทำไมเปิดกล้องสแกน QR / บาร์โค้ดแล้วไม่ทำงาน?</h4>
                   <p className="text-slate-600 mt-0.5 leading-relaxed text-[9.5px]">
-                    <strong>วิธีแก้ไข:</strong> อนุญาตการเข้าถึงกล้อง (Allow Camera) ในเบราว์เซอร์ หรือสลับไปใช้แท็บ <strong>"อัปโหลดรูปภาพ"</strong> หรือใช้ <strong>เครื่องยิงบาร์โค้ดไร้สาย (Barcode Gun)</strong> ยิงเข้าช่องค้นหาได้ทันที
+                    <strong>วิธีแก้ไข:</strong> กดปุ่ม <strong>"AI Copilot"</strong> ที่มุมขวาล่าง แล้วกด <strong>"ทดสอบและขอสิทธิ์กล้องใหม่"</strong> ระบบจะรันคำสั่งปลดล็อกสิทธิ์กล้องให้อัตโนมัติ 1-Click โดยไม่ต้องรอแอดมิน หรือแตะที่ไอคอนแม่กุญแจ 🔒 ที่แถบ URL เลือก Allow Camera
                   </p>
                 </div>
 
@@ -1229,9 +1229,9 @@ export function StandardManualDocument({
                 </div>
 
                 <div className="p-2 rounded bg-slate-50 border border-slate-200">
-                  <h4 className="font-bold text-slate-800">4. สัญญาณเน็ตหน้างานขัดข้อง หรือเปิดบนจอเล็ก?</h4>
+                  <h4 className="font-bold text-slate-800">4. หน้าจอค้าง ข้อมูลไม่อัปเดต หรือเน็ตหลุด?</h4>
                   <p className="text-slate-600 mt-0.5 leading-relaxed text-[9.5px]">
-                    <strong>วิธีแก้ไข:</strong> ระบบรองรับ Offline Mode สำหรับเปิดดูข้อมูลแคช และสามารถปรับ Display Density เป็น 80% เพื่อให้พอดีกับจอโน้ตบุ๊ก 13-14 นิ้ว
+                    <strong>วิธีแก้ไข:</strong> กดปุ่ม <strong>"AI Copilot"</strong> แล้วเลือก <strong>"ล้างแคชและอัปเดตระบบ"</strong> ระบบจะเคลียร์ไฟล์เก่าและดึงโค้ดล่าสุดมาทันที โดยที่ข้อมูลร่างและรหัสผ่านไม่สูญหาย
                   </p>
                 </div>
               </div>
@@ -1271,11 +1271,17 @@ export function StandardManualDocument({
                       <td className="py-1 px-2.5">เพิ่มกล้องสแกน QR Code แบบ Real-time, ปรับฟอร์แมตเอกสาร A4 และคู่มือ SOP</td>
                       <td className="py-1 px-2.5">ฝ่ายพัฒนาระบบ SOP</td>
                     </tr>
-                    <tr className="bg-indigo-50/50">
-                      <td className="py-1 px-2.5 font-mono font-bold text-indigo-900">3.0</td>
+                    <tr>
+                      <td className="py-1 px-2.5 font-mono font-bold text-slate-800">3.0</td>
+                      <td className="py-1 px-2.5">12 ต.ค. 2569</td>
+                      <td className="py-1 px-2.5 font-medium">เพิ่มศูนย์นำเข้าข้อมูล (Data Hub - Excel/CSV/CAD), ซิงก์คลาวด์ Google Sheets & LINE Alert, บาร์โค้ด SKU ไร้สาย และ Display Scale</td>
+                      <td className="py-1 px-2.5">ฝ่ายควบคุมระบบสารสนเทศ</td>
+                    </tr>
+                    <tr className="bg-indigo-50/60">
+                      <td className="py-1 px-2.5 font-mono font-bold text-indigo-900">3.1</td>
                       <td className="py-1 px-2.5 font-bold text-indigo-900">{currentDateStr}</td>
-                      <td className="py-1 px-2.5 font-medium text-indigo-900">เพิ่มศูนย์นำเข้าข้อมูล (Data Hub - Excel/CSV/CAD), ซิงก์คลาวด์ Google Sheets & LINE Alert, บาร์โค้ด SKU ไร้สาย และ Display Scale</td>
-                      <td className="py-1 px-2.5 text-indigo-900 font-semibold">ฝ่ายควบคุมระบบสารสนเทศ</td>
+                      <td className="py-1 px-2.5 font-medium text-indigo-900">เพิ่มระบบ AI Copilot ผู้ช่วยแก้ปัญหา 24 ชม. และศูนย์ตรวจซ่อมแซมตัวเอง (Self-Healing Auto-Repair) จัดการสิทธิ์กล้อง แคช และเน็ตออฟไลน์โดยไม่ต้องรอแอดมิน</td>
+                      <td className="py-1 px-2.5 text-indigo-900 font-semibold">ฝ่ายพัฒนานวัตกรรม AI & SOP</td>
                     </tr>
                   </tbody>
                 </table>

@@ -43,7 +43,9 @@ import {
   History,
   FolderKanban,
   FileStack,
-  Bookmark
+  Bookmark,
+  Bot,
+  Wrench
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../lib/utils';
@@ -63,7 +65,7 @@ interface ButtonGuideItem {
 
 interface ModuleSection {
   id: string;
-  partId: 'part-1' | 'part-2' | 'part-3' | 'part-4' | 'part-5';
+  partId: 'part-1' | 'part-2' | 'part-3' | 'part-4' | 'part-5' | 'part-6';
   partNumber: number;
   partTitleTh: string;
   partTitleEn: string;
@@ -162,6 +164,18 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     summaryTh: 'โครงสร้างสิทธิ์ RBAC 25 สิทธิ์, บันทึกการตรวจสอบ (Audit Log), ติดตั้งแอป PWA และรายงานวิเคราะห์งบประมาณ',
     summaryEn: 'RBAC 25 permission keys, audit trail logging, PWA settings, and executive cost analytics',
     moduleCount: 3
+  },
+  {
+    id: 'part-6',
+    partNumber: 6,
+    titleTh: 'ส่วนที่ 6: AI ผู้ช่วยและศูนย์ซ่อมแซมระบบตนเอง',
+    titleEn: 'Part 6: AI Copilot & 1-Click Auto-Repair',
+    icon: Bot,
+    color: 'from-violet-600 to-fuchsia-800 text-white',
+    badgeClass: 'bg-violet-100 text-violet-800 border-violet-200',
+    summaryTh: 'AI Copilot 24 ชม., การตรวจเช็คฮาร์ดแวร์ 5 จุด, แก้ปัญหากล้องและแคชค้าง 1-Click โดยไม่ต้องพึ่งพาแอดมิน',
+    summaryEn: '24/7 AI Copilot troubleshooting, 5-point hardware diagnostics, and 1-click self-healing repair without waiting for IT admin',
+    moduleCount: 1
   }
 ];
 
@@ -981,6 +995,76 @@ export function ManualPage() {
       tips: [
         'ในการสร้าง LINE Notify Token ให้ไปที่ notify-bot.line.me ล็อกอินด้วยบัญชี LINE แล้วกด "Generate Token" เลือกห้องแชทหรือกลุ่มโครงการที่ต้องการรับการแจ้งเตือน แล้วนำ Token มาวางในช่องตั้งค่า',
         'สามารถใช้ Google Sheets เป็นตัวกลางในการนำเข้าข้อมูลร่วมกับทีมงานภาคสนามที่ไม่สะดวกเข้าใช้ระบบโดยตรง แล้วกด "ซิงก์ข้อมูล" เพื่อดึงเข้าระบบได้ทันที'
+      ]
+    },
+    {
+      id: 'ai-copilot-hub',
+      partId: 'part-6',
+      partNumber: 6,
+      partTitleTh: 'ส่วนที่ 6: AI ผู้ช่วยและศูนย์ซ่อมแซมระบบตนเอง',
+      partTitleEn: 'Part 6: AI Copilot & 1-Click Auto-Repair',
+      title: '11. AI ผู้ช่วยจัดการระบบและศูนย์ซ่อมแซมตัวเอง (AI Copilot & Auto-Repair)',
+      titleEn: '11. AI Copilot Operational Assistant & 1-Click Self-Healing Diagnostics',
+      icon: Bot,
+      badge: '24/7 AI Empowerment',
+      role: 'พนักงานทุกแผนก (All Roles) / ไม่ต้องรอแอดมิน',
+      summary: 'ศูนย์รวมปัญญาประดิษฐ์ (AI Copilot) ให้คำแนะนำและแก้ปัญหาการใช้งานระบบตลอด 24 ชั่วโมง พร้อมระบบตรวจสภาพฮาร์ดแวร์ 5 จุด (กล้องสแกนเนอร์, แคชระบบ, เครือข่าย, พื้นที่จัดเก็บ, ระบบแจ้งเตือน) และปุ่มคำสั่งซ่อมแซมตัวเอง 1-Click เพื่อให้ผู้ใช้งานแก้ไขปัญหาหน้างานได้ด้วยตนเองทันที',
+      summaryEn: '24/7 AI-driven operational copilot and self-healing diagnostics hub capable of automated camera permission recovery, PWA cache flushing, storage cleanup, and low-stock reorder automation without relying solely on IT administrators.',
+      route: '/ai-tools',
+      linkages: [
+        {
+          from: 'ปุ่ม AI Copilot (ลอยตัวมุมขวาล่าง)',
+          to: 'กล่องสนทนา AI และแท็บตรวจสุขภาพระบบ',
+          description: 'เรียกเปิดแถบช่วยเหลือได้จากทุกหน้าจอในระบบ พร้อมปุ่มลัดคำถามยอดนิยม'
+        },
+        {
+          from: 'ระบบตรวจสภาพ 5 จุด (Diagnostics Engine)',
+          to: 'คำสั่งซ่อมแซม 1-Click Auto-Repair',
+          description: 'ตรวจสอบสิทธิ์กล้อง, แคช PWA, ความเร็วเน็ต และพื้นที่จัดเก็บ พร้อมปุ่มสั่งแก้ไขทันที'
+        },
+        {
+          from: 'ตัวช่วยคำนวณและจำลองสายอนุมัติ',
+          to: 'ระบบขอซื้อ (PR) & อนุมัติ (Approvals)',
+          description: 'จำลองระดับผู้อนุมัติตามยอดเงินล่วงหน้า และตรวจจับพัสดุใกล้หมดสต็อกส่งเข้า PR อัตโนมัติ'
+        }
+      ],
+      buttons: [
+        {
+          name: 'ซ่อมแซมระบบทั้งหมดอัตโนมัติ (1-Click Auto-Repair)',
+          icon: Wrench,
+          color: 'bg-emerald-600 text-white',
+          location: 'การ์ดสถานะในแท็บตรวจ & ซ่อมระบบ',
+          action: 'รันคำสั่งแก้ไขปัญหาหลักพร้อมกัน: ขอสิทธิ์กล้องใหม่, ล้างแคชปลอดภัย, และทดสอบการเชื่อมต่อเซิร์ฟเวอร์',
+          linkage: 'ฟื้นฟูการทำงานของระบบให้พร้อมใช้งาน 100%'
+        },
+        {
+          name: 'ทดสอบและขอสิทธิ์กล้องใหม่ (Test & Request Camera)',
+          icon: Camera,
+          color: 'bg-indigo-600 text-white',
+          location: 'รายการกล้องและระบบสแกน Barcode/QR',
+          action: 'กระตุ้นหน้าต่างขอสิทธิ์กล้องของเบราว์เซอร์ เพื่อปลดล็อกให้ระบบสแกนบาร์โค้ดทำงานได้',
+          linkage: 'เปิดใช้งานกล้องในหน้าคลังสินค้าและตรวจรับ PO'
+        },
+        {
+          name: 'ล้างแคชและอัปเดตระบบ (Flush Cache & Reload)',
+          icon: RefreshCw,
+          color: 'bg-amber-600 text-white',
+          location: 'รายการแคชระบบและการทำงานออฟไลน์',
+          action: 'ล้าง CacheStorage เก่าและสั่งโหลดโค้ดเวอร์ชันล่าสุดจากเซิร์ฟเวอร์ โดยที่ข้อมูลผู้ใช้และรหัสผ่านไม่สูญหาย',
+          linkage: 'แก้ปัญหาหน้าจอค้างหรือข้อมูลไม่อัปเดต'
+        },
+        {
+          name: 'จำลองสายการอนุมัติ (Approval Matrix Simulator)',
+          icon: ShieldCheck,
+          color: 'bg-purple-600 text-white',
+          location: 'แท็บเครื่องมือด่วน (Quick Tools)',
+          action: 'กรอกยอดเงินขอซื้อเพื่อดูว่าเอกสารจะถูกส่งไปให้ผู้จัดการระดับใดอนุมัติตามระเบียบบริษัท',
+          linkage: 'ช่วยวางแผนและติดตามเอกสารได้ล่วงหน้า'
+        }
+      ],
+      tips: [
+        'หากกล้องสแกนบาร์โค้ดไม่เปิด ให้กดปุ่ม "AI Copilot" มุมขวาล่าง แล้วเลือก "ทดสอบและขอสิทธิ์กล้องใหม่" ได้ทันที ไม่ต้องโทรตามแอดมิน',
+        'ระบบ AI Copilot มีสมองกลอัจฉริยะแบบ Local Offline Fallback สามารถตอบคำถามและแนะนำวิธีแก้ปัญหาได้แม้ไม่มีสัญญาณอินเทอร์เน็ต'
       ]
     }
   ];
