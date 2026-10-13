@@ -1049,17 +1049,17 @@ export function UsersPage() {
         {permissionModalRole && (
           <div className="space-y-6">
             {/* Role Header Banner */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-50/80 to-purple-50/80 border border-indigo-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-black text-white border-2 border-black">
               <div className="flex items-center gap-3">
-                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center font-black text-base shadow-xs", permissionModalRole.color || "bg-indigo-600 text-white")}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-base shadow-xs bg-white text-black border border-white">
                   {permissionModalRole.avatarText || 'RO'}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-slate-900 text-lg leading-tight">{permissionModalRole.titleTh}</h3>
-                    <span className="text-xs text-slate-500 font-mono">({permissionModalRole.name})</span>
+                    <h3 className="font-bold text-white text-lg leading-tight">{permissionModalRole.titleTh}</h3>
+                    <span className="text-xs text-zinc-400 font-mono">({permissionModalRole.name})</span>
                   </div>
-                  <p className="text-xs text-slate-600 mt-0.5">{permissionModalRole.descTh}</p>
+                  <p className="text-xs text-zinc-300 mt-0.5">{permissionModalRole.descTh}</p>
                 </div>
               </div>
 
@@ -1068,14 +1068,14 @@ export function UsersPage() {
                 <button
                   type="button"
                   onClick={handleSelectAllPermissions}
-                  className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-indigo-600 hover:bg-indigo-50 shadow-xs cursor-pointer"
+                  className="px-3.5 py-1.5 bg-white text-black rounded-full text-xs font-bold hover:bg-zinc-200 shadow-xs cursor-pointer"
                 >
                   เลือกทั้งหมด
                 </button>
                 <button
                   type="button"
                   onClick={handleClearAllPermissions}
-                  className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 shadow-xs cursor-pointer"
+                  className="px-3.5 py-1.5 bg-zinc-900 border border-zinc-700 text-white rounded-full text-xs font-bold hover:bg-zinc-800 shadow-xs cursor-pointer"
                 >
                   ล้างสิทธิ์
                 </button>

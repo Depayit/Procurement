@@ -184,14 +184,14 @@ export function Sidebar({
                   ? "lg:justify-center lg:px-2 lg:py-2.5 px-3 py-2.5" 
                   : "px-3 py-2.5",
                 isActive 
-                  ? "bg-indigo-50 text-indigo-700 font-semibold border-r-4 border-indigo-600 rounded-r-none" 
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  ? "bg-black text-white font-semibold rounded-xl shadow-xs" 
+                  : "text-zinc-700 hover:bg-zinc-100 hover:text-black rounded-xl"
               )}
             >
               <Icon className={cn(
                 "h-5 w-5 shrink-0 transition-transform group-hover:scale-105",
                 isCollapsed ? "lg:mr-0 mr-3" : "mr-3",
-                isActive ? "text-indigo-600" : "text-slate-400"
+                isActive ? "text-white" : "text-zinc-400 group-hover:text-black"
               )} />
               <span className={cn("truncate transition-opacity duration-200", isCollapsed ? "lg:hidden" : "block")}>
                 {label}
@@ -199,7 +199,7 @@ export function Sidebar({
 
               {item.key === 'nav.integrations' && (
                 <span className={cn(
-                  "ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 uppercase shrink-0 tracking-tight",
+                  "ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 text-black border border-zinc-300 uppercase shrink-0 tracking-tight",
                   isCollapsed ? "lg:hidden" : "block"
                 )}>
                   Mock

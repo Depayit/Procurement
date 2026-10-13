@@ -220,52 +220,50 @@ export function IntegrationsPage() {
   return (
     <div className="space-y-6 pb-16 w-full">
       {/* MVP Mock Sandbox Notice */}
-      <div className="bg-amber-500/10 border border-amber-500/30 text-amber-950 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+      <div className="bg-white border-2 border-black text-black p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-800 font-bold shrink-0">
-            <Sparkles className="w-5 h-5 text-amber-600" />
+          <div className="p-2.5 rounded-xl bg-black text-white font-bold shrink-0">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-xs sm:text-sm font-bold text-slate-900">
+              <h2 className="text-xs sm:text-sm font-bold text-black">
                 ระบบจำลองเพื่อการนำเสนอ (MVP Mock Preview & Simulation Sandbox)
               </h2>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-200 text-amber-900 border border-amber-300 uppercase">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-black text-white uppercase">
                 Demo Only
               </span>
             </div>
-            <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+            <p className="text-[11px] text-zinc-600 mt-0.5 leading-relaxed">
               ฟังก์ชันเชื่อมต่อ API และคลาวด์ทั้งหมดถูกกำหนดให้อยู่ในโหมดจำลอง (Mock Sandbox) สำหรับการนำเสนอผู้บริหาร/ผู้มีส่วนได้ส่วนเสีย ไม่มีการส่งข้อมูลจริงไปยังระบบภายนอก
             </p>
           </div>
         </div>
         <div className="shrink-0 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-amber-300 text-amber-900 font-bold text-xs shadow-2xs">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-black text-black font-bold text-xs shadow-2xs">
+            <ShieldCheck className="w-4 h-4 text-black" />
             Sandbox Locked
           </span>
         </div>
       </div>
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-md relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none" />
-        
+      <div className="bg-black text-white p-6 sm:p-8 rounded-3xl border border-black shadow-md relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2 max-w-2xl">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="p-2 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
-                <Cloud className="w-5 h-5" />
+              <span className="p-2 rounded-xl bg-white/10 text-white border border-white/20">
+                <Cloud className="w-5 h-5 text-white" />
               </span>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                 {isEnglish ? 'Serverless Cloud & Plugins Integration' : 'ศูนย์เชื่อมต่อคลาวด์และปลั๊กอิน (Cloud & Plugins)'}
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-white" />
                 100% Serverless • ไม่ต้องมีเซิร์ฟเวอร์
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
               {isEnglish 
                 ? 'Connect easily to Google Sheets as a live database, Google Drive, Dropbox, and LINE Notify directly from your browser. Perfect for construction teams without dedicated IT infrastructure.' 
                 : 'เชื่อมต่อเครื่องมือที่ทุกคนใช้งานง่าย: ใช้ Google Sheets เป็นฐานข้อมูลสด, Google Drive และ Dropbox สำหรับเก็บเอกสารและแบบ CAD, พร้อมระบบแจ้งเตือนเข้ากลุ่ม LINE หน้างาน ทำงานได้ทันทีบนคอมพิวเตอร์ของคุณโดยไม่ต้องเช่าเซิร์ฟเวอร์ราคาแพง'}
@@ -276,17 +274,17 @@ export function IntegrationsPage() {
             <button
               type="button"
               onClick={handleCloudBackup}
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-900/40 flex items-center gap-2 cursor-pointer transition-all"
+              className="px-4 py-2.5 rounded-full bg-white hover:bg-zinc-200 text-black text-xs font-bold shadow-xs flex items-center gap-2 cursor-pointer transition-all"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-4 h-4 text-black" />
               {isEnglish ? 'Instant Cloud Backup' : 'สำรองข้อมูลทั้งระบบ (1-Click Backup)'}
             </button>
           </div>
         </div>
 
         {backupResult && (
-          <div className="mt-4 p-3 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-xs text-emerald-200 flex items-center gap-2 animate-in fade-in duration-300">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="mt-4 p-3 bg-white/10 border border-white/20 rounded-xl text-xs text-white flex items-center gap-2 animate-in fade-in duration-300">
+            <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
             <span>
               สร้างไฟล์สำรองข้อมูล <strong>{backupResult.fileName}</strong> เรียบร้อยแล้ว (ขนาด: {(backupResult.sizeBytes / 1024).toFixed(1)} KB)
             </span>
@@ -296,37 +294,37 @@ export function IntegrationsPage() {
 
       {/* Philosophy / Value Highlight Box */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-            <Zap className="w-4 h-4" />
+        <div className="bg-white p-4.5 rounded-2xl border border-zinc-300 hover:border-black shadow-xs flex items-start gap-3 transition-colors">
+          <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center shrink-0">
+            <Zap className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-900">ไม่ต้องมี Server หรือ Database ซับซ้อน</h4>
-            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+            <h4 className="text-xs font-bold text-black">ไม่ต้องมี Server หรือ Database ซับซ้อน</h4>
+            <p className="text-[11px] text-zinc-600 mt-0.5 leading-relaxed">
               เหมาะสำหรับบริษัทรับเหมาและธุรกิจทั่วไป ไม่ต้องมีทีม IT คอยดูแล ไม่เสียค่าบริการเซิร์ฟเวอร์รายเดือน
             </p>
           </div>
         </div>
 
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-            <FileSpreadsheet className="w-4 h-4" />
+        <div className="bg-white p-4.5 rounded-2xl border border-zinc-300 hover:border-black shadow-xs flex items-start gap-3 transition-colors">
+          <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center shrink-0">
+            <FileSpreadsheet className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-900">Google Sheets คือ Database ของคุณ</h4>
-            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+            <h4 className="text-xs font-bold text-black">Google Sheets คือ Database ของคุณ</h4>
+            <p className="text-[11px] text-zinc-600 mt-0.5 leading-relaxed">
               คนทั่วไปเปิดและแก้ข้อมูลใน Google Sheets จากมือถือหรือคอมพิวเตอร์ ระบบจะดึงสต็อกเข้ามาซิงค์ได้ทันที
             </p>
           </div>
         </div>
 
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
-            <BellRing className="w-4 h-4" />
+        <div className="bg-white p-4.5 rounded-2xl border border-zinc-300 hover:border-black shadow-xs flex items-start gap-3 transition-colors">
+          <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center shrink-0">
+            <BellRing className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-900">แจ้งเตือนเข้า LINE กลุ่มไซต์งาน</h4>
-            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+            <h4 className="text-xs font-bold text-black">แจ้งเตือนเข้า LINE กลุ่มไซต์งาน</h4>
+            <p className="text-[11px] text-zinc-600 mt-0.5 leading-relaxed">
               วิศวกรและโฟร์แมนรับการแจ้งเตือนเมื่อมีใบขอซื้อ (PR) อนุมัติ หรือพัสดุมาส่งถึงคลัง ผ่านแอป LINE ที่ใช้ทุกวัน
             </p>
           </div>
@@ -348,26 +346,26 @@ export function IntegrationsPage() {
           {/* ============================================================== */}
           {/* 0. FIREBASE CLOUD FIRESTORE (ENTERPRISE REAL-TIME DATABASE) */}
           {/* ============================================================== */}
-          <div className="col-span-1 lg:col-span-2 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl border border-indigo-500/30 shadow-xl overflow-hidden p-6 sm:p-7 space-y-6">
+          <div className="col-span-1 lg:col-span-2 bg-black text-white rounded-3xl border border-zinc-800 shadow-xl overflow-hidden p-6 sm:p-7 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center shrink-0 shadow-inner">
-                  <Flame className="w-7 h-7" />
+                <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-700 text-white flex items-center justify-center shrink-0 shadow-inner">
+                  <Flame className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-base sm:text-lg font-bold text-white">
                       Firebase Cloud Firestore
                     </h3>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-800 text-white border border-zinc-700">
                       Google Cloud Enterprise
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-800 text-white border border-zinc-700 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                       Live Connected
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                  <p className="text-xs sm:text-sm text-zinc-300 mt-1 max-w-2xl leading-relaxed">
                     ระบบเชื่อมต่อกับ Google Firebase Firestore ในตัว จัดเก็บและซิงค์ข้อมูลใบขอซื้อ (PR), สั่งซื้อ (PO), คลังสต็อก และประวัติการทำงาน (Audit Logs) ข้ามอุปกรณ์แบบ Real-time
                   </p>
                 </div>
@@ -375,7 +373,7 @@ export function IntegrationsPage() {
 
               {/* Enable Toggle */}
               <div className="flex items-center gap-3 self-end sm:self-auto shrink-0">
-                <span className="text-xs text-slate-300 font-medium">
+                <span className="text-xs text-zinc-300 font-medium">
                   {integrations.firebase?.isEnabled ? 'เปิดใช้งานอยู่' : 'ปิดใช้งาน'}
                 </span>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -385,85 +383,85 @@ export function IntegrationsPage() {
                     onChange={(e) => updateIntegrationConfig('firebase', { isEnabled: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                  <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white after:peer-checked:bg-black"></div>
                 </label>
               </div>
             </div>
 
             {/* Config & Diagnostics Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Project ID</span>
+              <div className="p-3.5 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Project ID</span>
                 <div className="flex items-center justify-between gap-1 mt-1">
-                  <span className="font-mono text-xs text-amber-300 truncate" title={firebaseConfig.projectId}>
+                  <span className="font-mono text-xs text-white truncate" title={firebaseConfig.projectId}>
                     {firebaseConfig.projectId}
                   </span>
                   <button
                     type="button"
                     onClick={handleCopyProjectId}
-                    className="p-1 hover:bg-white/10 rounded text-slate-300 hover:text-white transition-colors"
+                    className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors cursor-pointer"
                     title="คัดลอก Project ID"
                   >
-                    {copiedProjectId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedProjectId ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
 
-              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Firestore Database</span>
-                <span className="font-mono text-xs text-indigo-300 truncate block mt-1" title={firebaseConfig.firestoreDatabaseId || '(default)'}>
+              <div className="p-3.5 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Firestore Database</span>
+                <span className="font-mono text-xs text-white truncate block mt-1" title={firebaseConfig.firestoreDatabaseId || '(default)'}>
                   {firebaseConfig.firestoreDatabaseId || '(default)'}
                 </span>
               </div>
 
-              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Auth & Security Rules</span>
-                <div className="font-semibold text-emerald-300 flex items-center gap-1 mt-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="p-3.5 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Auth & Security Rules</span>
+                <div className="font-semibold text-white flex items-center gap-1 mt-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-white" />
                   <span>Anonymous / Token Auth</span>
                 </div>
               </div>
 
-              <div className="p-3.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">สถานะการเชื่อมต่อล่าสุด</span>
-                <div className="font-semibold text-slate-200 flex items-center gap-1.5 mt-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <div className="p-3.5 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">สถานะการเชื่อมต่อล่าสุด</span>
+                <div className="font-semibold text-white flex items-center gap-1.5 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-white" />
                   <span>{firebaseTestResult?.latencyMs ? `ออนไลน์ (${firebaseTestResult.latencyMs}ms)` : 'พร้อมทำงาน (Connected)'}</span>
                 </div>
               </div>
             </div>
 
             {/* Collection Stats Badges */}
-            <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2.5">
+            <div className="p-4 bg-zinc-900 rounded-2xl border border-zinc-800 space-y-2.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-200 flex items-center gap-1.5">
-                  <Database className="w-3.5 h-3.5 text-amber-400" />
+                <span className="font-bold text-white flex items-center gap-1.5">
+                  <Database className="w-3.5 h-3.5 text-white" />
                   <span>จำนวนข้อมูลใน Firestore Collections บนคลาวด์:</span>
                 </span>
-                <span className="text-[11px] text-slate-400">
+                <span className="text-[11px] text-zinc-400">
                   ตรวจสอบล่าสุด: {firebaseStats?.lastChecked || 'กำลังโหลด...'}
                 </span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
-                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
-                  <span className="text-[10px] text-slate-400 block">ใบขอซื้อ (prs)</span>
-                  <span className="font-bold text-sm text-amber-300 font-mono mt-0.5 block">{firebaseStats?.prsCount ?? '0'}</span>
+                <div className="p-2.5 bg-black rounded-xl border border-zinc-800">
+                  <span className="text-[10px] text-zinc-400 block">ใบขอซื้อ (prs)</span>
+                  <span className="font-bold text-sm text-white font-mono mt-0.5 block">{firebaseStats?.prsCount ?? '0'}</span>
                 </div>
-                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
-                  <span className="text-[10px] text-slate-400 block">ใบสั่งซื้อ (pos)</span>
-                  <span className="font-bold text-sm text-indigo-300 font-mono mt-0.5 block">{firebaseStats?.posCount ?? '0'}</span>
+                <div className="p-2.5 bg-black rounded-xl border border-zinc-800">
+                  <span className="text-[10px] text-zinc-400 block">ใบสั่งซื้อ (pos)</span>
+                  <span className="font-bold text-sm text-white font-mono mt-0.5 block">{firebaseStats?.posCount ?? '0'}</span>
                 </div>
-                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
-                  <span className="text-[10px] text-slate-400 block">สต็อก (inventory)</span>
-                  <span className="font-bold text-sm text-emerald-300 font-mono mt-0.5 block">{firebaseStats?.inventoryCount ?? '0'}</span>
+                <div className="p-2.5 bg-black rounded-xl border border-zinc-800">
+                  <span className="text-[10px] text-zinc-400 block">สต็อก (inventory)</span>
+                  <span className="font-bold text-sm text-white font-mono mt-0.5 block">{firebaseStats?.inventoryCount ?? '0'}</span>
                 </div>
-                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10">
-                  <span className="text-[10px] text-slate-400 block">คู่ค้า (vendors)</span>
-                  <span className="font-bold text-sm text-cyan-300 font-mono mt-0.5 block">{firebaseStats?.vendorsCount ?? '0'}</span>
+                <div className="p-2.5 bg-black rounded-xl border border-zinc-800">
+                  <span className="text-[10px] text-zinc-400 block">คู่ค้า (vendors)</span>
+                  <span className="font-bold text-sm text-white font-mono mt-0.5 block">{firebaseStats?.vendorsCount ?? '0'}</span>
                 </div>
-                <div className="p-2.5 bg-slate-900/60 rounded-xl border border-white/10 col-span-2 sm:col-span-1">
-                  <span className="text-[10px] text-slate-400 block">บันทึก (audit_logs)</span>
-                  <span className="font-bold text-sm text-purple-300 font-mono mt-0.5 block">{firebaseStats?.logsCount ?? '0'}</span>
+                <div className="p-2.5 bg-black rounded-xl border border-zinc-800 col-span-2 sm:col-span-1">
+                  <span className="text-[10px] text-zinc-400 block">บันทึก (audit_logs)</span>
+                  <span className="font-bold text-sm text-white font-mono mt-0.5 block">{firebaseStats?.logsCount ?? '0'}</span>
                 </div>
               </div>
             </div>
@@ -513,9 +511,9 @@ export function IntegrationsPage() {
                   type="button"
                   onClick={handleTestFirebase}
                   disabled={isTestingFirebase}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 border border-white/10"
+                  className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 border border-white/20"
                 >
-                  <Radio className={`w-3.5 h-3.5 text-amber-400 ${isTestingFirebase ? 'animate-pulse' : ''}`} />
+                  <Radio className={`w-3.5 h-3.5 text-white ${isTestingFirebase ? 'animate-pulse' : ''}`} />
                   <span>{isTestingFirebase ? 'กำลังทดสอบ...' : 'ทดสอบเชื่อมต่อ (Ping)'}</span>
                 </button>
 
@@ -523,9 +521,9 @@ export function IntegrationsPage() {
                   type="button"
                   onClick={handleSyncToFirebase}
                   disabled={isSyncingFirebase}
-                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 rounded-full bg-white hover:bg-zinc-200 text-black font-bold text-xs flex items-center gap-2 shadow-xs transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <UploadCloud className={`w-4 h-4 ${isSyncingFirebase ? 'animate-bounce' : ''}`} />
+                  <UploadCloud className={`w-4 h-4 text-black ${isSyncingFirebase ? 'animate-bounce' : ''}`} />
                   <span>{isSyncingFirebase ? 'กำลังส่งข้อมูลขึ้น Firestore...' : 'ซิงก์ข้อมูลขึ้น Cloud (Push)'}</span>
                 </button>
 
@@ -533,14 +531,14 @@ export function IntegrationsPage() {
                   type="button"
                   onClick={handlePullFromFirebase}
                   disabled={isPullingFirebase}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 font-bold text-xs flex items-center gap-2 shadow-xs transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <DownloadCloud className={`w-4 h-4 ${isPullingFirebase ? 'animate-bounce' : ''}`} />
+                  <DownloadCloud className={`w-4 h-4 text-white ${isPullingFirebase ? 'animate-bounce' : ''}`} />
                   <span>{isPullingFirebase ? 'กำลังดึงข้อมูล...' : 'ดึงข้อมูลจาก Cloud (Pull)'}</span>
                 </button>
               </div>
 
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-zinc-400">
                 Firestore Database • Google Cloud Platform
               </span>
             </div>
@@ -549,21 +547,21 @@ export function IntegrationsPage() {
           {/* ============================================================== */}
           {/* 1. GOOGLE SHEETS LIVE DATABASE */}
           {/* ============================================================== */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+          <div className="bg-white rounded-3xl border border-zinc-300 hover:border-black shadow-xs overflow-hidden flex flex-col justify-between transition-colors">
             <div className="p-6 space-y-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-xs">
-                    <FileSpreadsheet className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-black flex items-center justify-center border border-zinc-300 shadow-xs">
+                    <FileSpreadsheet className="w-6 h-6 text-black" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-slate-900">Google Sheets Live Database</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      <h3 className="text-sm font-bold text-black">Google Sheets Live Database</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-black border border-zinc-300">
                         MVP Mock
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-zinc-500 mt-0.5">
                       ใช้ Google Sheets เป็นฐานข้อมูลสต็อกพัสดุและรายการขอซื้อ แก้ไขบน Sheets แล้วดึงเข้าแอปได้ทันที
                     </p>
                   </div>
@@ -577,14 +575,14 @@ export function IntegrationsPage() {
                     onChange={(e) => updateIntegrationConfig('google_sheets', { isEnabled: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                 </label>
               </div>
 
               {/* Settings Inputs */}
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     Google Sheets URL หรือ Sheet ID
                   </label>
                   <input
@@ -592,22 +590,22 @@ export function IntegrationsPage() {
                     value={sheetUrlInput}
                     onChange={(e) => setSheetUrlInput(e.target.value)}
                     placeholder="https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5.../edit"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black font-mono"
                   />
-                  <p className="text-[11px] text-slate-400 mt-1">
+                  <p className="text-[11px] text-zinc-500 mt-1">
                     * ต้องเปิดการแชร์ลิงก์ใน Google Sheets เป็น: <strong>"ทุกคนที่มีลิงก์มีสิทธิ์ดู" (Anyone with the link can view)</strong>
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-black block mb-1">
                       โมดูลเป้าหมายที่ต้องการซิงค์
                     </label>
                     <select
                       value={sheetModuleInput}
                       onChange={(e) => setSheetModuleInput(e.target.value as any)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-300 bg-white focus:outline-none focus:border-black"
                     >
                       <option value="inventory">คลังพัสดุและ SKU กลาง</option>
                       <option value="pr">รายการขอซื้อ / BOQ (PR)</option>
@@ -616,11 +614,11 @@ export function IntegrationsPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-black block mb-1">
                       การซิงค์อัตโนมัติ
                     </label>
-                    <div className="flex items-center h-9 text-xs text-slate-600">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-semibold text-[11px]">
+                    <div className="flex items-center h-9 text-xs text-black">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-100 text-black border border-zinc-300 font-semibold text-[11px]">
                         <Check className="w-3.5 h-3.5" /> ซิงค์สดทางตรง
                       </span>
                     </div>
@@ -629,20 +627,20 @@ export function IntegrationsPage() {
 
                 {sheetSyncResult && (
                   <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
-                    sheetSyncResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+                    sheetSyncResult.success ? 'bg-zinc-100 text-black border border-zinc-300' : 'bg-rose-50 text-rose-800 border border-rose-200'
                   }`}>
-                    {sheetSyncResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />}
+                    {sheetSyncResult.success ? <CheckCircle2 className="w-4 h-4 text-black shrink-0" /> : <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />}
                     <span>{sheetSyncResult.msg}</span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+            <div className="p-4 bg-zinc-50 border-t border-zinc-200 flex flex-wrap items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setShowAppsScriptModal(true)}
-                className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                className="text-xs font-semibold text-black hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <FileCode className="w-3.5 h-3.5" /> โค้ด Apps Script สำหรับซิงค์ 2 ทาง
               </button>
@@ -651,7 +649,7 @@ export function IntegrationsPage() {
                 type="button"
                 onClick={handleSyncGoogleSheets}
                 disabled={isSyncingSheet || !integrations.google_sheets?.isEnabled}
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm transition-all"
+                className="px-4 py-2 rounded-full bg-black hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-xs transition-all"
               >
                 {isSyncingSheet ? (
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -666,21 +664,21 @@ export function IntegrationsPage() {
           {/* ============================================================== */}
           {/* 2. GOOGLE DRIVE (CLOUD STORAGE & BACKUP) */}
           {/* ============================================================== */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+          <div className="bg-white rounded-3xl border border-zinc-300 hover:border-black shadow-xs overflow-hidden flex flex-col justify-between transition-colors">
             <div className="p-6 space-y-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shadow-xs">
-                    <Cloud className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-black flex items-center justify-center border border-zinc-300 shadow-xs">
+                    <Cloud className="w-6 h-6 text-black" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-slate-900">Google Drive Storage & Backup</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      <h3 className="text-sm font-bold text-black">Google Drive Storage & Backup</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-black border border-zinc-300">
                         MVP Mock
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-zinc-500 mt-0.5">
                       จัดเก็บเอกสารใบสั่งซื้อ ใบตรวจรับ และก้อน Backup สำรองข้อมูลระบบทั้งหมดอัตโนมัติ
                     </p>
                   </div>
@@ -693,13 +691,13 @@ export function IntegrationsPage() {
                     onChange={(e) => updateIntegrationConfig('google_drive', { isEnabled: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                 </label>
               </div>
 
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     ชื่อโฟลเดอร์ Google Drive ของบริษัท
                   </label>
                   <input
@@ -707,12 +705,12 @@ export function IntegrationsPage() {
                     value={driveFolderInput}
                     onChange={(e) => setDriveFolderInput(e.target.value)}
                     placeholder="Conerage store เอกสารและแบบก่อสร้าง"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     ลิงก์โฟลเดอร์แชร์ใน Google Drive (Share Link)
                   </label>
                   <input
@@ -720,32 +718,32 @@ export function IntegrationsPage() {
                     value={driveLinkInput}
                     onChange={(e) => setDriveLinkInput(e.target.value)}
                     placeholder="https://drive.google.com/drive/folders/..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black font-mono"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+            <div className="p-4 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between">
               {driveLinkInput ? (
                 <a
                   href={driveLinkInput}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                  className="text-xs font-semibold text-black hover:underline flex items-center gap-1"
                 >
                   เปิดโฟลเดอร์ Google Drive <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               ) : (
-                <span className="text-xs text-slate-400">ยังไม่ได้ระบุลิงก์โฟลเดอร์</span>
+                <span className="text-xs text-zinc-400">ยังไม่ได้ระบุลิงก์โฟลเดอร์</span>
               )}
 
               <button
                 type="button"
                 onClick={handleCloudBackup}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+                className="px-4 py-2 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all"
               >
-                <Download className="w-3.5 h-3.5" /> สำรองข้อมูลขึ้น Drive
+                <Download className="w-3.5 h-3.5 text-white" /> สำรองข้อมูลขึ้น Drive
               </button>
             </div>
           </div>
@@ -753,21 +751,21 @@ export function IntegrationsPage() {
           {/* ============================================================== */}
           {/* 3. LINE NOTIFY / LINE WEBHOOK */}
           {/* ============================================================== */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+          <div className="bg-white rounded-3xl border-2 border-zinc-200 hover:border-black transition-colors shadow-xs overflow-hidden flex flex-col justify-between">
             <div className="p-6 space-y-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center border border-green-100 shadow-xs">
-                    <BellRing className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-black flex items-center justify-center border border-zinc-300 shadow-xs">
+                    <BellRing className="w-6 h-6 text-black" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-slate-900">LINE Notifications (กลุ่มไลน์หน้างาน)</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      <h3 className="text-sm font-bold text-black">LINE Notifications (กลุ่มไลน์หน้างาน)</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-800 border border-zinc-300">
                         MVP Mock
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-zinc-600 mt-0.5">
                       ส่งข้อความแจ้งเตือนอัตโนมัติเข้ากลุ่ม LINE ของวิศวกร, โฟร์แมน และฝ่ายจัดซื้อ
                     </p>
                   </div>
@@ -780,13 +778,13 @@ export function IntegrationsPage() {
                     onChange={(e) => updateIntegrationConfig('line_notify', { isEnabled: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                  <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                 </label>
               </div>
 
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     ชื่อกลุ่ม LINE ที่ต้องการส่งแจ้งเตือน
                   </label>
                   <input
@@ -794,12 +792,12 @@ export function IntegrationsPage() {
                     value={lineChannelInput}
                     onChange={(e) => setLineChannelInput(e.target.value)}
                     placeholder="กลุ่มไลน์: จัดซื้อ & วิศวกรโครงการ"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     LINE Token หรือ Webhook URL
                   </label>
                   <input
@@ -807,46 +805,46 @@ export function IntegrationsPage() {
                     value={lineTokenInput}
                     onChange={(e) => setLineTokenInput(e.target.value)}
                     placeholder="ใส่ LINE Notify Token หรือ Webhook URL..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 font-mono"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black font-mono"
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 pt-1">
-                  <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
-                    <input type="checkbox" defaultChecked className="rounded text-green-600 focus:ring-green-500" />
+                  <label className="flex items-center gap-1.5 text-[11px] text-zinc-700 cursor-pointer">
+                    <input type="checkbox" defaultChecked className="rounded text-black focus:ring-black" />
                     <span>เมื่อสร้าง PR ใหม่</span>
                   </label>
-                  <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
-                    <input type="checkbox" defaultChecked className="rounded text-green-600 focus:ring-green-500" />
+                  <label className="flex items-center gap-1.5 text-[11px] text-zinc-700 cursor-pointer">
+                    <input type="checkbox" defaultChecked className="rounded text-black focus:ring-black" />
                     <span>เมื่อ PR ได้รับอนุมัติ</span>
                   </label>
-                  <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
-                    <input type="checkbox" defaultChecked className="rounded text-green-600 focus:ring-green-500" />
+                  <label className="flex items-center gap-1.5 text-[11px] text-zinc-700 cursor-pointer">
+                    <input type="checkbox" defaultChecked className="rounded text-black focus:ring-black" />
                     <span>เมื่อตรวจรับของ (GR)</span>
                   </label>
                 </div>
 
                 {lineResult && (
-                  <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
-                    lineResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+                  <div className={`p-3 rounded-xl text-xs flex items-center gap-2 border ${
+                    lineResult.success ? 'bg-zinc-100 text-black border-zinc-300' : 'bg-zinc-900 text-white border-black'
                   }`}>
-                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-black shrink-0" />
                     <span>{lineResult.msg}</span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs text-slate-400">แจ้งเตือนฟรีไม่มีค่าใช้จ่าย</span>
+            <div className="p-4 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between">
+              <span className="text-xs text-zinc-500">แจ้งเตือนฟรีไม่มีค่าใช้จ่าย</span>
 
               <button
                 type="button"
                 onClick={handleTestLine}
                 disabled={isSendingLine || !integrations.line_notify?.isEnabled}
-                className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+                className="px-4 py-2 rounded-full bg-black hover:bg-zinc-800 disabled:opacity-40 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all"
               >
-                <Send className="w-3.5 h-3.5" />
+                <Send className="w-3.5 h-3.5 text-white" />
                 {isSendingLine ? 'กำลังส่งทดสอบ...' : 'ทดสอบส่งเข้า LINE (Test)'}
               </button>
             </div>
@@ -855,21 +853,21 @@ export function IntegrationsPage() {
           {/* ============================================================== */}
           {/* 4. DROPBOX & CAD FILES */}
           {/* ============================================================== */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+          <div className="bg-white rounded-3xl border-2 border-zinc-200 hover:border-black transition-colors shadow-xs overflow-hidden flex flex-col justify-between">
             <div className="p-6 space-y-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-xs">
-                    <Share2 className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-black flex items-center justify-center border border-zinc-300 shadow-xs">
+                    <Share2 className="w-6 h-6 text-black" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-slate-900">Dropbox File Sync</h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      <h3 className="text-sm font-bold text-black">Dropbox File Sync</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-800 border border-zinc-300">
                         MVP Mock
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-zinc-600 mt-0.5">
                       จัดเก็บไฟล์แนบใบเสนอราคา, สเปกงานก่อสร้าง และแบบถอดปริมาณงาน CAD (.dxf)
                     </p>
                   </div>
@@ -882,13 +880,13 @@ export function IntegrationsPage() {
                     onChange={(e) => updateIntegrationConfig('dropbox', { isEnabled: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                  <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                 </label>
               </div>
 
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     เส้นทางโฟลเดอร์ใน Dropbox (Folder Path)
                   </label>
                   <input
@@ -896,12 +894,12 @@ export function IntegrationsPage() {
                     value={dropboxPathInput}
                     onChange={(e) => setDropboxPathInput(e.target.value)}
                     placeholder="/Conerage_Store/Drawings_and_Receipts"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-black block mb-1">
                     Dropbox Shared Folder Link
                   </label>
                   <input
@@ -909,30 +907,30 @@ export function IntegrationsPage() {
                     value={dropboxLinkInput}
                     onChange={(e) => setDropboxLinkInput(e.target.value)}
                     placeholder="https://www.dropbox.com/scl/fo/..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black font-mono"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+            <div className="p-4 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between">
               {dropboxLinkInput ? (
                 <a
                   href={dropboxLinkInput}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                  className="text-xs font-semibold text-black hover:underline flex items-center gap-1"
                 >
                   เปิดโฟลเดอร์ Dropbox <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               ) : (
-                <span className="text-xs text-slate-400">ยังไม่ได้ระบุลิงก์โฟลเดอร์</span>
+                <span className="text-xs text-zinc-500">ยังไม่ได้ระบุลิงก์โฟลเดอร์</span>
               )}
 
               <button
                 type="button"
                 onClick={() => alert('บันทึกการเชื่อมต่อ Dropbox เรียบร้อยแล้ว')}
-                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-sm"
+                className="px-4 py-2 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-xs"
               >
                 บันทึกการตั้งค่า
               </button>
@@ -943,44 +941,44 @@ export function IntegrationsPage() {
 
       {/* MODAL: Google Apps Script Code Generator */}
       {showAppsScriptModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border-2 border-black space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
               <div className="flex items-center gap-2">
-                <FileCode className="w-5 h-5 text-emerald-600" />
-                <h3 className="text-base font-bold text-slate-900">
+                <FileCode className="w-5 h-5 text-black" />
+                <h3 className="text-base font-bold text-black">
                   Google Apps Script สำหรับซิงค์ 2 ทาง (ไม่ต้องมีเซิร์ฟเวอร์)
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAppsScriptModal(false)}
-                className="text-xs font-semibold text-slate-400 hover:text-slate-600"
+                className="text-xs font-bold text-zinc-500 hover:text-black"
               >
                 ปิด
               </button>
             </div>
 
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-zinc-700 leading-relaxed">
               เพียงคัดลอกโค้ดสคริปต์นี้ ไปวางใน Google Sheets ที่เมนู <strong>ส่วนขยาย (Extensions) &gt; Apps Script</strong> แล้วกด <strong>ทำให้ใช้งานได้ (Deploy)</strong> คุณจะได้ Webhook URL ฟรีๆ ของ Google ไว้บันทึกข้อมูลใบขอซื้อและสต็อกลง Sheets อัตโนมัติ!
             </p>
 
             <div className="relative">
-              <pre className="bg-slate-900 text-emerald-400 p-4 rounded-2xl text-xs font-mono overflow-x-auto max-h-72">
+              <pre className="bg-black text-zinc-200 p-4 rounded-2xl text-xs font-mono overflow-x-auto max-h-72 border border-zinc-800">
                 {GOOGLE_APPS_SCRIPT_TEMPLATE}
               </pre>
               <button
                 type="button"
                 onClick={handleCopyScript}
-                className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-all"
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all"
               >
-                {copiedScript ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedScript ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5 text-white" />}
                 {copiedScript ? 'คัดลอกแล้ว!' : 'คัดลอกโค้ด'}
               </button>
             </div>
 
-            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
-              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="p-3 bg-zinc-100 rounded-xl border border-zinc-300 text-xs text-zinc-900 flex items-start gap-2">
+              <Info className="w-4 h-4 text-black shrink-0 mt-0.5" />
               <span>
                 เมื่อ Deploy แล้ว ให้เลือกสิทธิ์เข้าถึง (Who has access) เป็น <strong>"Anyone" (ทุกคน)</strong> เพื่อให้ระบบ Conerage store สามารถส่งข้อมูลเข้าไปบันทึกได้
               </span>
@@ -990,7 +988,7 @@ export function IntegrationsPage() {
               <button
                 type="button"
                 onClick={() => setShowAppsScriptModal(false)}
-                className="px-5 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800"
+                className="px-5 py-2 rounded-full bg-black text-white text-xs font-bold hover:bg-zinc-800"
               >
                 เข้าใจแล้ว ปิดหน้าต่าง
               </button>

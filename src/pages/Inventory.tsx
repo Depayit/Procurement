@@ -272,55 +272,54 @@ export function InventoryPage() {
       </div>
 
       {/* Central Warehouse Architecture Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-5 border border-slate-800 shadow-sm relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
+      <div className="bg-black text-white rounded-3xl p-5 sm:p-6 border-2 border-black shadow-xs relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center relative z-10">
           
           {/* Left Column: Title & Architecture Explanation (7 cols) */}
           <div className="lg:col-span-7 space-y-2">
             <div className="flex items-center gap-2.5">
-              <span className="p-2 rounded-xl bg-indigo-500/30 text-indigo-300 border border-indigo-400/30 shrink-0">
-                <Building2 className="w-5 h-5" />
+              <span className="p-2 rounded-xl bg-zinc-900 text-white border border-zinc-700 shrink-0">
+                <Building2 className="w-5 h-5 text-white" />
               </span>
               <div>
                 <h2 className="text-sm sm:text-base font-bold text-white tracking-wide" style={{ textWrap: 'pretty' }}>
                   สถาปัตยกรรมคลังพัสดุก่อสร้างกลาง
                 </h2>
-                <p className="text-[11px] text-indigo-300 font-medium">
+                <p className="text-[11px] text-zinc-300 font-medium">
                   Central Construction Material Hub • Site Requisition & Real-time Sync
                 </p>
               </div>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed pr-0 lg:pr-2">
+            <p className="text-xs text-zinc-300 leading-relaxed pr-0 lg:pr-2">
               พัสดุและวัสดุก่อสร้างทั้งหมดถูกควบคุมอยู่ที่ <strong>คลังพัสดุก่อสร้างกลางแห่งเดียว</strong> โดยใช้ <strong>Master SKU Barcode (Code 128)</strong> เป็นรหัสมาตรฐาน เมื่อวิศวกรหรือโฟร์แมนทำรายการเบิกจ่ายไปหน้างาน หรือตรวจรับพัสดุเข้าคลังจากใบสั่งซื้อ (PO Receipt) สต็อกจริงในคลังกลางจะถูกอัปเดตแบบ Real-time ทันที
             </p>
           </div>
 
           {/* Right Column: Connected Project Sites Group (5 cols) */}
-          <div className="lg:col-span-5 bg-white/10 backdrop-blur-xs p-3.5 rounded-xl border border-white/15">
-            <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-white/10">
-              <span className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+          <div className="lg:col-span-5 bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800">
+            <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-zinc-800">
+              <span className="text-[11px] font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
                 ไซต์งานและโครงการที่เชื่อมโยงเบิกใช้วัสดุ
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-mono">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-800 text-white border border-zinc-700 font-mono">
                 5 Sites Active
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
               {[
-                { name: 'คอนโดสุขุมวิท 101', color: 'bg-indigo-500/20 text-indigo-200 border-indigo-500/40' },
-                { name: 'โรงพยาบาลบางนา', color: 'bg-cyan-500/20 text-cyan-200 border-cyan-500/40' },
-                { name: 'อาคารสำนักงานพระราม 9', color: 'bg-blue-500/20 text-blue-200 border-blue-500/40' },
-                { name: 'งานระบบ MEP & เครื่องมือช่าง', color: 'bg-amber-500/20 text-amber-200 border-amber-500/40' },
-                { name: 'งานโครงสร้างและวิศวกรรมฐานราก', color: 'bg-emerald-500/20 text-emerald-200 border-emerald-500/40' },
-              ].map(p => (
+                'คอนโดสุขุมวิท 101',
+                'โรงพยาบาลบางนา',
+                'อาคารสำนักงานพระราม 9',
+                'งานระบบ MEP & เครื่องมือช่าง',
+                'งานโครงสร้างและวิศวกรรมฐานราก',
+              ].map(siteName => (
                 <span 
-                  key={p.name}
-                  className={cn("inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md border", p.color)}
+                  key={siteName}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md border border-zinc-700 bg-zinc-800 text-zinc-200"
                 >
-                  <CheckCircle2 className="w-2.5 h-2.5 shrink-0" />
-                  <span className="whitespace-nowrap">{p.name}</span>
+                  <CheckCircle2 className="w-2.5 h-2.5 shrink-0 text-white" />
+                  <span className="whitespace-nowrap">{siteName}</span>
                 </span>
               ))}
             </div>
@@ -739,24 +738,24 @@ export function InventoryPage() {
             </div>
 
             {/* Central Warehouse & Project Allocation Info */}
-            <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 rounded-xl shadow-xs">
+            <div className="bg-black text-white p-4 rounded-2xl border-2 border-black shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                    <Building2 className="w-4 h-4 text-emerald-400" />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300">
+                    <Building2 className="w-4 h-4 text-white" />
                     <span>{viewItem.centralWarehouse || 'คลังพัสดุก่อสร้างกลาง (Central Material Hub)'}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span className="text-emerald-400">Single Construction Hub</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                    <span className="text-white font-bold">Single Construction Hub</span>
                   </div>
-                  <div className="text-xs text-slate-200 mt-1">
-                    จุดจัดเก็บ: <span className="font-bold text-amber-300 font-mono">{viewItem.binLocation || viewItem.location}</span>
+                  <div className="text-xs text-zinc-200 mt-1">
+                    จุดจัดเก็บ: <span className="font-bold text-white font-mono bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700">{viewItem.binLocation || viewItem.location}</span>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-300 block mb-1">โครงการก่อสร้างที่เบิกใช้วัสดุนี้:</span>
+                  <span className="text-[10px] text-zinc-400 block mb-1">โครงการก่อสร้างที่เบิกใช้วัสดุนี้:</span>
                   <div className="flex flex-wrap gap-1">
                     {(viewItem.projectAllocations || ['โครงการ คอนโดสุขุมวิท 101', 'โครงการ โรงพยาบาลบางนา']).map(p => (
-                      <span key={p} className="text-[10px] font-bold bg-white/15 px-2 py-0.5 rounded text-white border border-white/20">
+                      <span key={p} className="text-[10px] font-bold bg-zinc-900 px-2 py-0.5 rounded text-white border border-zinc-700">
                         {p}
                       </span>
                     ))}

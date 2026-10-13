@@ -164,22 +164,22 @@ export function AIToolsHub() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      <div className="bg-black text-white rounded-3xl p-6 sm:p-8 shadow-xs border-2 border-black relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-zinc-800 text-white border border-zinc-700 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
                 {isEnglish ? 'Enterprise AI Self-Service' : 'ระบบ AI ผู้ช่วยและศูนย์ซ่อมแซมตัวเอง'}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono">
                 24/7 Always-On
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               {isEnglish ? 'AI Copilot & Auto-Repair Hub' : 'ศูนย์ผู้ช่วย AI และระบบตรวจสอบ-ซ่อมแซมตนเอง'}
             </h1>
-            <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            <p className="text-zinc-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
               {isEnglish 
                 ? 'Empowering teams to diagnose issues, resolve camera/cache blockers, and manage procurement operations without relying solely on IT admins.'
                 : 'ช่วยให้พนักงานและผู้ใช้งานทุกคนสามารถตรวจสอบ แก้ไขปัญหาทางเทคนิค และจัดการเครื่องมือได้ด้วยตนเองทันที โดยไม่ต้องรอแอดมิน'}
@@ -191,7 +191,7 @@ export function AIToolsHub() {
               type="button"
               onClick={handleRunScan}
               disabled={isScanning}
-              className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold backdrop-blur-xs transition-colors flex items-center gap-2 cursor-pointer border border-white/20"
+              className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer border border-zinc-700 shadow-xs"
             >
               <RefreshCw className={`w-4 h-4 ${isScanning ? 'animate-spin' : ''}`} />
               <span>{isEnglish ? 'Scan System' : 'ตรวจสภาพระบบ'}</span>
@@ -200,20 +200,17 @@ export function AIToolsHub() {
               type="button"
               onClick={handleRepairAll}
               disabled={repairingKey === 'all'}
-              className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 bg-white hover:bg-zinc-200 text-black rounded-full text-xs font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer"
             >
               {repairingKey === 'all' ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin text-black" />
               ) : (
-                <ShieldCheck className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4 text-black" />
               )}
               <span>{isEnglish ? '1-Click Auto-Repair All' : 'ซ่อมแซมระบบทั้งหมดอัตโนมัติ'}</span>
             </button>
           </div>
         </div>
-
-        {/* Ambient background blur */}
-        <div className="absolute -right-16 -top-16 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Repair Feedback Banner */}

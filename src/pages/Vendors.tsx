@@ -144,92 +144,92 @@ export function VendorsPage() {
         <div className="flex items-center gap-2">
           <Link
             to="/import?target=vendors"
-            className="inline-flex items-center px-3.5 py-2 border border-slate-200 bg-white text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-2xs"
+            className="inline-flex items-center px-4 py-2 border-2 border-zinc-300 bg-white hover:border-black text-black rounded-full text-xs font-bold transition-all shadow-xs"
             title="นำเข้าไฟล์ Excel, CSV หรือ JSON รายชื่อบริษัทคู่ค้า"
           >
-            <UploadCloud className="h-4 w-4 mr-1.5 text-indigo-600" />
+            <UploadCloud className="h-4 w-4 mr-1.5 text-black" />
             {isEnglish ? 'Import Vendors' : 'นำเข้าไฟล์คู่ค้า'}
           </Link>
 
           <button 
             onClick={openAddForm}
-            className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
+            className="inline-flex items-center px-4 py-2 bg-black hover:bg-zinc-800 text-white rounded-full text-xs font-bold transition-all shadow-xs border border-black"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-1.5 text-white" />
             {t('vendors.addBtn')}
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+      <div className="bg-white rounded-2xl shadow-xs border-2 border-zinc-200 overflow-hidden">
+        <div className="p-4 border-b-2 border-zinc-200 bg-zinc-50 flex items-center justify-between">
           <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <input 
               type="text" 
               placeholder="ค้นหาชื่อคู่ค้า, ผู้ติดต่อ..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+              className="w-full pl-9 pr-4 py-2 border-2 border-zinc-200 rounded-xl text-xs focus:outline-none focus:border-black focus:ring-1 focus:ring-black bg-white"
             />
           </div>
         </div>
 
         {/* Mobile Vendor Cards List (Visible on < md) */}
-        <div className="md:hidden divide-y divide-slate-100">
+        <div className="md:hidden divide-y divide-zinc-200">
           {filteredVendors.length > 0 ? filteredVendors.map((vendor) => (
-            <div key={vendor.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
+            <div key={vendor.id} className="p-4 space-y-3 bg-white hover:bg-zinc-50 transition-colors">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2.5 min-w-0">
-                  <div className="h-8 w-8 flex-shrink-0 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center shadow-2xs mt-0.5">
-                    <Store className="h-4 w-4" />
+                  <div className="h-9 w-9 flex-shrink-0 bg-zinc-100 border border-zinc-300 text-black rounded-xl flex items-center justify-center shadow-xs mt-0.5">
+                    <Store className="h-4 w-4 text-black" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">{vendor.name}</h4>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">{vendor.email}</p>
+                    <h4 className="text-sm font-bold text-black leading-snug break-words">{vendor.name}</h4>
+                    <p className="text-xs text-zinc-500 mt-0.5 truncate">{vendor.email}</p>
                   </div>
                 </div>
-                <div className="inline-flex items-center px-2 py-0.5 rounded-md text-amber-800 bg-amber-50 border border-amber-200 font-bold font-mono text-[10px] whitespace-nowrap">
-                  <Star className="h-3 w-3 mr-0.5 fill-amber-500 text-amber-500" />
+                <div className="inline-flex items-center px-2 py-0.5 rounded-md text-black bg-zinc-100 border border-zinc-300 font-bold font-mono text-[10px] whitespace-nowrap">
+                  <Star className="h-3 w-3 mr-0.5 fill-black text-black" />
                   {vendor.rating.toFixed(1)}
                 </div>
               </div>
 
               {/* Middle Grid: Contact & Performance */}
-              <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
+              <div className="grid grid-cols-2 gap-2 bg-zinc-50 p-2.5 rounded-xl border border-zinc-200 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">ผู้ติดต่อ</span>
-                  <span className="font-semibold text-slate-800 text-xs block truncate">{vendor.contactPerson}</span>
-                  <span className="text-[11px] text-slate-500 font-mono block mt-0.5">{vendor.phone}</span>
+                  <span className="text-[10px] text-zinc-400 font-bold uppercase block">ผู้ติดต่อ</span>
+                  <span className="font-semibold text-black text-xs block truncate">{vendor.contactPerson}</span>
+                  <span className="text-[11px] text-zinc-500 font-mono block mt-0.5">{vendor.phone}</span>
                 </div>
-                <div className="border-l border-slate-200/80 pl-2.5">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">เงื่อนไข / ส่งมอบ</span>
-                  <span className="font-medium text-slate-700 text-[11px] block truncate">{vendor.paymentTerms}</span>
-                  <span className="text-[10px] text-emerald-700 font-bold block mt-0.5 whitespace-nowrap">
+                <div className="border-l border-zinc-200 pl-2.5">
+                  <span className="text-[10px] text-zinc-400 font-bold uppercase block">เงื่อนไข / ส่งมอบ</span>
+                  <span className="font-medium text-zinc-700 text-[11px] block truncate">{vendor.paymentTerms}</span>
+                  <span className="text-[10px] text-black font-bold block mt-0.5 whitespace-nowrap">
                     ส่งตรงเวลา {vendor.onTimeDeliveryRate}%
                   </span>
                 </div>
               </div>
 
               {/* Actions Row */}
-              <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2 pt-1 border-t border-zinc-200">
                 <button 
                   onClick={() => setViewVendor(vendor)}
-                  className="flex-1 py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1"
+                  className="flex-1 py-1.5 px-3 text-xs font-bold text-white bg-black hover:bg-zinc-800 rounded-full transition-colors shadow-xs flex items-center justify-center gap-1"
                 >
-                  <Eye className="h-3.5 w-3.5" />
+                  <Eye className="h-3.5 w-3.5 text-white" />
                   <span>รายละเอียด</span>
                 </button>
                 <button 
                   onClick={() => openEditForm(vendor)}
-                  className="p-1.5 text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+                  className="p-1.5 text-zinc-600 hover:text-black hover:bg-zinc-100 rounded-lg transition-colors border border-zinc-200"
                   title="แก้ไขข้อมูลคู่ค้า"
                 >
                   <Edit className="h-4 w-4" />
                 </button>
                 <button 
                   onClick={() => setDeleteVendorId(vendor.id)}
-                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-slate-200"
+                  className="p-1.5 text-zinc-500 hover:text-black hover:bg-zinc-100 rounded-lg transition-colors border border-zinc-200"
                   title="ลบข้อมูลคู่ค้า"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -237,8 +237,8 @@ export function VendorsPage() {
               </div>
             </div>
           )) : (
-            <div className="p-8 text-center text-slate-500 text-xs">
-              <Store className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+            <div className="p-8 text-center text-zinc-500 text-xs">
+              <Store className="h-8 w-8 mx-auto text-zinc-400 mb-2" />
               <p>ไม่พบข้อมูลคู่ค้าที่ค้นหา</p>
             </div>
           )}
@@ -247,31 +247,31 @@ export function VendorsPage() {
         {/* Desktop Table View (Visible on >= md) */}
         <div className="hidden md:block overflow-x-auto smooth-scroll">
           <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[880px]">
-            <thead className="bg-slate-100/90 text-[11px] text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+            <thead className="bg-zinc-100 text-[11px] text-black font-bold uppercase tracking-wider border-b-2 border-zinc-200">
               <tr>
                 <th className="px-3.5 py-3.5 min-w-[220px]">ชื่อคู่ค้า / บริษัท</th>
                 <th className="px-3.5 py-3.5 whitespace-nowrap w-[170px]">ผู้ติดต่อและเบอร์โทร</th>
                 <th className="px-3.5 py-3.5 whitespace-nowrap w-[140px]">เงื่อนไขการชำระเงิน</th>
                 <th className="px-2.5 py-3.5 text-center whitespace-nowrap w-[120px]">คะแนนประเมิน</th>
                 <th className="px-2.5 py-3.5 text-center whitespace-nowrap w-[120px]">ส่งมอบตรงเวลา</th>
-                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[135px] sticky right-0 bg-slate-100/95 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">การจัดการ</th>
+                <th className="px-3.5 py-3.5 text-right whitespace-nowrap w-[135px] sticky right-0 bg-zinc-100 backdrop-blur-xs shadow-[-4px_0_8px_rgba(0,0,0,0.03)]">การจัดการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
+            <tbody className="divide-y divide-zinc-200 text-xs sm:text-sm bg-white">
               {filteredVendors.length > 0 ? filteredVendors.map((vendor) => (
-                <tr key={vendor.id} className="hover:bg-slate-50/80 transition-colors">
+                <tr key={vendor.id} className="hover:bg-zinc-50 transition-colors">
                   {/* Vendor Details */}
                   <td className="px-4 py-3.5 align-top">
                     <div className="flex items-start gap-3">
-                      <div className="h-9 w-9 flex-shrink-0 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center shadow-2xs mt-0.5">
-                        <Store className="h-4 w-4" />
+                      <div className="h-9 w-9 flex-shrink-0 bg-zinc-100 border border-zinc-300 text-black rounded-xl flex items-center justify-center shadow-xs mt-0.5">
+                        <Store className="h-4 w-4 text-black" />
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900 text-sm leading-snug break-words">{vendor.name}</div>
+                        <div className="font-bold text-black text-sm leading-snug break-words">{vendor.name}</div>
                         <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs">
-                          <span className="text-slate-500 font-normal">{vendor.email}</span>
+                          <span className="text-zinc-500 font-normal">{vendor.email}</span>
                           {vendor.categories && vendor.categories.length > 0 && (
-                            <span className="font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-100 text-[10px] whitespace-nowrap">
+                            <span className="font-semibold text-black bg-zinc-100 px-2 py-0.5 rounded border border-zinc-300 text-[10px] whitespace-nowrap">
                               {vendor.categories[0]}
                             </span>
                           )}
@@ -282,32 +282,32 @@ export function VendorsPage() {
 
                   {/* Contact Person & Phone */}
                   <td className="px-4 py-3.5 align-top whitespace-nowrap">
-                    <div className="text-slate-900 font-semibold text-sm leading-snug">{vendor.contactPerson}</div>
-                    <div className="text-slate-500 font-mono text-xs flex items-center gap-1 mt-0.5">
-                      <Phone className="h-3.5 w-3.5 text-slate-400" />
+                    <div className="text-black font-semibold text-sm leading-snug">{vendor.contactPerson}</div>
+                    <div className="text-zinc-500 font-mono text-xs flex items-center gap-1 mt-0.5">
+                      <Phone className="h-3.5 w-3.5 text-zinc-400" />
                       <span>{vendor.phone}</span>
                     </div>
                   </td>
 
                   {/* Payment Terms */}
                   <td className="px-4 py-3.5 align-top whitespace-nowrap">
-                    <span className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+                    <span className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 text-black border border-zinc-300">
                       {vendor.paymentTerms}
                     </span>
                   </td>
 
                   {/* Rating */}
                   <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
-                    <div className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-amber-800 bg-amber-50 border border-amber-200 font-bold font-mono tabular-nums text-xs leading-none">
-                      <Star className="h-3.5 w-3.5 mr-1 fill-amber-500 text-amber-500" />
+                    <div className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-black bg-zinc-100 border border-zinc-300 font-bold font-mono tabular-nums text-xs leading-none">
+                      <Star className="h-3.5 w-3.5 mr-1 fill-black text-black" />
                       {vendor.rating.toFixed(1)} / 5.0
                     </div>
                   </td>
 
                   {/* On-Time Rate */}
                   <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
-                    <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-emerald-800 bg-emerald-50 border border-emerald-200 font-bold font-mono tabular-nums text-xs leading-none">
-                      <TrendingUp className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+                    <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-black bg-zinc-100 border border-zinc-300 font-bold font-mono tabular-nums text-xs leading-none">
+                      <TrendingUp className="h-3.5 w-3.5 mr-1 text-black" />
                       {vendor.onTimeDeliveryRate}%
                     </span>
                   </td>
@@ -317,22 +317,22 @@ export function VendorsPage() {
                     <div className="flex items-center justify-end gap-1.5">
                       <button 
                         onClick={() => setViewVendor(vendor)}
-                        className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 border border-indigo-200 rounded-lg transition-colors shadow-2xs flex items-center gap-1"
+                        className="px-3 py-1.5 text-xs font-bold text-white bg-black hover:bg-zinc-800 rounded-full transition-colors shadow-xs flex items-center gap-1 cursor-pointer"
                         title="ดูรายละเอียดคู่ค้า"
                       >
-                        <Eye className="h-3.5 w-3.5" />
+                        <Eye className="h-3.5 w-3.5 text-white" />
                         <span>รายละเอียด</span>
                       </button>
                       <button 
                         onClick={() => openEditForm(vendor)}
-                        className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors border border-transparent hover:border-slate-200"
+                        className="p-1.5 text-zinc-500 hover:text-black hover:bg-zinc-100 rounded-lg transition-colors border border-transparent hover:border-zinc-300"
                         title="แก้ไขข้อมูลคู่ค้า"
                       >
                         <Edit className="h-4 w-4" />
                       </button>
                       <button 
                         onClick={() => setDeleteVendorId(vendor.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                        className="p-1.5 text-zinc-400 hover:text-black hover:bg-zinc-100 rounded-lg transition-colors border border-transparent hover:border-zinc-300"
                         title="ลบข้อมูลคู่ค้า"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -342,8 +342,8 @@ export function VendorsPage() {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                    <Store className="h-8 w-8 mx-auto text-slate-400 mb-3" />
+                  <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                    <Store className="h-8 w-8 mx-auto text-zinc-400 mb-3" />
                     <p>ไม่พบข้อมูลคู่ค้าที่ค้นหา</p>
                   </td>
                 </tr>
@@ -473,7 +473,7 @@ export function VendorsPage() {
         footer={
           <button 
             onClick={() => setViewVendor(null)}
-            className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
+            className="px-5 py-2 text-xs font-bold text-white bg-black rounded-full hover:bg-zinc-800 transition-colors shadow-xs"
           >
             ปิด
           </button>
@@ -481,19 +481,19 @@ export function VendorsPage() {
       >
         {viewVendor && (
           <div className="space-y-6">
-            <div className="flex items-start gap-4 pb-6 border-b border-slate-200">
-              <div className="h-16 w-16 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Store className="h-8 w-8" />
+            <div className="flex items-start gap-4 pb-6 border-b-2 border-zinc-200">
+              <div className="h-16 w-16 bg-zinc-100 text-black border border-zinc-300 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Store className="h-8 w-8 text-black" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-800">{viewVendor.name}</h2>
+                <h2 className="text-xl font-bold text-black">{viewVendor.name}</h2>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                    <Star className="h-3.5 w-3.5 mr-1 fill-emerald-600" />
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 text-black border border-zinc-300">
+                    <Star className="h-3.5 w-3.5 mr-1 fill-black text-black" />
                     Rating: {viewVendor.rating.toFixed(1)} / 5.0
                   </span>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                    <TrendingUp className="h-3.5 w-3.5 mr-1" />
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 text-black border border-zinc-300">
+                    <TrendingUp className="h-3.5 w-3.5 mr-1 text-black" />
                     On-time Delivery: {viewVendor.onTimeDeliveryRate}%
                   </span>
                 </div>

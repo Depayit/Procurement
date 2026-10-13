@@ -204,36 +204,36 @@ function PendingApprovalCard({
       </div>
 
       {/* 5. Financial Amount Banner */}
-      <div className="flex items-center justify-between p-3 sm:px-4 bg-gradient-to-r from-slate-50 via-indigo-50/20 to-indigo-50/40 border border-indigo-100/90 rounded-xl shadow-2xs">
+      <div className="flex items-center justify-between p-3.5 sm:px-4 bg-zinc-50 border-2 border-zinc-200 rounded-2xl shadow-xs">
         <div>
-          <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
+          <span className="text-[10.5px] font-bold text-zinc-500 uppercase tracking-wider block leading-none">
             {isEnglish ? 'Requested Amount' : 'ยอดเงินขออนุมัติ'}
           </span>
-          <span className="text-[10px] text-slate-400 font-medium block mt-1 leading-none">
+          <span className="text-[10px] text-zinc-400 font-medium block mt-1 leading-none">
             {task.prData?.includeVat !== false 
               ? (isEnglish ? 'Incl. 7% VAT' : 'รวมภาษีมูลค่าเพิ่ม 7%') 
               : (isEnglish ? 'Excl. VAT' : 'ไม่รวมภาษีมูลค่าเพิ่ม')}
           </span>
         </div>
         <div className="text-right">
-          <div className="font-mono font-black text-slate-900 text-lg sm:text-xl tabular-nums leading-tight">
+          <div className="font-mono font-black text-black text-lg sm:text-xl tabular-nums leading-tight">
             ฿{(task.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider leading-none block mt-0.5">
+          <span className="text-[10px] font-bold text-black uppercase tracking-wider leading-none block mt-0.5">
             {isEnglish ? 'THB' : 'บาท'}
           </span>
         </div>
       </div>
 
       {/* 6. Action Buttons Bar (Comfortable, Touch-friendly, Never wraps words into 3 lines) */}
-      <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+      <div className="pt-2 border-t border-zinc-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
         <button
           type="button"
           onClick={() => onView(task)}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer order-2 sm:order-1"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-white hover:bg-zinc-100 text-black border-2 border-zinc-300 hover:border-black font-bold text-xs rounded-full transition-all shadow-xs cursor-pointer order-2 sm:order-1"
           title={isEnglish ? 'View Standard Official A4 Document' : 'ดูแบบฟอร์มเอกสารทางการ A4'}
         >
-          <Eye className="w-4 h-4 text-indigo-600" />
+          <Eye className="w-4 h-4 text-black" />
           <span>{isEnglish ? 'View Standard Form (A4)' : 'ดูแบบฟอร์มมาตรฐาน (A4)'}</span>
         </button>
 

@@ -112,8 +112,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 1: ภาพรวมระบบและผังเชื่อมโยงทั้งวงจร',
     titleEn: 'Part 1: Architecture & Lifecycle Flow',
     icon: Layers,
-    color: 'from-indigo-600 to-indigo-800 text-white',
-    badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+    color: 'bg-black text-white',
+    badgeClass: 'bg-zinc-100 text-black border-zinc-300',
     summaryTh: 'สถาปัตยกรรมระบบ ผังเชื่อมโยงข้อมูล 7 ขั้นตอน และมาตรฐานการควบคุมต้นทุนโครงการ',
     summaryEn: 'Core architecture, 7-step lifecycle map, and project cost governance',
     moduleCount: 1
@@ -124,8 +124,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
     titleEn: 'Part 2: Procurement & Approval Pipeline',
     icon: ShoppingCart,
-    color: 'from-blue-600 to-cyan-700 text-white',
-    badgeClass: 'bg-blue-100 text-blue-800 border-blue-200',
+    color: 'bg-black text-white',
+    badgeClass: 'bg-zinc-100 text-black border-zinc-300',
     summaryTh: 'การเปิดใบขอซื้อ (PR), ตรวจสอบงบประมาณ BOQ, สายการอนุมัติ 3 ระดับ และการออกใบสั่งซื้อ (PO)',
     summaryEn: 'Purchase requests, BOQ verification, multi-tier approvals, and PO generation',
     moduleCount: 3
@@ -136,8 +136,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ',
     titleEn: 'Part 3: Inventory Control & Suppliers',
     icon: Package,
-    color: 'from-amber-600 to-orange-700 text-white',
-    badgeClass: 'bg-amber-100 text-amber-800 border-amber-200',
+    color: 'bg-black text-white',
+    badgeClass: 'bg-zinc-100 text-black border-zinc-300',
     summaryTh: 'ตรวจรับสินค้าหน้างาน (GR), คลังพัสดุก่อสร้างกลาง (Hub), Master SKU Barcode, กล้องสแกนสด และทะเบียนคู่ค้า',
     summaryEn: 'Goods receiving, Central Material Hub, Master SKU barcode scanning, and vendor rating',
     moduleCount: 2
@@ -148,8 +148,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์',
     titleEn: 'Part 4: Smart Data Hub & Cloud Integrations',
     icon: UploadCloud,
-    color: 'from-emerald-600 to-teal-800 text-white',
-    badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    color: 'bg-black text-white',
+    badgeClass: 'bg-zinc-100 text-black border-zinc-300',
     summaryTh: 'นำเข้าไฟล์ Excel, CSV, CAD DXF พร้อมระบบซิงก์ Google Sheets, Cloud Storage และแจ้งเตือน LINE Notify',
     summaryEn: 'Bulk import of Excel, CSV, CAD DXF with Google Sheets sync and automated LINE alerts',
     moduleCount: 2
@@ -160,8 +160,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน',
     titleEn: 'Part 5: Administration, Settings & Reports',
     icon: ShieldCheck,
-    color: 'from-purple-600 to-indigo-900 text-white',
-    badgeClass: 'bg-purple-100 text-purple-800 border-purple-200',
+    color: 'bg-black text-white',
+    badgeClass: 'bg-zinc-100 text-black border-zinc-300',
     summaryTh: 'โครงสร้างสิทธิ์ RBAC 25 สิทธิ์, บันทึกการตรวจสอบ (Audit Log), ติดตั้งแอป PWA และรายงานวิเคราะห์งบประมาณ',
     summaryEn: 'RBAC 25 permission keys, audit trail logging, PWA settings, and executive cost analytics',
     moduleCount: 3
@@ -172,8 +172,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 6: AI ผู้ช่วยและศูนย์ซ่อมแซมระบบตนเอง',
     titleEn: 'Part 6: AI Copilot & 1-Click Auto-Repair',
     icon: Bot,
-    color: 'from-violet-600 to-fuchsia-800 text-white',
-    badgeClass: 'bg-violet-100 text-violet-800 border-violet-200',
+    color: 'bg-black text-white',
+    badgeClass: 'bg-zinc-100 text-black border-zinc-300',
     summaryTh: 'AI Copilot 24 ชม., การตรวจเช็คฮาร์ดแวร์ 5 จุด, แก้ปัญหากล้องและแคชค้าง 1-Click โดยไม่ต้องพึ่งพาแอดมิน',
     summaryEn: '24/7 AI Copilot troubleshooting, 5-point hardware diagnostics, and 1-click self-healing repair without waiting for IT admin',
     moduleCount: 1
@@ -1102,18 +1102,17 @@ export function ManualPage() {
     <div className="space-y-6 animate-in fade-in duration-300 pb-16">
       
       {/* 1. Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-md border border-slate-800 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-black text-white rounded-3xl p-6 sm:p-8 shadow-xs border-2 border-black relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-bold tracking-wide">
-              <BookOpen className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-bold tracking-wide">
+              <BookOpen className="w-3.5 h-3.5 text-white" />
               <span>{isEnglish ? 'Conerage store System Documentation & SOP' : 'คู่มือการปฏิบัติงานมาตรฐานระบบจัดซื้อและคลังสินค้า (SOP)'}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight">
               {isEnglish ? 'Complete System User Manual' : 'คู่มือการใช้งานระบบฉบับสมบูรณ์'}
             </h1>
-            <p className="text-sm text-slate-300 leading-relaxed">
+            <p className="text-sm text-zinc-300 leading-relaxed">
               {isEnglish 
                 ? 'Comprehensive guide detailing every module, button action, status workflow, and feature integration across the Conerage store platform.'
                 : 'รวบรวมคำอธิบายทุกฟีเจอร์ ทุกปุ่มการทำงาน ผังการเชื่อมโยงข้อมูลระหว่างโมดูล (PR -> PO -> คลัง -> สแกน QR) และมาตรฐานการปฏิบัติงาน'}
@@ -1123,19 +1122,19 @@ export function ManualPage() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setIsPreviewModalOpen(true)}
-              className="inline-flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-xs border border-indigo-400/40 cursor-pointer"
+              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-white hover:bg-zinc-200 text-black transition-all shadow-xs cursor-pointer"
               title="ดูตัวอย่างเอกสารคู่มือฉบับจริง A4"
             >
-              <Eye className="w-4 h-4 mr-1.5" />
+              <Eye className="w-4 h-4 mr-1.5 text-black" />
               <span>{isEnglish ? 'Preview A4 Document' : 'ดูตัวอย่างเอกสาร A4'}</span>
             </button>
 
             <button
               onClick={() => handlePrint('standard-manual-doc')}
-              className="inline-flex items-center px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 transition-colors shadow-xs cursor-pointer"
               title="สั่งพิมพ์คู่มือฉบับมาตรฐาน A4 (8 หน้า)"
             >
-              <Printer className="w-4 h-4 mr-1.5 text-indigo-600" />
+              <Printer className="w-4 h-4 mr-1.5 text-white" />
               <span>{isEnglish ? 'Print Standard A4' : 'พิมพ์คู่มือมาตรฐาน A4'}</span>
             </button>
           </div>
@@ -1143,18 +1142,18 @@ export function ManualPage() {
 
         {/* Search bar inside banner */}
         <div className="relative mt-6 max-w-xl">
-          <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-zinc-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={isEnglish ? 'Search any button, feature, or workflow (e.g. Scan QR, Approve, BOQ)...' : 'ค้นหาชื่อปุ่ม, ฟีเจอร์ หรือขั้นตอนการทำงาน (เช่น สแกน QR, อนุมัติ, ออก PO, ตรวจนับ)...'}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all shadow-inner"
+            className="w-full pl-10 pr-4 py-2.5 rounded-full bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 text-xs sm:text-sm font-medium focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
           />
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-3 text-xs text-slate-400 hover:text-white"
+              className="absolute right-4 top-2.5 text-xs text-zinc-400 hover:text-white"
             >
               ล้างคำค้นหา
             </button>
@@ -1163,18 +1162,18 @@ export function ManualPage() {
       </div>
 
       {/* View Mode Toggle Bar: Interactive vs Official SOP Document */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs print:hidden">
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border-2 border-zinc-200 shadow-xs print:hidden">
+        <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl border border-zinc-200">
           <button
             onClick={() => setViewMode('interactive')}
             className={cn(
               "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
               viewMode === 'interactive' 
-                ? "bg-white text-slate-900 shadow-xs" 
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-black text-white shadow-xs" 
+                : "text-zinc-600 hover:text-black"
             )}
           >
-            <Layers className="w-3.5 h-3.5 text-indigo-600" />
+            <Layers className="w-3.5 h-3.5" />
             <span>{isEnglish ? 'Interactive Web View' : 'มุมมองหน้าเว็บแบบโต้ตอบ'}</span>
           </button>
           <button
@@ -1182,22 +1181,22 @@ export function ManualPage() {
             className={cn(
               "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
               viewMode === 'official-document' 
-                ? "bg-white text-indigo-900 shadow-xs" 
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-black text-white shadow-xs" 
+                : "text-zinc-600 hover:text-black"
             )}
           >
-            <FileText className="w-3.5 h-3.5 text-indigo-600" />
+            <FileText className="w-3.5 h-3.5" />
             <span>{isEnglish ? 'Official A4 Document (8 Pages)' : 'เอกสารคู่มือมาตรฐาน A4 (8 หน้า)'}</span>
           </button>
         </div>
 
-        <div className="text-xs text-slate-500 flex items-center gap-2">
-          <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-700">
+        <div className="text-xs text-zinc-600 flex items-center gap-2">
+          <span className="font-mono bg-zinc-100 border border-zinc-300 px-2 py-0.5 rounded text-[11px] font-semibold text-black">
             SOP-PROC-2026-001 (Rev. 3.0)
           </span>
           <span className="hidden sm:inline">•</span>
-          <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+          <span className="text-[11px] text-black font-semibold flex items-center gap-1 border border-zinc-300 px-2 py-0.5 rounded bg-zinc-100">
+            <CheckCircle2 className="w-3.5 h-3.5 text-black" />
             มาตรฐาน ISO 9001:2015
           </span>
         </div>
@@ -1206,16 +1205,16 @@ export function ManualPage() {
       {/* Content Rendering Branch: Official A4 Document vs Interactive Web Guide */}
       {viewMode === 'official-document' ? (
         <div className="space-y-4">
-          <div className="bg-indigo-50/80 border border-indigo-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-indigo-950 shadow-2xs print:hidden">
+          <div className="bg-zinc-100 border-2 border-zinc-300 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-black shadow-xs print:hidden">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0">
-                <FileText className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4 text-white" />
               </div>
               <div>
-                <strong className="block text-slate-900 font-bold text-sm">
+                <strong className="block text-black font-bold text-sm">
                   {isEnglish ? 'Official Standard Operating Procedure (SOP) Manual' : 'เอกสารคู่มือมาตรฐานการปฏิบัติงานระบบจัดซื้อและคลังสินค้า (ฉบับจริง)'}
                 </strong>
-                <p className="text-slate-600 text-[11.5px] mt-0.5">
+                <p className="text-zinc-600 text-[11.5px] mt-0.5">
                   จัดหน้ากระดาษตามมาตรฐาน A4 Portrait (210 x 297 มม.) ทั้ง 8 หน้า พร้อมผังกระบวนการ สิทธิ์การใช้งาน และตารางสรุปปุ่ม เหมาะสำหรับการสั่งพิมพ์หรือบันทึก PDF
                 </p>
               </div>
@@ -1224,10 +1223,10 @@ export function ManualPage() {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => handlePrint('standard-manual-doc')}
-                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-full bg-black hover:bg-zinc-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                 title="พิมพ์คู่มือมาตรฐานขนาด A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
               >
-                <Printer className="w-4 h-4" />
+                <Printer className="w-4 h-4 text-white" />
                 <span>พิมพ์เอกสารนี้</span>
               </button>
             </div>
@@ -1241,32 +1240,32 @@ export function ManualPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FolderKanban className="w-4 h-4 text-indigo-600" />
-                <h2 className="text-sm font-bold text-slate-800">
-                  {isEnglish ? 'Organized by System Parts & Workflow Chapters' : 'จัดหมวดหมู่คู่มือตามส่วนงาน (5 ส่วนหลัก)'}
+                <FolderKanban className="w-4 h-4 text-black" />
+                <h2 className="text-sm font-bold text-black">
+                  {isEnglish ? 'Organized by System Parts & Workflow Chapters' : 'จัดหมวดหมู่คู่มือตามส่วนงาน (6 ส่วนหลัก)'}
                 </h2>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={expandAll}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
                 >
                   {isEnglish ? 'Expand All' : 'ขยายทั้งหมด'}
                 </button>
-                <span className="text-slate-300">|</span>
+                <span className="text-zinc-300">|</span>
                 <button
                   type="button"
                   onClick={collapseAll}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
                 >
                   {isEnglish ? 'Collapse All' : 'ย่อทั้งหมด'}
                 </button>
               </div>
             </div>
 
-            {/* 5 Part Cards Deck */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            {/* Part Cards Deck */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2.5">
               <button
                 type="button"
                 onClick={() => {
@@ -1274,18 +1273,21 @@ export function ManualPage() {
                   setSelectedModule('all');
                 }}
                 className={cn(
-                  "p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
+                  "p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between",
                   selectedPart === 'all'
-                    ? "bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-indigo-500/30"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300 shadow-2xs"
+                    ? "bg-black text-white border-black shadow-xs"
+                    : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-black text-black shadow-xs"
                 )}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
+                    <span className={cn(
+                      "text-[10px] font-bold px-1.5 py-0.5 rounded",
+                      selectedPart === 'all' ? "bg-zinc-800 text-white" : "bg-zinc-100 text-black border border-zinc-300"
+                    )}>
                       ALL
                     </span>
-                    <span className="text-[10px] opacity-75 font-mono">11 โมดูล</span>
+                    <span className="text-[10px] opacity-75 font-mono">12 โมดูล</span>
                   </div>
                   <p className="font-bold text-xs leading-tight">
                     {isEnglish ? 'All Parts' : 'ดูทุกส่วนงาน'}
@@ -1297,7 +1299,6 @@ export function ManualPage() {
               </button>
 
               {MANUAL_PARTS.map((p) => {
-                const PIcon = p.icon;
                 const isSelected = selectedPart === p.id;
                 return (
                   <button
@@ -1308,23 +1309,23 @@ export function ManualPage() {
                       setSelectedModule('all');
                     }}
                     className={cn(
-                      "p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between group",
+                      "p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between group",
                       isSelected
-                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm ring-2 ring-indigo-500/30"
-                        : "bg-white hover:bg-indigo-50/40 border-slate-200 text-slate-700 hover:border-indigo-300 shadow-2xs"
+                        ? "bg-black text-white border-black shadow-xs"
+                        : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-black text-black shadow-xs"
                     )}
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className={cn(
-                          "w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold",
-                          isSelected ? "bg-white/20 text-white" : "bg-indigo-50 text-indigo-700"
+                          "w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold border",
+                          isSelected ? "bg-white text-black border-white" : "bg-zinc-100 text-black border-zinc-300"
                         )}>
                           {p.partNumber}
                         </span>
                         <span className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded",
-                          isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded border",
+                          isSelected ? "bg-zinc-800 text-white border-zinc-700" : "bg-zinc-100 text-zinc-800 border-zinc-200"
                         )}>
                           {p.moduleCount} โมดูล
                         </span>
@@ -1335,7 +1336,7 @@ export function ManualPage() {
                     </div>
                     <p className={cn(
                       "text-[10px] mt-1.5 line-clamp-1 leading-normal",
-                      isSelected ? "text-indigo-100" : "text-slate-400 group-hover:text-slate-600"
+                      isSelected ? "text-zinc-300" : "text-zinc-500 group-hover:text-black"
                     )}>
                       {isEnglish ? p.summaryEn : p.summaryTh}
                     </p>
@@ -1345,19 +1346,19 @@ export function ManualPage() {
             </div>
 
             {/* Quick In-Page Anchor Jump Pills */}
-            <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
-              <span className="text-[11px] font-bold text-slate-400 px-2 shrink-0 flex items-center gap-1">
-                <Compass className="w-3.5 h-3.5 text-indigo-600" />
+            <div className="bg-white p-2 rounded-2xl border-2 border-zinc-200 shadow-xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
+              <span className="text-[11px] font-bold text-zinc-500 px-2 shrink-0 flex items-center gap-1">
+                <Compass className="w-3.5 h-3.5 text-black" />
                 {isEnglish ? 'Jump to:' : 'ข้ามไปที่:'}
               </span>
               <button
                 type="button"
                 onClick={() => setSelectedModule('all')}
                 className={cn(
-                  "px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-colors cursor-pointer",
+                  "px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-colors cursor-pointer",
                   selectedModule === 'all'
-                    ? "bg-slate-900 text-white shadow-2xs"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-black text-white shadow-xs"
+                    : "text-zinc-700 hover:bg-zinc-100 hover:text-black"
                 )}
               >
                 {isEnglish ? 'All In Part' : 'ทั้งหมดในส่วนนี้'}
@@ -1376,10 +1377,10 @@ export function ManualPage() {
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
                     className={cn(
-                      "px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer",
+                      "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer",
                       isCurrent
-                        ? "bg-indigo-600 text-white shadow-2xs font-bold"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        ? "bg-black text-white shadow-xs font-bold"
+                        : "text-zinc-700 hover:bg-zinc-100 hover:text-black"
                     )}
                   >
                     <MIcon className="w-3 h-3 shrink-0" />
@@ -1392,18 +1393,18 @@ export function ManualPage() {
 
       {/* 3. Visual Workflow Diagram (Always prominent) */}
       {(selectedModule === 'all' || selectedModule === 'flow-overview') && !searchQuery && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+        <div className="bg-white rounded-3xl border-2 border-zinc-200 p-6 sm:p-7 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
-                  <Layers className="w-4 h-4" />
+                <span className="p-1.5 rounded-lg bg-zinc-100 text-black border border-zinc-300">
+                  <Layers className="w-4 h-4 text-black" />
                 </span>
-                <h2 className="text-lg font-bold text-slate-900">
+                <h2 className="text-lg font-bold text-black">
                   {isEnglish ? 'Visual Lifecycle Flowchart & Linkages' : 'ผังภาพแสดงลำดับขั้นตอนการเชื่อมโยงระบบ (End-to-End Workflow)'}
                 </h2>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-zinc-600 mt-1">
                 {isEnglish 
                   ? 'Visual flowchart mapping data relationships between PR, Approval, PO, Inventory, and Reports.'
                   : 'แสดงความสัมพันธ์และการไหลของข้อมูลจากต้นทางสู่ปลายทางใน 7 ลำดับขั้นหลัก'}
@@ -1415,127 +1416,127 @@ export function ManualPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             
             {/* Step 1 */}
-            <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/40 relative space-y-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 1
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <ShoppingCart className="w-4 h-4 text-indigo-600" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <ShoppingCart className="w-4 h-4 text-black" />
                 เปิดคำขอซื้อ (PR)
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 วิศวกรสนามสร้างคำขอซื้อ ระบุโครงการ สเปกวัสดุ หรือเลือกเทมเพลต BOQ แล้วกด <strong>&ldquo;ส่งขออนุมัติ&rdquo;</strong>
               </p>
-              <div className="pt-2 text-[11px] text-indigo-700 font-bold flex items-center gap-1 border-t border-indigo-100">
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
                 <span>ส่งต่อไปยังการอนุมัติ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 2 */}
-            <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/40 relative space-y-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 2
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <ClipboardCheck className="w-4 h-4 text-blue-600" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <ClipboardCheck className="w-4 h-4 text-black" />
                 พิจารณาอนุมัติ (Approval)
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 ผู้อนุมัติตรวจเอกสาร A4 เช็กกรอบงบประมาณ BOQ แล้วกด <strong>&ldquo;อนุมัติคำขอ&rdquo;</strong> ลงนามดิจิทัล
               </p>
-              <div className="pt-2 text-[11px] text-blue-700 font-bold flex items-center gap-1 border-t border-blue-100">
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
                 <span>ส่งต่อไปยังฝ่ายจัดซื้อ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 3 */}
-            <div className="p-4 rounded-xl border border-purple-200 bg-purple-50/40 relative space-y-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-purple-600 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 3
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-purple-600" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-black" />
                 ออกใบสั่งซื้อ (PO)
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 ฝ่ายจัดซื้อกด <strong>&ldquo;สร้าง PO จาก PR ที่อนุมัติแล้ว&rdquo;</strong> เลือกผู้ขาย และส่งเอกสารสั่งของ
               </p>
-              <div className="pt-2 text-[11px] text-purple-700 font-bold flex items-center gap-1 border-t border-purple-100">
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
                 <span>รอผู้ขายส่งมอบสินค้า</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 4 */}
-            <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/40 relative space-y-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-amber-600 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 4
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <Package className="w-4 h-4 text-amber-600" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <Package className="w-4 h-4 text-black" />
                 ตรวจรับของหน้างาน
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 ของมาส่งหน้างาน เจ้าหน้าที่กด <strong>&ldquo;ตรวจรับสินค้า&rdquo;</strong> ในหน้า PO บันทึกจำนวนที่รับจริง
               </p>
-              <div className="pt-2 text-[11px] text-amber-700 font-bold flex items-center gap-1 border-t border-amber-100">
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
                 <span>อัปเดตสต็อกคลังทันที</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 5 */}
-            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 relative space-y-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 5
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <Package className="w-4 h-4 text-emerald-600" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <Package className="w-4 h-4 text-black" />
                 เข้าสต็อกคลัง (Inventory)
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 ยอดสต็อกเพิ่มอัตโนมัติ เจ้าหน้าที่กด <strong>&ldquo;พิมพ์ป้าย QR&rdquo;</strong> ติดสติกเกอร์ที่กล่องสินค้า
               </p>
-              <div className="pt-2 text-[11px] text-emerald-700 font-bold flex items-center gap-1 border-t border-emerald-100">
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
                 <span>พร้อมสแกนใช้งาน</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 6 */}
-            <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/40 relative space-y-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 6
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <Camera className="w-4 h-4 text-indigo-600" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <Camera className="w-4 h-4 text-black" />
                 สแกนกล้องสด & เบิกจ่าย
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 กด <strong>&ldquo;สแกน QR&rdquo;</strong> ส่องกล้องมือถือ/เว็บแคม เพื่อเบิกของไปไซต์งาน หรือตรวจนับยอดจริง
               </p>
-              <div className="pt-2 text-[11px] text-indigo-700 font-bold flex items-center gap-1 border-t border-indigo-100">
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
                 <span>ตัดยอดสต็อกแบบ Real-time</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 7 */}
-            <div className="p-4 rounded-xl border border-slate-300 bg-slate-50 relative space-y-2 md:col-span-2">
-              <span className="inline-block px-2 py-0.5 rounded bg-slate-800 text-white text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border-2 border-zinc-200 hover:border-black transition-colors bg-white relative space-y-2 md:col-span-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-bold">
                 ขั้นตอนที่ 7
               </span>
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <BarChart3 className="w-4 h-4 text-slate-800" />
+              <h3 className="font-bold text-black text-sm flex items-center gap-1.5">
+                <BarChart3 className="w-4 h-4 text-black" />
                 วิเคราะห์ต้นทุนและสรุปผู้บริหาร (Reports & Analytics)
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-zinc-600 leading-relaxed">
                 ข้อมูลทุกกระบวนการจะถูกประมวลผลเป็นสถิติเปรียบเทียบงบประมาณ วิเคราะห์ผู้ขาย และส่งออกเป็น Excel / PDF สำหรับรายงานที่ประชุม
               </p>
-              <div className="pt-2 text-[11px] text-slate-700 font-bold flex items-center gap-1 border-t border-slate-200">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="pt-2 text-[11px] text-black font-bold flex items-center gap-1 border-t border-zinc-200">
+                <CheckCircle2 className="w-3.5 h-3.5 text-black" />
                 <span>วงจรจัดซื้อและบริหารคลังสมบูรณ์แบบ</span>
               </div>
             </div>
@@ -1556,18 +1557,18 @@ export function ManualPage() {
             <React.Fragment key={m.id}>
               {/* Part Section Header Banner */}
               {isNewPart && (
-                <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8 first:mt-0">
+                <div className="bg-black text-white rounded-2xl p-5 sm:p-6 shadow-xs border-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8 first:mt-0">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-600/90 border border-indigo-400/40 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
+                    <div className="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
                       {m.partNumber}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-300">
                           {isEnglish ? `Part ${m.partNumber}` : `ส่วนที่ ${m.partNumber}`}
                         </span>
-                        <span className="text-slate-500">•</span>
-                        <span className="text-[11px] text-slate-300">
+                        <span className="text-zinc-500">•</span>
+                        <span className="text-[11px] text-zinc-300">
                           {modules.filter(item => item.partId === m.partId).length} {isEnglish ? 'Modules' : 'โมดูลงาน'}
                         </span>
                       </div>
@@ -1578,7 +1579,7 @@ export function ManualPage() {
                   </div>
 
                   {partInfo && (
-                    <div className="text-xs text-indigo-200/90 font-medium bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl max-w-md self-start sm:self-auto leading-relaxed">
+                    <div className="text-xs text-zinc-300 font-medium bg-zinc-900 border border-zinc-800 px-3.5 py-2 rounded-xl max-w-md self-start sm:self-auto leading-relaxed">
                       {isEnglish ? partInfo.summaryEn : partInfo.summaryTh}
                     </div>
                   )}
@@ -1588,32 +1589,32 @@ export function ManualPage() {
               {/* Module Card */}
               <div 
                 id={m.id}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs scroll-mt-24 transition-all"
+                className="bg-white rounded-2xl border-2 border-zinc-200 hover:border-zinc-400 overflow-hidden shadow-xs scroll-mt-24 transition-all"
               >
                 {/* Module Header Bar */}
                 <div 
                   onClick={() => toggleModule(m.id)}
-                  className="p-4 sm:p-5 bg-slate-50/80 hover:bg-slate-100/60 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition-colors select-none"
+                  className="p-4 sm:p-5 bg-zinc-50 hover:bg-zinc-100/80 border-b-2 border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition-colors select-none"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-                      <Icon className="w-5 h-5" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                      <Icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-200 text-zinc-800">
                           {isEnglish ? `Part ${m.partNumber}` : `ส่วนที่ ${m.partNumber}`}
                         </span>
-                        <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                        <h2 className="text-base sm:text-lg font-bold text-black leading-snug">
                           {isEnglish ? m.titleEn : m.title}
                         </h2>
-                        <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-100 text-black border border-zinc-300">
                           {m.badge}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
-                        <span className="font-bold text-slate-700">ผู้รับผิดชอบหลัก:</span> 
-                        <span className="text-slate-600">{m.role}</span>
+                      <p className="text-xs text-zinc-500 font-medium mt-1 flex items-center gap-1.5">
+                        <span className="font-bold text-black">ผู้รับผิดชอบหลัก:</span> 
+                        <span className="text-zinc-600">{m.role}</span>
                       </p>
                     </div>
                   </div>
@@ -1623,7 +1624,7 @@ export function ManualPage() {
                       <Link
                         to={m.route}
                         onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:border-indigo-400 bg-white hover:bg-indigo-50/50 text-slate-700 hover:text-indigo-700 text-xs font-bold transition-all shadow-2xs"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-zinc-300 hover:border-black bg-white hover:bg-zinc-100 text-black text-xs font-bold transition-all shadow-2xs"
                       >
                         <span>{isEnglish ? 'Open Module' : 'ไปยังหน้านี้'}</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -1636,13 +1637,13 @@ export function ManualPage() {
                         e.stopPropagation();
                         toggleModule(m.id);
                       }}
-                      className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+                      className="p-1.5 rounded-full bg-white border-2 border-zinc-200 hover:border-black text-black transition-colors cursor-pointer shadow-2xs"
                       title={isExpanded ? 'ย่อเนื้อหา' : 'ขยายเนื้อหาทั้งหมด'}
                     >
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-slate-700" />
+                        <ChevronUp className="w-4 h-4 text-black" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-slate-700" />
+                        <ChevronDown className="w-4 h-4 text-black" />
                       )}
                     </button>
                   </div>
@@ -1652,22 +1653,22 @@ export function ManualPage() {
                 {!isExpanded && (
                   <div 
                     onClick={() => toggleModule(m.id)}
-                    className="p-4 bg-white hover:bg-slate-50/50 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                    className="p-4 bg-white hover:bg-zinc-50/50 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                   >
-                    <p className="text-slate-600 line-clamp-2 leading-relaxed flex-1">
+                    <p className="text-zinc-600 line-clamp-2 leading-relaxed flex-1">
                       {isEnglish ? m.summaryEn : m.summary}
                     </p>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[11px] text-slate-500 font-medium px-2 py-0.5 rounded bg-slate-100">
+                      <span className="text-[11px] text-zinc-700 font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50">
                         🔗 {m.linkages.length} จุดเชื่อมต่อ
                       </span>
-                      <span className="text-[11px] text-indigo-700 font-medium px-2 py-0.5 rounded bg-indigo-50">
+                      <span className="text-[11px] text-black font-medium px-2 py-0.5 rounded border border-zinc-300 bg-zinc-100">
                         🕹️ {m.buttons.length} ปุ่มคำสั่ง
                       </span>
-                      <span className="text-[11px] text-amber-700 font-medium px-2 py-0.5 rounded bg-amber-50">
+                      <span className="text-[11px] text-zinc-800 font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50">
                         💡 {m.tips.length} ข้อควรปฏิบัติ
                       </span>
-                      <span className="text-xs text-indigo-600 font-bold hover:underline ml-1">
+                      <span className="text-xs text-black font-bold hover:underline ml-1">
                         {isEnglish ? 'Read details &darr;' : 'อ่านรายละเอียด &darr;'}
                       </span>
                     </div>
@@ -1678,11 +1679,11 @@ export function ManualPage() {
                 {isExpanded && (
                   <div className="p-5 sm:p-6 space-y-6 bg-white animate-in fade-in duration-200">
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-indigo-600" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-black" />
                         วัตถุประสงค์และการทำงาน (Objective & Scope)
                       </h4>
-                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+                      <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed bg-zinc-50 p-3.5 rounded-xl border-2 border-zinc-200">
                         {isEnglish ? m.summaryEn : m.summary}
                       </p>
                     </div>
@@ -1690,19 +1691,19 @@ export function ManualPage() {
                     {/* Workflow Linkages */}
                     {m.linkages.length > 0 && (
                       <div className="space-y-2.5">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-blue-600" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-black" />
                           การเชื่อมโยงกับฟีเจอร์อื่นในระบบ (Feature Linkages)
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                           {m.linkages.map((link, lIdx) => (
-                            <div key={lIdx} className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs space-y-1">
-                              <div className="flex items-center gap-1.5 font-bold text-indigo-900">
-                                <span className="text-indigo-600">{link.from}</span>
-                                <ArrowRight className="w-3 h-3 text-slate-400" />
-                                <span className="text-slate-800">{link.to}</span>
+                            <div key={lIdx} className="p-3 rounded-xl border-2 border-zinc-200 bg-zinc-50/60 text-xs space-y-1">
+                              <div className="flex items-center gap-1.5 font-bold text-black">
+                                <span className="text-black">{link.from}</span>
+                                <ArrowRight className="w-3 h-3 text-zinc-400" />
+                                <span className="text-zinc-700">{link.to}</span>
                               </div>
-                              <p className="text-slate-600 text-[11.5px] leading-relaxed">
+                              <p className="text-zinc-600 text-[11.5px] leading-relaxed">
                                 {link.description}
                               </p>
                             </div>
@@ -1714,17 +1715,17 @@ export function ManualPage() {
                     {/* Status Glossary if any */}
                     {m.statuses && m.statuses.length > 0 && (
                       <div className="space-y-2.5">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-black" />
                           ความหมายของสถานะเอกสาร (Document Statuses)
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                           {m.statuses.map((st, sIdx) => (
-                            <div key={sIdx} className="p-2.5 rounded-lg border border-slate-100 bg-slate-50 flex items-start gap-2 text-xs">
-                              <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold border shrink-0", st.color)}>
+                            <div key={sIdx} className="p-2.5 rounded-xl border border-zinc-200 bg-zinc-50 flex items-start gap-2 text-xs">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold border border-zinc-300 bg-white text-black shrink-0">
                                 {st.status}
                               </span>
-                              <span className="text-[11.5px] text-slate-600 leading-snug">
+                              <span className="text-[11.5px] text-zinc-700 leading-snug">
                                 {st.desc}
                               </span>
                             </div>
@@ -1737,44 +1738,44 @@ export function ManualPage() {
                     {m.buttons.length > 0 && (
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-purple-600" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-black" />
                             คู่มือคำอธิบายปุ่มและการกดใช้งาน (Button & Action Guide)
                           </h4>
-                          <span className="text-[11px] text-slate-400 font-mono">
+                          <span className="text-[11px] text-zinc-400 font-mono">
                             {m.buttons.length} รายการคำสั่ง
                           </span>
                         </div>
-                        <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                        <div className="overflow-x-auto border-2 border-zinc-200 rounded-xl">
                           <table className="w-full text-left border-collapse text-xs">
                             <thead>
-                              <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold">
+                              <tr className="bg-zinc-100 border-b-2 border-zinc-200 text-black font-bold">
                                 <th className="py-2.5 px-3 w-48">ชื่อปุ่ม / การสั่งการ</th>
                                 <th className="py-2.5 px-3 w-40">ตำแหน่งในหน้าจอ</th>
                                 <th className="py-2.5 px-3">การทำงานเมื่อกด (Action)</th>
                                 <th className="py-2.5 px-3 w-56">ผลลัพธ์และการเชื่อมโยง</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 text-[11.5px]">
+                            <tbody className="divide-y divide-zinc-200 text-[11.5px]">
                               {m.buttons.map((btn, bIdx) => {
                                 const BtnIcon = btn.icon;
                                 return (
-                                  <tr key={bIdx} className="hover:bg-slate-50/70 transition-colors">
+                                  <tr key={bIdx} className="hover:bg-zinc-50 transition-colors">
                                     <td className="py-2.5 px-3 align-top">
-                                      <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                                        {BtnIcon && <BtnIcon className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
-                                        <span className={cn("px-2 py-0.5 rounded text-[11px] font-semibold border", btn.color || 'bg-slate-100 text-slate-700 border-slate-200')}>
+                                      <div className="flex items-center gap-1.5 font-bold text-black">
+                                        {BtnIcon && <BtnIcon className="w-3.5 h-3.5 text-black shrink-0" />}
+                                        <span className="px-2 py-0.5 rounded text-[11px] font-semibold border border-zinc-300 bg-zinc-100 text-black">
                                           {btn.name}
                                         </span>
                                       </div>
                                     </td>
-                                    <td className="py-2.5 px-3 align-top text-slate-500 font-medium">
+                                    <td className="py-2.5 px-3 align-top text-zinc-600 font-medium">
                                       {btn.location}
                                     </td>
-                                    <td className="py-2.5 px-3 align-top text-slate-700 leading-relaxed">
+                                    <td className="py-2.5 px-3 align-top text-zinc-800 leading-relaxed">
                                       {btn.action}
                                     </td>
-                                    <td className="py-2.5 px-3 align-top text-indigo-700 font-medium leading-relaxed">
+                                    <td className="py-2.5 px-3 align-top text-black font-medium leading-relaxed">
                                       {btn.linkage}
                                     </td>
                                   </tr>
@@ -1788,12 +1789,12 @@ export function ManualPage() {
 
                     {/* Practical Tips */}
                     {m.tips.length > 0 && (
-                      <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 text-xs text-amber-900 space-y-1">
-                        <span className="font-bold flex items-center gap-1">
-                          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                      <div className="p-3.5 rounded-xl border-2 border-zinc-300 bg-zinc-100 text-xs text-black space-y-1">
+                        <span className="font-bold flex items-center gap-1 text-black">
+                          <Sparkles className="w-3.5 h-3.5 text-black" />
                           เคล็ดลับและข้อควรระวังในการปฏิบัติงาน (Best Practices)
                         </span>
-                        <ul className="list-disc list-inside space-y-0.5 text-amber-800 text-[11.5px] pl-1">
+                        <ul className="list-disc list-inside space-y-0.5 text-zinc-700 text-[11.5px] pl-1">
                           {m.tips.map((tip, tIdx) => (
                             <li key={tIdx}>{tip}</li>
                           ))}
@@ -1809,100 +1810,100 @@ export function ManualPage() {
         })}
 
         {filteredModules.length === 0 && (
-          <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
-            <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-            <h3 className="font-bold text-slate-800 text-base">ไม่พบข้อมูลที่ตรงกับคำค้นหา</h3>
-            <p className="text-xs text-slate-500 mt-1">โปรดลองพิมพ์คำค้นอื่น เช่น &ldquo;สแกน QR&rdquo;, &ldquo;อนุมัติ&rdquo;, &ldquo;PO&rdquo; หรือล้างการค้นหา</p>
+          <div className="bg-white rounded-2xl border-2 border-zinc-200 p-12 text-center text-zinc-500">
+            <HelpCircle className="w-12 h-12 text-zinc-300 mx-auto mb-2" />
+            <h3 className="font-bold text-black text-base">ไม่พบข้อมูลที่ตรงกับคำค้นหา</h3>
+            <p className="text-xs text-zinc-500 mt-1">โปรดลองพิมพ์คำค้นอื่น เช่น &ldquo;สแกน QR&rdquo;, &ldquo;อนุมัติ&rdquo;, &ldquo;PO&rdquo; หรือล้างการค้นหา</p>
           </div>
         )}
       </div>
 
       {/* 5. Frequently Asked Questions (FAQ) Section */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-xs space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-          <HelpCircle className="w-5 h-5 text-indigo-600" />
-          <h3 className="text-base font-bold text-slate-900">
+      <div className="bg-white rounded-3xl border-2 border-zinc-200 p-6 sm:p-7 shadow-xs space-y-4">
+        <div className="flex items-center gap-2 border-b border-zinc-200 pb-3">
+          <HelpCircle className="w-5 h-5 text-black" />
+          <h3 className="text-base font-bold text-black">
             {isEnglish ? 'Frequently Asked Questions (FAQ)' : 'คำถามที่พบบ่อยและการแก้ปัญหา (FAQ & Troubleshooting)'}
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               1. สแกน QR Code แล้วกล้องไม่เปิด หรือขึ้นข้อความแจ้งเตือน?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               ตรวจสอบสิทธิ์การใช้งานกล้องในเบราว์เซอร์ (คลิกที่ไอคอนแม่กุญแจหน้ารายการ URL) แล้วเลือกอนุญาต (Allow) การใช้กล้อง หรือสามารถสลับไปใช้แท็บ <strong>&ldquo;อัปโหลดรูปภาพ&rdquo;</strong> หรือ <strong>&ldquo;กรอกรหัสด้วยตนเอง&rdquo;</strong> ได้ทันที
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               2. ใบขอซื้อ (PR) ได้รับอนุมัติแล้ว แต่ทำไมยังไม่มีสินค้ามาส่ง?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               เมื่อ PR อนุมัติแล้ว ฝ่ายจัดซื้อจะต้องไปที่เมนู <strong>&ldquo;ระบบจัดซื้อ (PO)&rdquo;</strong> แล้วกดปุ่ม <strong>&ldquo;สร้าง PO จาก PR ที่อนุมัติแล้ว&rdquo;</strong> เพื่อออกใบสั่งซื้อและส่งไปยังคู่ค้าอย่างเป็นทางการก่อน
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               3. สินค้ามาส่งหน้างานไม่ครบตามจำนวนใน PO ทำอย่างไร?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               สามารถกด <strong>&ldquo;ตรวจรับสินค้า&rdquo;</strong> ในหน้า PO แล้วกรอกเฉพาะจำนวนที่มาส่งจริงในงวดนั้น ระบบจะปรับสถานะเป็น <strong>Partially Received (รับบางส่วน)</strong> และบันทึกยอดค้างส่งไว้รอรับในงวดถัดไป
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               4. ต้องการนำระบบไปใช้งานในสมาร์ทโฟนโดยไม่ต้องโหลดแอป?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               เปิดเบราว์เซอร์บนมือถือ แล้วกดปุ่ม <strong>&ldquo;ติดตั้งแอป Conerage store&rdquo;</strong> ที่แถบเมนูข้าง หรือกด Share &gt; &ldquo;Add to Home Screen&rdquo; บน Safari / Chrome ระบบจะติดตั้งเป็น PWA บนหน้าจอหลัก ใช้งานได้รวดเร็วเสมือนแอปจริง
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               5. นำเข้าไฟล์ Excel หรือ BOQ แล้วหัวคอลัมน์ไม่ตรงกับระบบ ทำอย่างไร?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               ในหน้า <strong>&ldquo;ศูนย์นำเข้าข้อมูล (Data Import Hub)&rdquo;</strong> หลังจากอัปโหลดไฟล์ ระบบจะมีขั้นตอน <strong>&ldquo;จับคู่คอลัมน์ (Auto-Map Columns)&rdquo;</strong> ให้ท่านเลือกแมปหัวตารางจากไฟล์ของท่านเข้ากับฟิลด์ของระบบได้อย่างอิสระ หรือสามารถกด <strong>&ldquo;ดาวน์โหลดเทมเพลตมาตรฐาน&rdquo;</strong> ไปใช้เป็นต้นแบบได้
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               6. ขนาดตัวหนังสือและตารางบนหน้าจอคอมพิวเตอร์ใหญ่หรือเล็กเกินไป?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               ไปที่เมนู <strong>&ldquo;ตั้งค่า (Settings)&rdquo;</strong> ในส่วน <strong>&ldquo;ความละเอียดการแสดงผล (Display Density)&rdquo;</strong> สามารถเลือกปรับสเกลเป็น <strong>80% (กะทัดรัดสมดุล เหมาะกับโน้ตบุ๊ก)</strong>, 90%, 100% หรือ 110% ระบบจะปรับขนาด UI ทันทีและจดจำค่าไว้ตลอดการใช้งาน
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               7. ป้ายบาร์โค้ด Master SKU รองรับเครื่องพิมพ์และเครื่องยิงแบบใดบ้าง?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               รองรับเครื่องยิงบาร์โค้ดไร้สายทั่วไป (Wireless / USB Barcode Scanner Gun) และกล้องมือถือ สำหรับการพิมพ์ป้าย รองรับทั้งเครื่องพิมพ์สติกเกอร์ความร้อน (Direct Thermal Label Printer เช่น Xprinter, Zebra) ขนาด 50x30 มม., 75x50 มม., ป้ายติดชั้นวาง (Shelf Tag) และเครื่องพิมพ์ A4
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-indigo-600" />
+          <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-1.5">
+            <h4 className="font-bold text-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-black" />
               8. การตั้งค่าแจ้งเตือนการขออนุมัติเข้ากลุ่ม LINE (LINE Notify)?
             </h4>
-            <p className="text-slate-600 leading-relaxed text-[11.5px]">
+            <p className="text-zinc-600 leading-relaxed text-[11.5px]">
               ไปที่เมนู <strong>&ldquo;เชื่อมต่อคลาวด์/API (Cloud Sync)&rdquo;</strong> ในการ์ด LINE Notify นำ Token จาก notify-bot.line.me มาวางและระบุชื่อกลุ่ม จากนั้นกด <strong>&ldquo;ทดสอบส่งข้อความ&rdquo;</strong> ระบบจะส่งแจ้งเตือนข้อความพร้อมลิงก์เอกสารเข้ากลุ่มไลน์ทันทีที่มีคำขออนุมัติใหม่
             </p>
           </div>
@@ -1918,19 +1919,19 @@ export function ManualPage() {
 
   {/* Official A4 Document Preview Modal */}
   {isPreviewModalOpen && (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:hidden">
-      <div className="bg-slate-100 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl border border-slate-300 overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:hidden">
+      <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl border-2 border-black overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
-        <div className="bg-white px-5 py-3.5 border-b border-slate-200 flex items-center justify-between shrink-0">
+        <div className="bg-white px-5 py-3.5 border-b-2 border-zinc-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-              <BookOpen className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center shadow-xs">
+              <BookOpen className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">
+              <h3 className="font-bold text-black text-sm">
                 ตัวอย่างเอกสารคู่มือมาตรฐานการปฏิบัติงาน (Standard A4 SOP Preview)
               </h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-zinc-500">
                 เอกสารทางการ 8 หน้า • รหัส SOP-PROC-2026-001 (Rev. 3.0)
               </p>
             </div>
@@ -1939,15 +1940,15 @@ export function ManualPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handlePrint('standard-manual-doc-modal')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-black hover:bg-zinc-800 text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
               title="พิมพ์เอกสารมาตรฐาน A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
             >
-              <Printer className="w-3.5 h-3.5" />
+              <Printer className="w-3.5 h-3.5 text-white" />
               <span>พิมพ์เอกสาร</span>
             </button>
             <button
               onClick={() => setIsPreviewModalOpen(false)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 ml-2 cursor-pointer transition-colors"
+              className="p-1.5 rounded-full text-zinc-400 hover:text-black hover:bg-zinc-100 ml-2 cursor-pointer transition-colors"
               title="ปิดหน้าต่าง"
             >
               <X className="w-5 h-5" />
@@ -1956,7 +1957,7 @@ export function ManualPage() {
         </div>
 
         {/* Modal Body: Scrollable Document View */}
-        <div className="overflow-y-auto p-4 sm:p-6 bg-slate-200/80 flex-1">
+        <div className="overflow-y-auto p-4 sm:p-6 bg-zinc-100 flex-1">
           <StandardManualDocument id="standard-manual-doc-modal" className="py-0" />
         </div>
       </div>

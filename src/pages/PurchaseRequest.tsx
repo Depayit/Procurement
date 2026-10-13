@@ -375,14 +375,14 @@ export function PurchaseRequestPage() {
 
       {/* Templates Gallery Section (When opened) */}
       {showTemplatesGallery && (
-        <div className="bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/50 border border-indigo-200 rounded-xl p-5 shadow-xs animate-in fade-in duration-300">
+        <div className="bg-white border-2 border-black rounded-3xl p-5 sm:p-6 shadow-xs animate-in fade-in duration-300">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                <BookmarkCheck className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-base font-bold text-black flex items-center gap-2">
+                <BookmarkCheck className="w-5 h-5 text-black" />
                 {isEnglish ? 'Standard Construction PR Templates' : 'เทมเพลตมาตรฐานสำหรับระบบขอซื้อ (Standard PR Templates)'}
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-zinc-600 mt-0.5">
                 {isEnglish 
                   ? 'Select preloaded construction & MEP standard templates to create a PR in 1 click' 
                   : 'เลือกใช้เทมเพลตมาตรฐานสำเร็จรูปที่จัดเตรียมรายการพัสดุ สเปก และหน่วยนับไว้ครบถ้วน เพื่อสร้าง PR ได้ใน 1 คลิก'}
@@ -390,7 +390,7 @@ export function PurchaseRequestPage() {
             </div>
             <button
               onClick={() => setShowTemplatesGallery(false)}
-              className="text-xs text-slate-400 hover:text-slate-600 font-medium"
+              className="text-xs text-zinc-500 hover:text-black font-bold"
             >
               {t('common.close')}
             </button>
@@ -400,27 +400,27 @@ export function PurchaseRequestPage() {
             {standardTemplates.map((tpl) => (
               <div 
                 key={tpl.id}
-                className="bg-white rounded-lg border border-slate-200 p-4 hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between group"
+                className="bg-white rounded-2xl border-2 border-zinc-200 p-4 hover:border-black hover:shadow-xs transition-all flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded uppercase">
+                    <span className="text-[10px] font-bold text-black bg-zinc-100 border border-zinc-300 px-2 py-0.5 rounded-full uppercase">
                       {tpl.category}
                     </span>
-                    <span className="text-[11px] font-medium text-slate-500">
+                    <span className="text-[11px] font-medium text-zinc-500">
                       {tpl.items.length} {isEnglish ? 'items' : 'รายการ'}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-sm text-slate-800 mt-2 group-hover:text-indigo-600 transition-colors">
+                  <h3 className="font-bold text-sm text-black mt-2">
                     {tpl.name}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                  <p className="text-xs text-zinc-600 mt-1 line-clamp-2">
                     {tpl.description}
                   </p>
 
-                  <div className="mt-3 pt-2.5 border-t border-slate-100 space-y-1">
-                    <div className="text-[11px] font-medium text-slate-600 line-clamp-1">
+                  <div className="mt-3 pt-2.5 border-t border-zinc-200 space-y-1">
+                    <div className="text-[11px] font-medium text-zinc-600 line-clamp-1">
                       {isEnglish ? 'Sample items: ' : 'ตัวอย่างรายการ: '}{tpl.items.slice(0, 2).map(i => i.description).join(', ')} ...
                     </div>
                   </div>
@@ -429,10 +429,10 @@ export function PurchaseRequestPage() {
                 <div className="mt-4 pt-2">
                   <button
                     onClick={() => handleCreateFromTemplate(tpl)}
-                    className="w-full py-1.5 px-3 bg-slate-50 hover:bg-indigo-600 text-slate-700 hover:text-white rounded font-semibold text-xs transition-all border border-slate-200 hover:border-indigo-600 flex items-center justify-center gap-1.5 shadow-2xs"
+                    className="w-full py-2 px-3 bg-black hover:bg-zinc-800 text-white rounded-full font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
                   >
                     <span>{isEnglish ? 'Use Template' : 'สร้าง PR จากเทมเพลตนี้'}</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <ChevronRight className="w-3.5 h-3.5 text-white" />
                   </button>
                 </div>
               </div>
