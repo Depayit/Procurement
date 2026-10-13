@@ -61,7 +61,7 @@ export default defineConfig(() => {
       tailwindcss(),
       generateVersionPlugin(),
       VitePWA({
-        registerType: 'autoUpdate',
+        registerType: 'prompt',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg', 'icon-maskable.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-maskable-512x512.png'],
         manifest: {
           id: 'conerage-store-app',
@@ -136,8 +136,8 @@ export default defineConfig(() => {
         },
         workbox: {
           cleanupOutdatedCaches: true,
-          clientsClaim: true,
-          skipWaiting: true,
+          clientsClaim: false,
+          skipWaiting: false,
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/],
           maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,

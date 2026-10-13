@@ -25,6 +25,13 @@ export const CURRENT_CLIENT_BUILD_TIME = typeof __BUILD_TIME__ !== 'undefined' ?
 const RUNNING_BUILD_KEY = 'conerage_running_build_id';
 const DISMISSED_UPDATE_KEY = 'conerage_dismissed_deployment_build_id';
 
+/**
+ * Master switch for automatic update detection (polling, focus checks,
+ * service worker update pings and update popups). Disabled by request.
+ * Set to true to restore real-time automatic updates.
+ */
+export const AUTO_UPDATE_ENABLED = false;
+
 let activeUpdateSW: ((reloadPage?: boolean) => Promise<void>) | null = null;
 let broadcastChannel: BroadcastChannel | null = null;
 
@@ -192,33 +199,35 @@ export function initRealtimeDeploymentWatcher(
   }
 
   // 2. Register Service Worker with live update hook
-  try {
-    activeUpdateSW = registerSW({
-      immediate: true,
-      onNeedRefresh() {
-        console.log('[RealtimeUpdate] New service worker ready to activate.');
-        checkForServerUpdate().then(({ newInfo }) => {
-          const info = newInfo || {
-            version: CURRENT_CLIENT_VERSION,
-            buildId: `sw_update_${Date.now()}`,
-            buildTime: new Date().toISOString(),
-            releaseNotes: 'ระบบตรวจพบบันทึกการ Deploy ใหม่ผ่าน Service Worker',
-          };
-          onUpdateDetected(info);
-          broadcastDeploymentEvent(info);
-        });
-      },
-      onRegistered(r) {
-        if (r) {
-          // Periodically ask the service worker to check for updates every 30 seconds
-          setInterval(() => {
-            r.update().catch(() => {});
-          }, 30000);
-        }
-      },
-    });
-  } catch (err) {
-    console.debug('[RealtimeUpdate] SW register error:', err);
+  if (AUTO_UPDATE_ENABLED) {
+    try {
+      activeUpdateSW = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          console.log('[RealtimeUpdate] New service worker ready to activate.');
+          checkForServerUpdate().then(({ newInfo }) => {
+            const info = newInfo || {
+              version: CURRENT_CLIENT_VERSION,
+              buildId: `sw_update_${Date.now()}`,
+              buildTime: new Date().toISOString(),
+              releaseNotes: 'ระบบตรวจพบบันทึกการ Deploy ใหม่ผ่าน Service Worker',
+            };
+            onUpdateDetected(info);
+            broadcastDeploymentEvent(info);
+          });
+        },
+        onRegistered(r) {
+          if (r) {
+            // Periodically ask the service worker to check for updates every 30 seconds
+            setInterval(() => {
+              r.update().catch(() => {});
+            }, 30000);
+          }
+        },
+      });
+    } catch (err) {
+      console.debug('[RealtimeUpdate] SW register error:', err);
+    }
   }
 
   // 3. Dispatch listener for internal triggers
@@ -247,10 +256,10 @@ export function initRealtimeDeploymentWatcher(
   };
 
   // Initial check after page stabilizes (3 seconds)
-  const initialTimer = setTimeout(runCheck, 3000);
+  const initialTimer = AUTO_UPDATE_ENABLED ? setTimeout(runCheck, 3000) : undefined;
 
   // Periodic polling every 30 seconds
-  const intervalId = setInterval(runCheck, 30000);
+  const intervalId = AUTO_UPDATE_ENABLED ? setInterval(runCheck, 30000) : undefined;
 
   // Immediate check when tab gains focus or visibility
   const handleVisibility = () => {
@@ -258,13 +267,15 @@ export function initRealtimeDeploymentWatcher(
       runCheck();
     }
   };
-  document.addEventListener('visibilitychange', handleVisibility);
-  window.addEventListener('focus', runCheck);
-  window.addEventListener('online', runCheck);
+  if (AUTO_UPDATE_ENABLED) {
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', runCheck);
+    window.addEventListener('online', runCheck);
+  }
 
   return () => {
-    clearTimeout(initialTimer);
-    clearInterval(intervalId);
+    if (initialTimer) clearTimeout(initialTimer);
+    if (intervalId) clearInterval(intervalId);
     document.removeEventListener('visibilitychange', handleVisibility);
     window.removeEventListener('focus', runCheck);
     window.removeEventListener('online', runCheck);
