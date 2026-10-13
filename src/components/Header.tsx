@@ -1,4 +1,4 @@
-import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen, Store } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
@@ -78,6 +78,16 @@ export function Header({
           <span className="sr-only">Open sidebar</span>
           <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
+
+        {/* Mobile Brand Name */}
+        <div className="lg:hidden flex items-center gap-1.5 min-w-0 mr-1">
+          <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs">
+            <Store className="w-3.5 h-3.5" />
+          </div>
+          <span className="font-extrabold text-sm text-slate-900 tracking-tight truncate">
+            Conerage store
+          </span>
+        </div>
 
         {/* Desktop Collapse / Expand Toggle */}
         {onToggleCollapse && (

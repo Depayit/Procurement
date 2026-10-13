@@ -41,12 +41,12 @@ const COMPANY_PROFILE_STORAGE_KEY = `${STORAGE_PREFIX}company_profile`;
 const IMPORT_HISTORY_STORAGE_KEY = `${STORAGE_PREFIX}import_history`;
 
 export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
-  nameTh: 'บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด',
-  nameEn: 'PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.',
+  nameTh: 'บริษัท โคนเนอเรจ สโตร์ จำกัด',
+  nameEn: 'CONERAGE STORE CO., LTD.',
   taxId: '0105566012345',
   address: '888 อาคารเอ็มไพร์ทาวเวอร์ ชั้น 24 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพฯ 10120',
   phone: '02-123-4567',
-  email: 'pr@procuresync.co.th',
+  email: 'contact@coneragestore.com',
   logoUrl: '',
   docFormatPR: 'PR-YYYY-XXX',
   docFormatPO: 'PO-YYYY-XXX',
@@ -472,7 +472,16 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile>(() => {
     try {
       const saved = localStorage.getItem(COMPANY_PROFILE_STORAGE_KEY);
-      return saved ? { ...DEFAULT_COMPANY_PROFILE, ...JSON.parse(saved) } : DEFAULT_COMPANY_PROFILE;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.nameEn && parsed.nameEn.includes('PROCURESYNC')) {
+          parsed.nameEn = DEFAULT_COMPANY_PROFILE.nameEn;
+          parsed.nameTh = DEFAULT_COMPANY_PROFILE.nameTh;
+          parsed.email = DEFAULT_COMPANY_PROFILE.email;
+        }
+        return { ...DEFAULT_COMPANY_PROFILE, ...parsed };
+      }
+      return DEFAULT_COMPANY_PROFILE;
     } catch {
       return DEFAULT_COMPANY_PROFILE;
     }

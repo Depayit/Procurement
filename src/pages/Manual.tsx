@@ -87,7 +87,7 @@ export function ManualPage() {
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   const handlePrint = (docId = 'standard-manual-doc') => {
-    printA4Document(docId, 'ProcureSync_คู่มือมาตรฐานการปฏิบัติงาน_SOP');
+    printA4Document(docId, 'Conerage_store_คู่มือมาตรฐานการปฏิบัติงาน_SOP');
   };
 
   const modules: ModuleSection[] = [
@@ -98,7 +98,7 @@ export function ManualPage() {
       icon: Layers,
       badge: 'Core Workflow',
       role: 'ผู้ใช้งานทุกบทบาทในองค์กร (All Roles)',
-      summary: 'ภาพรวมกระบวนการจัดซื้อและบริหารคลังสินค้าของ ProcureSync ตั้งแต่การเปิดคำขอซื้อหน้างาน การอนุมัติ การออกใบสั่งซื้อ การตรวจรับของ จนถึงการจัดการสต็อกและสแกน QR Code',
+      summary: 'ภาพรวมกระบวนการจัดซื้อและบริหารคลังสินค้าของ Conerage store ตั้งแต่การเปิดคำขอซื้อหน้างาน การอนุมัติ การออกใบสั่งซื้อ การตรวจรับของ จนถึงการจัดการสต็อกและสแกน QR Code',
       summaryEn: 'Complete end-to-end procurement and inventory lifecycle from site requisition to approval, PO issuance, receiving, stock auto-increment, and QR scanning.',
       route: '/',
       linkages: [
@@ -631,7 +631,7 @@ export function ManualPage() {
         {
           from: 'ติดตั้ง PWA (Install App)',
           to: 'หน้าจออุปกรณ์ (Desktop & Mobile)',
-          description: 'เพิ่มไอคอน ProcureSync บนหน้าจอหลัก เข้าใช้งานได้เสมือนแอปเนทีฟ'
+          description: 'เพิ่มไอคอน Conerage store บนหน้าจอหลัก เข้าใช้งานได้เสมือนแอปเนทีฟ'
         }
       ],
       buttons: [
@@ -651,7 +651,7 @@ export function ManualPage() {
           linkage: 'ปรับสเกลแสดงผลทั้งแอปพลิเคชันและจำค่าไว้ในเครื่อง'
         },
         {
-          name: 'ติดตั้งแอป ProcureSync (Install PWA)',
+          name: 'ติดตั้งแอป Conerage store (Install PWA)',
           icon: Download,
           color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
           location: 'เมนูด้านล่างของแถบข้าง (Sidebar)',
@@ -732,7 +732,7 @@ export function ManualPage() {
           icon: Sparkles,
           color: 'bg-indigo-600 text-white',
           location: 'ขั้นตอนที่ 2: จับคู่ฟิลด์ข้อมูล',
-          action: 'ระบบจะวิเคราะห์ชื่อหัวตารางในไฟล์และจับคู่เข้ากับฐานข้อมูลของ ProcureSync โดยอัตโนมัติ ผู้ใช้สามารถปรับเปลี่ยนการจับคู่ได้ตามต้องการ',
+          action: 'ระบบจะวิเคราะห์ชื่อหัวตารางในไฟล์และจับคู่เข้ากับฐานข้อมูลของ Conerage store โดยอัตโนมัติ ผู้ใช้สามารถปรับเปลี่ยนการจับคู่ได้ตามต้องการ',
           linkage: 'จัดระเบียบโครงสร้างข้อมูลให้ตรงกับระบบ'
         },
         {
@@ -764,13 +764,13 @@ export function ManualPage() {
       icon: Cloud,
       badge: 'Enterprise Connectivity',
       role: 'ผู้ดูแลระบบ (Admin) / เจ้าหน้าที่ไอที / ผู้จัดการโครงการ',
-      summary: 'เชื่อมต่อและซิงก์ข้อมูลระหว่าง ProcureSync กับคลาวด์สตอเรจและแพลตฟอร์มภายนอก รองรับการซิงก์ข้อมูลสองทางกับ Google Sheets ด้วย Google Apps Script, สำรองฐานข้อมูลบน Google Drive และ Dropbox, ระบบแจ้งเตือนอัตโนมัติผ่าน LINE Notify / LINE Alert เข้ากลุ่มไลน์โครงการเมื่อมีเอกสารรออนุมัติหรือตรวจรับสินค้า และสภาพแวดล้อมจำลอง (MVP Presentation Sandbox)',
+      summary: 'เชื่อมต่อและซิงก์ข้อมูลระหว่าง Conerage store กับคลาวด์สตอเรจและแพลตฟอร์มภายนอก รองรับการซิงก์ข้อมูลสองทางกับ Google Sheets ด้วย Google Apps Script, สำรองฐานข้อมูลบน Google Drive และ Dropbox, ระบบแจ้งเตือนอัตโนมัติผ่าน LINE Notify / LINE Alert เข้ากลุ่มไลน์โครงการเมื่อมีเอกสารรออนุมัติหรือตรวจรับสินค้า และสภาพแวดล้อมจำลอง (MVP Presentation Sandbox)',
       summaryEn: 'Enterprise cloud connectivity featuring two-way Google Sheets synchronization, Google Apps Script webhooks, Google Drive/Dropbox system backups, automated LINE Notify alerts, and interactive MVP presentation sandbox.',
       route: '/integrations',
       linkages: [
         {
           from: 'Google Sheets สองทาง (Two-Way Sync)',
-          to: 'คลังพัสดุและรายการขอซื้อ (ProcureSync)',
+          to: 'คลังพัสดุและรายการขอซื้อ (Conerage store)',
           description: 'ดึงข้อมูลรายการวัสดุและราคาจาก Google Sheets เข้าสู่ระบบ หรือส่งออกข้อมูลสต็อกไปอัปเดตในชีตแบบ Real-time'
         },
         {
@@ -867,14 +867,14 @@ export function ManualPage() {
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-bold tracking-wide">
               <BookOpen className="w-3.5 h-3.5" />
-              <span>{isEnglish ? 'ProcureSync System Documentation & SOP' : 'คู่มือการปฏิบัติงานมาตรฐานระบบจัดซื้อและคลังสินค้า (SOP)'}</span>
+              <span>{isEnglish ? 'Conerage store System Documentation & SOP' : 'คู่มือการปฏิบัติงานมาตรฐานระบบจัดซื้อและคลังสินค้า (SOP)'}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight">
               {isEnglish ? 'Complete System User Manual' : 'คู่มือการใช้งานระบบฉบับสมบูรณ์'}
             </h1>
             <p className="text-sm text-slate-300 leading-relaxed">
               {isEnglish 
-                ? 'Comprehensive guide detailing every module, button action, status workflow, and feature integration across the ProcureSync Enterprise platform.'
+                ? 'Comprehensive guide detailing every module, button action, status workflow, and feature integration across the Conerage store platform.'
                 : 'รวบรวมคำอธิบายทุกฟีเจอร์ ทุกปุ่มการทำงาน ผังการเชื่อมโยงข้อมูลระหว่างโมดูล (PR -> PO -> คลัง -> สแกน QR) และมาตรฐานการปฏิบัติงาน'}
             </p>
           </div>
@@ -1402,7 +1402,7 @@ export function ManualPage() {
               4. ต้องการนำระบบไปใช้งานในสมาร์ทโฟนโดยไม่ต้องโหลดแอป?
             </h4>
             <p className="text-slate-600 leading-relaxed text-[11.5px]">
-              เปิดเบราว์เซอร์บนมือถือ แล้วกดปุ่ม <strong>&ldquo;ติดตั้งแอป ProcureSync&rdquo;</strong> ที่แถบเมนูข้าง หรือกด Share &gt; &ldquo;Add to Home Screen&rdquo; บน Safari / Chrome ระบบจะติดตั้งเป็น PWA บนหน้าจอหลัก ใช้งานได้รวดเร็วเสมือนแอปจริง
+              เปิดเบราว์เซอร์บนมือถือ แล้วกดปุ่ม <strong>&ldquo;ติดตั้งแอป Conerage store&rdquo;</strong> ที่แถบเมนูข้าง หรือกด Share &gt; &ldquo;Add to Home Screen&rdquo; บน Safari / Chrome ระบบจะติดตั้งเป็น PWA บนหน้าจอหลัก ใช้งานได้รวดเร็วเสมือนแอปจริง
             </p>
           </div>
 

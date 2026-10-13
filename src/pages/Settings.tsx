@@ -1141,7 +1141,7 @@ export function SettingsPage() {
                     onClick={() => {
                       addNotification({
                         title: isEnglish ? 'Test Alert: PR-2025-001 Approved' : 'ทดสอบแจ้งเตือน: PR-2025-001 ได้รับอนุมัติ',
-                        message: isEnglish ? 'ProcureSync PWA notification system is working perfectly!' : 'ระบบแจ้งเตือนของ ProcureSync PWA ทำงานได้อย่างถูกต้องและสมบูรณ์แบบ',
+                        message: isEnglish ? 'Conerage store PWA notification system is working perfectly!' : 'ระบบแจ้งเตือนของ Conerage store PWA ทำงานได้อย่างถูกต้องและสมบูรณ์แบบ',
                         type: 'approval',
                         link: '/approvals'
                       });
@@ -1252,8 +1252,8 @@ export function SettingsPage() {
                         broadcastSystemUpdate(
                           '2.5.0', 
                           isEnglish 
-                            ? 'ProcureSync v2.5.0: Standard Monochrome Forms (PR/PO A4 ISO 9001:2015), Dynamic Approval Matrix & Multi-platform SKU Barcodes.'
-                            : 'ระบบ ProcureSync อัพเดตเป็น v2.5.0: แบบฟอร์มทางการ A4 ขาว/ดำ 100%, ระบบ Approval Matrix ปรับแต่งได้ตามองค์กร และบาร์โค้ด Master SKU'
+                            ? 'Conerage store v2.5.0: Standard Monochrome Forms (PR/PO A4 ISO 9001:2015), Dynamic Approval Matrix & Multi-platform SKU Barcodes.'
+                            : 'ระบบ Conerage store อัพเดตเป็น v2.5.0: แบบฟอร์มทางการ A4 ขาว/ดำ 100%, ระบบ Approval Matrix ปรับแต่งได้ตามองค์กร และบาร์โค้ด Master SKU'
                         );
                         window.dispatchEvent(new CustomEvent('procuresync:show-system-update'));
                         setUpdateAlertSent(true);
@@ -1279,7 +1279,7 @@ export function SettingsPage() {
                 </h3>
                 <p className="text-sm text-slate-500 mt-1">
                   {isEnglish 
-                    ? 'ProcureSync PWA provides native-like standalone app experience, camera QR scanning, offline caching, and instant home screen shortcuts.' 
+                    ? 'Conerage store PWA provides native-like standalone app experience, camera QR scanning, offline caching, and instant home screen shortcuts.' 
                     : 'ระบบ PWA ทำงานเสมือนแอปจริงบนมือถือและคอมพิวเตอร์ รองรับการเปิดกล้องสแกน QR Code โหมดออฟไลน์ และเมนูลัด'}
                 </p>
               </div>
@@ -1293,7 +1293,7 @@ export function SettingsPage() {
                       <Smartphone className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-slate-900">ProcureSync Enterprise PWA</h4>
+                      <h4 className="text-base font-bold text-slate-900">Conerage store PWA</h4>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {isInstalled 
                           ? 'โหมดแอปพลิเคชันเดี่ยว (Standalone Mode) • Service Worker v2.4 Active' 

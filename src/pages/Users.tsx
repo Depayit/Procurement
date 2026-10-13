@@ -50,12 +50,12 @@ interface User {
 const STORAGE_USERS_KEY = 'procuresync_users_list_v2';
 
 const INITIAL_USERS: User[] = [
-  { id: '1', name: 'สมชาย ใจดี (Admin)', email: 'admin@procuresync.local', role: 'Admin', status: 'Active', department: 'เทคโนโลยีสารสนเทศ (IT ERP)', lastLogin: 'วันนี้ 10:30' },
-  { id: '2', name: 'วิภาวี สุขขี', email: 'wipawee.pm@procuresync.local', role: 'Purchasing Manager', status: 'Active', department: 'ฝ่ายบริหารงานจัดซื้อ', lastLogin: 'วันนี้ 08:45' },
-  { id: '3', name: 'สมปอง จัดซื้อ', email: 'sompong.buyer@procuresync.local', role: 'Purchasing Staff', status: 'Active', department: 'ฝ่ายจัดซื้อและสัญญา (ส่วนกลาง)', lastLogin: 'วันนี้ 09:12' },
-  { id: '4', name: 'นายธีรภัทร บริหารงาน', email: 'teerapat.dir@procuresync.local', role: 'Approver', status: 'Active', department: 'คณะกรรมการบริหารโครงการ', lastLogin: 'เมื่อวาน 16:20' },
-  { id: '5', name: 'บุญมี สต๊อก', email: 'boonmee.wh@procuresync.local', role: 'Inventory Control', status: 'Active', department: 'คลังพัสดุและจัดเก็บกลาง', lastLogin: 'วันนี้ 07:30' },
-  { id: '6', name: 'สมชาย ช่างก่อสร้าง', email: 'somchai.eng@procuresync.local', role: 'Site Engineer', status: 'Active', department: 'โครงการ คอนโดสุขุมวิท 101', lastLogin: 'วันนี้ 08:00' },
+  { id: '1', name: 'สมชาย ใจดี (Admin)', email: 'admin@coneragestore.local', role: 'Admin', status: 'Active', department: 'เทคโนโลยีสารสนเทศ (IT ERP)', lastLogin: 'วันนี้ 10:30' },
+  { id: '2', name: 'วิภาวี สุขขี', email: 'wipawee.pm@coneragestore.local', role: 'Purchasing Manager', status: 'Active', department: 'ฝ่ายบริหารงานจัดซื้อ', lastLogin: 'วันนี้ 08:45' },
+  { id: '3', name: 'สมปอง จัดซื้อ', email: 'sompong.buyer@coneragestore.local', role: 'Purchasing Staff', status: 'Active', department: 'ฝ่ายจัดซื้อและสัญญา (ส่วนกลาง)', lastLogin: 'วันนี้ 09:12' },
+  { id: '4', name: 'นายธีรภัทร บริหารงาน', email: 'teerapat.dir@coneragestore.local', role: 'Approver', status: 'Active', department: 'คณะกรรมการบริหารโครงการ', lastLogin: 'เมื่อวาน 16:20' },
+  { id: '5', name: 'บุญมี สต๊อก', email: 'boonmee.wh@coneragestore.local', role: 'Inventory Control', status: 'Active', department: 'คลังพัสดุและจัดเก็บกลาง', lastLogin: 'วันนี้ 07:30' },
+  { id: '6', name: 'สมชาย ช่างก่อสร้าง', email: 'somchai.eng@coneragestore.local', role: 'Site Engineer', status: 'Active', department: 'โครงการ คอนโดสุขุมวิท 101', lastLogin: 'วันนี้ 08:00' },
 ];
 
 export function UsersPage() {

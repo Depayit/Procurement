@@ -102,8 +102,8 @@ export function Sidebar({
               className="w-8 h-8 rounded object-contain shrink-0 border border-slate-200 p-0.5 bg-white shadow-2xs" 
             />
           ) : (
-            <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center shadow-xs shrink-0">
-              <div className="w-4 h-4 border-2 border-white rounded-xs"></div>
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-xs shrink-0">
+              <Store className="w-4.5 h-4.5 text-white" />
             </div>
           )}
 
@@ -111,11 +111,11 @@ export function Sidebar({
             "min-w-0 transition-opacity duration-200",
             isCollapsed ? "lg:hidden" : "block"
           )}>
-            <h1 className="text-base font-bold tracking-tight text-slate-900 truncate leading-tight">
-              {companyProfile?.nameEn ? (companyProfile.nameEn.split(' ')[0] || 'ProcureSync') : 'ProcureSync'}
+            <h1 className="text-base font-extrabold tracking-tight text-slate-900 truncate leading-tight">
+              Conerage store
             </h1>
             <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider leading-none truncate">
-              {companyProfile?.nameTh ? companyProfile.nameTh.substring(0, 16) : 'Enterprise'}
+              {companyProfile?.nameTh ? companyProfile.nameTh.substring(0, 20) : 'Store & Procurement'}
             </p>
           </div>
         </div>

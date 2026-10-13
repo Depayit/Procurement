@@ -854,7 +854,7 @@ export function PurchaseOrderPage() {
                 >
                   {docZoom === 'fit' ? '🔍 ซูม 100% (ขนาดจริง)' : '📱 ย่อพอดีหน้าจอ'}
                 </button>
-                <span className="font-mono text-[11px] text-slate-400 hidden sm:inline">ProcureSync Engine</span>
+                <span className="font-mono text-[11px] text-slate-400 hidden sm:inline">Conerage store Engine</span>
               </div>
             </div>
 

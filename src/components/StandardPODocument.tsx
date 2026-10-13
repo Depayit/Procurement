@@ -96,21 +96,21 @@ export function StandardPODocument({
               </div>
             ) : (
               <div className="w-12 h-12 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-lg flex-shrink-0 font-mono shadow-2xs">
-                PS
+                CS
               </div>
             )}
             <div className="min-w-0 flex-1">
               <h1 className="text-[15px] font-bold text-slate-900 leading-snug tracking-tight">
-                {companyProfile?.nameTh || 'บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด'}
+                {companyProfile?.nameTh || 'บริษัท โคนเนอเรจ สโตร์ จำกัด'}
               </h1>
               <p className="text-[10.5px] text-slate-500 font-bold tracking-wider uppercase mt-0.5">
-                {companyProfile?.nameEn || 'PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.'}
+                {companyProfile?.nameEn || 'CONERAGE STORE CO., LTD.'}
               </p>
               <p className="text-[10px] text-slate-600 mt-1 leading-relaxed">
                 {companyProfile?.address || '888 อาคารเอ็มไพร์ทาวเวอร์ ชั้น 24 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพฯ 10120'}
               </p>
               <p className="text-[10px] text-slate-500 leading-relaxed mt-0.5">
-                เลขประจำตัวผู้เสียภาษี: <span className="font-semibold text-slate-800 font-mono">{companyProfile?.taxId || '0105566012345'}</span> • โทร: {companyProfile?.phone || '02-123-4567'} • อีเมล: {companyProfile?.email || 'po@procuresync.co.th'}
+                เลขประจำตัวผู้เสียภาษี: <span className="font-semibold text-slate-800 font-mono">{companyProfile?.taxId || '0105566012345'}</span> • โทร: {companyProfile?.phone || '02-123-4567'} • อีเมล: {companyProfile?.email || 'contact@coneragestore.com'}
               </p>
             </div>
           </div>

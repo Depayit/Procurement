@@ -706,7 +706,7 @@ export function IntegrationsPage() {
                     type="text"
                     value={driveFolderInput}
                     onChange={(e) => setDriveFolderInput(e.target.value)}
-                    placeholder="ProcureSync เอกสารและแบบก่อสร้าง"
+                    placeholder="Conerage store เอกสารและแบบก่อสร้าง"
                     className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -895,7 +895,7 @@ export function IntegrationsPage() {
                     type="text"
                     value={dropboxPathInput}
                     onChange={(e) => setDropboxPathInput(e.target.value)}
-                    placeholder="/ProcureSync/Drawings_and_Receipts"
+                    placeholder="/Conerage_Store/Drawings_and_Receipts"
                     className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
                   />
                 </div>
@@ -982,7 +982,7 @@ export function IntegrationsPage() {
             <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
               <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <span>
-                เมื่อ Deploy แล้ว ให้เลือกสิทธิ์เข้าถึง (Who has access) เป็น <strong>"Anyone" (ทุกคน)</strong> เพื่อให้ระบบ ProcureSync สามารถส่งข้อมูลเข้าไปบันทึกได้
+                เมื่อ Deploy แล้ว ให้เลือกสิทธิ์เข้าถึง (Who has access) เป็น <strong>"Anyone" (ทุกคน)</strong> เพื่อให้ระบบ Conerage store สามารถส่งข้อมูลเข้าไปบันทึกได้
               </span>
             </div>
 
