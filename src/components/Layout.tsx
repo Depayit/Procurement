@@ -51,7 +51,7 @@ export function Layout() {
         />
         <SystemUpdateBanner />
         <main className="flex-1 relative overflow-y-auto focus:outline-none scroll-smooth">
-          <div className="p-3 sm:p-5 lg:p-6 w-full pb-20 lg:pb-8">
+          <div className="p-3 sm:p-5 lg:p-6 w-full pb-28 sm:pb-24 lg:pb-10">
             <Outlet />
           </div>
         </main>

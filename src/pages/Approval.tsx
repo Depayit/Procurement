@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { CheckCircle2, XCircle, Clock, FileText, Printer, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck, ShieldAlert, Lock } from 'lucide-react';
-import type { ApprovalTask, PurchaseRequest } from '../types';
+import { CheckCircle2, XCircle, Clock, FileText, Printer, Building2, ZoomIn, ZoomOut, Maximize2, ShieldCheck, Check, FileCheck, ShieldAlert, Lock, User, Eye, AlertCircle } from 'lucide-react';
+import type { ApprovalTask, PurchaseRequest, ApprovalMatrixStep } from '../types';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailsModal } from '../components/DetailsModal';
 import { StandardPRDocument } from '../components/StandardPRDocument';
@@ -92,12 +92,328 @@ const MOCK_APPROVALS: ApprovalTask[] = [
   }
 ];
 
+interface PendingApprovalCardProps {
+  task: ApprovalTask;
+  canApprove: boolean;
+  onView: (task: ApprovalTask) => void;
+  onApprove: (task: ApprovalTask) => void;
+  onReject: (task: ApprovalTask) => void;
+  isEnglish: boolean;
+  t: (key: string) => string;
+  formatRequestDateTime: (dateStr?: string) => string;
+  step?: ApprovalMatrixStep;
+}
+
+function PendingApprovalCard({
+  task,
+  canApprove,
+  onView,
+  onApprove,
+  onReject,
+  isEnglish,
+  t,
+  formatRequestDateTime,
+  step
+}: PendingApprovalCardProps) {
+  const isPR = task.documentType === 'PR';
+  const urgency = task.prData?.urgency;
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all p-4 sm:p-5 flex flex-col justify-between space-y-3.5 text-left">
+      {/* 1. Header: Badges & Document ID */}
+      <div className="flex items-start justify-between gap-2.5">
+        <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+          {/* Level Badge */}
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200/80 shadow-2xs whitespace-nowrap">
+            <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span>{isEnglish ? `Tier ${task.level}` : `ระดับ ${task.level}`}</span>
+            {step && (
+              <span className="text-amber-800/80 font-medium hidden xs:inline">• {isEnglish ? (step.titleEn || step.titleTh) : step.titleTh}</span>
+            )}
+          </span>
+
+          {/* Document Type Badge */}
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/70 shadow-2xs whitespace-nowrap">
+            <FileText className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            <span>{isPR ? (isEnglish ? 'PR Requisition' : 'ใบขอซื้อ PR') : (isEnglish ? 'PO Order' : 'ใบสั่งซื้อ PO')}</span>
+          </span>
+
+          {/* Urgency Badge */}
+          {urgency === 'urgent' && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-500 text-white shadow-2xs whitespace-nowrap">
+              <AlertCircle className="w-3 h-3" />
+              {isEnglish ? 'Urgent' : 'ด่วน'}
+            </span>
+          )}
+          {urgency === 'emergency' && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-rose-600 text-white shadow-2xs whitespace-nowrap animate-pulse">
+              <AlertCircle className="w-3 h-3" />
+              {isEnglish ? 'Emergency' : 'ด่วนที่สุด'}
+            </span>
+          )}
+        </div>
+
+        {/* Clean Document ID (No PR PR- duplication!) */}
+        <div className="shrink-0 text-right">
+          <span className="font-mono font-extrabold text-slate-900 text-sm sm:text-base tracking-tight block">
+            {task.documentId}
+          </span>
+        </div>
+      </div>
+
+      {/* 2. Project Name & Site */}
+      <div className="min-w-0">
+        <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug break-words">
+          {task.prData?.department || (isEnglish ? 'Construction Project' : 'โครงการงานก่อสร้าง')}
+        </h3>
+        {task.prData?.projectCode && (
+          <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs">
+            <span className="font-mono text-[10.5px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200/80">
+              {task.prData.projectCode}
+            </span>
+            {task.prData?.deliveryLocation && (
+              <span className="text-slate-500 text-[11px] truncate max-w-[240px]" title={task.prData.deliveryLocation}>
+                • {task.prData.deliveryLocation}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 3. Requester & Timestamp */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 pt-0.5">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span className="text-slate-500 font-medium">{isEnglish ? 'Requester:' : 'ผู้ขอซื้อ:'}</span>
+          <span className="text-slate-800 font-semibold truncate">{task.requester}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-slate-500 whitespace-nowrap font-medium">
+          <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span>{formatRequestDateTime(task.requestDate)}</span>
+        </div>
+      </div>
+
+      {/* 4. Purpose / Justification Box */}
+      <div className="bg-slate-50/90 border border-slate-200/70 rounded-xl p-3 text-xs text-slate-700 leading-relaxed">
+        <span className="font-bold text-slate-800 mr-1.5">
+          {isEnglish ? 'Purpose / Justification:' : 'วัตถุประสงค์ / เหตุผล:'}
+        </span>
+        <span className="line-clamp-2 text-slate-600">
+          {task.prData?.justification || (isEnglish ? 'Materials procurement according to project schedule' : 'จัดซื้อวัสดุอุปกรณ์ตามแผนดำเนินงานโครงการ')}
+        </span>
+      </div>
+
+      {/* 5. Financial Amount Banner */}
+      <div className="flex items-center justify-between p-3 sm:px-4 bg-gradient-to-r from-slate-50 via-indigo-50/20 to-indigo-50/40 border border-indigo-100/90 rounded-xl shadow-2xs">
+        <div>
+          <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
+            {isEnglish ? 'Requested Amount' : 'ยอดเงินขออนุมัติ'}
+          </span>
+          <span className="text-[10px] text-slate-400 font-medium block mt-1 leading-none">
+            {task.prData?.includeVat !== false 
+              ? (isEnglish ? 'Incl. 7% VAT' : 'รวมภาษีมูลค่าเพิ่ม 7%') 
+              : (isEnglish ? 'Excl. VAT' : 'ไม่รวมภาษีมูลค่าเพิ่ม')}
+          </span>
+        </div>
+        <div className="text-right">
+          <div className="font-mono font-black text-slate-900 text-lg sm:text-xl tabular-nums leading-tight">
+            ฿{(task.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider leading-none block mt-0.5">
+            {isEnglish ? 'THB' : 'บาท'}
+          </span>
+        </div>
+      </div>
+
+      {/* 6. Action Buttons Bar (Comfortable, Touch-friendly, Never wraps words into 3 lines) */}
+      <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+        <button
+          type="button"
+          onClick={() => onView(task)}
+          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer order-2 sm:order-1"
+          title={isEnglish ? 'View Standard Official A4 Document' : 'ดูแบบฟอร์มเอกสารทางการ A4'}
+        >
+          <Eye className="w-4 h-4 text-indigo-600" />
+          <span>{isEnglish ? 'View Standard Form (A4)' : 'ดูแบบฟอร์มมาตรฐาน (A4)'}</span>
+        </button>
+
+        <div className="flex items-center gap-2 order-1 sm:order-2 flex-1 sm:flex-initial">
+          <button
+            type="button"
+            onClick={() => onReject(task)}
+            disabled={!canApprove}
+            className={cn(
+              "flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 border text-xs font-bold rounded-xl transition-all shadow-2xs",
+              canApprove
+                ? "border-rose-200 bg-rose-50/80 hover:bg-rose-100 text-rose-700 cursor-pointer active:scale-95"
+                : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
+            )}
+          >
+            <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
+            <span className="whitespace-nowrap">{t('approvals.rejectBtn')}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onApprove(task)}
+            disabled={!canApprove}
+            className={cn(
+              "flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-5 py-2.5 border text-xs font-bold rounded-xl transition-all shadow-xs",
+              canApprove
+                ? "border-transparent bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer active:scale-95"
+                : "border-transparent bg-slate-300 text-white cursor-not-allowed opacity-60"
+            )}
+          >
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">{t('approvals.approveBtn')}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface HistoryApprovalCardProps {
+  task: {
+    id: string;
+    documentId: string;
+    documentType: 'PR' | 'PO';
+    requester: string;
+    requestDate: string;
+    amount: number;
+    status: 'Approved' | 'Rejected';
+    level: number;
+    actionStatus: 'Approved' | 'Rejected';
+    actionDate: string;
+    prData?: PurchaseRequest;
+  };
+  onView: (task: any) => void;
+  isEnglish: boolean;
+  formatRequestDateTime: (dateStr?: string) => string;
+}
+
+function HistoryApprovalCard({
+  task,
+  onView,
+  isEnglish,
+  formatRequestDateTime
+}: HistoryApprovalCardProps) {
+  const isApproved = task.actionStatus === 'Approved';
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all p-4 sm:p-5 flex flex-col justify-between space-y-3.5 text-left">
+      {/* 1. Header: Status Badge & Document ID */}
+      <div className="flex items-start justify-between gap-2.5">
+        <div className="flex items-center gap-2">
+          {isApproved ? (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs whitespace-nowrap">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>{isEnglish ? 'Approved' : 'อนุมัติแล้ว'}</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs whitespace-nowrap">
+              <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+              <span>{isEnglish ? 'Rejected' : 'ไม่อนุมัติ / ปฏิเสธ'}</span>
+            </span>
+          )}
+
+          <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            {isEnglish ? `Tier ${task.level}` : `ระดับ ${task.level}`}
+          </span>
+        </div>
+
+        <span className="font-mono font-extrabold text-slate-900 text-sm sm:text-base tracking-tight shrink-0">
+          {task.documentId}
+        </span>
+      </div>
+
+      {/* 2. Project Name */}
+      <div>
+        <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug break-words">
+          {task.prData?.department || (isEnglish ? 'Construction Project' : 'โครงการงานก่อสร้าง')}
+        </h3>
+        {task.prData?.justification && (
+          <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
+            {task.prData.justification}
+          </p>
+        )}
+      </div>
+
+      {/* 3. Requester & Action Date */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span className="text-slate-500">{isEnglish ? 'Requester:' : 'ผู้ขอซื้อ:'}</span>
+          <span className="text-slate-800 font-semibold truncate">{task.requester}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-slate-500 whitespace-nowrap">
+          <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span>{isEnglish ? 'Processed on ' : 'ดำเนินการเมื่อ '}{formatRequestDateTime(task.actionDate)}</span>
+        </div>
+      </div>
+
+      {/* 4. Financial Banner */}
+      <div className="flex items-center justify-between p-3 sm:px-4 bg-slate-50/90 border border-slate-200/80 rounded-xl">
+        <div>
+          <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
+            {isEnglish ? 'Document Amount' : 'ยอดเงินในเอกสาร'}
+          </span>
+          <span className="text-[10px] text-slate-400 font-medium block mt-1 leading-none">
+            {isEnglish ? 'Official Record' : 'บันทึกในระบบบัญชี'}
+          </span>
+        </div>
+        <div className="text-right">
+          <div className="font-mono font-black text-slate-900 text-lg sm:text-xl tabular-nums leading-tight">
+            ฿{task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-none block mt-0.5">
+            {isEnglish ? 'THB' : 'บาท'}
+          </span>
+        </div>
+      </div>
+
+      {/* 5. View Form Action Button */}
+      <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
+        <button
+          type="button"
+          onClick={() => onView(task)}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-white hover:bg-slate-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer"
+        >
+          <Eye className="w-4 h-4 text-indigo-600" />
+          <span>{isEnglish ? 'View Standard Form (A4)' : 'ดูแบบฟอร์มมาตรฐาน (A4)'}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function ApprovalPage() {
   const { t, isThai, isEnglish } = useLanguage();
   const { addNotification } = useNotifications();
   const { approvalTasks, approvePR, rejectPR, prs, pos, approvalMatrix, companyProfile } = useProcurement();
   const { currentUser, canApprove } = useAuth();
   const tasks = approvalTasks;
+
+  const formatRequestDateTime = (dateStr?: string) => {
+    if (!dateStr) return '-';
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString(isThai ? 'th-TH' : 'en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const getStepInfo = (level: number) => {
+    return approvalMatrix.find(s => s.stepNumber === level) || 
+           approvalMatrix[Math.min(Math.max(0, level - 1), approvalMatrix.length - 1)];
+  };
   const historyTasks = useMemo(() => {
     return prs
       .filter(p => p.status === 'Approved' || p.status === 'Rejected' || p.status === 'PO Created')
@@ -171,7 +487,7 @@ export function ApprovalPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in duration-500 pb-28 sm:pb-24">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
@@ -188,11 +504,11 @@ export function ApprovalPage() {
         </div>
 
         {/* View Mode Toggle */}
-        <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 shadow-2xs">
+        <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 shadow-2xs self-start sm:self-auto">
           <button
             onClick={() => setViewMode('table')}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors",
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer",
               viewMode === 'table' ? "bg-indigo-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
             )}
           >
@@ -201,7 +517,7 @@ export function ApprovalPage() {
           <button
             onClick={() => setViewMode('card')}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors",
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer",
               viewMode === 'card' ? "bg-indigo-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
             )}
           >
@@ -210,35 +526,37 @@ export function ApprovalPage() {
         </div>
       </div>
 
-      {/* Approval Matrix Progression Bar */}
-      <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+      {/* Approval Matrix Progression Bar - Responsive Scrollable Strip on Mobile */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-4 shadow-2xs">
         <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2.5">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
-            <span>สายการอนุมัติมาตรฐานขององค์กร (APPROVAL MATRIX)</span>
+            <span>{isEnglish ? 'CORPORATE APPROVAL MATRIX WORKFLOW' : 'สายการอนุมัติมาตรฐานขององค์กร (APPROVAL MATRIX)'}</span>
           </div>
           <span className="text-[11px] text-indigo-600 font-medium">
-            {approvalMatrix.length} ขั้นตอนตามเกณฑ์วงเงิน
+            {approvalMatrix.length} {isEnglish ? 'threshold tiers' : 'ขั้นตอนตามเกณฑ์วงเงิน'}
           </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+        <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs pb-1 sm:pb-0 scrollbar-none snap-x">
           {approvalMatrix.map((step, idx) => (
-            <div key={step.id} className="flex items-start gap-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg min-w-0">
-              <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+            <div key={step.id} className="min-w-[210px] sm:min-w-0 flex-shrink-0 snap-start flex items-start gap-2.5 p-2.5 bg-slate-50/90 border border-slate-200/80 rounded-xl">
+              <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                 {idx + 1}
               </span>
               <div className="min-w-0 flex-1">
-                <div className="font-bold text-slate-800 text-[11px] leading-tight truncate">{step.titleTh}</div>
+                <div className="font-bold text-slate-800 text-[11px] leading-tight truncate">
+                  {isEnglish ? (step.titleEn || step.titleTh) : step.titleTh}
+                </div>
                 <div className="text-[9.5px] text-slate-500 leading-tight mt-0.5 truncate" title={step.defaultPosition || step.titleEn}>
                   {step.defaultPosition || step.titleEn}
                 </div>
                 {step.minAmount ? (
                   <span className="inline-block mt-1 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
-                    &ge; {step.minAmount.toLocaleString()} บ.
+                    &ge; {step.minAmount.toLocaleString()} {isEnglish ? 'THB' : 'บ.'}
                   </span>
                 ) : (
                   <span className="inline-block mt-1 text-[9px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                    ทุกวงเงิน
+                    {isEnglish ? 'All Amounts' : 'ทุกวงเงิน'}
                   </span>
                 )}
               </div>
@@ -286,102 +604,23 @@ export function ApprovalPage() {
           /* Table View for Pending Approvals */
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             {/* Mobile Cards for Pending Approvals (Visible on < md) */}
-            <div className="md:hidden divide-y divide-slate-100">
+            <div className="md:hidden p-3 space-y-3 bg-slate-50/60">
               {tasks.map((task) => (
-                <div key={task.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
-                  {/* Top Row: Level & Document */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      {(() => {
-                        const step = approvalMatrix.find(s => s.stepNumber === task.level) || approvalMatrix[Math.min(task.level - 1, approvalMatrix.length - 1)];
-                        return (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase tracking-wide font-bold bg-amber-100 text-amber-800 border border-amber-300" title={step?.defaultPosition}>
-                            {step ? step.titleTh : (isEnglish ? `L${task.level}` : `ระดับ ${task.level}`)}
-                          </span>
-                        );
-                      })()}
-                      <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight whitespace-nowrap">
-                        {task.documentType} {task.documentId}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 font-medium whitespace-nowrap">
-                      แบบฟอร์มมาตรฐาน
-                    </span>
-                  </div>
-
-                  {/* Project & Justification */}
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
-                      {task.prData?.department || 'โครงการงานก่อสร้าง'}
-                    </h4>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words">
-                      {task.prData?.justification || 'คำขอวัสดุก่อสร้างตามงบประมาณ BOQ งานงวดที่ 2'}
-                    </p>
-                  </div>
-
-                  {/* Requester & Amount Grid */}
-                  <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase block">ผู้ขอซื้อ</span>
-                      <span className="font-semibold text-slate-800 text-xs block truncate">
-                        {task.requester}
-                      </span>
-                      <span className="text-[10px] text-slate-400 block mt-0.5 whitespace-nowrap">
-                        {new Date(task.requestDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                    <div className="border-l border-slate-200/80 pl-2.5 text-right">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดเงินขออนุมัติ</span>
-                      <span className="font-bold text-slate-900 font-mono tabular-nums text-sm block whitespace-nowrap">
-                        ฿{(task.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </span>
-                      <span className="text-[10px] text-slate-500 block mt-0.5 whitespace-nowrap">
-                        บาท (THB)
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100">
-                    <button 
-                      onClick={() => setViewTask(task)}
-                      className="py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs"
-                    >
-                      ดูฟอร์ม A4
-                    </button>
-                    <div className="flex items-center gap-1.5">
-                      <button 
-                        onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}
-                        disabled={!canApprove}
-                        className={cn(
-                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-semibold rounded-lg transition-colors",
-                          canApprove 
-                            ? "border-slate-300 text-red-700 bg-white hover:bg-red-50 cursor-pointer" 
-                            : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
-                        )}
-                      >
-                        <XCircle className="h-3.5 w-3.5 mr-1 text-red-500" />
-                        {t('approvals.rejectBtn')}
-                      </button>
-                      <button 
-                        onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'approve' })}
-                        disabled={!canApprove}
-                        className={cn(
-                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-bold rounded-lg transition-colors",
-                          canApprove 
-                            ? "border-transparent text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
-                            : "border-transparent text-white bg-slate-300 cursor-not-allowed opacity-60"
-                        )}
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
-                        {t('approvals.approveBtn')}
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <PendingApprovalCard
+                  key={task.id}
+                  task={task}
+                  canApprove={canApprove}
+                  onView={(t) => setViewTask(t)}
+                  onApprove={(t) => setConfirmState({ isOpen: true, taskId: t.id, action: 'approve' })}
+                  onReject={(t) => setConfirmState({ isOpen: true, taskId: t.id, action: 'reject' })}
+                  isEnglish={isEnglish}
+                  t={t}
+                  formatRequestDateTime={formatRequestDateTime}
+                  step={getStepInfo(task.level)}
+                />
               ))}
               {tasks.length === 0 && (
-                <div className="p-8 text-center text-slate-500 text-xs">
+                <div className="p-8 text-center text-slate-500 text-xs bg-white rounded-xl border border-slate-200">
                   <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
                   <h3 className="font-bold text-slate-800">ไม่มีเอกสารที่รอการอนุมัติ</h3>
                   <p className="text-xs text-slate-500 mt-1">คุณได้ดำเนินการกับเอกสารทั้งหมดเรียบร้อยแล้ว</p>
@@ -516,84 +755,24 @@ export function ApprovalPage() {
           </div>
         ) : (
           /* Card View for Pending Approvals */
-          <div className="grid gap-4">
+          <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
             {tasks.map((task) => (
-              <div key={task.id} className="bg-white border text-left border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase tracking-wide font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                        {isEnglish ? `Level ${task.level}` : `ระดับ ${task.level}`}
-                      </span>
-                      <h3 className="text-lg font-bold text-slate-800">
-                        {task.documentType} {task.documentId}
-                      </h3>
-                      {task.documentType === 'PR' && (
-                        <span className="text-xs px-2 py-0.5 rounded font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                          {isEnglish ? 'Standard Form' : 'แบบฟอร์มมาตรฐาน'}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-2 text-sm text-slate-600 flex flex-wrap items-center gap-4">
-                      <p>{isEnglish ? 'Requested by' : 'ขอโดย'} <span className="font-semibold text-slate-800">{task.requester}</span></p>
-                      <p className="flex items-center text-slate-500">
-                        <Clock className="h-4 w-4 mr-1.5" />
-                        {new Date(task.requestDate).toLocaleString(isThai ? 'th-TH' : 'en-US')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-left sm:text-right w-full sm:w-auto flex flex-row sm:flex-col justify-between sm:justify-center items-center sm:items-end">
-                    <p className="text-xl font-bold font-mono text-slate-800">
-                      {task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {isEnglish ? 'THB' : 'บาท'}
-                    </p>
-                    <div className="mt-2 flex gap-2">
-                      <button 
-                        onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'reject' })}
-                        disabled={!canApprove}
-                        className={cn(
-                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-semibold rounded-lg transition-colors",
-                          canApprove 
-                            ? "border-slate-300 text-red-700 bg-white hover:bg-red-50 cursor-pointer" 
-                            : "border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed opacity-60"
-                        )}
-                      >
-                        <XCircle className="h-4 w-4 mr-1 text-red-500" />
-                        {t('approvals.rejectBtn')}
-                      </button>
-                      <button 
-                        onClick={() => setConfirmState({ isOpen: true, taskId: task.id, action: 'approve' })}
-                        disabled={!canApprove}
-                        className={cn(
-                          "inline-flex items-center justify-center px-3 py-1.5 border shadow-2xs text-xs font-bold rounded-lg transition-colors",
-                          canApprove 
-                            ? "border-transparent text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
-                            : "border-transparent text-white bg-slate-300 cursor-not-allowed opacity-60"
-                        )}
-                      >
-                        <CheckCircle2 className="h-4 w-4 mr-1" />
-                        {t('approvals.approveBtn')}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Context preview */}
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <p className="text-xs text-slate-600 line-clamp-1">
-                    <span className="font-bold text-slate-700">เหตุผล:</span> {task.prData?.justification || 'คำขอวัสดุก่อสร้างตามงบประมาณ BOQ งานงวดที่ 2'}
-                  </p>
-                  <button 
-                    onClick={() => setViewTask(task)}
-                    className="text-xs font-bold uppercase tracking-wide text-indigo-600 hover:text-indigo-800 transition-colors ml-4 whitespace-nowrap"
-                  >
-                    ดูเอกสารมาตรฐาน &rarr;
-                  </button>
-                </div>
-              </div>
+              <PendingApprovalCard
+                key={task.id}
+                task={task}
+                canApprove={canApprove}
+                onView={(t) => setViewTask(t)}
+                onApprove={(t) => setConfirmState({ isOpen: true, taskId: t.id, action: 'approve' })}
+                onReject={(t) => setConfirmState({ isOpen: true, taskId: t.id, action: 'reject' })}
+                isEnglish={isEnglish}
+                t={t}
+                formatRequestDateTime={formatRequestDateTime}
+                step={getStepInfo(task.level)}
+              />
             ))}
 
             {tasks.length === 0 && (
-              <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-500">
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500 col-span-full">
                 <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
                 <h3 className="font-bold text-slate-800">ไม่มีเอกสารที่รอการอนุมัติ</h3>
                 <p className="text-xs text-slate-500 mt-1">คุณได้ดำเนินการกับเอกสารทั้งหมดเรียบร้อยแล้ว</p>
@@ -602,154 +781,119 @@ export function ApprovalPage() {
           </div>
         )
       ) : (
-        /* History Table View */
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          {/* Mobile History Cards (Visible on < md) */}
-          <div className="md:hidden divide-y divide-slate-100">
+        /* History Section */
+        viewMode === 'table' ? (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            {/* Mobile History Cards (Visible on < md) */}
+            <div className="md:hidden p-3 space-y-3 bg-slate-50/60">
+              {historyTasks.map((task) => (
+                <HistoryApprovalCard
+                  key={task.id}
+                  task={task}
+                  onView={(t) => setViewTask(t)}
+                  isEnglish={isEnglish}
+                  formatRequestDateTime={formatRequestDateTime}
+                />
+              ))}
+              {historyTasks.length === 0 && (
+                <div className="p-8 text-center text-slate-500 text-xs bg-white rounded-xl border border-slate-200">
+                  {isEnglish ? 'No approval history records' : 'ไม่มีประวัติการอนุมัติ'}
+                </div>
+              )}
+            </div>
+
+            {/* Desktop History Table (Visible on >= md) */}
+            <div className="hidden md:block overflow-x-auto smooth-scroll">
+              <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
+                <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
+                  <tr>
+                    <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">เอกสาร</th>
+                    <th className="px-4 py-3.5 min-w-[240px]">โครงการ / วัตถุประสงค์</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap min-w-[170px]">ผู้ขอซื้อ</th>
+                    <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">ยอดเงิน (บาท)</th>
+                    <th className="px-3 py-3.5 text-center whitespace-nowrap w-[120px]">ผลการพิจารณา</th>
+                    <th className="px-4 py-3.5 text-right whitespace-nowrap w-[110px]">เอกสาร</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
+                  {historyTasks.map((task) => (
+                    <tr key={task.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="px-4 py-3.5 align-top whitespace-nowrap">
+                        <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight">
+                          {task.documentType} {task.documentId}
+                        </span>
+                        <span className="text-[11px] text-slate-500 font-medium mt-1 inline-block">
+                          ระดับ {task.level}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3.5 align-top">
+                        <div className="font-bold text-slate-900 text-sm leading-snug break-words">
+                          {task.prData?.department || 'โครงการก่อสร้าง'}
+                        </div>
+                        <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words">
+                          {task.prData?.justification}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 align-top text-slate-600 whitespace-nowrap">
+                        <div className="font-semibold text-slate-900 text-sm leading-snug">
+                          {task.requester}
+                        </div>
+                        <div className="text-xs text-slate-400 mt-1">
+                          ดำเนินการเมื่อ {new Date(task.actionDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US')}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                        <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
+                          {task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                        <div className="text-[11px] text-slate-500 mt-1">บาท</div>
+                      </td>
+                      <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
+                        {task.actionStatus === 'Approved' ? (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3 mr-1" />
+                            อนุมัติแล้ว
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
+                            <XCircle className="w-3 h-3 mr-1" />
+                            ปฏิเสธ
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
+                        <button 
+                          onClick={() => setViewTask(task)}
+                          className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 border border-indigo-200 rounded-lg transition-colors shadow-2xs cursor-pointer"
+                        >
+                          ดูฟอร์ม A4
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          /* Card View for History */
+          <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
             {historyTasks.map((task) => (
-              <div key={task.id} className="p-4 space-y-3 bg-white hover:bg-slate-50/50 transition-colors">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight whitespace-nowrap">
-                      {task.documentType} {task.documentId}
-                    </span>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      ระดับ {task.level}
-                    </span>
-                  </div>
-                  {task.actionStatus === 'Approved' ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
-                      <CheckCircle2 className="w-2.5 h-2.5 mr-1" />
-                      อนุมัติแล้ว
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 whitespace-nowrap">
-                      <XCircle className="w-2.5 h-2.5 mr-1" />
-                      ปฏิเสธ
-                    </span>
-                  )}
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
-                    {task.prData?.department || 'โครงการก่อสร้าง'}
-                  </h4>
-                  {task.prData?.justification && (
-                    <p className="text-xs text-slate-600 mt-1 line-clamp-2 break-words">
-                      {task.prData.justification}
-                    </p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100 text-xs">
-                  <div>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ผู้ขอซื้อ</span>
-                    <span className="font-semibold text-slate-800 text-xs block truncate">
-                      {task.requester}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block mt-0.5 whitespace-nowrap">
-                      {new Date(task.actionDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US')}
-                    </span>
-                  </div>
-                  <div className="border-l border-slate-200/80 pl-2.5 text-right">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase block">ยอดเงิน</span>
-                    <span className="font-bold text-slate-900 font-mono tabular-nums text-sm block whitespace-nowrap">
-                      ฿{task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                    <span className="text-[10px] text-slate-500 block mt-0.5">บาท (THB)</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end pt-1 border-t border-slate-100">
-                  <button 
-                    onClick={() => setViewTask(task)}
-                    className="w-full py-1.5 px-3 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/80 border border-indigo-200 rounded-lg transition-colors shadow-2xs text-center"
-                  >
-                    ดูฟอร์ม A4
-                  </button>
-                </div>
-              </div>
+              <HistoryApprovalCard
+                key={task.id}
+                task={task}
+                onView={(t) => setViewTask(t)}
+                isEnglish={isEnglish}
+                formatRequestDateTime={formatRequestDateTime}
+              />
             ))}
             {historyTasks.length === 0 && (
-              <div className="p-8 text-center text-slate-500 text-xs">
-                ไม่มีประวัติการอนุมัติ
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500 col-span-full">
+                {isEnglish ? 'No approval history records' : 'ไม่มีประวัติการอนุมัติ'}
               </div>
             )}
           </div>
-
-          {/* Desktop History Table (Visible on >= md) */}
-          <div className="hidden md:block overflow-x-auto smooth-scroll">
-            <table className="w-full text-xs sm:text-sm text-left border-collapse min-w-[960px]">
-              <thead className="text-[11px] text-slate-600 font-bold uppercase bg-slate-100/90 border-b border-slate-200 tracking-wider">
-                <tr>
-                  <th className="px-4 py-3.5 whitespace-nowrap w-[150px]">เอกสาร</th>
-                  <th className="px-4 py-3.5 min-w-[240px]">โครงการ / วัตถุประสงค์</th>
-                  <th className="px-4 py-3.5 whitespace-nowrap min-w-[170px]">ผู้ขอซื้อ</th>
-                  <th className="px-4 py-3.5 text-right whitespace-nowrap w-[130px]">ยอดเงิน (บาท)</th>
-                  <th className="px-3 py-3.5 text-center whitespace-nowrap w-[120px]">ผลการพิจารณา</th>
-                  <th className="px-4 py-3.5 text-right whitespace-nowrap w-[110px]">เอกสาร</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs sm:text-sm bg-white">
-                {historyTasks.map((task) => (
-                  <tr key={task.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-4 py-3.5 align-top whitespace-nowrap">
-                      <span className="font-mono text-indigo-700 font-bold text-sm block leading-tight">
-                        {task.documentType} {task.documentId}
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-medium mt-1 inline-block">
-                        ระดับ {task.level}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-slate-900 text-sm leading-snug break-words">
-                        {task.prData?.department || 'โครงการก่อสร้าง'}
-                      </div>
-                      <div className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 break-words">
-                        {task.prData?.justification}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top text-slate-600 whitespace-nowrap">
-                      <div className="font-semibold text-slate-900 text-sm leading-snug">
-                        {task.requester}
-                      </div>
-                      <div className="text-xs text-slate-400 mt-1">
-                        ดำเนินการเมื่อ {new Date(task.actionDate).toLocaleDateString(isThai ? 'th-TH' : 'en-US')}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
-                      <div className="text-slate-900 font-bold font-mono tabular-nums text-sm leading-tight">
-                        {task.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                      <div className="text-[11px] text-slate-500 mt-1">บาท</div>
-                    </td>
-                    <td className="px-3 py-3.5 align-top text-center whitespace-nowrap">
-                      {task.actionStatus === 'Approved' ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3 mr-1" />
-                          อนุมัติแล้ว
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
-                          <XCircle className="w-3 h-3 mr-1" />
-                          ปฏิเสธ
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 align-top text-right whitespace-nowrap">
-                      <button 
-                        onClick={() => setViewTask(task)}
-                        className="px-2.5 py-1.5 text-xs font-bold text-indigo-700 hover:text-white hover:bg-indigo-600 bg-indigo-50/70 border border-indigo-200 rounded-lg transition-colors shadow-2xs"
-                      >
-                        ดูฟอร์ม A4
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        )
       )}
 
       {/* Details modal with official standard PR document */}
