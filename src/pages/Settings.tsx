@@ -70,8 +70,18 @@ export function SettingsPage() {
     resetApprovalMatrix: contextResetApprovalMatrix,
     companyProfile,
     updateCompanyProfile,
-    resetCompanyProfile
+    resetCompanyProfile,
+    prs,
+    pos,
+    inventory,
+    vendors,
+    loadEnterpriseDemoPreset,
+    resetToCleanState,
+    exportSystemBackupJson,
+    restoreSystemBackupJson
   } = useProcurement();
+  const [demoFeedback, setDemoFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [demoFileLoading, setDemoFileLoading] = useState(false);
   const isOnline = useOnlineStatus();
   const [testSent, setTestSent] = useState(false);
   const [updateAlertSent, setUpdateAlertSent] = useState(false);
@@ -231,6 +241,88 @@ export function SettingsPage() {
     }
   };
 
+  const handleLoadEnterpriseDemo = () => {
+    if (window.confirm(isEnglish 
+      ? 'Load enterprise demo dataset? This will populate 5 projects, PRs, POs, inventory, and suppliers.' 
+      : 'ยืนยันโหลดชุดข้อมูลตัวอย่างระดับองค์กรหรือไม่? ข้อมูลสาธิตโครงการก่อสร้าง ใบขอซื้อ ใบสั่งซื้อ และสต็อกพัสดุจะถูกโหลดเข้าสู่ระบบทันที')) {
+      loadEnterpriseDemoPreset();
+      setDemoFeedback({
+        type: 'success',
+        message: isEnglish 
+          ? 'Enterprise demo dataset loaded successfully! Ready for client pitch.' 
+          : 'โหลดชุดข้อมูลตัวอย่างระดับองค์กรเรียบร้อยแล้ว! พร้อมสำหรับการนำเสนอขายลูกค้าได้ทันที'
+      });
+      setTimeout(() => setDemoFeedback(null), 5000);
+    }
+  };
+
+  const handleResetToClean = () => {
+    if (window.confirm(isEnglish 
+      ? 'Reset system to clean empty state? All sample PRs and inventory will be cleared.' 
+      : 'คุณต้องการรีเซ็ตระบบเป็นสถานะเริ่มต้นเปล่าใช่หรือไม่? รายการขอซื้อและสต็อกตัวอย่างจะถูกลบออกเพื่อเตรียมขึ้นระบบใช้งานจริง')) {
+      resetToCleanState();
+      setDemoFeedback({
+        type: 'success',
+        message: isEnglish 
+          ? 'System reset to clean production state. Ready for live operations.' 
+          : 'รีเซ็ตระบบเป็นสถานะเริ่มต้นเปล่าเรียบร้อยแล้ว พร้อมสำหรับเริ่มบันทึกข้อมูลจริงขององค์กร'
+      });
+      setTimeout(() => setDemoFeedback(null), 5000);
+    }
+  };
+
+  const handleDownloadBackup = () => {
+    const jsonStr = exportSystemBackupJson();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `conerage_store_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setDemoFeedback({
+      type: 'success',
+      message: isEnglish ? 'Backup JSON downloaded successfully.' : 'ดาวน์โหลดไฟล์สำรองข้อมูล JSON เรียบร้อย'
+    });
+    setTimeout(() => setDemoFeedback(null), 4000);
+  };
+
+  const handleRestoreFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDemoFileLoading(true);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        const ok = restoreSystemBackupJson(content);
+        if (ok) {
+          setDemoFeedback({
+            type: 'success',
+            message: isEnglish ? 'System restored successfully from backup file!' : 'กู้คืนข้อมูลระบบจากไฟล์สำรองเรียบร้อยสมบูรณ์!'
+          });
+        } else {
+          setDemoFeedback({
+            type: 'error',
+            message: isEnglish ? 'Invalid backup file format.' : 'ไฟล์สำรองไม่ถูกต้องหรือไม่ตรงตามโครงสร้าง'
+          });
+        }
+      } catch {
+        setDemoFeedback({
+          type: 'error',
+          message: isEnglish ? 'Error reading backup file.' : 'เกิดข้อผิดพลาดในการอ่านไฟล์สำรอง'
+        });
+      } finally {
+        setDemoFileLoading(false);
+        setTimeout(() => setDemoFeedback(null), 5000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
   const handleSave = () => {
     setIsSaving(true);
     setTimeout(() => {
@@ -260,6 +352,18 @@ export function SettingsPage() {
             >
               <User className="h-4 w-4 mr-3" />
               {t('settings.tabProfile')}
+            </button>
+            <button
+              onClick={() => setActiveTab('demo')}
+              className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === 'demo' 
+                  ? 'bg-amber-50 text-amber-800 font-semibold border border-amber-200/70' 
+                  : 'text-slate-700 hover:bg-amber-50/50 hover:text-amber-900'
+              }`}
+            >
+              <Sparkles className="h-4 w-4 mr-3 text-amber-500 shrink-0 animate-pulse" />
+              <span className="flex-1 text-left">{isEnglish ? 'Enterprise Demo Preset' : 'โหมดสาธิต & ชุดข้อมูลขาย'}</span>
+              <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] bg-amber-100 text-amber-800 font-bold uppercase">GTM</span>
             </button>
             <button
               onClick={() => setActiveTab('company')}
@@ -410,6 +514,205 @@ export function SettingsPage() {
                     <option>คลังสินค้า</option>
                   </select>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'demo' && (
+            <div className="p-6 space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200 flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                      {isEnglish ? 'Go-To-Market & Sales Presentation' : 'โหมดนำเสนอขาย & สาธิตระบบ (GTM Ready)'}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                      Multi-Tenant Cloud
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                    {isEnglish ? 'Enterprise Demo Preset & System Resets' : 'ชุดข้อมูลตัวอย่างสาธิตระดับองค์กร & รีเซ็ตระบบ'}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+                    {isEnglish 
+                      ? 'Preload complete multi-site construction projects, PRs with approvals, PO receipts, and barcode-ready inventory for live client pitches.'
+                      : 'สลับเข้าสู่โหมดสาธิตระบบที่มีข้อมูลโครงการก่อสร้าง 4 ไซต์งาน, ใบขอซื้อ (PR) หลากสถานะ, ใบสั่งซื้อ (PO) ตรวจรับบางส่วน, สต็อกพัสดุพร้อมบาร์โค้ด และคู่ค้าจริงสำหรับพรีเซนต์ลูกค้าได้ใน 1 คลิก'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Feedback Alert */}
+              {demoFeedback && (
+                <div className={cn(
+                  "p-4 rounded-2xl text-xs sm:text-sm flex items-center gap-3 animate-in fade-in duration-200 border",
+                  demoFeedback.type === 'success' 
+                    ? "bg-emerald-50 text-emerald-900 border-emerald-200" 
+                    : "bg-rose-50 text-rose-900 border-rose-200"
+                )}>
+                  {demoFeedback.type === 'success' ? (
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                  )}
+                  <span className="font-semibold leading-relaxed">{demoFeedback.message}</span>
+                </div>
+              )}
+
+              {/* Live Data Metrics Bar */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] font-medium text-slate-500 block">ใบขอซื้อในระบบ (PR)</span>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-2xl font-black text-slate-800">{prs.length}</span>
+                    <span className="text-xs text-slate-400">รายการ</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-600 mt-1 block">
+                    รออนุมัติ: {prs.filter(p => p.status === 'Pending Approval').length} รายการ
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] font-medium text-slate-500 block">ใบสั่งซื้อในระบบ (PO)</span>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-2xl font-black text-slate-800">{pos.length}</span>
+                    <span className="text-xs text-slate-400">รายการ</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 mt-1 block">
+                    ตรวจรับแล้ว: {pos.filter(p => p.status === 'Partially Received' || p.status === 'Completed').length} รายการ
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] font-medium text-slate-500 block">พัสดุในคลัง (Inventory)</span>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-2xl font-black text-slate-800">{inventory.length}</span>
+                    <span className="text-xs text-slate-400">รายการ</span>
+                  </div>
+                  <span className="text-[10px] text-amber-600 mt-1 block font-medium">
+                    ⚠️ ใกล้หมดสต็อก: {inventory.filter(i => i.quantity <= (i.minStockLevel || i.minQuantity || 10)).length} รายการ
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] font-medium text-slate-500 block">ซัพพลายเออร์ (Vendors)</span>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-2xl font-black text-slate-800">{vendors.length}</span>
+                    <span className="text-xs text-slate-400">บริษัท</span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-1 block">
+                    SCG, Tata Steel, Bangkok Cable ฯลฯ
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                
+                {/* CARD 1: Load Enterprise Demo Preset */}
+                <div className="p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-50/50 to-orange-50/20 border border-amber-200/80 shadow-xs flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-sm">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-extrabold text-slate-900 text-base">
+                      {isEnglish ? 'Load Enterprise Demo Preset' : '1. โหลดข้อมูลตัวอย่างระดับองค์กร (Demo Pitch)'}
+                    </h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {isEnglish 
+                        ? 'Instantly injects 5 real-world construction projects, multi-tier approvals, PO partial receipts, certified suppliers, and safety stock triggers.'
+                        : 'โหลดชุดข้อมูลสาธิตระดับองค์กรที่สมบูรณ์แบบทันที: โครงการคอนโดสุขุมวิท 101, รถไฟฟ้าสายสีส้ม, รพ.บางนา, PR มูลค่าสูงรอ MD อนุมัติ, PO ตรวจรับของบางส่วน และสต็อกมีบาร์โค้ดสแกนได้จริง'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleLoadEnterpriseDemo}
+                    className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-100" />
+                    <span>{isEnglish ? 'Load 1-Click Demo Dataset' : 'โหลดชุดข้อมูลตัวอย่างระดับองค์กร (1-Click)'}</span>
+                  </button>
+                </div>
+
+                {/* CARD 2: Reset to Clean State */}
+                <div className="p-5 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <div className="w-10 h-10 rounded-2xl bg-slate-700 text-white flex items-center justify-center shadow-sm">
+                      <Trash2 className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-extrabold text-slate-900 text-base">
+                      {isEnglish ? 'Reset to Clean Production' : '2. ล้างข้อมูลเป็นระบบเปล่า (เริ่มใช้งานจริง)'}
+                    </h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {isEnglish 
+                        ? 'Clears all sample transactions and inventory items, leaving your system blank and ready for actual live business onboarding.'
+                        : 'ล้างข้อมูลตัวอย่างและประวัติทั้งหมดออก เหลือเฉพาะโครงสร้างบริษัทและสายอนุมัติเปล่า เพื่อให้ลูกค้าพร้อมเริ่มกรอกข้อมูลจริงขององค์กรได้ทันที'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetToClean}
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-rose-50 hover:text-rose-700 text-slate-700 font-bold text-xs sm:text-sm border border-slate-300 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>{isEnglish ? 'Reset to Blank Production State' : 'รีเซ็ตระบบเป็นสถานะเปล่า (Clean State)'}</span>
+                  </button>
+                </div>
+
+                {/* CARD 3: Export System Backup JSON */}
+                <div className="p-5 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-extrabold text-slate-900 text-base">
+                      {isEnglish ? 'Export Full Backup JSON' : '3. ส่งออกไฟล์สำรองข้อมูลทั้งระบบ (.json)'}
+                    </h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {isEnglish 
+                        ? 'Generates an offline complete snapshot of all PRs, POs, inventory, vendors, and matrices in standard JSON format.'
+                        : 'ดาวน์โหลดไฟล์ Snapshot ฐานข้อมูลทั้งหมดเก็บไว้ในเครื่องของคุณ เพื่อความปลอดภัยสูงสุดหรือนำไปโคลนติดตั้งให้ลูกค้ารายอื่น'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleDownloadBackup}
+                    className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>{isEnglish ? 'Download Backup (.json)' : 'ดาวน์โหลดไฟล์สำรองข้อมูล JSON'}</span>
+                  </button>
+                </div>
+
+                {/* CARD 4: Restore Backup JSON */}
+                <div className="p-5 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <div className="w-10 h-10 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-sm">
+                      <Upload className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-extrabold text-slate-900 text-base">
+                      {isEnglish ? 'Restore from Backup File' : '4. นำเข้าไฟล์สำรองเพื่อกู้คืนระบบ (.json)'}
+                    </h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {isEnglish 
+                        ? 'Upload a previously exported backup file to restore full operational state in seconds.'
+                        : 'อัปโหลดไฟล์ JSON ที่เคยส่งออกไว้ เพื่อกู้คืนสถานะข้อมูล PR, PO, คลัง และคู่ค้ากลับมาทั้งหมดได้ในไม่กี่วินาที'}
+                    </p>
+                  </div>
+                  <label className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-purple-50 text-purple-700 font-bold text-xs sm:text-sm border border-purple-200 transition-all cursor-pointer flex items-center justify-center gap-2 text-center shadow-2xs">
+                    <Upload className="w-4 h-4 text-purple-600" />
+                    <span>{demoFileLoading ? 'กำลังอ่านไฟล์...' : (isEnglish ? 'Choose .json File to Restore' : 'เลือกไฟล์ .json เพื่อกู้คืน')}</span>
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      onChange={handleRestoreFile}
+                      className="hidden"
+                      disabled={demoFileLoading}
+                    />
+                  </label>
+                </div>
+
               </div>
             </div>
           )}

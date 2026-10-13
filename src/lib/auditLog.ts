@@ -10,23 +10,50 @@ export interface AuditLogEntry {
   ip: string;
 }
 
-export async function logSystemAction(userOrAction: string, actionOrDetail: string, detailOrMeta?: any) {
+export interface SystemActionPayload {
+  action: string;
+  user?: string;
+  entityType?: string;
+  entityId?: string;
+  details?: string;
+  detail?: string;
+  [key: string]: any;
+}
+
+export async function logSystemAction(
+  param1: string | SystemActionPayload,
+  param2?: string,
+  param3?: any
+) {
   try {
     let user = 'System';
-    let action = userOrAction;
-    let detail = actionOrDetail;
+    let action = 'ACTION';
+    let detail = '';
 
-    if (detailOrMeta !== undefined) {
-      if (typeof detailOrMeta === 'string') {
-        user = userOrAction;
-        action = actionOrDetail;
-        detail = detailOrMeta;
-      } else {
-        user = 'System';
-        action = userOrAction;
-        detail = typeof actionOrDetail === 'string' 
-          ? `${actionOrDetail} ${JSON.stringify(detailOrMeta)}` 
-          : JSON.stringify(actionOrDetail);
+    if (typeof param1 === 'object' && param1 !== null) {
+      action = param1.action || 'ACTION';
+      user = param1.user || 'System';
+      detail = param1.details || param1.detail || '';
+      if (param1.entityType || param1.entityId) {
+        detail = `[${param1.entityType || ''}#${param1.entityId || ''}] ${detail}`.trim();
+      }
+    } else {
+      const paramStr = typeof param1 === 'string' ? param1 : 'ACTION';
+      action = paramStr || 'ACTION';
+      detail = param2 || '';
+
+      if (param3 !== undefined) {
+        if (typeof param3 === 'string') {
+          user = paramStr;
+          action = param2 || 'ACTION';
+          detail = param3;
+        } else {
+          user = 'System';
+          action = paramStr;
+          detail = typeof param2 === 'string' 
+            ? `${param2} ${JSON.stringify(param3)}` 
+            : JSON.stringify(param2);
+        }
       }
     }
 

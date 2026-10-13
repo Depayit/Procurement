@@ -5,19 +5,7 @@ import { DetailsModal } from '../components/DetailsModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
-
-interface Vendor {
-  id: string;
-  name: string;
-  contactPerson: string;
-  email: string;
-  phone: string;
-  address: string;
-  paymentTerms: string;
-  rating: number; // out of 5
-  onTimeDeliveryRate: number; // percentage
-  categories: string[];
-}
+import { Vendor } from '../types';
 
 const MOCK_VENDORS: Vendor[] = [
   {

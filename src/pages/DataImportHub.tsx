@@ -226,7 +226,8 @@ export function DataImportHub() {
       updated = res.updated;
     } else if (targetModule === 'pr') {
       // Create consolidated PR or multiple PR items
-      const prItems = normalizedData.validRows.map(row => ({
+      const prItems = normalizedData.validRows.map((row, idx) => ({
+        id: row.id || `pri_imp_${Date.now()}_${idx}`,
         description: row.description || row.name || 'รายการวัสดุ',
         specification: row.specification || '',
         quantity: Number(row.quantity) || 1,
@@ -248,7 +249,8 @@ export function DataImportHub() {
       }]);
       added = res.added;
     } else if (targetModule === 'po') {
-      const poItems = normalizedData.validRows.map(row => ({
+      const poItems = normalizedData.validRows.map((row, idx) => ({
+        id: row.id || `poi_imp_${Date.now()}_${idx}`,
         description: row.description || row.name || 'รายการสินค้า',
         specification: row.specification || '',
         quantity: Number(row.quantity) || 1,

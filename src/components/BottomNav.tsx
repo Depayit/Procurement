@@ -34,7 +34,7 @@ export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
 
   // Calculate pending approvals
   const pendingApprovalsCount = prs.filter(
-    pr => pr.status === 'pending_approval' || pr.status === 'pending'
+    pr => pr.status === 'Pending Approval'
   ).length;
 
   const tabs: NavTab[] = [

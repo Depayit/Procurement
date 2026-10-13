@@ -2,7 +2,269 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", "Sarabun", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+  /* Typography: SF Pro on Apple devices, Inter elsewhere, Thai-capable fallbacks */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Sarabun", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+
+  /* Neutrals: apple.com grays (#1d1d1f text, #6e6e73 secondary, #f5f5f7 surface) */
+  --color-slate-50: #fbfbfd;
+  --color-slate-100: #f5f5f7;
+  --color-slate-200: #e8e8ed;
+  --color-slate-300: #d2d2d7;
+  --color-slate-400: #98989d;
+  --color-slate-500: #6e6e73;
+  --color-slate-600: #515154;
+  --color-slate-700: #424245;
+  --color-slate-800: #2c2c2e;
+  --color-slate-900: #1d1d1f;
+  --color-slate-950: #0a0a0c;
+
+  /* Primary: Apple blue (#0071e3 buttons, #0066cc links) */
+  --color-indigo-50: #f0f7ff;
+  --color-indigo-100: #e0efff;
+  --color-indigo-200: #bfdcff;
+  --color-indigo-300: #8cc1ff;
+  --color-indigo-400: #4a9cf5;
+  --color-indigo-500: #2b87ec;
+  --color-indigo-600: #0071e3;
+  --color-indigo-700: #0066cc;
+  --color-indigo-800: #0058b0;
+  --color-indigo-900: #004a94;
+  --color-indigo-950: #00305f;
+
+  /* Secondary accent: iOS indigo, used sparingly in gradients */
+  --color-purple-50: #f4f4ff;
+  --color-purple-100: #e8e8ff;
+  --color-purple-200: #d0d0fb;
+  --color-purple-300: #aeaef5;
+  --color-purple-400: #8685ec;
+  --color-purple-500: #6c6ae0;
+  --color-purple-600: #5856d6;
+  --color-purple-700: #4846b8;
+  --color-purple-800: #3a3996;
+  --color-purple-900: #2f2f78;
+
+  /* Status colors: Apple system green / orange / red */
+  --color-emerald-50: #eefbf1;
+  --color-emerald-100: #d6f5de;
+  --color-emerald-200: #aeeabf;
+  --color-emerald-300: #7bda97;
+  --color-emerald-400: #4ccb73;
+  --color-emerald-500: #34c759;
+  --color-emerald-600: #248a3d;
+  --color-emerald-700: #1d7a34;
+  --color-emerald-800: #19622b;
+  --color-emerald-900: #144f24;
+
+  --color-amber-50: #fff8eb;
+  --color-amber-100: #ffefd0;
+  --color-amber-200: #ffdd9e;
+  --color-amber-300: #ffc766;
+  --color-amber-400: #ffb02e;
+  --color-amber-500: #ff9f0a;
+  --color-amber-600: #c77700;
+  --color-amber-700: #a35f00;
+  --color-amber-800: #854d00;
+  --color-amber-900: #6e4000;
+
+  --color-rose-50: #fff1f0;
+  --color-rose-100: #ffe0de;
+  --color-rose-200: #ffc2bd;
+  --color-rose-300: #ff9d95;
+  --color-rose-400: #ff6b61;
+  --color-rose-500: #ff3b30;
+  --color-rose-600: #d70015;
+  --color-rose-700: #b3001b;
+  --color-rose-800: #8f0016;
+  --color-rose-900: #750013;
+
+  --color-red-50: #fff1f0;
+  --color-red-100: #ffe0de;
+  --color-red-200: #ffc2bd;
+  --color-red-300: #ff9d95;
+  --color-red-400: #ff6b61;
+  --color-red-500: #ff3b30;
+  --color-red-600: #d70015;
+  --color-red-700: #b3001b;
+  --color-red-800: #8f0016;
+  --color-red-900: #750013;
+
+  /* Radii: Apple cards are 12-24px */
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+  --radius-3xl: 1.5rem;
+
+  /* Shadows: diffuse and very low contrast */
+  --shadow-2xs: 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  --shadow-xs: 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.04), 0 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.05), 0 20px 48px rgba(0, 0, 0, 0.10);
+  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================================================
+   APPLE-STYLE DESIGN LAYER
+   Hairline borders, pill buttons, soft focus rings, frosted bars.
+   Unlayered on purpose so it wins over Tailwind utilities where needed.
+   Remove this block to fall back to the plain token theme above.
+   ========================================================================== */
+:root {
+  --apple-blue: #0071e3;
+  --apple-blue-hover: #0077ed;
+  --apple-blue-active: #006edb;
+  --apple-hairline: rgba(0, 0, 0, 0.08);
+  --apple-focus: rgba(0, 113, 227, 0.35);
+  --apple-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+}
+
+body {
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+}
+
+/* Hairline borders on the neutral border utilities only (keeps colored borders intact) */
+.border-slate-200,
+.border-slate-200\/60,
+.border-slate-200\/80,
+.border-slate-200\/90 {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Buttons: smooth press feedback */
+button,
+[role="button"],
+a {
+  transition-property: background-color, color, border-color, box-shadow, transform, opacity;
+  transition-duration: 0.25s;
+  transition-timing-function: var(--apple-ease);
+}
+
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Primary buttons become Apple blue pills */
+button.bg-indigo-600,
+a.bg-indigo-600,
+button.bg-indigo-700,
+button.bg-emerald-500,
+button.bg-emerald-600 {
+  border-radius: 980px;
+  box-shadow: none;
+}
+
+button.bg-indigo-600:hover,
+a.bg-indigo-600:hover,
+button.bg-indigo-700:hover {
+  background-color: var(--apple-blue-hover);
+}
+
+/* Gradient buttons flatten to solid blue like apple.com CTAs */
+button.bg-gradient-to-r.from-indigo-600,
+a.bg-gradient-to-r.from-indigo-600 {
+  background-image: none;
+  background-color: var(--apple-blue);
+  border-radius: 980px;
+  box-shadow: none;
+}
+
+button.bg-gradient-to-r.from-indigo-600:hover,
+a.bg-gradient-to-r.from-indigo-600:hover {
+  background-color: var(--apple-blue-hover);
+}
+
+/* Secondary (soft gray / tinted) buttons become pills */
+button.bg-slate-100,
+button.bg-slate-200,
+button.bg-indigo-50,
+button.bg-amber-50,
+button.bg-emerald-50,
+button.bg-purple-50 {
+  border-radius: 980px;
+}
+
+/* Soft Apple focus ring on interactive fields and keyboard focus */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 4px var(--apple-focus);
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--apple-blue);
+  outline-offset: 2px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #86868b;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--apple-blue);
+  box-shadow: none;
+}
+
+/* Frosted translucent top bar and mobile bottom nav */
+header,
+nav.fixed {
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Links: Apple link blue */
+a:not([class]) {
+  color: #0066cc;
+}
+
+a:not([class]):hover {
+  text-decoration: underline;
+}
+
+/* Tables: airy rows with hairline separators */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead th {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Text selection */
+::selection {
+  background: rgba(0, 113, 227, 0.22);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Keep official A4 documents untouched by the Apple UI layer */
+.standard-a4-doc table {
+  border-collapse: collapse;
+}
+
+.standard-a4-doc input,
+.standard-a4-doc button {
+  border-radius: revert;
 }
 
 /* Global Typography, Proportions & Balanced Line Breaks */
@@ -93,9 +355,9 @@ html {
 }
 
 .heading-badge-primary {
-  background-color: #eef2ff;
-  color: #4338ca;
-  border: 1px solid #c7d2fe;
+  background-color: #f0f7ff;
+  color: #0066cc;
+  border: 1px solid #bfdcff;
 }
 
 .heading-badge-amber {
@@ -115,7 +377,7 @@ html {
   width: 0.25rem;
   height: 1.125rem;
   border-radius: 9999px;
-  background-color: #4f46e5;
+  background-color: #0071e3;
   margin-right: 0.5rem;
   vertical-align: middle;
 }

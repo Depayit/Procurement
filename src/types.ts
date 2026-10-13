@@ -1,5 +1,5 @@
 export type PRStatus = 'Draft' | 'Pending Approval' | 'Approved' | 'Rejected' | 'PO Created' | 'Cancelled';
-export type POStatus = 'Draft' | 'Issued' | 'Sent' | 'Partially Received' | 'Completed' | 'Cancelled';
+export type POStatus = 'Draft' | 'Issued' | 'Approved' | 'Sent' | 'Partially Received' | 'Completed' | 'Cancelled';
 export type PRUrgency = 'normal' | 'urgent' | 'emergency';
 
 export interface PRItem {
@@ -103,6 +103,7 @@ export interface InventoryItem {
   quantity: number;
   unit: string;
   minStockLevel: number;
+  minQuantity?: number;       // Alias for minStockLevel used by AI Copilot & diagnostics
   location: string;           // คลังสินค้า / ตำแหน่งจัดเก็บ
   binLocation?: string;       // โซนจัดเก็บย่อยในคลัง (เช่น Zone A-01 / Rack 2)
   centralWarehouse?: string;  // คลังพัสดุก่อสร้างกลาง (Central Construction Material Hub)
@@ -139,8 +140,13 @@ export interface PurchaseOrder {
   date: string;
   orderDate?: string;
   expectedDeliveryDate?: string;
+  deliveryDate?: string;
   deliveryLocation?: string;
+  shippingAddress?: string;
   paymentTerms?: string;
+  taxId?: string;
+  contactPerson?: string;
+  contactPhone?: string;
   items: POItem[];
   signatures?: PRSignatures;
 }
@@ -152,10 +158,16 @@ export interface Vendor {
   email: string;
   phone: string;
   address: string;
-  paymentTerms: string;
-  rating: number; // out of 5
-  onTimeDeliveryRate: number; // percentage
-  categories: string[];
+  paymentTerms?: string;
+  creditTermDays?: number;
+  paymentMethod?: string;
+  bankAccount?: string;
+  rating?: number; // out of 5
+  onTimeDeliveryRate?: number; // percentage
+  categories?: string[];
+  category?: string;
+  taxId?: string;
+  branch?: string;
 }
 
 export interface UserProfile {
@@ -254,6 +266,8 @@ export interface CompanyProfile {
   logoUrl?: string;
   docFormatPR?: string;
   docFormatPO?: string;
+  website?: string;
+  branch?: string;
 }
 
 export type ImportTargetModule = 'inventory' | 'pr' | 'vendors' | 'po';

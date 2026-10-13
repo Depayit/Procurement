@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
     const now = Date.now();
     if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
       sessionStorage.setItem('procuresync_preload_reload', String(now));
-      if ('caches' in window) {
+      if (typeof caches !== 'undefined') {
         caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).finally(() => {
           window.location.reload();
         });

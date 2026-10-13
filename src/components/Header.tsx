@@ -1,4 +1,4 @@
-import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen, Store, LogOut } from 'lucide-react';
+import { Bell, Search, Check, AlertCircle, ShoppingCart, Box, Menu, Trash2, CheckCheck, Shield, UserCheck, ChevronDown, Sparkles, PanelLeftClose, PanelLeftOpen, Store, LogOut, Layers, Database } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ export function Header({
 }: HeaderProps) {
   const { t, isEnglish } = useLanguage();
   const { currentUser, activeRole, switchRole, availableRoles, logout } = useAuth();
-  const { companyProfile } = useProcurement();
+  const { companyProfile, loadEnterpriseDemoPreset } = useProcurement();
   const { 
     notifications, 
     unreadCount, 
@@ -270,6 +270,22 @@ export function Header({
           )}
         </div>
         
+        {/* 1-Click Enterprise Demo Quick Trigger */}
+        <button
+          type="button"
+          onClick={() => {
+            if (window.confirm(isEnglish ? 'Load Enterprise Sales Demo Preset? This will populate 4 sites, 5 PRs, 3 POs, and 12 inventory items for sales presentation.' : 'โหลดชุดข้อมูลสาธิตระดับองค์กรสำหรับนำเสนอขาย (โครงการก่อสร้าง 4 แห่ง, PR, PO, คลังสินค้า)?')) {
+              loadEnterpriseDemoPreset();
+              window.location.reload();
+            }
+          }}
+          className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-50/80 hover:bg-amber-100/90 text-amber-800 border border-amber-200/80 transition-all cursor-pointer shadow-2xs group"
+          title={isEnglish ? 'Load Enterprise Sales Demo Data' : 'โหลดชุดข้อมูลสาธิตสำหรับพรีเซนต์'}
+        >
+          <Layers className="w-3.5 h-3.5 text-amber-600 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-bold">Demo Preset</span>
+        </button>
+
         {/* AI Copilot & Diagnostics Quick Trigger */}
         <button
           type="button"
@@ -427,6 +443,26 @@ export function Header({
                   </span>
                   <span className="text-[11px] text-purple-500">&rarr;</span>
                 </Link>
+
+                <div className="pt-1 mt-1 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      if (window.confirm(isEnglish ? 'Load Enterprise Sales Demo Preset (Sample Thai Contractor sites, PRs, POs, Inventory)?' : 'โหลดชุดข้อมูลสาธิตระดับองค์กรสำหรับนำเสนอขาย (โครงการก่อสร้าง, PR, PO, คลังสินค้า)?')) {
+                        loadEnterpriseDemoPreset();
+                        window.location.reload();
+                      }
+                    }}
+                    className="w-full px-3 py-1.5 rounded-lg text-amber-800 bg-amber-50 hover:bg-amber-100/80 flex items-center justify-between transition-colors font-semibold text-xs cursor-pointer border border-amber-200/60"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-amber-600" />
+                      {isEnglish ? 'Load Enterprise Demo Preset' : 'โหลดชุดข้อมูลสาธิตสำหรับขาย'}
+                    </span>
+                    <span className="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-bold">1-Click</span>
+                  </button>
+                </div>
 
                 <div className="pt-1 mt-1 border-t border-slate-100">
                   <button

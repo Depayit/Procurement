@@ -65,7 +65,7 @@ export function IntegrationsPage() {
 
   // Firebase states
   const [isTestingFirebase, setIsTestingFirebase] = useState(false);
-  const [firebaseTestResult, setFirebaseTestResult] = useState<{ success: boolean; latencyMs?: number; error?: string } | null>(null);
+  const [firebaseTestResult, setFirebaseTestResult] = useState<{ success: boolean; latencyMs?: number; error?: string; projectId?: string; databaseId?: string } | null>(null);
   const [isSyncingFirebase, setIsSyncingFirebase] = useState(false);
   const [firebaseSyncResult, setFirebaseSyncResult] = useState<{ success: boolean; msg: string } | null>(null);
   const [isPullingFirebase, setIsPullingFirebase] = useState(false);

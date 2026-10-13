@@ -29,6 +29,11 @@ import {
   pullAllFromFirestore, 
   testFirebaseConnection 
 } from '../lib/firebaseSync';
+import { 
+  getFullEnterpriseDemoState, 
+  getCleanEmptyState, 
+  type FullSystemSnapshot 
+} from '../services/demoPresetService';
 
 // Storage Keys
 const STORAGE_PREFIX = 'procuresync_store_';
@@ -416,8 +421,12 @@ interface ProcurementContextType {
   pullFromFirebase: () => Promise<{ success: boolean; message: string; totalCount: number }>;
   testFirebase: () => Promise<{ success: boolean; latencyMs?: number; projectId: string; databaseId?: string; error?: string }>;
 
-  // Reset/Utility
+  // Reset/Utility & Enterprise Demo Presets
   resetToSeedData: () => void;
+  loadEnterpriseDemoPreset: () => void;
+  resetToCleanState: () => void;
+  exportSystemBackupJson: () => string;
+  restoreSystemBackupJson: (jsonString: string) => boolean;
 }
 
 const ProcurementContext = createContext<ProcurementContextType | undefined>(undefined);
@@ -1462,8 +1471,79 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // ==========================================
-  // Reset Utility
+  // Enterprise Demo Presets & System Resets
   // ==========================================
+  const loadEnterpriseDemoPreset = () => {
+    const demo = getFullEnterpriseDemoState();
+    setPrs(demo.prs);
+    setPos(demo.pos);
+    setInventory(demo.inventory);
+    setVendors(demo.vendors);
+    setApprovalMatrix(demo.approvalMatrix);
+    setCompanyProfile(demo.companyProfile);
+    logSystemAction({
+      action: 'LOAD_DEMO_PRESET',
+      entityType: 'SYSTEM',
+      entityId: 'enterprise_demo',
+      details: 'โหลดชุดข้อมูลตัวอย่างระดับองค์กร (Enterprise Demo Preset) สำเร็จ 5 ไซต์งาน, 6 PR, 4 PO, 16 พัสดุ'
+    });
+  };
+
+  const resetToCleanState = () => {
+    const clean = getCleanEmptyState();
+    setPrs(clean.prs);
+    setPos(clean.pos);
+    setInventory(clean.inventory);
+    setVendors(clean.vendors);
+    setApprovalMatrix(clean.approvalMatrix);
+    setCompanyProfile(clean.companyProfile);
+    setImportHistory([]);
+    logSystemAction({
+      action: 'RESET_CLEAN_STATE',
+      entityType: 'SYSTEM',
+      entityId: 'clean_production',
+      details: 'รีเซ็ตระบบเป็นสถานะเริ่มต้นเปล่า (Clean Production State) พร้อมเริ่มใช้งานจริง'
+    });
+  };
+
+  const exportSystemBackupJson = (): string => {
+    const snapshot: FullSystemSnapshot = {
+      version: '3.0.0-export',
+      exportedAt: new Date().toISOString(),
+      companyProfile,
+      prs,
+      pos,
+      inventory,
+      vendors,
+      approvalMatrix
+    };
+    return JSON.stringify(snapshot, null, 2);
+  };
+
+  const restoreSystemBackupJson = (jsonString: string): boolean => {
+    try {
+      const parsed: FullSystemSnapshot = JSON.parse(jsonString);
+      if (parsed && Array.isArray(parsed.prs) && Array.isArray(parsed.inventory)) {
+        if (parsed.companyProfile) setCompanyProfile(parsed.companyProfile);
+        if (parsed.prs) setPrs(parsed.prs);
+        if (parsed.pos) setPos(parsed.pos);
+        if (parsed.inventory) setInventory(parsed.inventory);
+        if (parsed.vendors) setVendors(parsed.vendors);
+        if (parsed.approvalMatrix) setApprovalMatrix(parsed.approvalMatrix);
+        logSystemAction({
+          action: 'RESTORE_BACKUP_JSON',
+          entityType: 'SYSTEM',
+          entityId: 'backup_file',
+          details: 'กู้คืนข้อมูลระบบจากไฟล์สำรอง JSON เรียบร้อย'
+        });
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
   const resetToSeedData = () => {
     setPrs(SEED_PRS);
     setPos(SEED_POS);
@@ -1525,7 +1605,11 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       addInventoryItem,
       updateInventoryItem,
       transactInventory,
-      resetToSeedData
+      resetToSeedData,
+      loadEnterpriseDemoPreset,
+      resetToCleanState,
+      exportSystemBackupJson,
+      restoreSystemBackupJson
     }}>
       {children}
     </ProcurementContext.Provider>
