@@ -95,17 +95,14 @@ export function Sidebar({
           "flex items-center gap-2.5 min-w-0",
           isCollapsed ? "lg:justify-center" : ""
         )}>
-          {companyProfile?.logoUrl ? (
-            <img 
-              src={companyProfile.logoUrl} 
-              alt="Company Logo" 
-              className="w-8 h-8 rounded object-contain shrink-0 border border-slate-200 p-0.5 bg-white shadow-2xs" 
-            />
-          ) : (
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-xs shrink-0">
-              <Store className="w-4.5 h-4.5 text-white" />
-            </div>
-          )}
+          <img 
+            src={companyProfile?.logoUrl || '/logo.png'} 
+            alt="Conerage store Logo" 
+            className="w-8 h-8 rounded-lg object-contain shrink-0 border border-slate-200/90 p-0.5 bg-white shadow-2xs" 
+            onError={(e) => {
+              e.currentTarget.src = '/logo-128.png';
+            }}
+          />
 
           <div className={cn(
             "min-w-0 transition-opacity duration-200",

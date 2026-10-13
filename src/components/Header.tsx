@@ -80,10 +80,12 @@ export function Header({
         </button>
 
         {/* Mobile Brand Name */}
-        <div className="lg:hidden flex items-center gap-1.5 min-w-0 mr-1">
-          <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs">
-            <Store className="w-3.5 h-3.5" />
-          </div>
+        <div className="lg:hidden flex items-center gap-2 min-w-0 mr-1">
+          <img 
+            src="/logo-64.png" 
+            alt="Conerage store" 
+            className="w-7 h-7 rounded-lg object-contain shrink-0 bg-white shadow-2xs border border-slate-200 p-0.5" 
+          />
           <span className="font-extrabold text-sm text-slate-900 tracking-tight truncate">
             Conerage store
           </span>

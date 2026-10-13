@@ -125,12 +125,14 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
             {/* Modal Header */}
             <div className="p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-xs border border-indigo-400/30">
-                  <Download className="w-5 h-5" />
-                </div>
+                <img 
+                  src="/logo-128.png" 
+                  alt="Conerage store" 
+                  className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 shadow-xs border border-white/20" 
+                />
                 <div>
                   <h3 className="text-base font-bold text-white">
-                    {isEnglish ? 'Install ProcureSync Enterprise' : 'ติดตั้งแอปพลิเคชัน ProcureSync'}
+                    {isEnglish ? 'Install Conerage store' : 'ติดตั้งแอปพลิเคชัน Conerage store'}
                   </h3>
                   <p className="text-xs text-indigo-200">
                     {isEnglish ? 'Progressive Web App (PWA) & Offline Ready' : 'ใช้งานเสมือนแอปจริง • รวดเร็ว • ทำงานแบบออฟไลน์ได้'}

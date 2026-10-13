@@ -47,7 +47,7 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   address: '888 อาคารเอ็มไพร์ทาวเวอร์ ชั้น 24 ถนนสาทรใต้ แขวงยานนาวา เขตสาทร กรุงเทพฯ 10120',
   phone: '02-123-4567',
   email: 'contact@coneragestore.com',
-  logoUrl: '',
+  logoUrl: '/logo.png',
   docFormatPR: 'PR-YYYY-XXX',
   docFormatPO: 'PO-YYYY-XXX',
 };
@@ -478,6 +478,9 @@ export const ProcurementProvider: React.FC<{ children: React.ReactNode }> = ({ c
           parsed.nameEn = DEFAULT_COMPANY_PROFILE.nameEn;
           parsed.nameTh = DEFAULT_COMPANY_PROFILE.nameTh;
           parsed.email = DEFAULT_COMPANY_PROFILE.email;
+        }
+        if (!parsed.logoUrl || parsed.logoUrl === '') {
+          parsed.logoUrl = '/logo.png';
         }
         return { ...DEFAULT_COMPANY_PROFILE, ...parsed };
       }

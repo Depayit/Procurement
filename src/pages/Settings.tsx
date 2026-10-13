@@ -472,7 +472,7 @@ export function SettingsPage() {
                         <div className="flex flex-col items-center justify-center text-slate-400 text-center p-2">
                           <ImageIcon className="w-8 h-8 text-slate-300 mb-1" />
                           <span className="text-[11px] font-medium leading-tight">ไม่มีโลโก้</span>
-                          <span className="text-[9px] text-slate-400">(ใช้ PS ค่าเริ่มต้น)</span>
+                          <span className="text-[9px] text-slate-400">(ใช้ CS ค่าเริ่มต้น)</span>
                         </div>
                       )}
                     </div>
@@ -1289,9 +1289,11 @@ export function SettingsPage() {
               <div className="p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50/70 via-white to-slate-50 space-y-5 shadow-2xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-md shadow-indigo-200 shrink-0">
-                      <Smartphone className="w-6 h-6" />
-                    </div>
+                    <img 
+                      src="/logo-128.png" 
+                      alt="Conerage store" 
+                      className="w-12 h-12 rounded-2xl object-contain bg-white p-1 border border-slate-200 shadow-md shadow-indigo-100 shrink-0" 
+                    />
                     <div>
                       <h4 className="text-base font-bold text-slate-900">Conerage store PWA</h4>
                       <p className="text-xs text-slate-500 mt-0.5">
