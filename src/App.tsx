@@ -6,6 +6,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProcurementProvider } from './contexts/ProcurementContext';
 import { Layout } from './components/Layout';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { RealtimeUpdateModal } from './components/RealtimeUpdateModal';
 import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { lazyWithRetry } from './lib/lazyRetry';
@@ -170,6 +171,7 @@ export default function App() {
                 </Route>
               </Routes>
               <OfflineIndicator />
+              <RealtimeUpdateModal />
             </BrowserRouter>
           </ProcurementProvider>
         </AuthProvider>

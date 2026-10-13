@@ -1,14 +1,65 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import fs from 'fs';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// Generate dynamic build timestamp and unique deployment identifier on every build/deploy
+const appVersion = '3.0.0';
+const buildTime = new Date().toISOString();
+const buildTimestamp = Date.now();
+const buildId = `deploy_${buildTimestamp}_${Math.random().toString(36).substring(2, 7)}`;
+
+const versionInfo = {
+  version: appVersion,
+  buildId,
+  buildTime,
+  timestamp: buildTimestamp,
+  appName: 'Conerage store',
+  releaseNotes: 'ระบบได้รับการอัปเดตเวอร์ชันล่าสุด พร้อมระบบแจ้งเตือนแบบเรียลไทม์',
+  deployedAt: buildTime,
+};
+
+function generateVersionPlugin() {
+  return {
+    name: 'generate-version-plugin',
+    buildStart() {
+      try {
+        const publicDir = path.resolve(__dirname, 'public');
+        if (!fs.existsSync(publicDir)) {
+          fs.mkdirSync(publicDir, { recursive: true });
+        }
+        fs.writeFileSync(
+          path.join(publicDir, 'version.json'),
+          JSON.stringify(versionInfo, null, 2),
+          'utf-8'
+        );
+      } catch (err) {
+        console.warn('Could not write public/version.json:', err);
+      }
+    },
+    generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'version.json',
+        source: JSON.stringify(versionInfo, null, 2),
+      });
+    },
+  };
+}
+
 export default defineConfig(() => {
   return {
+    define: {
+      __APP_VERSION__: JSON.stringify(appVersion),
+      __BUILD_ID__: JSON.stringify(buildId),
+      __BUILD_TIME__: JSON.stringify(buildTime),
+    },
     plugins: [
       react(),
       tailwindcss(),
+      generateVersionPlugin(),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg', 'icon-maskable.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-maskable-512x512.png'],
@@ -130,6 +181,10 @@ export default defineConfig(() => {
                   maxAgeSeconds: 30 * 24 * 60 * 60,
                 },
               },
+            },
+            {
+              urlPattern: /(?:version\.json|\/api\/)/i,
+              handler: 'NetworkOnly',
             },
           ],
         },

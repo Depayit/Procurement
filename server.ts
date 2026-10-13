@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 
@@ -8,6 +9,34 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Real-time Version & Deployment API endpoint (Strict no-cache headers)
+  app.get(["/api/version", "/version.json"], (req, res) => {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.setHeader("Surrogate-Control", "no-store");
+
+    const distPath = path.join(process.cwd(), "dist", "version.json");
+    const publicPath = path.join(process.cwd(), "public", "version.json");
+    const targetPath = fs.existsSync(distPath) ? distPath : (fs.existsSync(publicPath) ? publicPath : null);
+
+    if (targetPath) {
+      try {
+        const data = fs.readFileSync(targetPath, "utf-8");
+        return res.setHeader("Content-Type", "application/json").send(data);
+      } catch {
+        // fallback
+      }
+    }
+
+    return res.json({
+      version: "3.0.0",
+      buildId: "deploy_" + Date.now(),
+      buildTime: new Date().toISOString(),
+      appName: "Conerage store"
+    });
+  });
 
   // API routes
   app.post("/api/generate-po-description", async (req, res) => {

@@ -50,6 +50,14 @@ import { useOnlineStatus } from '../components/OfflineIndicator';
 import { ApprovalMatrixDocumentTable } from '../components/ApprovalMatrixDocumentTable';
 import { DEFAULT_APPROVAL_MATRIX } from '../data/defaultApprovalMatrix';
 import type { ApprovalMatrixStep } from '../types';
+import { 
+  CURRENT_CLIENT_VERSION, 
+  CURRENT_CLIENT_BUILD_ID, 
+  CURRENT_CLIENT_BUILD_TIME, 
+  checkForServerUpdate, 
+  broadcastDeploymentEvent,
+  applyUpdateAndReload 
+} from '../services/realtimeUpdateService';
 import { cn } from '../lib/utils';
 
 export function SettingsPage() {
@@ -68,6 +76,8 @@ export function SettingsPage() {
   const [testSent, setTestSent] = useState(false);
   const [updateAlertSent, setUpdateAlertSent] = useState(false);
   const [isClearingCache, setIsClearingCache] = useState(false);
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [updateCheckStatus, setUpdateCheckStatus] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('profile');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -1406,54 +1416,125 @@ export function SettingsPage() {
                 </div>
               </div>
 
-              {/* 3. Cache & Update Maintenance Box with Changelog */}
+              {/* 3. Cache & Real-time Deployment Maintenance Box */}
               <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-4 overflow-hidden">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-slate-100 pb-3.5">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <RotateCw className="w-4 h-4 text-indigo-600 shrink-0" />
                       <h4 className="text-sm font-bold text-slate-800 break-words">
-                        การจัดการแคชและการอัปเดตระบบ
+                        {isEnglish ? 'Real-time Deployment & Cache Sync' : 'การตรวจจับการ Deploy และอัปเดตระบบเรียลไทม์'}
                       </h4>
-                      <span className="text-xs text-slate-400 font-medium hidden sm:inline">
-                        (System Version & Cache Sync)
-                      </span>
                       <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono shrink-0">
-                        v2.5.0
+                        v{CURRENT_CLIENT_VERSION}
+                      </span>
+                      <span className="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-indigo-200 shrink-0">
+                        Live Auto-Detector Active
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 mt-1 leading-relaxed break-words">
-                      หากมีการอัปเดตระบบใหม่ สามารถกดปุ่มนี้เพื่อล้างไฟล์แคช บังคับโหลดเวอร์ชันล่าสุด และแจ้งเตือนผู้ใช้ทุกคน
+                      {isEnglish 
+                        ? 'The system automatically detects new production deployments within 30 seconds and notifies all users with audio and push alerts.'
+                        : 'ระบบตรวจจับการ Deploy เวอร์ชันใหม่โดยอัตโนมัติทุก 30 วินาที พร้อมส่งเสียงเตือนและแจ้งเตือนผู้ใช้งานทุกคนแบบเรียลไทม์'}
                     </p>
                   </div>
 
+                  {/* Actions Deck */}
                   <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
                     <button
                       type="button"
+                      onClick={async () => {
+                        setIsCheckingUpdate(true);
+                        setUpdateCheckStatus(null);
+                        try {
+                          const result = await checkForServerUpdate();
+                          if (result.hasUpdate && result.newInfo) {
+                            setUpdateCheckStatus(isEnglish ? `New deployment v${result.newInfo.version} found!` : `พบการ Deploy เวอร์ชันใหม่ v${result.newInfo.version}!`);
+                            broadcastDeploymentEvent(result.newInfo);
+                          } else {
+                            setUpdateCheckStatus(isEnglish ? 'You are running the latest version.' : 'คุณกำลังใช้งานเวอร์ชันล่าสุดแล้ว');
+                          }
+                        } catch {
+                          setUpdateCheckStatus(isEnglish ? 'Check failed.' : 'ตรวจสอบไม่สำเร็จ');
+                        } finally {
+                          setIsCheckingUpdate(false);
+                        }
+                      }}
+                      disabled={isCheckingUpdate}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors shrink-0 cursor-pointer disabled:opacity-50"
+                      title={isEnglish ? 'Check server for new deployment' : 'ตรวจสอบกับเซิร์ฟเวอร์ว่ามีการ Deploy ใหม่หรือไม่'}
+                    >
+                      <RefreshCw className={cn("w-3.5 h-3.5 shrink-0", isCheckingUpdate && "animate-spin")} />
+                      <span>{isCheckingUpdate ? (isEnglish ? 'Checking...' : 'กำลังเช็ก...') : (isEnglish ? 'Check Updates' : 'เช็กอัพเดต')}</span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => {
-                        broadcastSystemUpdate('2.5.0');
-                        window.dispatchEvent(new CustomEvent('procuresync:show-system-update'));
+                        broadcastDeploymentEvent({
+                          version: CURRENT_CLIENT_VERSION,
+                          buildId: `test_deploy_${Date.now()}`,
+                          buildTime: new Date().toISOString(),
+                          appName: 'Conerage store',
+                          releaseNotes: isEnglish 
+                            ? 'Real-time test deployment notification broadcasted across all tabs and PWA clients.'
+                            : 'ทดสอบการแจ้งเตือนการ Deploy ระบบใหม่แบบเรียลไทม์ ซิงก์ข้ามแท็บและ PWA สำเร็จ',
+                          isTest: true
+                        });
                         setUpdateAlertSent(true);
                         setTimeout(() => setUpdateAlertSent(false), 3500);
                       }}
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition-colors shrink-0 cursor-pointer shadow-2xs"
+                      title={isEnglish ? 'Broadcast test notification to all tabs' : 'ทดสอบส่งเสียงเตือนและการแจ้งเตือนข้ามแท็บ'}
                     >
                       <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                      <span>{updateAlertSent ? 'ส่งแจ้งเตือนแล้ว!' : 'แจ้งเตือนอัพเดต'}</span>
+                      <span>{updateAlertSent ? (isEnglish ? 'Alert Sent!' : 'ส่งแจ้งเตือนแล้ว!') : (isEnglish ? 'Test Real-time Alert' : 'ทดสอบแจ้งเตือน Real-time')}</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={async () => {
                         setIsClearingCache(true);
-                        await clearCacheAndUpdate();
+                        await applyUpdateAndReload();
                       }}
                       disabled={isClearingCache}
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-colors shrink-0 cursor-pointer disabled:opacity-50 shadow-xs"
+                      title={isEnglish ? 'Purge client caches and hard reload' : 'ล้างแคชทั้งหมดและโหลดไฟล์ใหม่ล่าสุด'}
                     >
-                      <RotateCw className={`w-3.5 h-3.5 shrink-0 ${isClearingCache ? 'animate-spin' : ''}`} />
-                      <span>{isClearingCache ? 'กำลังซิงก์...' : 'ล้างแคชและอัปเดต'}</span>
+                      <RotateCw className={cn("w-3.5 h-3.5 shrink-0", isClearingCache && "animate-spin")} />
+                      <span>{isClearingCache ? (isEnglish ? 'Syncing...' : 'กำลังซิงก์...') : (isEnglish ? 'Update & Reload' : 'ล้างแคชและอัปเดต')}</span>
                     </button>
+                  </div>
+                </div>
+
+                {/* Live Check Result Feedback */}
+                {updateCheckStatus && (
+                  <div className="p-3 bg-indigo-50/80 rounded-xl border border-indigo-200/60 text-xs font-semibold text-indigo-900 flex items-center gap-2 animate-in fade-in duration-200">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{updateCheckStatus}</span>
+                  </div>
+                )}
+
+                {/* Live Build Diagnostics Details */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                  <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200/70">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">Client Build ID</span>
+                    <span className="font-mono text-slate-700 font-semibold text-[11px] truncate block mt-0.5">
+                      {CURRENT_CLIENT_BUILD_ID}
+                    </span>
+                  </div>
+                  <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200/70">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">Deployment Build Time</span>
+                    <span className="font-mono text-slate-700 font-semibold text-[11px] truncate block mt-0.5">
+                      {CURRENT_CLIENT_BUILD_TIME}
+                    </span>
+                  </div>
+                  <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200/70">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">Multi-Tab Sync Channel</span>
+                    <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-1 mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                      <span>BroadcastChannel Connected</span>
+                    </span>
                   </div>
                 </div>
 
@@ -1461,12 +1542,13 @@ export function SettingsPage() {
                 <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 text-xs space-y-1.5">
                   <div className="font-bold text-slate-700 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>ไฮไลต์การอัพเดตระบบล่าสุด (Release Notes v2.5.0):</span>
+                    <span>ไฮไลต์การอัพเดตระบบล่าสุด (Release Notes v{CURRENT_CLIENT_VERSION}):</span>
                   </div>
                   <ul className="text-slate-600 space-y-1.5 pl-5 list-disc text-[11.5px] leading-relaxed">
-                    <li className="break-words"><strong>แบบฟอร์มเอกสารมาตรฐาน A4 ขาว/ดำ 100%:</strong> ทั้งใบขอซื้อ (PR) และใบสั่งซื้อ (PO) กำหนดพื้นหลังสีขาวบริสุทธิ์ ตัวอักษรและเส้นขอบสีดำ รองรับมาตรฐาน ISO 9001:2015</li>
+                    <li className="break-words"><strong>ระบบตรวจจับการ Deploy และแจ้งเตือนเรียลไทม์:</strong> ตรวจจับการปล่อยเวอร์ชันใหม่ทุกครั้งที่ deploy ส่งเสียงเตือน ชิมส์ และแจ้งเตือนหน้าจอทันที</li>
+                    <li className="break-words"><strong>คู่มือระบบจัดเป็น 5 ส่วนหลักตามมาตรฐาน ISO 9001:</strong> ปรับปรุงทั้งในแอปพลิเคชัน (แบบยุบ-ขยาย) และเอกสาร A4 พิมพ์ทางการ 8 หน้า</li>
+                    <li className="break-words"><strong>แบบฟอร์มเอกสารมาตรฐาน A4 ขาว/ดำ 100%:</strong> ทั้งใบขอซื้อ (PR) และใบสั่งซื้อ (PO) กำหนดพื้นหลังสีขาวบริสุทธิ์ ตัวอักษรและเส้นขอบสีดำ รองรับมาตรฐานสากล</li>
                     <li className="break-words"><strong>ระบบสายการอนุมัติ (Approval Matrix):</strong> กำหนดขั้นตอน วงเงิน ตำแหน่ง และชื่อผู้มีอำนาจลงนามได้ยืดหยุ่น เชื่อมโยงตรงกับทุกแบบฟอร์ม</li>
-                    <li className="break-words"><strong>คลังพัสดุและวัสดุก่อสร้างกลาง (Central Material Hub):</strong> รองรับการยิงสแกนบาร์โค้ด Master SKU (1D Code 128) จัดการและเบิกจ่ายวัสดุอุปกรณ์ไปยังโครงการและไซต์งานก่อสร้าง</li>
                   </ul>
                 </div>
               </div>
