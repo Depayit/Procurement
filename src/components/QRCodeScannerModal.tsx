@@ -993,7 +993,7 @@ export function QRCodeScannerModal({
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
-          <span>{isEnglish ? 'ProcureSync Inventory Barcode & QR Engine' : 'ระบบตรวจจับ QR & Barcode สต็อกสินค้า'}</span>
+          <span>{isEnglish ? 'Conerage store Inventory Barcode & QR Engine' : 'ระบบตรวจจับ QR & Barcode สต็อกสินค้า'}</span>
           <button
             type="button"
             onClick={() => {

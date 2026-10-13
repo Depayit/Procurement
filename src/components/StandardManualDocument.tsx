@@ -23,6 +23,7 @@ import {
   FileCheck
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useProcurement } from '../contexts/ProcurementContext';
 
 interface StandardManualDocumentProps {
   id?: string;
@@ -40,6 +41,7 @@ export function StandardManualDocument({
   id = 'standard-manual-doc',
   className 
 }: StandardManualDocumentProps) {
+  const { companyProfile } = useProcurement();
   const currentDateStr = '13 ตุลาคม 2569';
   const docCode = 'SOP-PROC-2026-001';
   const docRev = 'Rev. 3.0';
@@ -71,18 +73,24 @@ export function StandardManualDocument({
         <div>
           <div className="flex justify-between items-start border-b-2 border-slate-900 pb-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded bg-indigo-700 text-white flex items-center justify-center font-bold text-xl font-mono border border-indigo-900 shadow-xs">
-                PS
-              </div>
+              {companyProfile?.logoUrl ? (
+                <div className="w-12 h-12 rounded bg-white flex items-center justify-center border border-slate-200 p-0.5 overflow-hidden shadow-xs shrink-0">
+                  <img src={companyProfile.logoUrl} alt="Company Logo" className="max-h-full max-w-full object-contain" />
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded bg-indigo-700 text-white flex items-center justify-center font-bold text-xl font-mono border border-indigo-900 shadow-xs shrink-0">
+                  {(companyProfile?.nameEn || 'CS').substring(0, 2).toUpperCase()}
+                </div>
+              )}
               <div>
                 <h1 className="text-sm font-bold text-slate-900 leading-tight">
-                  บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด
+                  {companyProfile?.nameTh || 'บริษัท โคนเนอเรจ สโตร์ จำกัด'}
                 </h1>
                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
-                  PROCURESYNC CONSTRUCTION & ENGINEERING CO., LTD.
+                  {companyProfile?.nameEn || 'CONERAGE STORE CO., LTD.'}
                 </p>
                 <p className="text-[9.5px] text-slate-500 mt-0.5">
-                  ระบบบริหารงานจัดซื้อและคลังพัสดุก่อสร้างระดับองค์กร (Enterprise Procurement ERP)
+                  {companyProfile?.address || 'ระบบบริหารงานจัดซื้อและคลังพัสดุก่อสร้างระดับองค์กร (Enterprise Procurement ERP)'}
                 </p>
               </div>
             </div>
@@ -208,7 +216,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 1: วัตถุประสงค์และผังภาพการเชื่อมโยงระบบ</div>
             <div>หน้า 2 จาก 8</div>
           </div>
@@ -222,7 +230,7 @@ export function StandardManualDocument({
               </h2>
               <div className="mt-2.5 text-[11px] text-slate-700 leading-relaxed space-y-1.5 text-justify">
                 <p>
-                  ระบบ <strong>ProcureSync</strong> ได้รับการออกแบบขึ้นเพื่อเป็นระบบศูนย์กลางในการบริหารจัดการกระบวนการจัดซื้อจัดจ้าง (Procurement) 
+                  ระบบ <strong>{companyProfile?.nameTh || 'Conerage store'}</strong> ได้รับการออกแบบขึ้นเพื่อเป็นระบบศูนย์กลางในการบริหารจัดการกระบวนการจัดซื้อจัดจ้าง (Procurement) 
                   และการควบคุมคลังพัสดุอุปกรณ์ก่อสร้าง (Inventory Control) ให้มีความโปร่งใส รวดเร็ว และสามารถตรวจสอบย้อนหลัง (Audit Trail) ได้ทุกขั้นตอน
                 </p>
                 <div className="grid grid-cols-2 gap-3 pt-1">
@@ -322,7 +330,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 2 จาก 8</div>
         </div>
       </div>
@@ -335,7 +343,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 2: ระบบขอซื้อ (PR) และระบบการอนุมัติ</div>
             <div>หน้า 3 จาก 8</div>
           </div>
@@ -473,7 +481,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 3 จาก 8</div>
         </div>
       </div>
@@ -486,7 +494,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 3: ระบบสั่งซื้อ (PO) และการตรวจรับสินค้า</div>
             <div>หน้า 4 จาก 8</div>
           </div>
@@ -606,7 +614,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 4 จาก 8</div>
         </div>
       </div>
@@ -619,7 +627,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 4: ระบบคลังสินค้าและการสแกนกล้อง QR Code</div>
             <div>หน้า 5 จาก 8</div>
           </div>
@@ -729,7 +737,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 5 จาก 8</div>
         </div>
       </div>
@@ -742,7 +750,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 5: คู่ค้า, นำเข้าข้อมูลอัจฉริยะ และรายงานวิเคราะห์</div>
             <div>หน้า 6 จาก 8</div>
           </div>
@@ -861,7 +869,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 6 จาก 8</div>
         </div>
       </div>
@@ -874,7 +882,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 6: สิทธิ์ผู้ใช้, เชื่อมต่อคลาวด์ & LINE และพจนานุกรมปุ่ม</div>
             <div>หน้า 7 จาก 8</div>
           </div>
@@ -1025,7 +1033,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 7 จาก 8</div>
         </div>
       </div>
@@ -1038,7 +1046,7 @@ export function StandardManualDocument({
         <div>
           {/* Running Page Header */}
           <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
-            <div>ProcureSync Enterprise System | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
+            <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
             <div className="font-semibold text-slate-700">หมวดที่ 7: คำถามที่พบบ่อยและบันทึกการปรับปรุง</div>
             <div>หน้า 8 จาก 8</div>
           </div>
@@ -1108,7 +1116,7 @@ export function StandardManualDocument({
                     <tr>
                       <td className="py-1 px-2.5 font-mono font-bold text-slate-800">1.0</td>
                       <td className="py-1 px-2.5">1 ม.ค. 2569</td>
-                      <td className="py-1 px-2.5">เปิดตัวระบบจัดซื้อ ProcureSync เริ่มต้นใช้งานโมดูล PR และ Approvals</td>
+                      <td className="py-1 px-2.5">เปิดตัวระบบจัดซื้อ {companyProfile?.nameTh || 'Conerage store'} เริ่มต้นใช้งานโมดูล PR และ Approvals</td>
                       <td className="py-1 px-2.5">ทีมพัฒนาระบบ</td>
                     </tr>
                     <tr>
@@ -1154,7 +1162,7 @@ export function StandardManualDocument({
 
         {/* Running Footer */}
         <div className="pt-4 border-t border-slate-300 flex justify-between items-center text-[9.5px] text-slate-500">
-          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - บริษัท พรอคเคียวซิงค์ คอนสตรัคชั่น แอนด์ เอ็นจิเนียริ่ง จำกัด</div>
+          <div>เอกสารควบคุมภายใน (Internal Controlled Document) - {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
           <div className="font-mono font-bold text-slate-700">หน้า 8 จาก 8 (สิ้นสุดเอกสาร)</div>
         </div>
       </div>

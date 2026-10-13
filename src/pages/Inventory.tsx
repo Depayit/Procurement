@@ -35,7 +35,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export function InventoryPage() {
   const { t, isEnglish } = useLanguage();
-  const { inventory, addInventoryItem, transactInventory } = useProcurement();
+  const { inventory, addInventoryItem, transactInventory, companyProfile } = useProcurement();
   const { currentUser } = useAuth();
   
   // Modals state
@@ -693,6 +693,26 @@ export function InventoryPage() {
       >
         {viewItem && (
           <div className="space-y-6">
+            {/* Print-only Company Letterhead */}
+            <div className="hidden print:flex items-center justify-between border-b-2 border-slate-900 pb-3 mb-2">
+              <div className="flex items-center gap-3">
+                {companyProfile?.logoUrl ? (
+                  <img src={companyProfile.logoUrl} alt="Logo" className="w-12 h-12 object-contain" />
+                ) : (
+                  <div className="w-10 h-10 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-base font-mono">
+                    {(companyProfile?.nameEn || 'CS').substring(0, 2).toUpperCase()}
+                  </div>
+                )}
+                <div>
+                  <h2 className="text-base font-bold text-slate-900">{companyProfile?.nameTh || 'บริษัท โคนเนอเรจ สโตร์ จำกัด'}</h2>
+                  <p className="text-xs text-slate-500 font-bold uppercase">{companyProfile?.nameEn || 'CONERAGE STORE CO., LTD.'}</p>
+                </div>
+              </div>
+              <div className="text-right text-xs text-slate-500">
+                <div>พิมพ์เมื่อ: {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'th-TH')}</div>
+                <div className="font-semibold text-slate-700">ใบรายละเอียดพัสดุและสต็อกสินค้า</div>
+              </div>
+            </div>
             <div className="flex items-center space-x-4">
               <div className={cn(
                 "flex-shrink-0 h-16 w-16 border rounded-xl flex items-center justify-center", 

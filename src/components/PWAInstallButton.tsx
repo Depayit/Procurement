@@ -75,7 +75,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
           className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition-all cursor-pointer hover:shadow-indigo-200"
         >
           <Download className="w-4 h-4" />
-          <span>{isEnglish ? 'Install ProcureSync App' : 'ติดตั้งแอป ProcureSync บนเครื่อง'}</span>
+          <span>{isEnglish ? 'Install Conerage store App' : 'ติดตั้งแอป Conerage store บนเครื่อง'}</span>
         </button>
       );
     }
@@ -91,7 +91,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
           )}
         >
           <Download className="w-3.5 h-3.5" />
-          <span>{isEnglish ? 'Install App (PWA)' : 'ติดตั้งแอป ProcureSync'}</span>
+          <span>{isEnglish ? 'Install App (PWA)' : 'ติดตั้งแอป Conerage store'}</span>
         </button>
       );
     }
@@ -247,13 +247,13 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                     <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">2</span>
                       <p>
-                        มองหาไอคอน <strong>&ldquo;ติดตั้ง ProcureSync&rdquo; (Install App)</strong> ที่อยู่ทางด้านขวาของช่อง Address Bar
+                        มองหาไอคอน <strong>&ldquo;ติดตั้ง Conerage store&rdquo; (Install App)</strong> ที่อยู่ทางด้านขวาของช่อง Address Bar
                       </p>
                     </div>
                     <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">3</span>
                       <p>
-                        หรือคลิกเมนู <strong>จุดสามจุด (⋮) &gt; บันทึกและแชร์ &gt; ติดตั้ง ProcureSync</strong>
+                        หรือคลิกเมนู <strong>จุดสามจุด (⋮) &gt; บันทึกและแชร์ &gt; ติดตั้ง Conerage store</strong>
                       </p>
                     </div>
                   </div>

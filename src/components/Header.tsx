@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNotifications, NotificationType } from '../contexts/NotificationContext';
 import { useAuth, UserRole } from '../contexts/AuthContext';
+import { useProcurement } from '../contexts/ProcurementContext';
 import { LanguageToggle } from './LanguageToggle';
 import { PWAInstallButton } from './PWAInstallButton';
 
@@ -21,6 +22,7 @@ export function Header({
 }: HeaderProps) {
   const { t, isEnglish } = useLanguage();
   const { currentUser, activeRole, switchRole, availableRoles } = useAuth();
+  const { companyProfile } = useProcurement();
   const { 
     notifications, 
     unreadCount, 
@@ -82,9 +84,12 @@ export function Header({
         {/* Mobile Brand Name */}
         <div className="lg:hidden flex items-center gap-2 min-w-0 mr-1">
           <img 
-            src="/logo-64.png" 
+            src={companyProfile?.logoUrl || '/logo-64.png'} 
             alt="Conerage store" 
             className="w-7 h-7 rounded-lg object-contain shrink-0 bg-white shadow-2xs border border-slate-200 p-0.5" 
+            onError={(e) => {
+              e.currentTarget.src = '/logo-64.png';
+            }}
           />
           <span className="font-extrabold text-sm text-slate-900 tracking-tight truncate">
             Conerage store

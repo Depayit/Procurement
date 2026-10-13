@@ -96,7 +96,7 @@ export function StandardPODocument({
               </div>
             ) : (
               <div className="w-12 h-12 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-lg flex-shrink-0 font-mono shadow-2xs">
-                CS
+                {(companyProfile?.nameEn || 'CS').substring(0, 2).toUpperCase()}
               </div>
             )}
             <div className="min-w-0 flex-1">
@@ -390,7 +390,7 @@ export function StandardPODocument({
       {/* 6. Document Footer: Timestamp, Page No, Document Code */}
       <div className="flex justify-between items-center text-[9.5px] text-slate-500 pt-2 border-t border-slate-300 bg-white">
         <div className="truncate max-w-[340px]">
-          พิมพ์เมื่อ: {new Date().toLocaleString(isThai ? 'th-TH' : 'en-US')} • ระบบจัดซื้อ ProcureSync ERP
+          พิมพ์เมื่อ: {new Date().toLocaleString(isThai ? 'th-TH' : 'en-US')} • ระบบจัดซื้อ {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}
         </div>
         <div className="font-semibold text-slate-600">
           หน้า 1 จาก 1 (Page 1 of 1) • เอกสารควบคุมภายใน

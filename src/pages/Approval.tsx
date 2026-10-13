@@ -1054,7 +1054,7 @@ export function ApprovalPage() {
                             </div>
                           ) : (
                             <div className="w-12 h-12 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-lg flex-shrink-0 font-mono shadow-2xs">
-                              CS
+                              {(companyProfile?.nameEn || 'CS').substring(0, 2).toUpperCase()}
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
@@ -1154,7 +1154,7 @@ export function ApprovalPage() {
 
                       {/* Footer */}
                       <div className="flex justify-between items-center text-[9.5px] text-slate-500 pt-2 mt-2 border-t border-slate-300 bg-white">
-                        <div>พิมพ์เมื่อ: {new Date().toLocaleString(isThai ? 'th-TH' : 'en-US')} • ระบบจัดซื้อ Conerage store ERP</div>
+                        <div>พิมพ์เมื่อ: {new Date().toLocaleString(isThai ? 'th-TH' : 'en-US')} • ระบบจัดซื้อ {companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'}</div>
                         <div className="font-semibold text-slate-600">หน้า 1 จาก 1 • เอกสารควบคุมภายใน</div>
                         <div className="font-mono text-slate-600 font-semibold">DOC ID: {viewTask.documentId} • FM-PUR-APP</div>
                       </div>

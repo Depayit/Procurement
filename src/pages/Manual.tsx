@@ -45,6 +45,7 @@ import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
 import { StandardManualDocument } from '../components/StandardManualDocument';
 import { printA4Document } from '../lib/pdf';
+import { useProcurement } from '../contexts/ProcurementContext';
 
 interface ButtonGuideItem {
   name: string;
@@ -81,13 +82,16 @@ interface ModuleSection {
 
 export function ManualPage() {
   const { isEnglish, isThai } = useLanguage();
+  const { companyProfile } = useProcurement();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedModule, setSelectedModule] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'interactive' | 'official-document'>('interactive');
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   const handlePrint = (docId = 'standard-manual-doc') => {
-    printA4Document(docId, 'Conerage_store_คู่มือมาตรฐานการปฏิบัติงาน_SOP');
+    const rawName = companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage_store';
+    const cleanName = rawName.replace(/[\s\(\)\/]+/g, '_');
+    printA4Document(docId, `${cleanName}_คู่มือมาตรฐานการปฏิบัติงาน_SOP`);
   };
 
   const modules: ModuleSection[] = [

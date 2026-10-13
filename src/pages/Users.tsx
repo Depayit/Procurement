@@ -33,6 +33,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { fetchAuditLogs, AuditLogEntry, logSystemAction } from '../lib/auditLog';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useProcurement } from '../contexts/ProcurementContext';
 import type { PermissionKey, PermissionModule, RoleConfig } from '../types';
 import { PERMISSIONS_LIST, getPermissionsByModule, MODULE_INFO, ALL_PERMISSION_KEYS } from '../lib/permissions';
 import { cn } from '../lib/utils';
@@ -76,6 +77,7 @@ export function UsersPage() {
     deleteRole, 
     resetRolesToDefault 
   } = useAuth();
+  const { companyProfile } = useProcurement();
 
   const [activeTab, setActiveTab] = useState<'users' | 'roles' | 'audit'>('users');
   const [roleViewMode, setRoleViewMode] = useState<'grid' | 'matrix'>('grid');
@@ -852,6 +854,27 @@ export function UsersPage() {
             {/* VIEW 2: FULL PERMISSION MATRIX COMPARISON TABLE */}
             {roleViewMode === 'matrix' && (
               <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
+                {/* Print-only Company Letterhead */}
+                <div className="hidden print:flex items-center justify-between border-b-2 border-slate-900 pb-3 mb-4 p-4">
+                  <div className="flex items-center gap-3">
+                    {companyProfile?.logoUrl ? (
+                      <img src={companyProfile.logoUrl} alt="Logo" className="w-12 h-12 object-contain" />
+                    ) : (
+                      <div className="w-10 h-10 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-base font-mono">
+                        {(companyProfile?.nameEn || 'CS').substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900">{companyProfile?.nameTh || 'บริษัท โคนเนอเรจ สโตร์ จำกัด'}</h2>
+                      <p className="text-xs text-slate-500 font-bold uppercase">{companyProfile?.nameEn || 'CONERAGE STORE CO., LTD.'}</p>
+                    </div>
+                  </div>
+                  <div className="text-right text-xs text-slate-500">
+                    <div>พิมพ์เอกสารเมื่อ: {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'th-TH')}</div>
+                    <div className="font-semibold text-slate-700">ตารางกำหนดสิทธิ์การใช้งานระบบ (Permission Matrix)</div>
+                  </div>
+                </div>
+
                 <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-slate-800 text-sm">ตารางเปรียบเทียบสิทธิ์ทุกบทบาทในองค์กร (Enterprise Permission Matrix)</h3>

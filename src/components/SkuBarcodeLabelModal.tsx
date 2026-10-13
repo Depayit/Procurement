@@ -19,6 +19,7 @@ import {
 import { SkuBarcode, generateBarcodeDataUrl } from './SkuBarcode';
 import type { InventoryItem } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useProcurement } from '../contexts/ProcurementContext';
 import { cn } from '../lib/utils';
 
 export interface SkuBarcodeLabelModalProps {
@@ -35,6 +36,7 @@ export function SkuBarcodeLabelModal({
   item
 }: SkuBarcodeLabelModalProps) {
   const { isEnglish } = useLanguage();
+  const { companyProfile } = useProcurement();
   const [template, setTemplate] = useState<LabelTemplate>('standard-hub');
   const [printCopies, setPrintCopies] = useState<number>(1);
   const [barcodeFormat, setBarcodeFormat] = useState<'CODE128' | 'EAN13' | 'CODE39'>('CODE128');
@@ -114,8 +116,8 @@ export function SkuBarcodeLabelModal({
       labelsHtml += `
         <div class="label-card ${template}">
           <div class="header-row">
-            <span class="wh-tag">CENTRAL MATERIAL HUB • คลังพัสดุก่อสร้างกลาง</span>
-            <span class="hub-badge">CONSTRUCTION-HUB</span>
+            <span class="wh-tag">${((companyProfile?.nameEn || companyProfile?.nameTh || 'CONERAGE STORE').toUpperCase())} • CENTRAL HUB</span>
+            <span class="hub-badge">STORE-HUB</span>
           </div>
 
           <div class="title-row">
@@ -148,7 +150,7 @@ export function SkuBarcodeLabelModal({
           ` : ''}
 
           <div class="footer-row">
-            <span class="system-tag">ProcureSync Central WMS</span>
+            <span class="system-tag">${companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} WMS</span>
             ${showPrice && item.unitPrice ? `
             <span class="price-tag">@${item.unitPrice.toLocaleString()} ฿/${item.unit}</span>
             ` : ''}
@@ -450,7 +452,7 @@ export function SkuBarcodeLabelModal({
                   {/* Label Top Bar */}
                   <div className="flex items-center justify-between border-b border-slate-200 pb-1.5 mb-1.5">
                     <span className="text-[9px] font-black tracking-widest text-slate-800 uppercase">
-                      PROCURESYNC • CENTRAL HUB
+                      {(companyProfile?.nameEn || companyProfile?.nameTh || 'CONERAGE STORE').toUpperCase()} • CENTRAL HUB
                     </span>
                     <span className="text-[8px] font-bold bg-slate-900 text-white px-1.5 py-0.5 rounded">
                       SINGLE-WH

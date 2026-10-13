@@ -667,7 +667,7 @@ export function SettingsPage() {
                       </div>
                     ) : (
                       <div className="w-12 h-12 rounded-sm bg-slate-900 text-white flex items-center justify-center font-bold text-lg shrink-0 font-mono shadow-2xs">
-                        PS
+                        {(companyForm.nameEn || 'CS').substring(0, 2).toUpperCase()}
                       </div>
                     )}
                     <div className="min-w-0 flex-1 text-[11px] leading-tight">

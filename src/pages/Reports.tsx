@@ -32,7 +32,7 @@ const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#64748B', '#8B5CF6'];
 
 export function ReportsPage() {
   const { t, isEnglish } = useLanguage();
-  const { pos, prs, inventory, vendors } = useProcurement();
+  const { pos, prs, inventory, vendors, companyProfile } = useProcurement();
   const [dateRange, setDateRange] = useState('YTD');
   const [isExporting, setIsExporting] = useState(false);
 
@@ -115,6 +115,27 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 w-full">
+      {/* Print-only Company Letterhead */}
+      <div className="hidden print:flex items-center justify-between border-b-2 border-slate-900 pb-3 mb-4">
+        <div className="flex items-center gap-3">
+          {companyProfile?.logoUrl ? (
+            <img src={companyProfile.logoUrl} alt="Logo" className="w-12 h-12 object-contain" />
+          ) : (
+            <div className="w-10 h-10 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-base font-mono">
+              {(companyProfile?.nameEn || 'CS').substring(0, 2).toUpperCase()}
+            </div>
+          )}
+          <div>
+            <h2 className="text-base font-bold text-slate-900">{companyProfile?.nameTh || 'บริษัท โคนเนอเรจ สโตร์ จำกัด'}</h2>
+            <p className="text-xs text-slate-500 font-bold uppercase">{companyProfile?.nameEn || 'CONERAGE STORE CO., LTD.'}</p>
+          </div>
+        </div>
+        <div className="text-right text-xs text-slate-500">
+          <div>พิมพ์รายงานเมื่อ: {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'th-TH')}</div>
+          <div className="font-semibold text-slate-700">รายงานสรุปผลการจัดซื้อและงบประมาณ (BI Analytics)</div>
+        </div>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
