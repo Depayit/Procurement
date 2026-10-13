@@ -161,41 +161,97 @@ export function StandardManualDocument({
             </div>
           </div>
 
-          {/* Table of Contents */}
-          <div className="mt-8">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center gap-1.5">
-              <FileCheck className="w-4 h-4 text-indigo-700" />
-              สารบัญเอกสาร (Table of Contents)
-            </h3>
-            <div className="border border-slate-300 rounded p-4 bg-slate-50/50 space-y-1.5 text-[11px]">
-              <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 1:</strong> วัตถุประสงค์ ขอบเขต และผังภาพความเชื่อมโยงระบบทั้งวงจร (End-to-End Workflow)</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 2</span>
+          {/* Table of Contents - 5 Corporate Parts */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                <FileCheck className="w-4 h-4 text-indigo-700" />
+                สารบัญเอกสารมาตรฐาน 5 ส่วนหลัก (Table of Contents - 5 Core Parts)
+              </h3>
+              <span className="text-[9.5px] text-slate-500 font-medium">โครงสร้างสอดคล้องระบบเว็บแอปพลิเคชัน</span>
+            </div>
+            
+            <div className="border border-slate-300 rounded-lg p-3 bg-slate-50/70 space-y-1.5 text-[10.5px]">
+              {/* Part 1 */}
+              <div className="bg-white p-2 rounded border border-slate-200">
+                <div className="flex justify-between items-baseline font-bold text-slate-900 border-b border-slate-100 pb-1">
+                  <span className="flex items-center gap-1.5 text-indigo-950">
+                    <span className="px-1.5 py-0.2 bg-indigo-700 text-white rounded text-[9px] font-bold">ส่วนที่ 1</span>
+                    ภาพรวมระบบและวงจรการทำงาน (Architecture & End-to-End Lifecycle Flow)
+                  </span>
+                  <span className="font-mono text-indigo-700 font-bold">หน้า 2</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pt-1 pl-1">
+                  1.0 วัตถุประสงค์และขอบเขต | 1.1 ผังภาพวงจรการเชื่อมโยงข้อมูลทั้งระบบแบบครบวงจร 7 ขั้นตอนมาตรฐาน
+                </div>
               </div>
-              <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 2:</strong> ขั้นตอนการปฏิบัติงานระบบขอซื้อ (PR) และระบบการอนุมัติ (Approval Matrix)</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 3</span>
+
+              {/* Part 2 */}
+              <div className="bg-white p-2 rounded border border-slate-200">
+                <div className="flex justify-between items-baseline font-bold text-slate-900 border-b border-slate-100 pb-1">
+                  <span className="flex items-center gap-1.5 text-indigo-950">
+                    <span className="px-1.5 py-0.2 bg-indigo-700 text-white rounded text-[9px] font-bold">ส่วนที่ 2</span>
+                    งานจัดซื้อและการพิจารณาอนุมัติ (Procurement & Approval Pipeline)
+                  </span>
+                  <span className="font-mono text-indigo-700 font-bold">หน้า 3 – 4</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pt-1 pl-1 flex justify-between">
+                  <span>2.1 ขั้นตอนขอซื้อ (PR) & สายการอนุมัติ (Approval Matrix)</span>
+                  <span className="font-mono text-slate-600">หน้า 3</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pl-1 flex justify-between">
+                  <span>2.2 การออกใบสั่งซื้อ (PO) & ขั้นตอนตรวจรับสินค้าหน้างาน (Receiving)</span>
+                  <span className="font-mono text-slate-600">หน้า 4</span>
+                </div>
               </div>
-              <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 3:</strong> ขั้นตอนการปฏิบัติงานระบบสั่งซื้อ (PO) และการตรวจรับสินค้าหน้างาน (Receiving)</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 4</span>
+
+              {/* Part 3 */}
+              <div className="bg-white p-2 rounded border border-slate-200">
+                <div className="flex justify-between items-baseline font-bold text-slate-900 border-b border-slate-100 pb-1">
+                  <span className="flex items-center gap-1.5 text-indigo-950">
+                    <span className="px-1.5 py-0.2 bg-indigo-700 text-white rounded text-[9px] font-bold">ส่วนที่ 3</span>
+                    คลังพัสดุก่อสร้างกลางและการตรวจรับ (Central Material Hub, Barcodes & Scanner)
+                  </span>
+                  <span className="font-mono text-indigo-700 font-bold">หน้า 5</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pt-1 pl-1">
+                  3.1 การรับ-เบิก-นับสต็อก | 3.2 บาร์โค้ด Master SKU (Code 128), ป้ายความร้อน & เทคโนโลยีสแกนกล้อง QR Code
+                </div>
               </div>
-              <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 4:</strong> คลังพัสดุก่อสร้างกลาง (Hub), บาร์โค้ด Master SKU และเทคโนโลยีสแกนกล้อง QR Code</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 5</span>
+
+              {/* Part 4 */}
+              <div className="bg-white p-2 rounded border border-slate-200">
+                <div className="flex justify-between items-baseline font-bold text-slate-900 border-b border-slate-100 pb-1">
+                  <span className="flex items-center gap-1.5 text-indigo-950">
+                    <span className="px-1.5 py-0.2 bg-indigo-700 text-white rounded text-[9px] font-bold">ส่วนที่ 4</span>
+                    ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์ (Smart Data Hub, Vendors & Analytics)
+                  </span>
+                  <span className="font-mono text-indigo-700 font-bold">หน้า 6</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pt-1 pl-1">
+                  4.1 ทะเบียนคู่ค้า (Vendors) | 4.2 ศูนย์นำเข้าข้อมูลอัจฉริยะ (Excel/CSV/CAD) | 4.3 รายงานวิเคราะห์ผู้บริหาร
+                </div>
               </div>
-              <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 5:</strong> ทะเบียนคู่ค้า (Vendors), ศูนย์นำเข้าข้อมูลอัจฉริยะ (Data Import Hub) และรายงาน (Reports)</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 6</span>
+
+              {/* Part 5 */}
+              <div className="bg-white p-2 rounded border border-slate-200">
+                <div className="flex justify-between items-baseline font-bold text-slate-900 border-b border-slate-100 pb-1">
+                  <span className="flex items-center gap-1.5 text-indigo-950">
+                    <span className="px-1.5 py-0.2 bg-indigo-700 text-white rounded text-[9px] font-bold">ส่วนที่ 5</span>
+                    การบริหารสิทธิ์, การตั้งค่าและรายงาน (Access Governance, Integrations & FAQ)
+                  </span>
+                  <span className="font-mono text-indigo-700 font-bold">หน้า 7 – 8</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pt-1 pl-1 flex justify-between">
+                  <span>5.1 สิทธิ์ผู้ใช้ (RBAC 25 สิทธิ์), เชื่อมต่อคลาวด์ & LINE, พจนานุกรมปุ่มทั้งระบบ</span>
+                  <span className="font-mono text-slate-600">หน้า 7</span>
+                </div>
+                <div className="text-[9.5px] text-slate-500 pl-1 flex justify-between">
+                  <span>5.2 วิธีแก้ปัญหาที่พบบ่อย (Troubleshooting & FAQ) และบันทึกประวัติการปรับปรุง Rev. 3.0</span>
+                  <span className="font-mono text-slate-600">หน้า 8</span>
+                </div>
               </div>
-              <div className="flex justify-between items-baseline border-b border-dotted border-slate-300 pb-1">
-                <span><strong>หมวดที่ 6:</strong> การจัดการสิทธิ์ผู้ใช้งาน (RBAC 25 สิทธิ์), การเชื่อมต่อคลาวด์ & LINE และพจนานุกรมปุ่ม</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 7</span>
-              </div>
-              <div className="flex justify-between items-baseline">
-                <span><strong>หมวดที่ 7:</strong> คำถามที่พบบ่อย (FAQ & Troubleshooting) และประวัติการปรับปรุงเอกสาร (Revision Log Rev. 3.0)</span>
-                <span className="font-mono font-bold text-indigo-700">หน้า 8</span>
-              </div>
+
             </div>
           </div>
         </div>
@@ -210,22 +266,34 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 2: หมวดที่ 1: วัตถุประสงค์ ขอบเขต และผังความเชื่อมโยงระบบทั้งวงจร
+          PAGE 2: ส่วนที่ 1: ภาพรวมระบบและวงจรการทำงาน (End-to-End Workflow)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 1: วัตถุประสงค์และผังภาพการเชื่อมโยงระบบ</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 1: ภาพรวมระบบและวงจรการทำงาน</div>
             <div>หน้า 2 จาก 8</div>
           </div>
 
+          {/* Section 1 Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 1 / PART 1</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">ภาพรวมระบบและวงจรการทำงาน (System Architecture & End-to-End Workflow)</h2>
+                <p className="text-[9px] text-slate-300">สถาปัตยกรรมข้อมูล 7 ขั้นตอนมาตรฐาน ตั้งแต่การเปิดคำขอจนถึงคลังและรายงาน</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-01</span>
+          </div>
+
           {/* Section 1.1 */}
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">1</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">1</span>
                 <span>1.0 วัตถุประสงค์และขอบเขตการใช้งานระบบ (System Objective & Scope)</span>
               </h2>
               <div className="mt-2.5 text-[11px] text-slate-700 leading-relaxed space-y-1.5 text-justify">
@@ -337,22 +405,34 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 3: หมวดที่ 2: ระบบขอซื้อ (PR) และระบบการอนุมัติ (Approval Matrix)
+          PAGE 3: ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ (ตอนที่ 1: PR & Approval Matrix)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 2: ระบบขอซื้อ (PR) และระบบการอนุมัติ</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ (PR & Approval Matrix)</div>
             <div>หน้า 3 จาก 8</div>
           </div>
 
-          <div className="space-y-4">
+          {/* Section 2 Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 2 / PART 2 (1/2)</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">งานจัดซื้อและการพิจารณาอนุมัติ (Procurement & Approval Pipeline)</h2>
+                <p className="text-[9px] text-slate-300">กระบวนการจัดทำใบขอซื้อ (PR), สเปก BOQ และสายการอนุมัติตามอำนาจดำเนินการ</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-02A</span>
+          </div>
+
+          <div className="space-y-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">2</span>
-                <span>2.0 ขั้นตอนการปฏิบัติงานระบบขอซื้อ (PR) และการอนุมัติ (Approvals)</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">2</span>
+                <span>2.0 ขั้นตอนการปฏิบัติงานระบบขอซื้อ (PR) และสายการอนุมัติ (Approvals)</span>
               </h2>
             </div>
 
@@ -488,22 +568,34 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 4: หมวดที่ 3: ระบบสั่งซื้อ (PO) และการตรวจรับสินค้า (Receiving)
+          PAGE 4: ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ (ตอนที่ 2: PO & Receiving)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 3: ระบบสั่งซื้อ (PO) และการตรวจรับสินค้า</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ (PO & Receiving)</div>
             <div>หน้า 4 จาก 8</div>
           </div>
 
-          <div className="space-y-4">
+          {/* Section 2B Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 2 / PART 2 (2/2)</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">ใบสั่งซื้อสินค้าและการตรวจรับหน้างาน (Purchase Orders & Goods Receiving)</h2>
+                <p className="text-[9px] text-slate-300">การออก PO จาก PR ที่อนุมัติ, ส่งคู่ค้า และตรวจรับสินค้าเข้าคลัง (ครบถ้วน/บางส่วน)</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-02B</span>
+          </div>
+
+          <div className="space-y-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">3</span>
-                <span>3.0 ขั้นตอนการปฏิบัติงานระบบสั่งซื้อ (PO) และการตรวจรับพัสดุหน้างาน</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">2.3</span>
+                <span>2.3 ขั้นตอนการปฏิบัติงานระบบสั่งซื้อ (PO) และการตรวจรับพัสดุหน้างาน</span>
               </h2>
             </div>
 
@@ -621,30 +713,42 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 5: หมวดที่ 4: ระบบคลังสินค้า (Inventory) และเทคโนโลยีสแกน QR Code
+          PAGE 5: ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ (Central Material Hub & Barcodes)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 4: ระบบคลังสินค้าและการสแกนกล้อง QR Code</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ (Hub & Barcodes)</div>
             <div>หน้า 5 จาก 8</div>
           </div>
 
-          <div className="space-y-4">
+          {/* Section 3 Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 3 / PART 3</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">คลังพัสดุก่อสร้างกลางและการตรวจรับ (Central Material Hub & Barcodes)</h2>
+                <p className="text-[9px] text-slate-300">การรับเข้า เบิกจ่าย นับสต็อก บาร์โค้ด Master SKU และเทคโนโลยีสแกนกล้อง QR Code</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-03</span>
+          </div>
+
+          <div className="space-y-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">4</span>
-                <span>4.0 ขั้นตอนการปฏิบัติงานคลังพัสดุก่อสร้างกลาง (Hub), บาร์โค้ด SKU และการสแกน QR Code</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">3</span>
+                <span>3.0 ขั้นตอนการปฏิบัติงานคลังพัสดุก่อสร้างกลาง (Hub), บาร์โค้ด SKU และการสแกน QR Code</span>
               </h2>
             </div>
 
-            {/* 4.1 Stock Control */}
+            {/* 3.1 Stock Control */}
             <div>
               <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5 text-indigo-700" />
-                4.1 การจัดการสต็อกและการเคลื่อนไหวพัสดุ (Central Material Hub & Stock Movements)
+                3.1 การจัดการสต็อกและการเคลื่อนไหวพัสดุ (Central Material Hub & Stock Movements)
               </h3>
               <div className="text-[11px] text-slate-700 leading-relaxed space-y-1">
                 <p>1. <strong>รับของเข้าคลัง (Stock In / PO Receipt):</strong> เพิ่มสต็อกอัตโนมัติเมื่อตรวจรับสินค้าจาก PO หรือโอนย้ายพัสดุระหว่างคลัง</p>
@@ -744,28 +848,40 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 6: หมวดที่ 5: การจัดการข้อมูลคู่ค้า (Vendors) และระบบรายงานวิเคราะห์
+          PAGE 6: ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์ (Smart Data Hub & Reports)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 5: คู่ค้า, นำเข้าข้อมูลอัจฉริยะ และรายงานวิเคราะห์</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์ (Data Hub & Vendors)</div>
             <div>หน้า 6 จาก 8</div>
+          </div>
+
+          {/* Section 4 Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 4 / PART 4</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์ (Smart Data Hub, Vendors & Analytics)</h2>
+                <p className="text-[9px] text-slate-300">ทะเบียนคู่ค้า, นำเข้า Excel/CSV/CAD อัจฉริยะ และรายงานวิเคราะห์สำหรับผู้บริหาร</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-04</span>
           </div>
 
           <div className="space-y-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">5</span>
-                <span>5.0 ทะเบียนคู่ค้า (Vendors), ศูนย์นำเข้าข้อมูลอัจฉริยะ (Data Hub) และรายงาน (Reports)</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">4</span>
+                <span>4.0 ทะเบียนคู่ค้า (Vendors), ศูนย์นำเข้าข้อมูลอัจฉริยะ (Data Hub) และรายงาน (Reports)</span>
               </h2>
             </div>
 
-            {/* 5.1 Vendor & Import Hub Grid */}
+            {/* 4.1 Vendor & Import Hub Grid */}
             <div className="grid grid-cols-2 gap-3">
-              {/* 5.1 Vendor Management */}
+              {/* 4.1 Vendor Management */}
               <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
                 <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <Store className="w-3.5 h-3.5 text-indigo-700" />
@@ -876,32 +992,44 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 7: หมวดที่ 6: การบริหารสิทธิ์ผู้ใช้ และตารางพจนานุกรมปุ่มทั้งระบบ
+          PAGE 7: ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน (ตอนที่ 1: RBAC & Directory)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 6: สิทธิ์ผู้ใช้, เชื่อมต่อคลาวด์ & LINE และพจนานุกรมปุ่ม</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน (RBAC & Directory)</div>
             <div>หน้า 7 จาก 8</div>
+          </div>
+
+          {/* Section 5 Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 5 / PART 5 (1/2)</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">การบริหารสิทธิ์, การตั้งค่าและการเชื่อมต่อ (Governance, Integrations & Directory)</h2>
+                <p className="text-[9px] text-slate-300">สิทธิ์ผู้ใช้ RBAC 25 สิทธิ์, ระบบคลาวด์ & LINE Notify และสารบัญปุ่มสำคัญทั้งระบบ</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-05A</span>
           </div>
 
           <div className="space-y-3">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">6</span>
-                <span>6.0 การจัดการสิทธิ์ผู้ใช้งาน (RBAC), การเชื่อมต่อคลาวด์ & LINE และพจนานุกรมคำสั่ง</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">5</span>
+                <span>5.0 การจัดการสิทธิ์ผู้ใช้งาน (RBAC), การเชื่อมต่อคลาวด์ & LINE และพจนานุกรมคำสั่ง</span>
               </h2>
             </div>
 
-            {/* 6.1 Role Matrix & Cloud Integrations Split */}
+            {/* 5.1 Role Matrix & Cloud Integrations Split */}
             <div className="grid grid-cols-12 gap-3">
-              {/* 6.1 Role Matrix */}
+              {/* 5.1 Role Matrix */}
               <div className="col-span-7">
                 <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5 text-indigo-700" />
-                  6.1 สิทธิ์การเข้าถึงแยกตามบทบาทหน้าที่ (RBAC 25 สิทธิ์)
+                  5.1 สิทธิ์การเข้าถึงแยกตามบทบาทหน้าที่ (RBAC 25 สิทธิ์)
                 </h3>
                 <div className="border border-slate-300 rounded overflow-hidden text-[9px]">
                   <table className="w-full text-center border-collapse">
@@ -953,11 +1081,11 @@ export function StandardManualDocument({
                 </div>
               </div>
 
-              {/* 6.2 Cloud & Integrations */}
+              {/* 5.2 Cloud & Integrations */}
               <div className="col-span-5 p-2 rounded bg-slate-50 border border-slate-200 text-[9.5px] space-y-1">
                 <h3 className="font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1 text-[10px]">
                   <Settings className="w-3.5 h-3.5 text-indigo-700" />
-                  6.2 เชื่อมต่อคลาวด์ & แจ้งเตือน LINE
+                  5.2 เชื่อมต่อคลาวด์ & แจ้งเตือน LINE
                 </h3>
                 <p className="text-slate-600 leading-relaxed">
                   <strong>• Google Sheets Sync:</strong> ซิงก์ข้อมูลคลังและจัดซื้อสองทางด้วย Google Apps Script Webhook
@@ -971,10 +1099,10 @@ export function StandardManualDocument({
               </div>
             </div>
 
-            {/* 6.3 Master Button Reference */}
+            {/* 5.3 Master Button Reference */}
             <div className="pt-0.5">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">
-                6.3 พจนานุกรมคำสั่งและปุ่มสำคัญทั้งหมดของระบบ (Master Action Directory)
+                5.3 พจนานุกรมคำสั่งและปุ่มสำคัญทั้งหมดของระบบ (Master Action Directory)
               </h3>
               <div className="border border-slate-300 rounded overflow-hidden text-[9px]">
                 <table className="w-full text-left border-collapse">
@@ -1040,30 +1168,42 @@ export function StandardManualDocument({
 
 
       {/* =========================================================================
-          PAGE 8: หมวดที่ 7: คำถามที่พบบ่อย (FAQ) และบันทึกการควบคุมเอกสาร
+          PAGE 8: ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน (ตอนที่ 2: FAQ & Revision Log)
          ========================================================================= */}
       <div className="standard-manual-page bg-white w-[794px] min-h-[1123px] mx-auto p-12 mb-8 shadow-lg border border-slate-300 flex flex-col justify-between print:w-full print:min-h-0 print:shadow-none print:border-none print:p-8 print:m-0 print:page-break-always">
         <div>
           {/* Running Page Header */}
-          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-6 text-[10px] text-slate-500">
+          <div className="flex justify-between items-center border-b border-slate-300 pb-2 mb-4 text-[10px] text-slate-500">
             <div>{companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage store'} | <strong className="text-slate-800">{docCode} ({docRev})</strong></div>
-            <div className="font-semibold text-slate-700">หมวดที่ 7: คำถามที่พบบ่อยและบันทึกการปรับปรุง</div>
+            <div className="font-semibold text-slate-700">ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน (FAQ & Revision Log)</div>
             <div>หน้า 8 จาก 8</div>
           </div>
 
-          <div className="space-y-4">
+          {/* Section 5B Header Banner */}
+          <div className="mb-4 bg-slate-900 text-white rounded-lg p-2.5 flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-[9.5px] tracking-wider uppercase">ส่วนที่ 5 / PART 5 (2/2)</span>
+              <div>
+                <h2 className="text-[11.5px] font-bold leading-tight">คำถามที่พบบ่อยและบันทึกประวัติการปรับปรุง (FAQ, Troubleshooting & Revision)</h2>
+                <p className="text-[9px] text-slate-300">แนวทางแก้ไขปัญหาหน้างานจริง และประวัติการปรับปรุงเอกสารควบคุม Rev. 3.0</p>
+              </div>
+            </div>
+            <span className="text-[8.5px] font-mono text-indigo-300 border border-indigo-400/40 px-1.5 py-0.5 rounded">SOP SEC-05B</span>
+          </div>
+
+          <div className="space-y-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1.5">
-                <span className="w-6 h-6 rounded bg-indigo-700 text-white flex items-center justify-center text-xs font-bold">7</span>
-                <span>7.0 คำถามที่พบบ่อย (FAQ) และประวัติการปรับปรุงเอกสาร (Revision Log)</span>
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-1">
+                <span className="w-5 h-5 rounded bg-indigo-700 text-white flex items-center justify-center text-[10px] font-bold">5.4</span>
+                <span>5.4 คำถามที่พบบ่อย (FAQ) และประวัติการปรับปรุงเอกสาร (Revision Log)</span>
               </h2>
             </div>
 
-            {/* 7.1 Troubleshooting */}
-            <div className="space-y-2.5">
+            {/* 5.4.1 Troubleshooting */}
+            <div className="space-y-2">
               <h3 className="text-xs font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
                 <HelpCircle className="w-3.5 h-3.5 text-indigo-700" />
-                7.1 ปัญหาที่พบบ่อยหน้างานและวิธีแก้ไข (Troubleshooting Guide)
+                5.4.1 ปัญหาที่พบบ่อยหน้างานและวิธีแก้ไข (Troubleshooting Guide)
               </h3>
               
               <div className="grid grid-cols-2 gap-2 text-[10px]">
@@ -1097,10 +1237,10 @@ export function StandardManualDocument({
               </div>
             </div>
 
-            {/* 7.2 Revision History */}
+            {/* 5.4.2 Revision History */}
             <div className="pt-0.5">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">
-                7.2 บันทึกประวัติการแก้ไขและปรับปรุงเอกสาร (Document Revision History)
+                5.4.2 บันทึกประวัติการแก้ไขและปรับปรุงเอกสาร (Document Revision History)
               </h3>
               <div className="border border-slate-300 rounded overflow-hidden text-[9.5px]">
                 <table className="w-full text-left border-collapse">

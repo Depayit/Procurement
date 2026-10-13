@@ -27,6 +27,8 @@ import {
   Sparkles,
   ExternalLink,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Info,
   Maximize2,
   FileCheck,
@@ -38,7 +40,10 @@ import {
   Cloud,
   BellRing,
   FileCode,
-  History
+  History,
+  FolderKanban,
+  FileStack,
+  Bookmark
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../lib/utils';
@@ -58,6 +63,10 @@ interface ButtonGuideItem {
 
 interface ModuleSection {
   id: string;
+  partId: 'part-1' | 'part-2' | 'part-3' | 'part-4' | 'part-5';
+  partNumber: number;
+  partTitleTh: string;
+  partTitleEn: string;
   title: string;
   titleEn: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -80,13 +89,109 @@ interface ModuleSection {
   tips: string[];
 }
 
+export interface ManualPartConfig {
+  id: string;
+  partNumber: number;
+  titleTh: string;
+  titleEn: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color: string;
+  badgeClass: string;
+  summaryTh: string;
+  summaryEn: string;
+  moduleCount: number;
+}
+
+export const MANUAL_PARTS: ManualPartConfig[] = [
+  {
+    id: 'part-1',
+    partNumber: 1,
+    titleTh: 'ส่วนที่ 1: ภาพรวมระบบและผังเชื่อมโยงทั้งวงจร',
+    titleEn: 'Part 1: Architecture & Lifecycle Flow',
+    icon: Layers,
+    color: 'from-indigo-600 to-indigo-800 text-white',
+    badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+    summaryTh: 'สถาปัตยกรรมระบบ ผังเชื่อมโยงข้อมูล 7 ขั้นตอน และมาตรฐานการควบคุมต้นทุนโครงการ',
+    summaryEn: 'Core architecture, 7-step lifecycle map, and project cost governance',
+    moduleCount: 1
+  },
+  {
+    id: 'part-2',
+    partNumber: 2,
+    titleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
+    titleEn: 'Part 2: Procurement & Approval Pipeline',
+    icon: ShoppingCart,
+    color: 'from-blue-600 to-cyan-700 text-white',
+    badgeClass: 'bg-blue-100 text-blue-800 border-blue-200',
+    summaryTh: 'การเปิดใบขอซื้อ (PR), ตรวจสอบงบประมาณ BOQ, สายการอนุมัติ 3 ระดับ และการออกใบสั่งซื้อ (PO)',
+    summaryEn: 'Purchase requests, BOQ verification, multi-tier approvals, and PO generation',
+    moduleCount: 3
+  },
+  {
+    id: 'part-3',
+    partNumber: 3,
+    titleTh: 'ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ',
+    titleEn: 'Part 3: Inventory Control & Suppliers',
+    icon: Package,
+    color: 'from-amber-600 to-orange-700 text-white',
+    badgeClass: 'bg-amber-100 text-amber-800 border-amber-200',
+    summaryTh: 'ตรวจรับสินค้าหน้างาน (GR), คลังพัสดุก่อสร้างกลาง (Hub), Master SKU Barcode, กล้องสแกนสด และทะเบียนคู่ค้า',
+    summaryEn: 'Goods receiving, Central Material Hub, Master SKU barcode scanning, and vendor rating',
+    moduleCount: 2
+  },
+  {
+    id: 'part-4',
+    partNumber: 4,
+    titleTh: 'ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์',
+    titleEn: 'Part 4: Smart Data Hub & Cloud Integrations',
+    icon: UploadCloud,
+    color: 'from-emerald-600 to-teal-800 text-white',
+    badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    summaryTh: 'นำเข้าไฟล์ Excel, CSV, CAD DXF พร้อมระบบซิงก์ Google Sheets, Cloud Storage และแจ้งเตือน LINE Notify',
+    summaryEn: 'Bulk import of Excel, CSV, CAD DXF with Google Sheets sync and automated LINE alerts',
+    moduleCount: 2
+  },
+  {
+    id: 'part-5',
+    partNumber: 5,
+    titleTh: 'ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน',
+    titleEn: 'Part 5: Administration, Settings & Reports',
+    icon: ShieldCheck,
+    color: 'from-purple-600 to-indigo-900 text-white',
+    badgeClass: 'bg-purple-100 text-purple-800 border-purple-200',
+    summaryTh: 'โครงสร้างสิทธิ์ RBAC 25 สิทธิ์, บันทึกการตรวจสอบ (Audit Log), ติดตั้งแอป PWA และรายงานวิเคราะห์งบประมาณ',
+    summaryEn: 'RBAC 25 permission keys, audit trail logging, PWA settings, and executive cost analytics',
+    moduleCount: 3
+  }
+];
+
 export function ManualPage() {
   const { isEnglish, isThai } = useLanguage();
   const { companyProfile } = useProcurement();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPart, setSelectedPart] = useState<string>('all');
   const [selectedModule, setSelectedModule] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'interactive' | 'official-document'>('interactive');
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({
+    'flow-overview': true,
+    'pr': true,
+    'approvals': true
+  });
+
+  const toggleModule = (id: string) => {
+    setExpandedModules(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const expandAll = () => {
+    const all: Record<string, boolean> = {};
+    modules.forEach(m => { all[m.id] = true; });
+    setExpandedModules(all);
+  };
+
+  const collapseAll = () => {
+    setExpandedModules({});
+  };
 
   const handlePrint = (docId = 'standard-manual-doc') => {
     const rawName = companyProfile?.nameTh || companyProfile?.nameEn || 'Conerage_store';
@@ -97,6 +202,10 @@ export function ManualPage() {
   const modules: ModuleSection[] = [
     {
       id: 'flow-overview',
+      partId: 'part-1',
+      partNumber: 1,
+      partTitleTh: 'ส่วนที่ 1: ภาพรวมระบบและวงจรการทำงาน',
+      partTitleEn: 'Part 1: Architecture & Lifecycle Flow',
       title: 'แผนผังการเชื่อมโยงระบบทั้งวงจร',
       titleEn: 'End-to-End System Workflow Map',
       icon: Layers,
@@ -145,6 +254,10 @@ export function ManualPage() {
     },
     {
       id: 'pr',
+      partId: 'part-2',
+      partNumber: 2,
+      partTitleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
+      partTitleEn: 'Part 2: Procurement & Approval Pipeline',
       title: '1. ระบบขอซื้อ (Purchase Requisition - PR)',
       titleEn: '1. Purchase Requisitions (PR)',
       icon: ShoppingCart,
@@ -236,6 +349,10 @@ export function ManualPage() {
     },
     {
       id: 'approvals',
+      partId: 'part-2',
+      partNumber: 2,
+      partTitleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
+      partTitleEn: 'Part 2: Procurement & Approval Pipeline',
       title: '2. การอนุมัติเอกสาร (Approvals & Inspection)',
       titleEn: '2. Document Approvals & Inspection',
       icon: ClipboardCheck,
@@ -307,6 +424,10 @@ export function ManualPage() {
     },
     {
       id: 'po',
+      partId: 'part-2',
+      partNumber: 2,
+      partTitleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
+      partTitleEn: 'Part 2: Procurement & Approval Pipeline',
       title: '3. ระบบสั่งซื้อ (Purchase Order - PO) & การตรวจรับ',
       titleEn: '3. Purchase Orders (PO) & Receiving',
       icon: FileText,
@@ -375,6 +496,10 @@ export function ManualPage() {
     },
     {
       id: 'inventory',
+      partId: 'part-3',
+      partNumber: 3,
+      partTitleTh: 'ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ',
+      partTitleEn: 'Part 3: Inventory Control & Suppliers',
       title: '4. คลังพัสดุและวัสดุก่อสร้างกลางและระบบบาร์โค้ด SKU (Central Construction Material Hub & SKU Barcode)',
       titleEn: '4. Central Construction Material Hub & Master SKU Barcode Scanner',
       icon: Package,
@@ -472,6 +597,10 @@ export function ManualPage() {
     },
     {
       id: 'vendors',
+      partId: 'part-3',
+      partNumber: 3,
+      partTitleTh: 'ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ',
+      partTitleEn: 'Part 3: Inventory Control & Suppliers',
       title: '5. ทะเบียนคู่ค้าและประเมินผู้ขาย (Vendors & Evaluation)',
       titleEn: '5. Vendor Management & Evaluation',
       icon: Store,
@@ -511,6 +640,10 @@ export function ManualPage() {
     },
     {
       id: 'reports',
+      partId: 'part-5',
+      partNumber: 5,
+      partTitleTh: 'ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน',
+      partTitleEn: 'Part 5: Administration, Settings & Reports',
       title: '6. รายงานและสถิติ (Reports & Analytics)',
       titleEn: '6. Reports & Analytics',
       icon: BarChart3,
@@ -556,6 +689,10 @@ export function ManualPage() {
     },
     {
       id: 'users',
+      partId: 'part-5',
+      partNumber: 5,
+      partTitleTh: 'ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน',
+      partTitleEn: 'Part 5: Administration, Settings & Reports',
       title: '7. ผู้ใช้งานและสิทธิ์การเข้าถึง (Users & Role-Based Permissions)',
       titleEn: '7. Users & Role-Based Permission Matrix (RBAC)',
       icon: Users,
@@ -623,6 +760,10 @@ export function ManualPage() {
     },
     {
       id: 'settings',
+      partId: 'part-5',
+      partNumber: 5,
+      partTitleTh: 'ส่วนที่ 5: การบริหารสิทธิ์, การตั้งค่าและรายงาน',
+      partTitleEn: 'Part 5: Administration, Settings & Reports',
       title: '8. ตั้งค่าระบบ, PWA & การใช้งานออฟไลน์ (Settings & PWA)',
       titleEn: '8. Settings, PWA & Offline Support',
       icon: Settings,
@@ -684,6 +825,10 @@ export function ManualPage() {
     },
     {
       id: 'data-import',
+      partId: 'part-4',
+      partNumber: 4,
+      partTitleTh: 'ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์',
+      partTitleEn: 'Part 4: Smart Data Hub & Cloud Integrations',
       title: '9. ศูนย์นำเข้าข้อมูลอัจฉริยะ (Smart Data Import Hub - Excel, CSV & CAD)',
       titleEn: '9. Smart Data Import Hub (Excel, CSV, JSON & CAD)',
       icon: UploadCloud,
@@ -763,6 +908,10 @@ export function ManualPage() {
     },
     {
       id: 'integrations',
+      partId: 'part-4',
+      partNumber: 4,
+      partTitleTh: 'ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์',
+      partTitleEn: 'Part 4: Smart Data Hub & Cloud Integrations',
       title: '10. การเชื่อมต่อคลาวด์และแจ้งเตือน (Cloud Sync, Integrations & Webhooks)',
       titleEn: '10. Cloud Sync, Enterprise Integrations & Webhooks',
       icon: Cloud,
@@ -838,6 +987,9 @@ export function ManualPage() {
 
   const filteredModules = useMemo(() => {
     return modules.filter(m => {
+      if (selectedPart !== 'all' && m.partId !== selectedPart) {
+        return false;
+      }
       if (selectedModule !== 'all' && m.id !== selectedModule) {
         return false;
       }
@@ -859,7 +1011,7 @@ export function ManualPage() {
 
       return matchTitle || matchSummary || matchButtons || matchLinkages;
     });
-  }, [modules, selectedModule, searchQuery]);
+  }, [modules, selectedPart, selectedModule, searchQuery]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-16">
@@ -1000,38 +1152,158 @@ export function ManualPage() {
         </div>
       ) : (
         <>
-          {/* 2. Quick Navigation Tabs */}
-          <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
-            <button
-              onClick={() => setSelectedModule('all')}
-          className={cn(
-            "px-3.5 py-2 rounded-lg font-bold whitespace-nowrap transition-colors",
-            selectedModule === 'all'
-              ? "bg-indigo-600 text-white shadow-xs"
-              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-          )}
-        >
-          {isEnglish ? 'All Modules (View All)' : 'ดูทุกโมดูล (ทั้งหมด)'}
-        </button>
-        {modules.map(m => {
-          const Icon = m.icon;
-          return (
-            <button
-              key={m.id}
-              onClick={() => setSelectedModule(m.id)}
-              className={cn(
-                "px-3 py-2 rounded-lg font-bold whitespace-nowrap transition-colors flex items-center gap-1.5",
-                selectedModule === m.id
-                  ? "bg-indigo-600 text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-              )}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              <span>{isEnglish ? m.titleEn : m.title}</span>
-            </button>
-          );
-        })}
-      </div>
+          {/* 2. Structured Section / Part Selection Deck */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FolderKanban className="w-4 h-4 text-indigo-600" />
+                <h2 className="text-sm font-bold text-slate-800">
+                  {isEnglish ? 'Organized by System Parts & Workflow Chapters' : 'จัดหมวดหมู่คู่มือตามส่วนงาน (5 ส่วนหลัก)'}
+                </h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={expandAll}
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  {isEnglish ? 'Expand All' : 'ขยายทั้งหมด'}
+                </button>
+                <span className="text-slate-300">|</span>
+                <button
+                  type="button"
+                  onClick={collapseAll}
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  {isEnglish ? 'Collapse All' : 'ย่อทั้งหมด'}
+                </button>
+              </div>
+            </div>
+
+            {/* 5 Part Cards Deck */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedPart('all');
+                  setSelectedModule('all');
+                }}
+                className={cn(
+                  "p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
+                  selectedPart === 'all'
+                    ? "bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-indigo-500/30"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300 shadow-2xs"
+                )}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
+                      ALL
+                    </span>
+                    <span className="text-[10px] opacity-75 font-mono">11 โมดูล</span>
+                  </div>
+                  <p className="font-bold text-xs leading-tight">
+                    {isEnglish ? 'All Parts' : 'ดูทุกส่วนงาน'}
+                  </p>
+                </div>
+                <p className="text-[10px] opacity-75 mt-1 truncate">
+                  {isEnglish ? 'Complete Guide' : 'คู่มือฉบับสมบูรณ์'}
+                </p>
+              </button>
+
+              {MANUAL_PARTS.map((p) => {
+                const PIcon = p.icon;
+                const isSelected = selectedPart === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedPart(p.id);
+                      setSelectedModule('all');
+                    }}
+                    className={cn(
+                      "p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between group",
+                      isSelected
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm ring-2 ring-indigo-500/30"
+                        : "bg-white hover:bg-indigo-50/40 border-slate-200 text-slate-700 hover:border-indigo-300 shadow-2xs"
+                    )}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className={cn(
+                          "w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold",
+                          isSelected ? "bg-white/20 text-white" : "bg-indigo-50 text-indigo-700"
+                        )}>
+                          {p.partNumber}
+                        </span>
+                        <span className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded",
+                          isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
+                        )}>
+                          {p.moduleCount} โมดูล
+                        </span>
+                      </div>
+                      <p className="font-bold text-xs leading-tight line-clamp-1">
+                        {isEnglish ? p.titleEn.split(':')[1] || p.titleEn : p.titleTh.split(':')[1] || p.titleTh}
+                      </p>
+                    </div>
+                    <p className={cn(
+                      "text-[10px] mt-1.5 line-clamp-1 leading-normal",
+                      isSelected ? "text-indigo-100" : "text-slate-400 group-hover:text-slate-600"
+                    )}>
+                      {isEnglish ? p.summaryEn : p.summaryTh}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Quick In-Page Anchor Jump Pills */}
+            <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
+              <span className="text-[11px] font-bold text-slate-400 px-2 shrink-0 flex items-center gap-1">
+                <Compass className="w-3.5 h-3.5 text-indigo-600" />
+                {isEnglish ? 'Jump to:' : 'ข้ามไปที่:'}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedModule('all')}
+                className={cn(
+                  "px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-colors cursor-pointer",
+                  selectedModule === 'all'
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                )}
+              >
+                {isEnglish ? 'All In Part' : 'ทั้งหมดในส่วนนี้'}
+              </button>
+              {(selectedPart === 'all' ? modules : modules.filter(m => m.partId === selectedPart)).map(m => {
+                const MIcon = m.icon;
+                const isCurrent = selectedModule === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedModule(m.id);
+                      setExpandedModules(prev => ({ ...prev, [m.id]: true }));
+                      const el = document.getElementById(m.id);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className={cn(
+                      "px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer",
+                      isCurrent
+                        ? "bg-indigo-600 text-white shadow-2xs font-bold"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    )}
+                  >
+                    <MIcon className="w-3 h-3 shrink-0" />
+                    <span>{isEnglish ? m.titleEn.split('.')[1] || m.titleEn : m.title.split('.')[1] || m.title}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
       {/* 3. Visual Workflow Diagram (Always prominent) */}
       {(selectedModule === 'all' || selectedModule === 'flow-overview') && !searchQuery && (
@@ -1189,165 +1461,265 @@ export function ManualPage() {
 
       {/* 4. Detailed Module Sections */}
       <div className="space-y-6">
-        {filteredModules.map((m) => {
+        {filteredModules.map((m, idx) => {
           const Icon = m.icon;
+          const isExpanded = Boolean(expandedModules[m.id]);
+          const isNewPart = idx === 0 || m.partId !== filteredModules[idx - 1]?.partId;
+          const partInfo = MANUAL_PARTS.find(p => p.id === m.partId);
+
           return (
-            <div 
-              key={m.id} 
-              id={m.id}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs scroll-mt-20"
-            >
-              {/* Module Header */}
-              <div className="p-5 sm:p-6 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-                    <Icon className="w-5 h-5" />
+            <React.Fragment key={m.id}>
+              {/* Part Section Header Banner */}
+              {isNewPart && (
+                <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8 first:mt-0">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-600/90 border border-indigo-400/40 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
+                      {m.partNumber}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300">
+                          {isEnglish ? `Part ${m.partNumber}` : `ส่วนที่ ${m.partNumber}`}
+                        </span>
+                        <span className="text-slate-500">•</span>
+                        <span className="text-[11px] text-slate-300">
+                          {modules.filter(item => item.partId === m.partId).length} {isEnglish ? 'Modules' : 'โมดูลงาน'}
+                        </span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-black text-white mt-0.5">
+                        {isEnglish ? m.partTitleEn : m.partTitleTh}
+                      </h3>
+                    </div>
                   </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                        {isEnglish ? m.titleEn : m.title}
-                      </h2>
-                      <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                        {m.badge}
+
+                  {partInfo && (
+                    <div className="text-xs text-indigo-200/90 font-medium bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl max-w-md self-start sm:self-auto leading-relaxed">
+                      {isEnglish ? partInfo.summaryEn : partInfo.summaryTh}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Module Card */}
+              <div 
+                id={m.id}
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs scroll-mt-24 transition-all"
+              >
+                {/* Module Header Bar */}
+                <div 
+                  onClick={() => toggleModule(m.id)}
+                  className="p-4 sm:p-5 bg-slate-50/80 hover:bg-slate-100/60 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition-colors select-none"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                          {isEnglish ? `Part ${m.partNumber}` : `ส่วนที่ ${m.partNumber}`}
+                        </span>
+                        <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                          {isEnglish ? m.titleEn : m.title}
+                        </h2>
+                        <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          {m.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
+                        <span className="font-bold text-slate-700">ผู้รับผิดชอบหลัก:</span> 
+                        <span className="text-slate-600">{m.role}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                    {m.route && (
+                      <Link
+                        to={m.route}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:border-indigo-400 bg-white hover:bg-indigo-50/50 text-slate-700 hover:text-indigo-700 text-xs font-bold transition-all shadow-2xs"
+                      >
+                        <span>{isEnglish ? 'Open Module' : 'ไปยังหน้านี้'}</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleModule(m.id);
+                      }}
+                      className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer shadow-2xs"
+                      title={isExpanded ? 'ย่อเนื้อหา' : 'ขยายเนื้อหาทั้งหมด'}
+                    >
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4 text-slate-700" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-slate-700" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Collapsed Preview Strip */}
+                {!isExpanded && (
+                  <div 
+                    onClick={() => toggleModule(m.id)}
+                    className="p-4 bg-white hover:bg-slate-50/50 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                  >
+                    <p className="text-slate-600 line-clamp-2 leading-relaxed flex-1">
+                      {isEnglish ? m.summaryEn : m.summary}
+                    </p>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[11px] text-slate-500 font-medium px-2 py-0.5 rounded bg-slate-100">
+                        🔗 {m.linkages.length} จุดเชื่อมต่อ
+                      </span>
+                      <span className="text-[11px] text-indigo-700 font-medium px-2 py-0.5 rounded bg-indigo-50">
+                        🕹️ {m.buttons.length} ปุ่มคำสั่ง
+                      </span>
+                      <span className="text-[11px] text-amber-700 font-medium px-2 py-0.5 rounded bg-amber-50">
+                        💡 {m.tips.length} ข้อควรปฏิบัติ
+                      </span>
+                      <span className="text-xs text-indigo-600 font-bold hover:underline ml-1">
+                        {isEnglish ? 'Read details &darr;' : 'อ่านรายละเอียด &darr;'}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-1">
-                      <span className="font-bold text-slate-700">ผู้รับผิดชอบหลัก:</span> {m.role}
-                    </p>
                   </div>
-                </div>
-
-                {m.route && (
-                  <Link
-                    to={m.route}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:border-indigo-400 bg-white hover:bg-indigo-50/50 text-slate-700 hover:text-indigo-700 text-xs font-bold transition-all self-start sm:self-auto shrink-0 shadow-2xs"
-                  >
-                    <span>ไปยังหน้านี้</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </Link>
                 )}
-              </div>
 
-              {/* Module Description & Linkages */}
-              <div className="p-5 sm:p-6 space-y-6">
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    วัตถุประสงค์และการทำงาน (Objective)
-                  </h4>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                    {isEnglish ? m.summaryEn : m.summary}
-                  </p>
-                </div>
-
-                {/* Workflow Linkages */}
-                {m.linkages.length > 0 && (
-                  <div className="space-y-2.5">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                      การเชื่อมโยงกับฟีเจอร์อื่นในระบบ (Feature Linkages)
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                      {m.linkages.map((link, lIdx) => (
-                        <div key={lIdx} className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs space-y-1">
-                          <div className="flex items-center gap-1.5 font-bold text-indigo-900">
-                            <span className="text-indigo-600">{link.from}</span>
-                            <ArrowRight className="w-3 h-3 text-slate-400" />
-                            <span className="text-slate-800">{link.to}</span>
-                          </div>
-                          <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                            {link.description}
-                          </p>
-                        </div>
-                      ))}
+                {/* Expanded Detailed Module Sections */}
+                {isExpanded && (
+                  <div className="p-5 sm:p-6 space-y-6 bg-white animate-in fade-in duration-200">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-indigo-600" />
+                        วัตถุประสงค์และการทำงาน (Objective & Scope)
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        {isEnglish ? m.summaryEn : m.summary}
+                      </p>
                     </div>
-                  </div>
-                )}
 
-                {/* Status Glossary if any */}
-                {m.statuses && m.statuses.length > 0 && (
-                  <div className="space-y-2.5">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                      ความหมายของสถานะเอกสาร (Document Statuses)
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                      {m.statuses.map((st, sIdx) => (
-                        <div key={sIdx} className="p-2.5 rounded-lg border border-slate-100 bg-slate-50 flex items-start gap-2 text-xs">
-                          <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold border shrink-0", st.color)}>
-                            {st.status}
-                          </span>
-                          <span className="text-[11.5px] text-slate-600 leading-snug">
-                            {st.desc}
+                    {/* Workflow Linkages */}
+                    {m.linkages.length > 0 && (
+                      <div className="space-y-2.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-blue-600" />
+                          การเชื่อมโยงกับฟีเจอร์อื่นในระบบ (Feature Linkages)
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                          {m.linkages.map((link, lIdx) => (
+                            <div key={lIdx} className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs space-y-1">
+                              <div className="flex items-center gap-1.5 font-bold text-indigo-900">
+                                <span className="text-indigo-600">{link.from}</span>
+                                <ArrowRight className="w-3 h-3 text-slate-400" />
+                                <span className="text-slate-800">{link.to}</span>
+                              </div>
+                              <p className="text-slate-600 text-[11.5px] leading-relaxed">
+                                {link.description}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Status Glossary if any */}
+                    {m.statuses && m.statuses.length > 0 && (
+                      <div className="space-y-2.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                          ความหมายของสถานะเอกสาร (Document Statuses)
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                          {m.statuses.map((st, sIdx) => (
+                            <div key={sIdx} className="p-2.5 rounded-lg border border-slate-100 bg-slate-50 flex items-start gap-2 text-xs">
+                              <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold border shrink-0", st.color)}>
+                                {st.status}
+                              </span>
+                              <span className="text-[11.5px] text-slate-600 leading-snug">
+                                {st.desc}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Buttons Dictionary */}
+                    {m.buttons.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-purple-600" />
+                            คู่มือคำอธิบายปุ่มและการกดใช้งาน (Button & Action Guide)
+                          </h4>
+                          <span className="text-[11px] text-slate-400 font-mono">
+                            {m.buttons.length} รายการคำสั่ง
                           </span>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Buttons Dictionary */}
-                {m.buttons.length > 0 && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                      คู่มือคำอธิบายปุ่มและการกดใช้งาน (Button & Action Guide)
-                    </h4>
-                    <div className="overflow-x-auto border border-slate-200 rounded-xl">
-                      <table className="w-full text-left border-collapse text-xs">
-                        <thead>
-                          <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold">
-                            <th className="py-2.5 px-3 w-48">ชื่อปุ่ม / การสั่งการ</th>
-                            <th className="py-2.5 px-3 w-40">ตำแหน่งในหน้าจอ</th>
-                            <th className="py-2.5 px-3">การทำงานเมื่อกด (Action)</th>
-                            <th className="py-2.5 px-3 w-56">ผลลัพธ์และการเชื่อมโยง</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 text-[11.5px]">
-                          {m.buttons.map((btn, bIdx) => {
-                            const BtnIcon = btn.icon;
-                            return (
-                              <tr key={bIdx} className="hover:bg-slate-50/70 transition-colors">
-                                <td className="py-2.5 px-3 align-top">
-                                  <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                                    {BtnIcon && <BtnIcon className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
-                                    <span className={cn("px-2 py-0.5 rounded text-[11px] font-semibold border", btn.color || 'bg-slate-100 text-slate-700 border-slate-200')}>
-                                      {btn.name}
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className="py-2.5 px-3 align-top text-slate-500 font-medium">
-                                  {btn.location}
-                                </td>
-                                <td className="py-2.5 px-3 align-top text-slate-700 leading-relaxed">
-                                  {btn.action}
-                                </td>
-                                <td className="py-2.5 px-3 align-top text-indigo-700 font-medium leading-relaxed">
-                                  {btn.linkage}
-                                </td>
+                        <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                          <table className="w-full text-left border-collapse text-xs">
+                            <thead>
+                              <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold">
+                                <th className="py-2.5 px-3 w-48">ชื่อปุ่ม / การสั่งการ</th>
+                                <th className="py-2.5 px-3 w-40">ตำแหน่งในหน้าจอ</th>
+                                <th className="py-2.5 px-3">การทำงานเมื่อกด (Action)</th>
+                                <th className="py-2.5 px-3 w-56">ผลลัพธ์และการเชื่อมโยง</th>
                               </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 text-[11.5px]">
+                              {m.buttons.map((btn, bIdx) => {
+                                const BtnIcon = btn.icon;
+                                return (
+                                  <tr key={bIdx} className="hover:bg-slate-50/70 transition-colors">
+                                    <td className="py-2.5 px-3 align-top">
+                                      <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                                        {BtnIcon && <BtnIcon className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
+                                        <span className={cn("px-2 py-0.5 rounded text-[11px] font-semibold border", btn.color || 'bg-slate-100 text-slate-700 border-slate-200')}>
+                                          {btn.name}
+                                        </span>
+                                      </div>
+                                    </td>
+                                    <td className="py-2.5 px-3 align-top text-slate-500 font-medium">
+                                      {btn.location}
+                                    </td>
+                                    <td className="py-2.5 px-3 align-top text-slate-700 leading-relaxed">
+                                      {btn.action}
+                                    </td>
+                                    <td className="py-2.5 px-3 align-top text-indigo-700 font-medium leading-relaxed">
+                                      {btn.linkage}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Practical Tips */}
+                    {m.tips.length > 0 && (
+                      <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 text-xs text-amber-900 space-y-1">
+                        <span className="font-bold flex items-center gap-1">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                          เคล็ดลับและข้อควรระวังในการปฏิบัติงาน (Best Practices)
+                        </span>
+                        <ul className="list-disc list-inside space-y-0.5 text-amber-800 text-[11.5px] pl-1">
+                          {m.tips.map((tip, tIdx) => (
+                            <li key={tIdx}>{tip}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                   </div>
                 )}
-
-                {/* Practical Tips */}
-                {m.tips.length > 0 && (
-                  <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 text-xs text-amber-900 space-y-1">
-                    <span className="font-bold flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                      เคล็ดลับและข้อควรระวังในการปฏิบัติงาน (Best Practices)
-                    </span>
-                    <ul className="list-disc list-inside space-y-0.5 text-amber-800 text-[11.5px] pl-1">
-                      {m.tips.map((tip, tIdx) => (
-                        <li key={tIdx}>{tip}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
               </div>
-            </div>
+            </React.Fragment>
           );
         })}
 
