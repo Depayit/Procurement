@@ -7,6 +7,7 @@ import { useNotifications, NotificationType } from '../contexts/NotificationCont
 import { useAuth, UserRole } from '../contexts/AuthContext';
 import { useProcurement } from '../contexts/ProcurementContext';
 import { LanguageToggle } from './LanguageToggle';
+import { ThemeToggle } from './ThemeToggle';
 
 export interface HeaderProps {
   onMenuClick: () => void;
@@ -294,6 +295,9 @@ export function Header({
           <Sparkles className="w-3.5 h-3.5 text-[#1e40af] group-hover:scale-110 transition-transform" />
           <span className="text-xs font-bold hidden sm:inline">AI Copilot</span>
         </button>
+
+        {/* Eye-Friendly Theme & Eye Comfort Toggle */}
+        <ThemeToggle />
 
         {/* Language Switcher */}
         <LanguageToggle />

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Suspense, useEffect } from 'react';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProcurementProvider } from './contexts/ProcurementContext';
@@ -82,7 +83,8 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <NotificationProvider>
+      <ThemeProvider>
+        <NotificationProvider>
         <AuthProvider>
           <ProcurementProvider>
             <BrowserRouter>
@@ -187,6 +189,7 @@ export default function App() {
           </ProcurementProvider>
         </AuthProvider>
       </NotificationProvider>
-    </LanguageProvider>
+    </ThemeProvider>
+  </LanguageProvider>
   );
 }

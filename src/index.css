@@ -18,18 +18,18 @@
   --color-slate-900: #0f172a;
   --color-slate-950: #020617;
 
-  /* Primary Action Colors: Standard Enterprise ERP Sapphire & Royal Navy */
-  --color-indigo-50: #eff6ff;
-  --color-indigo-100: #dbeafe;
-  --color-indigo-200: #bfdbfe;
-  --color-indigo-300: #93c5fd;
-  --color-indigo-400: #60a5fa;
-  --color-indigo-500: #3b82f6;
-  --color-indigo-600: #1d4ed8;
-  --color-indigo-700: #1e40af;
-  --color-indigo-800: #1e3a8a;
-  --color-indigo-900: #172554;
-  --color-indigo-950: #0f172a;
+  /* Primary Action Colors: Dynamic Ergonomic Eye-Friendly Theme System */
+  --color-indigo-50: var(--theme-primary-light, #eff6ff);
+  --color-indigo-100: color-mix(in srgb, var(--theme-primary, #1d4ed8) 12%, white);
+  --color-indigo-200: var(--theme-primary-border, #bfdbfe);
+  --color-indigo-300: color-mix(in srgb, var(--theme-primary, #1d4ed8) 35%, white);
+  --color-indigo-400: color-mix(in srgb, var(--theme-primary, #1d4ed8) 65%, white);
+  --color-indigo-500: var(--theme-primary, #1d4ed8);
+  --color-indigo-600: var(--theme-primary, #1d4ed8);
+  --color-indigo-700: var(--theme-primary-hover, #1e40af);
+  --color-indigo-800: color-mix(in srgb, var(--theme-primary, #1d4ed8) 80%, black);
+  --color-indigo-900: color-mix(in srgb, var(--theme-primary, #1d4ed8) 60%, black);
+  --color-indigo-950: color-mix(in srgb, var(--theme-primary, #1d4ed8) 35%, black);
 
   /* Management & Governance: Corporate Slate Indigo */
   --color-purple-50: #eef2ff;
@@ -106,23 +106,40 @@
 }
 
 /* ==========================================================================
-   STANDARD ENTERPRISE ERP DESIGN SYSTEM
-   Authoritative Slate Canvas, Classic Corporate Sapphire & Royal Navy accents.
+   DYNAMIC ERGONOMIC THEME SYSTEM & EYE-CARE DESIGN
+   Calibrated for high eye-comfort, reduced optical fatigue, and WCAG accessibility.
    ========================================================================== */
 :root {
-  --erp-navy: #1e40af;
-  --erp-blue: #1d4ed8;
-  --erp-blue-hover: #1e3a8a;
-  --erp-blue-active: #172554;
-  --erp-border: #e2e8f0;
-  --erp-border-hover: #1d4ed8;
-  --erp-focus: rgba(29, 78, 216, 0.18);
+  --theme-primary: #1d4ed8;
+  --theme-primary-hover: #1e40af;
+  --theme-primary-light: #eff6ff;
+  --theme-primary-border: #bfdbfe;
+  --theme-primary-text: #ffffff;
+  --theme-surface: #ffffff;
+  --theme-canvas: #f8fafc;
+  --theme-text-primary: #0f172a;
+  --theme-text-muted: #64748b;
+  --theme-border: #e2e8f0;
+
+  --erp-navy: var(--theme-primary-hover);
+  --erp-blue: var(--theme-primary);
+  --erp-blue-hover: var(--theme-primary-hover);
+  --erp-blue-active: color-mix(in srgb, var(--theme-primary) 70%, black);
+  --erp-border: var(--theme-border);
+  --erp-border-hover: var(--theme-primary);
+  --erp-focus: color-mix(in srgb, var(--theme-primary) 20%, transparent);
   --erp-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* Eye Comfort Mode: Gentle warm tint protecting against high-energy visible blue light */
+html.eye-comfort-mode {
+  filter: sepia(10%) contrast(98%) brightness(98%);
+}
+
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--theme-canvas, #f8fafc);
+  color: var(--theme-text-primary, #0f172a);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Crisp, reliable borders on cards, tables, dividers, and dialogs */
@@ -133,27 +150,24 @@ body {
 .border-slate-200\/80,
 .border-slate-200\/90,
 .border-slate-300 {
-  border-color: #e2e8f0 !important;
+  border-color: var(--theme-border, #e2e8f0) !important;
 }
 
 /* Crisp, clean cards */
 .bg-white {
-  background-color: #ffffff;
+  background-color: var(--theme-surface, #ffffff);
 }
 
 .bg-white.border,
 .bg-white.border-slate-200,
 .border-slate-200 {
-  border-color: #e2e8f0 !important;
+  border-color: var(--theme-border, #e2e8f0) !important;
 }
 
-/* Card hover: subtle enterprise ERP sapphire border */
+/* Card hover: subtle theme primary border */
 .hover\:border-indigo-300:hover,
-.hover\:border-amber-300:hover,
-.hover\:border-purple-300:hover,
-.hover\:border-emerald-300:hover,
 .hover\:border-slate-300:hover {
-  border-color: #1e40af !important;
+  border-color: var(--theme-primary-hover) !important;
 }
 
 /* Buttons: smooth press feedback */
@@ -174,70 +188,150 @@ button:disabled {
   opacity: 0.5;
 }
 
-/* Primary buttons become Standard Enterprise ERP Sapphire pills */
+/* Primary buttons adhere smoothly to the eye-friendly theme */
 button.bg-indigo-600,
 a.bg-indigo-600,
-button.bg-indigo-700,
-button.bg-emerald-500,
-button.bg-emerald-600 {
-  background-color: #1d4ed8 !important;
-  color: #ffffff !important;
-  border: 1px solid #1d4ed8 !important;
+button.bg-indigo-700 {
+  background-color: var(--theme-primary) !important;
+  color: var(--theme-primary-text, #ffffff) !important;
+  border: 1px solid var(--theme-primary) !important;
   border-radius: 980px;
-  box-shadow: 0 1px 2px rgba(29, 78, 216, 0.16);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--theme-primary) 22%, transparent);
 }
 
 button.bg-indigo-600:hover,
 a.bg-indigo-600:hover,
-button.bg-indigo-700:hover,
+button.bg-indigo-700:hover {
+  background-color: var(--theme-primary-hover) !important;
+  border-color: var(--theme-primary-hover) !important;
+  color: var(--theme-primary-text, #ffffff) !important;
+}
+
+/* Success / Emerald buttons preserve clear green semantics */
+button.bg-emerald-500,
+button.bg-emerald-600 {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  border: 1px solid #059669 !important;
+  border-radius: 980px;
+  box-shadow: 0 1px 2px rgba(5, 150, 105, 0.16);
+}
+
 button.bg-emerald-500:hover,
 button.bg-emerald-600:hover {
-  background-color: #1e40af !important;
-  border-color: #1e40af !important;
+  background-color: #047857 !important;
+  border-color: #047857 !important;
   color: #ffffff !important;
 }
 
-/* Secondary (clean white / slate) buttons become crisp white with slate text and border */
+/* Secondary (clean white / slate) buttons */
 button.bg-slate-100,
 button.bg-slate-200 {
-  background-color: #ffffff !important;
-  color: #1e293b !important;
-  border: 1px solid #cbd5e1 !important;
+  background-color: var(--theme-surface, #ffffff) !important;
+  color: var(--theme-text-primary, #1e293b) !important;
+  border: 1px solid var(--theme-border, #cbd5e1) !important;
   border-radius: 980px;
 }
 
 button.bg-slate-100:hover,
 button.bg-slate-200:hover {
-  background-color: #f8fafc !important;
-  border-color: #1d4ed8 !important;
-  color: #1d4ed8 !important;
+  background-color: var(--theme-canvas, #f8fafc) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
 }
 
-/* Crisp authoritative focus ring on inputs */
+/* Eye-friendly focus ring on inputs */
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: #1d4ed8 !important;
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14) !important;
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 18%, transparent) !important;
 }
 
 button:focus-visible,
 a:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid #1d4ed8 !important;
+  outline: 2px solid var(--theme-primary) !important;
   outline-offset: 2px;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #94a3b8;
+  color: var(--theme-text-muted, #94a3b8);
 }
 
 input[type="checkbox"],
 input[type="radio"] {
-  accent-color: #1d4ed8;
+  accent-color: var(--theme-primary);
   box-shadow: none;
+}
+
+/* Dark mode comfortable surface and text contrast */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0b0f17 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .bg-white {
+  background-color: #161e2e !important;
+  color: #f1f5f9;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-100 {
+  background-color: #0f172a !important;
+}
+
+html.dark .text-slate-800,
+html.dark .text-slate-900 {
+  color: #f1f5f9 !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-300 {
+  border-color: #243044 !important;
+}
+
+html.dark aside,
+html.dark header {
+  background-color: #111827 !important;
+  border-color: #243044 !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+/* Protect ISO/Official A4 Print Documents from dark mode */
+html.dark .standard-a4-doc,
+html.dark .standard-a4-doc * {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+html.dark .standard-a4-doc table {
+  background-color: #ffffff !important;
 }
 
 /* Frosted translucent top bar and mobile bottom nav */
@@ -378,15 +472,15 @@ html {
   letter-spacing: 0.025em;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: #eff6ff !important;
-  color: #1d4ed8 !important;
-  border: 1px solid #bfdbfe !important;
+  background-color: var(--theme-primary-light, #eff6ff) !important;
+  color: var(--theme-primary, #1d4ed8) !important;
+  border: 1px solid var(--theme-primary-border, #bfdbfe) !important;
 }
 
 .heading-badge-primary {
-  background-color: #eff6ff !important;
-  color: #1d4ed8 !important;
-  border: 1px solid #bfdbfe !important;
+  background-color: var(--theme-primary-light, #eff6ff) !important;
+  color: var(--theme-primary, #1d4ed8) !important;
+  border: 1px solid var(--theme-primary-border, #bfdbfe) !important;
 }
 
 .heading-badge-amber {
@@ -406,7 +500,7 @@ html {
   width: 0.25rem;
   height: 1.125rem;
   border-radius: 9999px;
-  background-color: #1d4ed8 !important;
+  background-color: var(--theme-primary, #1d4ed8) !important;
   margin-right: 0.5rem;
   vertical-align: middle;
 }

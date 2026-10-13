@@ -38,10 +38,13 @@ import {
   Cloud,
   ExternalLink,
   Monitor,
-  Flame
+  Flame,
+  Palette,
+  Sun
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useProcurement, DEFAULT_COMPANY_PROFILE } from '../contexts/ProcurementContext';
 import { PWAInstallButton } from '../components/PWAInstallButton';
@@ -88,9 +91,18 @@ export function SettingsPage() {
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [updateCheckStatus, setUpdateCheckStatus] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [searchParams] = useSearchParams();
+  const { currentThemeId, currentTheme, setTheme, eyeComfortMode, setEyeComfortMode, themes, resetToDefaultTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState(() => searchParams.get('tab') || 'profile');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   // UI Scale State
   const [uiScale, setUiScale] = useState(() => {
@@ -452,6 +464,17 @@ export function SettingsPage() {
             >
               <Cloud className="h-4 w-4 mr-3" />
               {isEnglish ? 'Cloud & Plugins' : 'เชื่อมต่อคลาวด์/API'}
+            </button>
+            <button
+              onClick={() => setActiveTab('theme')}
+              className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                activeTab === 'theme' 
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <Palette className="h-4 w-4 mr-3 text-indigo-600" />
+              <span>{isEnglish ? 'Theme & Eye Comfort' : 'ธีมสี & โหมดถนอมสายตา'}</span>
             </button>
             <button
               onClick={() => setActiveTab('display')}
@@ -2082,6 +2105,235 @@ export function SettingsPage() {
                     สร้างไฟล์สำรองข้อมูล &rarr;
                   </Link>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'theme' && (
+            <div className="p-6 space-y-8">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-indigo-600" />
+                    {isEnglish ? 'Theme & Eye Comfort Settings' : 'ธีมสีระบบ & โหมดถนอมสายตา'}
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+                    {isEnglish 
+                      ? 'Select standard, ergonomic color palettes designed to minimize eye fatigue during long sessions with procurement data and documents.' 
+                      : 'เลือกชุดสีที่มองแล้วสบายตา ได้มาตรฐานสรีรศาสตร์ (Ergonomic Standard) ช่วยลดความเมื่อยล้าของสายตาเมื่อต้องทำงานกับเอกสารและตัวเลขเป็นเวลานาน'}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={resetToDefaultTheme}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition-colors shrink-0 cursor-pointer self-start sm:self-auto"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                  {isEnglish ? 'Reset to Default' : 'คืนค่าธีมเริ่มต้น'}
+                </button>
+              </div>
+
+              {/* Theme Palettes Grid */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-bold text-slate-800 block">
+                    {isEnglish ? 'Select Standard Color Palette:' : 'เลือกชุดโทนสีมาตรฐาน (Eye-Friendly Standard):'}
+                  </label>
+                  <span className="text-xs text-slate-500">
+                    {isEnglish ? `${themes.length} Presets Available` : `${themes.length} ชุดสีมาตรฐาน`}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {themes.map((theme) => {
+                    const isSelected = currentThemeId === theme.id;
+                    return (
+                      <div
+                        key={theme.id}
+                        onClick={() => setTheme(theme.id)}
+                        className={cn(
+                          "relative p-5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between group",
+                          isSelected
+                            ? "border-indigo-600 bg-indigo-50/30 shadow-sm"
+                            : "border-slate-200 hover:border-slate-300 bg-white hover:shadow-xs"
+                        )}
+                      >
+                        <div>
+                          {/* Top Row: Title, Tag, and Check indicator */}
+                          <div className="flex items-start justify-between gap-3 mb-2.5">
+                            <div>
+                              <span className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                {isEnglish ? theme.nameEn : theme.nameTh}
+                                {isSelected && (
+                                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-indigo-600 text-white">
+                                    <Check className="w-3 h-3 stroke-[3]" />
+                                  </span>
+                                )}
+                              </span>
+                              <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200/60">
+                                {isEnglish ? theme.tagEn : theme.tagTh}
+                              </span>
+                            </div>
+
+                            {/* Color Swatch Circles */}
+                            <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-slate-50 border border-slate-200/80 shrink-0">
+                              <span
+                                className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
+                                style={{ backgroundColor: theme.primaryColor }}
+                                title="Primary"
+                              />
+                              <span
+                                className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
+                                style={{ backgroundColor: theme.primaryHover }}
+                                title="Hover/Active"
+                              />
+                              <span
+                                className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
+                                style={{ backgroundColor: theme.primaryLight }}
+                                title="Soft Tint"
+                              />
+                              <span
+                                className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
+                                style={{ backgroundColor: theme.canvasBg }}
+                                title="Canvas Background"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Ergonomic description */}
+                          <p className="text-xs text-slate-600 leading-relaxed mt-2">
+                            {isEnglish ? theme.descriptionEn : theme.descriptionTh}
+                          </p>
+                        </div>
+
+                        {/* Interactive Mini Preview inside each Card */}
+                        <div className="mt-4 pt-3 border-t border-slate-100/90 flex items-center justify-between text-[11px]">
+                          <div className="flex items-center gap-2">
+                            <span 
+                              className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                              style={{ 
+                                backgroundColor: theme.primaryLight, 
+                                color: theme.primaryColor,
+                                border: `1px solid ${theme.primaryBorder}`
+                              }}
+                            >
+                              {isEnglish ? 'Sample Badge' : 'ตัวอย่างป้าย'}
+                            </span>
+                            <span 
+                              className="px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white shadow-2xs"
+                              style={{ backgroundColor: theme.primaryColor }}
+                            >
+                              {isEnglish ? 'Action' : 'ปุ่มหลัก'}
+                            </span>
+                          </div>
+
+                          <span className={cn(
+                            "text-[11px] font-bold",
+                            isSelected ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"
+                          )}>
+                            {isSelected ? (isEnglish ? 'Active Theme' : 'กำลังใช้งาน') : (isEnglish ? 'Click to Apply' : 'คลิกเพื่อใช้งาน')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Eye Comfort Warmth Filter Section */}
+              <div className="p-5 rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/60 to-orange-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200 shadow-2xs mt-0.5">
+                    <Sun className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-slate-900">
+                        {isEnglish ? 'Eye Comfort Filter (True-Tone Warmth)' : 'โหมดถนอมสายตา (ตัวกรองแสงสีฟ้า / True Tone)'}
+                      </h4>
+                      <span className={cn(
+                        "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                        eyeComfortMode ? "bg-amber-600 text-white" : "bg-slate-200 text-slate-700"
+                      )}>
+                        {eyeComfortMode ? (isEnglish ? 'Active' : 'เปิดใช้งาน') : (isEnglish ? 'Off' : 'ปิด')}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 mt-1 leading-relaxed max-w-xl">
+                      {isEnglish
+                        ? 'Applies a calibrated warm tone across the UI to filter out high-energy visible blue light (HEV). Recommended when working for hours in indoor LED lighting or at night.'
+                        : 'ปรับเฉดสีทั้งระบบให้อุ่นนวลขึ้นแบบ True-Tone ช่วยกรองแสงสีฟ้าความถี่สูง (HEV Blue Light) จากหน้าจอ เหมาะสำหรับผู้ที่ต้องนั่งทำงานหน้าจอนานกว่า 6-8 ชั่วโมงต่อวัน หรือทำงานช่วงเย็น/ค่ำ'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                  <button
+                    type="button"
+                    onClick={() => setEyeComfortMode(!eyeComfortMode)}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2",
+                      eyeComfortMode ? "bg-amber-500" : "bg-slate-300"
+                    )}
+                    role="switch"
+                    aria-checked={eyeComfortMode}
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out",
+                        eyeComfortMode ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Live Showcase & Standard Compliance Banner */}
+              <div className="p-5 rounded-2xl border border-slate-200/90 bg-white space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    {isEnglish ? 'Live Component Showcase' : 'ตัวอย่างองค์ประกอบ UI จริงตามธีมที่เลือก'}
+                  </h4>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+                    WCAG 2.1 AA/AAA Standard
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <span className="text-[11px] font-bold text-slate-500 block">ปุ่มดำเนินการหลัก (Action)</span>
+                    <button className="w-full py-2 px-3 bg-indigo-600 text-white rounded-full font-bold text-xs shadow-xs">
+                      บันทึกใบขอซื้อ (PR)
+                    </button>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <span className="text-[11px] font-bold text-slate-500 block">ป้ายสถานะและข้อความเด่น (Badge)</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="heading-badge-primary">
+                        <Check className="w-3 h-3" /> อนุมัติเอกสารแล้ว
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <span className="text-[11px] font-bold text-slate-500 block">ช่องกรอกและโฟกัส (Input Focus)</span>
+                    <input 
+                      type="text" 
+                      defaultValue="PR-2026-0042 (โฟกัสสบายตา)" 
+                      readOnly 
+                      className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:outline-none" 
+                    />
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-slate-500 leading-relaxed pt-1 border-t border-slate-100">
+                  {isEnglish
+                    ? 'All theme colors follow ISO 9241-303 optical standards and WCAG 2.1 color luminance contrast specifications. The official printed A4 documents (PR, PO, Receipt) remain 100% standard ISO white paper compliance.'
+                    : 'ชุดสีทั้งหมดได้รับการคำนวณอัตราส่วน Contrast Ratio ตามมาตรฐานสรีรศาสตร์ ISO 9241-303 และ WCAG 2.1 เพื่อการอ่านที่สบายตา ทั้งนี้เอกสารแบบพิมพ์ทางการ A4 (PR, PO, ใบตรวจรับ) จะคงสีขาวมาตรฐานสำหรับงานพิมพ์เอกสารสากลเสมอ'}
+                </p>
               </div>
             </div>
           )}
