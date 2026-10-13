@@ -12,6 +12,7 @@ import { doc, getDocFromServer } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { lazyWithRetry } from './lib/lazyRetry';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Route-level Code Splitting with automatic new-deployment chunk recovery
 const LoginPage = lazyWithRetry(() => import('./pages/Login').then(m => ({ default: m.LoginPage })), 'Login');
@@ -179,7 +180,9 @@ export default function App() {
               </Routes>
               <OfflineIndicator />
               <RealtimeUpdateModal />
-              <AICopilotWidget />
+              <ErrorBoundary fallback={null}>
+                <AICopilotWidget />
+              </ErrorBoundary>
             </BrowserRouter>
           </ProcurementProvider>
         </AuthProvider>

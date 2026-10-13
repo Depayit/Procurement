@@ -20,7 +20,6 @@ export function lazyWithRetry<T extends ComponentType<any>>(
     } catch (error: any) {
       const errorMessage = String(error?.message || error || '');
       const isDynamicChunkError =
-        error?.name === 'TypeError' ||
         /Failed to fetch dynamically imported module|Loading chunk|dynamically imported module|Importing a module script failed/i.test(
           errorMessage
         );

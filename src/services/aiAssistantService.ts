@@ -30,7 +30,20 @@ export function getStoredChatHistory(): ChatMessage[] {
   try {
     const raw = sessionStorage.getItem(CHAT_STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed: unknown = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const valid = parsed.filter(
+          (m): m is ChatMessage =>
+            !!m &&
+            typeof m === 'object' &&
+            typeof (m as ChatMessage).id === 'string' &&
+            ((m as ChatMessage).sender === 'user' || (m as ChatMessage).sender === 'assistant') &&
+            typeof (m as ChatMessage).text === 'string' &&
+            typeof (m as ChatMessage).timestamp === 'string'
+        );
+        if (valid.length > 0) return valid;
+      }
+      sessionStorage.removeItem(CHAT_STORAGE_KEY);
     }
   } catch {
     // fallback
