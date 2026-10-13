@@ -112,8 +112,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 1: ภาพรวมระบบและผังเชื่อมโยงทั้งวงจร',
     titleEn: 'Part 1: Architecture & Lifecycle Flow',
     icon: Layers,
-    color: 'bg-[#154c38] text-white',
-    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    color: 'bg-[#1e40af] text-white',
+    badgeClass: 'bg-blue-50 text-blue-800 border-blue-200',
     summaryTh: 'สถาปัตยกรรมระบบ ผังเชื่อมโยงข้อมูล 7 ขั้นตอน และมาตรฐานการควบคุมต้นทุนโครงการ',
     summaryEn: 'Core architecture, 7-step lifecycle map, and project cost governance',
     moduleCount: 1
@@ -124,8 +124,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 2: งานจัดซื้อและการพิจารณาอนุมัติ',
     titleEn: 'Part 2: Procurement & Approval Pipeline',
     icon: ShoppingCart,
-    color: 'bg-[#1b4332] text-white',
-    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    color: 'bg-[#0284c7] text-white',
+    badgeClass: 'bg-sky-50 text-sky-800 border-sky-200',
     summaryTh: 'การเปิดใบขอซื้อ (PR), ตรวจสอบงบประมาณ BOQ, สายการอนุมัติ 3 ระดับ และการออกใบสั่งซื้อ (PO)',
     summaryEn: 'Purchase requests, BOQ verification, multi-tier approvals, and PO generation',
     moduleCount: 3
@@ -136,8 +136,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 3: คลังพัสดุก่อสร้างกลางและการตรวจรับ',
     titleEn: 'Part 3: Inventory Control & Suppliers',
     icon: Package,
-    color: 'bg-[#2d4a3e] text-white',
-    badgeClass: 'bg-stone-100 text-stone-800 border-stone-200',
+    color: 'bg-[#0d9488] text-white',
+    badgeClass: 'bg-teal-50 text-teal-800 border-teal-200',
     summaryTh: 'ตรวจรับสินค้าหน้างาน (GR), คลังพัสดุก่อสร้างกลาง (Hub), Master SKU Barcode, กล้องสแกนสด และทะเบียนคู่ค้า',
     summaryEn: 'Goods receiving, Central Material Hub, Master SKU barcode scanning, and vendor rating',
     moduleCount: 2
@@ -148,8 +148,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 4: ศูนย์ข้อมูลและการเชื่อมต่อคลาวด์',
     titleEn: 'Part 4: Smart Data Hub & Cloud Integrations',
     icon: UploadCloud,
-    color: 'bg-[#0f766e] text-white',
-    badgeClass: 'bg-teal-50 text-teal-800 border-teal-200',
+    color: 'bg-[#4f46e5] text-white',
+    badgeClass: 'bg-indigo-50 text-indigo-800 border-indigo-200',
     summaryTh: 'นำเข้าไฟล์ Excel, CSV, CAD DXF พร้อมระบบซิงก์ Google Sheets, Cloud Storage และแจ้งเตือน LINE Notify',
     summaryEn: 'Bulk import of Excel, CSV, CAD DXF with Google Sheets sync and automated LINE alerts',
     moduleCount: 2
@@ -172,8 +172,8 @@ export const MANUAL_PARTS: ManualPartConfig[] = [
     titleTh: 'ส่วนที่ 6: AI ผู้ช่วยและศูนย์ซ่อมแซมระบบตนเอง',
     titleEn: 'Part 6: AI Copilot & 1-Click Auto-Repair',
     icon: Bot,
-    color: 'bg-[#1e3a2b] text-white',
-    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    color: 'bg-[#1e40af] text-white',
+    badgeClass: 'bg-blue-50 text-blue-800 border-blue-200',
     summaryTh: 'AI Copilot 24 ชม., การตรวจเช็คฮาร์ดแวร์ 5 จุด, แก้ปัญหากล้องและแคชค้าง 1-Click โดยไม่ต้องพึ่งพาแอดมิน',
     summaryEn: '24/7 AI Copilot troubleshooting, 5-point hardware diagnostics, and 1-click self-healing repair without waiting for IT admin',
     moduleCount: 1
@@ -1102,21 +1102,21 @@ export function ManualPage() {
     <div className="space-y-6 animate-in fade-in duration-300 pb-16">
       
       {/* 1. Header Banner */}
-      <div className="bg-gradient-to-br from-[#fcfdfa] via-[#f5f8f4] to-[#edf3ee] text-stone-900 rounded-3xl p-6 sm:p-8 shadow-xs border border-emerald-900/10 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]/70 text-slate-900 rounded-3xl p-6 sm:p-8 shadow-xs border border-slate-200 relative overflow-hidden">
         {/* Subtle decorative background auras */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-        <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-emerald-50/60 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-blue-100/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+        <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-indigo-50/60 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/90 border border-emerald-200/90 text-[#154c38] text-xs font-bold tracking-wide">
-              <BookOpen className="w-3.5 h-3.5 text-[#154c38]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/90 border border-blue-200/90 text-[#1e40af] text-xs font-bold tracking-wide">
+              <BookOpen className="w-3.5 h-3.5 text-[#1e40af]" />
               <span>{isEnglish ? 'Conerage store System Documentation & SOP' : 'คู่มือการปฏิบัติงานมาตรฐานระบบจัดซื้อและคลังสินค้า (SOP)'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-stone-900 leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-tight">
               {isEnglish ? 'Complete System User Manual' : 'คู่มือการใช้งานระบบฉบับสมบูรณ์'}
             </h1>
-            <p className="text-sm text-stone-600 leading-relaxed">
+            <p className="text-sm text-slate-600 leading-relaxed">
               {isEnglish 
                 ? 'Comprehensive guide detailing every module, button action, status workflow, and feature integration across the Conerage store platform.'
                 : 'รวบรวมคำอธิบายทุกฟีเจอร์ ทุกปุ่มการทำงาน ผังการเชื่อมโยงข้อมูลระหว่างโมดูล (PR -> PO -> คลัง -> สแกน QR) และมาตรฐานการปฏิบัติงาน'}
@@ -1126,7 +1126,7 @@ export function ManualPage() {
           <div className="flex flex-wrap items-center gap-2 relative z-10">
             <button
               onClick={() => setIsPreviewModalOpen(true)}
-              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-[#154c38] hover:bg-[#103b2b] text-white border border-[#154c38] transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-[#1e40af] hover:bg-[#1e3a8a] text-white border border-[#1e40af] transition-all shadow-xs cursor-pointer"
               title="ดูตัวอย่างเอกสารคู่มือฉบับจริง A4"
             >
               <Eye className="w-4 h-4 mr-1.5 text-white" />
@@ -1135,10 +1135,10 @@ export function ManualPage() {
 
             <button
               onClick={() => handlePrint('standard-manual-doc')}
-              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 transition-colors shadow-xs cursor-pointer"
               title="สั่งพิมพ์คู่มือฉบับมาตรฐาน A4 (8 หน้า)"
             >
-              <Printer className="w-4 h-4 mr-1.5 text-stone-700" />
+              <Printer className="w-4 h-4 mr-1.5 text-slate-700" />
               <span>{isEnglish ? 'Print Standard A4' : 'พิมพ์คู่มือมาตรฐาน A4'}</span>
             </button>
           </div>
@@ -1146,18 +1146,18 @@ export function ManualPage() {
 
         {/* Search bar inside banner */}
         <div className="relative mt-6 max-w-xl z-10">
-          <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-stone-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={isEnglish ? 'Search any button, feature, or workflow (e.g. Scan QR, Approve, BOQ)...' : 'ค้นหาชื่อปุ่ม, ฟีเจอร์ หรือขั้นตอนการทำงาน (เช่น สแกน QR, อนุมัติ, ออก PO, ตรวจนับ)...'}
-            className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-stone-200 text-stone-900 placeholder-stone-400 text-xs sm:text-sm font-medium focus:outline-none focus:border-[#154c38] focus:ring-1 focus:ring-[#154c38] transition-all shadow-xs"
+            className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-slate-200 text-slate-900 placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none focus:border-[#1e40af] focus:ring-1 focus:ring-[#1e40af] transition-all shadow-xs"
           />
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-2.5 text-xs text-stone-400 hover:text-stone-700"
+              className="absolute right-4 top-2.5 text-xs text-slate-400 hover:text-slate-700"
             >
               ล้างคำค้นหา
             </button>
@@ -1166,15 +1166,15 @@ export function ManualPage() {
       </div>
 
       {/* View Mode Toggle Bar: Interactive vs Official SOP Document */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-stone-200 shadow-xs print:hidden">
-        <div className="flex items-center gap-1.5 bg-stone-100/80 p-1 rounded-xl border border-stone-200/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs print:hidden">
+        <div className="flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200/60">
           <button
             onClick={() => setViewMode('interactive')}
             className={cn(
               "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
               viewMode === 'interactive' 
-                ? "bg-[#154c38] text-white shadow-xs" 
-                : "text-stone-600 hover:text-stone-900"
+                ? "bg-[#1e40af] text-white shadow-xs" 
+                : "text-slate-600 hover:text-slate-900"
             )}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -1185,8 +1185,8 @@ export function ManualPage() {
             className={cn(
               "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
               viewMode === 'official-document' 
-                ? "bg-[#154c38] text-white shadow-xs" 
-                : "text-stone-600 hover:text-stone-900"
+                ? "bg-[#1e40af] text-white shadow-xs" 
+                : "text-slate-600 hover:text-slate-900"
             )}
           >
             <FileText className="w-3.5 h-3.5" />
@@ -1194,13 +1194,13 @@ export function ManualPage() {
           </button>
         </div>
 
-        <div className="text-xs text-stone-600 flex items-center gap-2">
-          <span className="font-mono bg-stone-100 border border-stone-200 px-2 py-0.5 rounded text-[11px] font-semibold text-stone-800">
+        <div className="text-xs text-slate-600 flex items-center gap-2">
+          <span className="font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-800">
             SOP-PROC-2026-001 (Rev. 3.0)
           </span>
-          <span className="hidden sm:inline text-stone-300">•</span>
-          <span className="text-[11px] text-[#154c38] font-semibold flex items-center gap-1 border border-emerald-200 px-2 py-0.5 rounded bg-emerald-50">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#154c38]" />
+          <span className="hidden sm:inline text-slate-300">•</span>
+          <span className="text-[11px] text-[#1e40af] font-semibold flex items-center gap-1 border border-blue-200 px-2 py-0.5 rounded bg-blue-50">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#1e40af]" />
             มาตรฐาน ISO 9001:2015
           </span>
         </div>
@@ -1209,16 +1209,16 @@ export function ManualPage() {
       {/* Content Rendering Branch: Official A4 Document vs Interactive Web Guide */}
       {viewMode === 'official-document' ? (
         <div className="space-y-4">
-          <div className="bg-stone-50 border border-stone-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-stone-800 shadow-xs print:hidden">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-800 shadow-xs print:hidden">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#154c38] text-white flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-[#1e40af] text-white flex items-center justify-center shrink-0">
                 <FileText className="w-4 h-4 text-white" />
               </div>
               <div>
-                <strong className="block text-stone-900 font-bold text-sm">
+                <strong className="block text-slate-900 font-bold text-sm">
                   {isEnglish ? 'Official Standard Operating Procedure (SOP) Manual' : 'เอกสารคู่มือมาตรฐานการปฏิบัติงานระบบจัดซื้อและคลังสินค้า (ฉบับจริง)'}
                 </strong>
-                <p className="text-stone-600 text-[11.5px] mt-0.5">
+                <p className="text-slate-600 text-[11.5px] mt-0.5">
                   จัดหน้ากระดาษตามมาตรฐาน A4 Portrait (210 x 297 มม.) ทั้ง 8 หน้า พร้อมผังกระบวนการ สิทธิ์การใช้งาน และตารางสรุปปุ่ม เหมาะสำหรับการสั่งพิมพ์หรือบันทึก PDF
                 </p>
               </div>
@@ -1227,7 +1227,7 @@ export function ManualPage() {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => handlePrint('standard-manual-doc')}
-                className="px-4 py-2 rounded-full bg-[#154c38] hover:bg-[#103b2b] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-full bg-[#1e40af] hover:bg-[#1e3a8a] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                 title="พิมพ์คู่มือมาตรฐานขนาด A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
               >
                 <Printer className="w-4 h-4 text-white" />
@@ -1244,8 +1244,8 @@ export function ManualPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FolderKanban className="w-4 h-4 text-[#154c38]" />
-                <h2 className="text-sm font-bold text-stone-900">
+                <FolderKanban className="w-4 h-4 text-[#1e40af]" />
+                <h2 className="text-sm font-bold text-slate-900">
                   {isEnglish ? 'Organized by System Parts & Workflow Chapters' : 'จัดหมวดหมู่คู่มือตามส่วนงาน (6 ส่วนหลัก)'}
                 </h2>
               </div>
@@ -1253,15 +1253,15 @@ export function ManualPage() {
                 <button
                   type="button"
                   onClick={expandAll}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {isEnglish ? 'Expand All' : 'ขยายทั้งหมด'}
                 </button>
-                <span className="text-stone-300">|</span>
+                <span className="text-slate-300">|</span>
                 <button
                   type="button"
                   onClick={collapseAll}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {isEnglish ? 'Collapse All' : 'ย่อทั้งหมด'}
                 </button>
@@ -1279,15 +1279,15 @@ export function ManualPage() {
                 className={cn(
                   "p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between",
                   selectedPart === 'all'
-                    ? "bg-[#154c38] text-white border-[#154c38] shadow-xs"
-                    : "bg-white hover:bg-emerald-50/40 border-stone-200 hover:border-[#154c38] text-stone-800 shadow-xs"
+                    ? "bg-[#1e40af] text-white border-[#1e40af] shadow-xs"
+                    : "bg-white hover:bg-blue-50/40 border-slate-200 hover:border-[#1e40af] text-slate-800 shadow-xs"
                 )}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className={cn(
                       "text-[10px] font-bold px-1.5 py-0.5 rounded",
-                      selectedPart === 'all' ? "bg-white/20 text-white" : "bg-stone-100 text-stone-700 border border-stone-200"
+                      selectedPart === 'all' ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700 border border-slate-200"
                     )}>
                       ALL
                     </span>
@@ -1315,21 +1315,21 @@ export function ManualPage() {
                     className={cn(
                       "p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between group",
                       isSelected
-                        ? "bg-[#154c38] text-white border-[#154c38] shadow-xs"
-                        : "bg-white hover:bg-emerald-50/40 border-stone-200 hover:border-[#154c38] text-stone-800 shadow-xs"
+                        ? "bg-[#1e40af] text-white border-[#1e40af] shadow-xs"
+                        : "bg-white hover:bg-blue-50/40 border-slate-200 hover:border-[#1e40af] text-slate-800 shadow-xs"
                     )}
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className={cn(
                           "w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold border",
-                          isSelected ? "bg-white text-[#154c38] border-white" : "bg-stone-100 text-stone-700 border-stone-200"
+                          isSelected ? "bg-white text-[#1e40af] border-white" : "bg-slate-100 text-slate-700 border-slate-200"
                         )}>
                           {p.partNumber}
                         </span>
                         <span className={cn(
                           "text-[10px] font-bold px-1.5 py-0.5 rounded border",
-                          isSelected ? "bg-white/20 text-white border-white/20" : "bg-stone-100 text-stone-700 border-stone-200"
+                          isSelected ? "bg-white/20 text-white border-white/20" : "bg-slate-100 text-slate-700 border-slate-200"
                         )}>
                           {p.moduleCount} โมดูล
                         </span>
@@ -1340,7 +1340,7 @@ export function ManualPage() {
                     </div>
                     <p className={cn(
                       "text-[10px] mt-1.5 line-clamp-1 leading-normal",
-                      isSelected ? "text-emerald-100" : "text-stone-500 group-hover:text-stone-900"
+                      isSelected ? "text-blue-100" : "text-slate-500 group-hover:text-slate-900"
                     )}>
                       {isEnglish ? p.summaryEn : p.summaryTh}
                     </p>
@@ -1350,9 +1350,9 @@ export function ManualPage() {
             </div>
 
             {/* Quick In-Page Anchor Jump Pills */}
-            <div className="bg-white p-2 rounded-2xl border border-stone-200 shadow-xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
-              <span className="text-[11px] font-bold text-stone-500 px-2 shrink-0 flex items-center gap-1">
-                <Compass className="w-3.5 h-3.5 text-[#154c38]" />
+            <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-1.5 overflow-x-auto smooth-scroll text-xs">
+              <span className="text-[11px] font-bold text-slate-500 px-2 shrink-0 flex items-center gap-1">
+                <Compass className="w-3.5 h-3.5 text-[#1e40af]" />
                 {isEnglish ? 'Jump to:' : 'ข้ามไปที่:'}
               </span>
               <button
@@ -1361,8 +1361,8 @@ export function ManualPage() {
                 className={cn(
                   "px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-colors cursor-pointer",
                   selectedModule === 'all'
-                    ? "bg-[#154c38] text-white shadow-xs"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                    ? "bg-[#1e40af] text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 )}
               >
                 {isEnglish ? 'All In Part' : 'ทั้งหมดในส่วนนี้'}
@@ -1383,8 +1383,8 @@ export function ManualPage() {
                     className={cn(
                       "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer",
                       isCurrent
-                        ? "bg-[#154c38] text-white shadow-xs font-bold"
-                        : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                        ? "bg-[#1e40af] text-white shadow-xs font-bold"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                     )}
                   >
                     <MIcon className="w-3 h-3 shrink-0" />
@@ -1397,18 +1397,18 @@ export function ManualPage() {
 
       {/* 3. Visual Workflow Diagram (Always prominent) */}
       {(selectedModule === 'all' || selectedModule === 'flow-overview') && !searchQuery && (
-        <div className="bg-white rounded-3xl border border-stone-200 p-6 sm:p-7 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 pb-4">
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-emerald-50 text-[#154c38] border border-emerald-200/80">
-                  <Layers className="w-4 h-4 text-[#154c38]" />
+                <span className="p-1.5 rounded-lg bg-blue-50 text-[#1e40af] border border-blue-200/80">
+                  <Layers className="w-4 h-4 text-[#1e40af]" />
                 </span>
-                <h2 className="text-lg font-bold text-stone-900">
+                <h2 className="text-lg font-bold text-slate-900">
                   {isEnglish ? 'Visual Lifecycle Flowchart & Linkages' : 'ผังภาพแสดงลำดับขั้นตอนการเชื่อมโยงระบบ (End-to-End Workflow)'}
                 </h2>
               </div>
-              <p className="text-xs text-stone-600 mt-1">
+              <p className="text-xs text-slate-600 mt-1">
                 {isEnglish 
                   ? 'Visual flowchart mapping data relationships between PR, Approval, PO, Inventory, and Reports.'
                   : 'แสดงความสัมพันธ์และการไหลของข้อมูลจากต้นทางสู่ปลายทางใน 7 ลำดับขั้นหลัก'}
@@ -1420,127 +1420,127 @@ export function ManualPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             
             {/* Step 1 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 1
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <ShoppingCart className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <ShoppingCart className="w-4 h-4 text-[#1e40af]" />
                 เปิดคำขอซื้อ (PR)
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 วิศวกรสนามสร้างคำขอซื้อ ระบุโครงการ สเปกวัสดุ หรือเลือกเทมเพลต BOQ แล้วกด <strong>&ldquo;ส่งขออนุมัติ&rdquo;</strong>
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
                 <span>ส่งต่อไปยังการอนุมัติ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 2 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 2
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <ClipboardCheck className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <ClipboardCheck className="w-4 h-4 text-[#1e40af]" />
                 พิจารณาอนุมัติ (Approval)
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 ผู้อนุมัติตรวจเอกสาร A4 เช็กกรอบงบประมาณ BOQ แล้วกด <strong>&ldquo;อนุมัติคำขอ&rdquo;</strong> ลงนามดิจิทัล
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
                 <span>ส่งต่อไปยังฝ่ายจัดซื้อ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 3 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 3
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-[#1e40af]" />
                 ออกใบสั่งซื้อ (PO)
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 ฝ่ายจัดซื้อกด <strong>&ldquo;สร้าง PO จาก PR ที่อนุมัติแล้ว&rdquo;</strong> เลือกผู้ขาย และส่งเอกสารสั่งของ
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
                 <span>รอผู้ขายส่งมอบสินค้า</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 4 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 4
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <Package className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <Package className="w-4 h-4 text-[#1e40af]" />
                 ตรวจรับของหน้างาน
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 ของมาส่งหน้างาน เจ้าหน้าที่กด <strong>&ldquo;ตรวจรับสินค้า&rdquo;</strong> ในหน้า PO บันทึกจำนวนที่รับจริง
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
                 <span>อัปเดตสต็อกคลังทันที</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 5 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 5
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <Package className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <Package className="w-4 h-4 text-[#1e40af]" />
                 เข้าสต็อกคลัง (Inventory)
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 ยอดสต็อกเพิ่มอัตโนมัติ เจ้าหน้าที่กด <strong>&ldquo;พิมพ์ป้าย QR&rdquo;</strong> ติดสติกเกอร์ที่กล่องสินค้า
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
                 <span>พร้อมสแกนใช้งาน</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 6 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 6
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <Camera className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <Camera className="w-4 h-4 text-[#1e40af]" />
                 สแกนกล้องสด & เบิกจ่าย
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 กด <strong>&ldquo;สแกน QR&rdquo;</strong> ส่องกล้องมือถือ/เว็บแคม เพื่อเบิกของไปไซต์งาน หรือตรวจนับยอดจริง
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
                 <span>ตัดยอดสต็อกแบบ Real-time</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
 
             {/* Step 7 */}
-            <div className="p-4 rounded-2xl border border-stone-200/90 hover:border-[#154c38] transition-colors bg-white relative space-y-2 md:col-span-2 group shadow-xs">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/80 text-[10px] font-bold">
+            <div className="p-4 rounded-2xl border border-slate-200/90 hover:border-[#1e40af] transition-colors bg-white relative space-y-2 md:col-span-2 group shadow-xs">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/80 text-[10px] font-bold">
                 ขั้นตอนที่ 7
               </span>
-              <h3 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-                <BarChart3 className="w-4 h-4 text-[#154c38]" />
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <BarChart3 className="w-4 h-4 text-[#1e40af]" />
                 วิเคราะห์ต้นทุนและสรุปผู้บริหาร (Reports & Analytics)
               </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 ข้อมูลทุกกระบวนการจะถูกประมวลผลเป็นสถิติเปรียบเทียบงบประมาณ วิเคราะห์ผู้ขาย และส่งออกเป็น Excel / PDF สำหรับรายงานที่ประชุม
               </p>
-              <div className="pt-2 text-[11px] text-[#154c38] font-bold flex items-center gap-1 border-t border-stone-100">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#154c38]" />
+              <div className="pt-2 text-[11px] text-[#1e40af] font-bold flex items-center gap-1 border-t border-slate-100">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1e40af]" />
                 <span>วงจรจัดซื้อและบริหารคลังสมบูรณ์แบบ</span>
               </div>
             </div>
@@ -1561,18 +1561,18 @@ export function ManualPage() {
             <React.Fragment key={m.id}>
               {/* Part Section Header Banner */}
               {isNewPart && (
-                <div className="bg-gradient-to-r from-[#154c38] to-[#1e3a2b] text-white rounded-2xl p-5 sm:p-6 shadow-xs border border-emerald-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8 first:mt-0">
+                <div className="bg-gradient-to-r from-[#1e40af] to-[#1e3a8a] text-white rounded-2xl p-5 sm:p-6 shadow-xs border border-blue-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8 first:mt-0">
                   <div className="flex items-center gap-3.5">
                     <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-xs text-white border border-white/20 flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
                       {m.partNumber}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-200">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-blue-200">
                           {isEnglish ? `Part ${m.partNumber}` : `ส่วนที่ ${m.partNumber}`}
                         </span>
-                        <span className="text-emerald-400/50">•</span>
-                        <span className="text-[11px] text-emerald-200">
+                        <span className="text-blue-300/60">•</span>
+                        <span className="text-[11px] text-blue-200">
                           {modules.filter(item => item.partId === m.partId).length} {isEnglish ? 'Modules' : 'โมดูลงาน'}
                         </span>
                       </div>
@@ -1583,7 +1583,7 @@ export function ManualPage() {
                   </div>
 
                   {partInfo && (
-                    <div className="text-xs text-emerald-100 font-medium bg-white/10 border border-white/15 px-3.5 py-2 rounded-xl max-w-md self-start sm:self-auto leading-relaxed">
+                    <div className="text-xs text-blue-100 font-medium bg-white/10 border border-white/15 px-3.5 py-2 rounded-xl max-w-md self-start sm:self-auto leading-relaxed">
                       {isEnglish ? partInfo.summaryEn : partInfo.summaryTh}
                     </div>
                   )}
@@ -1593,32 +1593,32 @@ export function ManualPage() {
               {/* Module Card */}
               <div 
                 id={m.id}
-                className="bg-white rounded-2xl border border-stone-200/90 hover:border-stone-300 overflow-hidden shadow-xs scroll-mt-24 transition-all"
+                className="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 overflow-hidden shadow-xs scroll-mt-24 transition-all"
               >
                 {/* Module Header Bar */}
                 <div 
                   onClick={() => toggleModule(m.id)}
-                  className="p-4 sm:p-5 bg-stone-50/70 hover:bg-stone-100/70 border-b border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition-colors select-none"
+                  className="p-4 sm:p-5 bg-slate-50/70 hover:bg-slate-100/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition-colors select-none"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#154c38] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#1e40af] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                       <Icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-[#154c38] border border-emerald-200/70">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#1e40af] border border-blue-200/70">
                           {isEnglish ? `Part ${m.partNumber}` : `ส่วนที่ ${m.partNumber}`}
                         </span>
-                        <h2 className="text-base sm:text-lg font-bold text-stone-900 leading-snug">
+                        <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
                           {isEnglish ? m.titleEn : m.title}
                         </h2>
-                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-stone-100 text-stone-800 border border-stone-200">
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-800 border border-slate-200">
                           {m.badge}
                         </span>
                       </div>
-                      <p className="text-xs text-stone-500 font-medium mt-1 flex items-center gap-1.5">
-                        <span className="font-bold text-stone-900">ผู้รับผิดชอบหลัก:</span> 
-                        <span className="text-stone-600">{m.role}</span>
+                      <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
+                        <span className="font-bold text-slate-900">ผู้รับผิดชอบหลัก:</span> 
+                        <span className="text-slate-600">{m.role}</span>
                       </p>
                     </div>
                   </div>
@@ -1628,7 +1628,7 @@ export function ManualPage() {
                       <Link
                         to={m.route}
                         onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-stone-200 hover:border-[#154c38] bg-white hover:bg-emerald-50/30 text-stone-800 text-xs font-bold transition-all shadow-2xs"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#1e40af] bg-white hover:bg-blue-50/30 text-slate-800 text-xs font-bold transition-all shadow-2xs"
                       >
                         <span>{isEnglish ? 'Open Module' : 'ไปยังหน้านี้'}</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -1641,13 +1641,13 @@ export function ManualPage() {
                         e.stopPropagation();
                         toggleModule(m.id);
                       }}
-                      className="p-1.5 rounded-full bg-white border border-stone-200 hover:border-[#154c38] text-stone-700 transition-colors cursor-pointer shadow-2xs"
+                      className="p-1.5 rounded-full bg-white border border-slate-200 hover:border-[#1e40af] text-slate-700 transition-colors cursor-pointer shadow-2xs"
                       title={isExpanded ? 'ย่อเนื้อหา' : 'ขยายเนื้อหาทั้งหมด'}
                     >
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-stone-700" />
+                        <ChevronUp className="w-4 h-4 text-slate-700" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-stone-700" />
+                        <ChevronDown className="w-4 h-4 text-slate-700" />
                       )}
                     </button>
                   </div>
@@ -1683,11 +1683,11 @@ export function ManualPage() {
                 {isExpanded && (
                   <div className="p-5 sm:p-6 space-y-6 bg-white animate-in fade-in duration-200">
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
                         วัตถุประสงค์และการทำงาน (Objective & Scope)
                       </h4>
-                      <p className="text-xs sm:text-sm text-stone-800 leading-relaxed bg-stone-50 p-3.5 rounded-xl border border-stone-200">
+                      <p className="text-xs sm:text-sm text-slate-800 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                         {isEnglish ? m.summaryEn : m.summary}
                       </p>
                     </div>
@@ -1695,19 +1695,19 @@ export function ManualPage() {
                     {/* Workflow Linkages */}
                     {m.linkages.length > 0 && (
                       <div className="space-y-2.5">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
                           การเชื่อมโยงกับฟีเจอร์อื่นในระบบ (Feature Linkages)
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                           {m.linkages.map((link, lIdx) => (
-                            <div key={lIdx} className="p-3 rounded-xl border border-stone-200 bg-stone-50/60 text-xs space-y-1">
-                              <div className="flex items-center gap-1.5 font-bold text-stone-900">
-                                <span className="text-stone-900">{link.from}</span>
-                                <ArrowRight className="w-3 h-3 text-stone-400" />
-                                <span className="text-stone-700">{link.to}</span>
+                            <div key={lIdx} className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs space-y-1">
+                              <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                                <span className="text-slate-900">{link.from}</span>
+                                <ArrowRight className="w-3 h-3 text-slate-400" />
+                                <span className="text-slate-700">{link.to}</span>
                               </div>
-                              <p className="text-stone-600 text-[11.5px] leading-relaxed">
+                              <p className="text-slate-600 text-[11.5px] leading-relaxed">
                                 {link.description}
                               </p>
                             </div>
@@ -1719,17 +1719,17 @@ export function ManualPage() {
                     {/* Status Glossary if any */}
                     {m.statuses && m.statuses.length > 0 && (
                       <div className="space-y-2.5">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
                           ความหมายของสถานะเอกสาร (Document Statuses)
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                           {m.statuses.map((st, sIdx) => (
-                            <div key={sIdx} className="p-2.5 rounded-xl border border-stone-200 bg-stone-50 flex items-start gap-2 text-xs">
-                              <span className="px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-200 bg-emerald-50 text-[#154c38] shrink-0">
+                            <div key={sIdx} className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 flex items-start gap-2 text-xs">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold border border-blue-200 bg-blue-50 text-[#1e40af] shrink-0">
                                 {st.status}
                               </span>
-                              <span className="text-[11.5px] text-stone-700 leading-snug">
+                              <span className="text-[11.5px] text-slate-700 leading-snug">
                                 {st.desc}
                               </span>
                             </div>
@@ -1742,8 +1742,8 @@ export function ManualPage() {
                     {m.buttons.length > 0 && (
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
                             คู่มือคำอธิบายปุ่มและการกดใช้งาน (Button & Action Guide)
                           </h4>
                           <span className="text-[11px] text-stone-400 font-mono">
@@ -1832,82 +1832,82 @@ export function ManualPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               1. สแกน QR Code แล้วกล้องไม่เปิด หรือขึ้นข้อความแจ้งเตือน?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               ตรวจสอบสิทธิ์การใช้งานกล้องในเบราว์เซอร์ (คลิกที่ไอคอนแม่กุญแจหน้ารายการ URL) แล้วเลือกอนุญาต (Allow) การใช้กล้อง หรือสามารถสลับไปใช้แท็บ <strong>&ldquo;อัปโหลดรูปภาพ&rdquo;</strong> หรือ <strong>&ldquo;กรอกรหัสด้วยตนเอง&rdquo;</strong> ได้ทันที
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               2. ใบขอซื้อ (PR) ได้รับอนุมัติแล้ว แต่ทำไมยังไม่มีสินค้ามาส่ง?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               เมื่อ PR อนุมัติแล้ว ฝ่ายจัดซื้อจะต้องไปที่เมนู <strong>&ldquo;ระบบจัดซื้อ (PO)&rdquo;</strong> แล้วกดปุ่ม <strong>&ldquo;สร้าง PO จาก PR ที่อนุมัติแล้ว&rdquo;</strong> เพื่อออกใบสั่งซื้อและส่งไปยังคู่ค้าอย่างเป็นทางการก่อน
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               3. สินค้ามาส่งหน้างานไม่ครบตามจำนวนใน PO ทำอย่างไร?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               สามารถกด <strong>&ldquo;ตรวจรับสินค้า&rdquo;</strong> ในหน้า PO แล้วกรอกเฉพาะจำนวนที่มาส่งจริงในงวดนั้น ระบบจะปรับสถานะเป็น <strong>Partially Received (รับบางส่วน)</strong> และบันทึกยอดค้างส่งไว้รอรับในงวดถัดไป
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               4. ต้องการนำระบบไปใช้งานในสมาร์ทโฟนโดยไม่ต้องโหลดแอป?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               เปิดเบราว์เซอร์บนมือถือ แล้วกดปุ่ม <strong>&ldquo;ติดตั้งแอป Conerage store&rdquo;</strong> ที่แถบเมนูข้าง หรือกด Share &gt; &ldquo;Add to Home Screen&rdquo; บน Safari / Chrome ระบบจะติดตั้งเป็น PWA บนหน้าจอหลัก ใช้งานได้รวดเร็วเสมือนแอปจริง
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               5. นำเข้าไฟล์ Excel หรือ BOQ แล้วหัวคอลัมน์ไม่ตรงกับระบบ ทำอย่างไร?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               ในหน้า <strong>&ldquo;ศูนย์นำเข้าข้อมูล (Data Import Hub)&rdquo;</strong> หลังจากอัปโหลดไฟล์ ระบบจะมีขั้นตอน <strong>&ldquo;จับคู่คอลัมน์ (Auto-Map Columns)&rdquo;</strong> ให้ท่านเลือกแมปหัวตารางจากไฟล์ของท่านเข้ากับฟิลด์ของระบบได้อย่างอิสระ หรือสามารถกด <strong>&ldquo;ดาวน์โหลดเทมเพลตมาตรฐาน&rdquo;</strong> ไปใช้เป็นต้นแบบได้
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               6. ขนาดตัวหนังสือและตารางบนหน้าจอคอมพิวเตอร์ใหญ่หรือเล็กเกินไป?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               ไปที่เมนู <strong>&ldquo;ตั้งค่า (Settings)&rdquo;</strong> ในส่วน <strong>&ldquo;ความละเอียดการแสดงผล (Display Density)&rdquo;</strong> สามารถเลือกปรับสเกลเป็น <strong>80% (กะทัดรัดสมดุล เหมาะกับโน้ตบุ๊ก)</strong>, 90%, 100% หรือ 110% ระบบจะปรับขนาด UI ทันทีและจดจำค่าไว้ตลอดการใช้งาน
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               7. ป้ายบาร์โค้ด Master SKU รองรับเครื่องพิมพ์และเครื่องยิงแบบใดบ้าง?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               รองรับเครื่องยิงบาร์โค้ดไร้สายทั่วไป (Wireless / USB Barcode Scanner Gun) และกล้องมือถือ สำหรับการพิมพ์ป้าย รองรับทั้งเครื่องพิมพ์สติกเกอร์ความร้อน (Direct Thermal Label Printer เช่น Xprinter, Zebra) ขนาด 50x30 มม., 75x50 มม., ป้ายติดชั้นวาง (Shelf Tag) และเครื่องพิมพ์ A4
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-1.5">
-            <h4 className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#154c38]" />
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1e40af]" />
               8. การตั้งค่าแจ้งเตือนการขออนุมัติเข้ากลุ่ม LINE (LINE Notify)?
             </h4>
-            <p className="text-stone-600 leading-relaxed text-[11.5px]">
+            <p className="text-slate-600 leading-relaxed text-[11.5px]">
               ไปที่เมนู <strong>&ldquo;เชื่อมต่อคลาวด์/API (Cloud Sync)&rdquo;</strong> ในการ์ด LINE Notify นำ Token จาก notify-bot.line.me มาวางและระบุชื่อกลุ่ม จากนั้นกด <strong>&ldquo;ทดสอบส่งข้อความ&rdquo;</strong> ระบบจะส่งแจ้งเตือนข้อความพร้อมลิงก์เอกสารเข้ากลุ่มไลน์ทันทีที่มีคำขออนุมัติใหม่
             </p>
           </div>
@@ -1923,19 +1923,19 @@ export function ManualPage() {
 
   {/* Official A4 Document Preview Modal */}
   {isPreviewModalOpen && (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:hidden">
-      <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 print:hidden">
+      <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
-        <div className="bg-white px-5 py-3.5 border-b border-stone-200 flex items-center justify-between shrink-0">
+        <div className="bg-white px-5 py-3.5 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#154c38] text-white flex items-center justify-center shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-[#1e40af] text-white flex items-center justify-center shadow-xs">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-stone-900 text-sm">
+              <h3 className="font-bold text-slate-900 text-sm">
                 ตัวอย่างเอกสารคู่มือมาตรฐานการปฏิบัติงาน (Standard A4 SOP Preview)
               </h3>
-              <p className="text-[11px] text-stone-500">
+              <p className="text-[11px] text-slate-500">
                 เอกสารทางการ 8 หน้า • รหัส SOP-PROC-2026-001 (Rev. 3.0)
               </p>
             </div>
@@ -1944,7 +1944,7 @@ export function ManualPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handlePrint('standard-manual-doc-modal')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#154c38] hover:bg-[#103b2b] text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1e40af] hover:bg-[#1e3a8a] text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
               title="พิมพ์เอกสารมาตรฐาน A4 (หรือเลือกบันทึกเป็น PDF ผ่านเมนูพิมพ์)"
             >
               <Printer className="w-3.5 h-3.5 text-white" />

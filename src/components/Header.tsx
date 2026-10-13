@@ -279,7 +279,7 @@ export function Header({
               window.location.reload();
             }
           }}
-          className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#154c38] hover:bg-[#103b2b] text-white border border-[#154c38] transition-all cursor-pointer shadow-xs text-xs font-semibold"
+          className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e40af] hover:bg-[#1e3a8a] text-white border border-[#1e40af] transition-all cursor-pointer shadow-xs text-xs font-semibold"
           title={isEnglish ? 'Load Enterprise Sales Demo Data' : 'โหลดชุดข้อมูลสาธิตสำหรับพรีเซนต์'}
         >
           <Layers className="w-3.5 h-3.5 text-white" />
@@ -292,10 +292,10 @@ export function Header({
           onClick={() => {
             window.dispatchEvent(new CustomEvent('app:open-ai-copilot'));
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-emerald-50/50 text-stone-800 border border-stone-200 hover:border-[#154c38] transition-all cursor-pointer shadow-xs group text-xs font-semibold"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-blue-50/50 text-slate-800 border border-slate-200 hover:border-[#1e40af] transition-all cursor-pointer shadow-xs group text-xs font-semibold"
           title={isEnglish ? 'Open AI Copilot & Diagnostics' : 'เปิด AI ผู้ช่วยและศูนย์ซ่อมแซมระบบ'}
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#154c38] group-hover:scale-110 transition-transform" />
+          <Sparkles className="w-3.5 h-3.5 text-[#1e40af] group-hover:scale-110 transition-transform" />
           <span className="text-xs font-bold hidden sm:inline">AI Copilot</span>
         </button>
 
@@ -310,17 +310,17 @@ export function Header({
               setShowUserMenu(prev => !prev);
               setShowNotifications(false);
             }}
-            className="flex items-center space-x-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#154c38] rounded-xl p-1.5 transition-all hover:bg-stone-100 cursor-pointer border border-transparent hover:border-stone-200"
+            className="flex items-center space-x-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af] rounded-xl p-1.5 transition-all hover:bg-slate-100 cursor-pointer border border-transparent hover:border-slate-200"
             title={isEnglish ? 'Switch user / role' : 'สลับบทบาทผู้ใช้งาน'}
           >
-            <div className="w-8 h-8 rounded-full bg-[#154c38] text-white flex items-center justify-center text-xs font-bold shadow-xs ring-2 ring-emerald-100">
+            <div className="w-8 h-8 rounded-full bg-[#1e40af] text-white flex items-center justify-center text-xs font-bold shadow-xs ring-2 ring-blue-100">
               {currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'}
             </div>
             <div className="hidden md:block text-left">
-              <span className="block font-semibold text-stone-900 text-xs leading-tight truncate max-w-[120px]">
+              <span className="block font-semibold text-slate-900 text-xs leading-tight truncate max-w-[120px]">
                 {currentUser.name}
               </span>
-              <span className="block text-[10px] text-stone-500 font-medium tracking-tight">
+              <span className="block text-[10px] text-slate-500 font-medium tracking-tight">
                 {currentUser.role}
               </span>
             </div>

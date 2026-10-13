@@ -1049,17 +1049,17 @@ export function UsersPage() {
         {permissionModalRole && (
           <div className="space-y-6">
             {/* Role Header Banner */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-[#122b20] via-[#154c38] to-[#1c3e30] text-white border border-emerald-900/30 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#1e3a8a] text-white border border-slate-700/60 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-base shadow-xs bg-white/10 text-emerald-300 border border-white/20 backdrop-blur-xs">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-base shadow-xs bg-white/10 text-blue-300 border border-white/20 backdrop-blur-xs">
                   {permissionModalRole.avatarText || 'RO'}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-white text-lg leading-tight">{permissionModalRole.titleTh}</h3>
-                    <span className="text-xs text-emerald-200/80 font-mono">({permissionModalRole.name})</span>
+                    <span className="text-xs text-blue-200/80 font-mono">({permissionModalRole.name})</span>
                   </div>
-                  <p className="text-xs text-emerald-100/80 mt-0.5">{permissionModalRole.descTh}</p>
+                  <p className="text-xs text-slate-200 mt-0.5">{permissionModalRole.descTh}</p>
                 </div>
               </div>
 
@@ -1068,7 +1068,7 @@ export function UsersPage() {
                 <button
                   type="button"
                   onClick={handleSelectAllPermissions}
-                  className="px-3.5 py-1.5 bg-white text-[#154c38] rounded-full text-xs font-bold hover:bg-emerald-50 shadow-xs cursor-pointer transition-colors"
+                  className="px-3.5 py-1.5 bg-white text-[#1e40af] rounded-full text-xs font-bold hover:bg-blue-50 shadow-xs cursor-pointer transition-colors"
                 >
                   เลือกทั้งหมด
                 </button>
