@@ -5,66 +5,66 @@
   /* Typography: SF Pro on Apple devices, Inter elsewhere, Thai-capable fallbacks */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Sarabun", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
 
-  /* Neutrals: Pure Black (#000000), Pure White (#ffffff), and crisp sharp zinc borders */
+  /* Neutrals: Warm Stone & Soft Natural Off-White */
   --color-slate-50: #ffffff;
-  --color-slate-100: #f4f4f5;
-  --color-slate-200: #e4e4e7;
-  --color-slate-300: #d4d4d8;
-  --color-slate-400: #a1a1aa;
-  --color-slate-500: #71717a;
-  --color-slate-600: #52525b;
-  --color-slate-700: #3f3f46;
-  --color-slate-800: #27272a;
-  --color-slate-900: #09090b;
-  --color-slate-950: #000000;
+  --color-slate-100: #f5f5f4;
+  --color-slate-200: #e7e5e4;
+  --color-slate-300: #d6d3d1;
+  --color-slate-400: #a8a29e;
+  --color-slate-500: #78716c;
+  --color-slate-600: #57534e;
+  --color-slate-700: #44403c;
+  --color-slate-800: #292524;
+  --color-slate-900: #1c1917;
+  --color-slate-950: #0c0a09;
 
-  /* Primary Action Colors: Mapped directly to Pure Black & Crisp Charcoal */
-  --color-indigo-50: #f4f4f5;
-  --color-indigo-100: #e4e4e7;
-  --color-indigo-200: #d4d4d8;
-  --color-indigo-300: #a1a1aa;
-  --color-indigo-400: #71717a;
-  --color-indigo-500: #27272a;
-  --color-indigo-600: #000000;
-  --color-indigo-700: #18181b;
-  --color-indigo-800: #27272a;
-  --color-indigo-900: #09090b;
-  --color-indigo-950: #000000;
+  /* Primary Action Colors: Deep Botanical Forest Pine & Natural Sage */
+  --color-indigo-50: #f0fdf4;
+  --color-indigo-100: #dcfce7;
+  --color-indigo-200: #bbf7d0;
+  --color-indigo-300: #86efac;
+  --color-indigo-400: #4ade80;
+  --color-indigo-500: #22c55e;
+  --color-indigo-600: #154c38;
+  --color-indigo-700: #103b2b;
+  --color-indigo-800: #0b291e;
+  --color-indigo-900: #061811;
+  --color-indigo-950: #030d09;
 
-  /* Purple mapped to clean monochrome shades */
-  --color-purple-50: #f4f4f5;
-  --color-purple-100: #e4e4e7;
-  --color-purple-200: #d4d4d8;
-  --color-purple-300: #a1a1aa;
-  --color-purple-400: #71717a;
-  --color-purple-500: #27272a;
-  --color-purple-600: #000000;
-  --color-purple-700: #18181b;
-  --color-purple-800: #09090b;
-  --color-purple-900: #000000;
+  /* Purple mapped to calming eucalyptus & botanical teal */
+  --color-purple-50: #f0fdfa;
+  --color-purple-100: #ccfbf1;
+  --color-purple-200: #99f6e4;
+  --color-purple-300: #5eead4;
+  --color-purple-400: #2dd4bf;
+  --color-purple-500: #14b8a6;
+  --color-purple-600: #0f766e;
+  --color-purple-700: #115e59;
+  --color-purple-800: #134e4a;
+  --color-purple-900: #042f2e;
 
-  /* Clean minimal status accents: subdued, high legibility */
-  --color-emerald-50: #f4f4f5;
-  --color-emerald-100: #e4e4e7;
-  --color-emerald-200: #d4d4d8;
-  --color-emerald-300: #a1a1aa;
-  --color-emerald-400: #71717a;
-  --color-emerald-500: #18181b;
-  --color-emerald-600: #09090b;
-  --color-emerald-700: #000000;
-  --color-emerald-800: #000000;
-  --color-emerald-900: #000000;
+  /* Natural status accents: Botanical Emerald, Earth Amber, Soft Coral */
+  --color-emerald-50: #f0fdf4;
+  --color-emerald-100: #dcfce7;
+  --color-emerald-200: #bbf7d0;
+  --color-emerald-300: #86efac;
+  --color-emerald-400: #4ade80;
+  --color-emerald-500: #22c55e;
+  --color-emerald-600: #16a34a;
+  --color-emerald-700: #15803d;
+  --color-emerald-800: #166534;
+  --color-emerald-900: #14532d;
 
-  --color-amber-50: #f4f4f5;
-  --color-amber-100: #e4e4e7;
-  --color-amber-200: #d4d4d8;
-  --color-amber-300: #a1a1aa;
-  --color-amber-400: #71717a;
-  --color-amber-500: #27272a;
-  --color-amber-600: #18181b;
-  --color-amber-700: #09090b;
-  --color-amber-800: #000000;
-  --color-amber-900: #000000;
+  --color-amber-50: #fefce8;
+  --color-amber-100: #fef9c3;
+  --color-amber-200: #fef08a;
+  --color-amber-300: #fde047;
+  --color-amber-400: #facc15;
+  --color-amber-500: #eab308;
+  --color-amber-600: #ca8a04;
+  --color-amber-700: #a16207;
+  --color-amber-800: #854d0e;
+  --color-amber-900: #713f12;
 
   --color-rose-50: #fff1f2;
   --color-rose-100: #ffe4e6;
@@ -95,38 +95,36 @@
   --radius-2xl: 1rem;
   --radius-3xl: 1.25rem;
 
-  /* Shadows: crisp, sharp, well-defined */
-  --shadow-2xs: 0 0 0 1px #e4e4e7;
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  /* Shadows: soft natural diffusion */
+  --shadow-2xs: 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.07);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
 /* ==========================================================================
-   APPLE-STYLE DESIGN LAYER
-   Hairline borders, pill buttons, soft focus rings, frosted bars.
-   Unlayered on purpose so it wins over Tailwind utilities where needed.
-   Remove this block to fall back to the plain token theme above.
+   MINIMAL MODERN NATURAL DESIGN LAYER
+   Warm stone canvas, deep botanical pine accents, soft refined borders.
    ========================================================================== */
 :root {
-  --apple-black: #000000;
-  --apple-black-hover: #18181b;
-  --apple-black-active: #27272a;
-  --apple-border: #d4d4d8;
-  --apple-border-dark: #000000;
-  --apple-focus: rgba(0, 0, 0, 0.18);
-  --apple-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --natural-pine: #154c38;
+  --natural-pine-hover: #103b2b;
+  --natural-pine-active: #0b291e;
+  --natural-border: #e7e5e4;
+  --natural-border-hover: #154c38;
+  --natural-focus: rgba(21, 76, 56, 0.18);
+  --natural-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
 body {
-  background-color: #fafafa;
-  color: #000000;
+  background-color: #fafaf9;
+  color: #1c1917;
 }
 
-/* Crisp, sharp borders on cards, tables, dividers, and dialogs */
+/* Soft, clean borders on cards, tables, dividers, and dialogs */
 .border-slate-100,
 .border-slate-200,
 .border-slate-200\/60,
@@ -134,10 +132,10 @@ body {
 .border-slate-200\/80,
 .border-slate-200\/90,
 .border-slate-300 {
-  border-color: #d4d4d8 !important;
+  border-color: #e7e5e4 !important;
 }
 
-/* Sharp, high-contrast cards */
+/* Crisp, clean cards */
 .bg-white {
   background-color: #ffffff;
 }
@@ -145,17 +143,16 @@ body {
 .bg-white.border,
 .bg-white.border-slate-200,
 .border-slate-200 {
-  border-color: #d4d4d8 !important;
+  border-color: #e7e5e4 !important;
 }
 
-/* Card hover: crisp black border */
+/* Card hover: subtle botanical accent border */
 .hover\:border-indigo-300:hover,
 .hover\:border-amber-300:hover,
 .hover\:border-purple-300:hover,
 .hover\:border-emerald-300:hover,
-.hover\:border-red-300:hover,
 .hover\:border-slate-300:hover {
-  border-color: #000000 !important;
+  border-color: #154c38 !important;
 }
 
 /* Buttons: smooth press feedback */
@@ -164,7 +161,7 @@ button,
 a {
   transition-property: background-color, color, border-color, box-shadow, transform, opacity;
   transition-duration: 0.2s;
-  transition-timing-function: var(--apple-ease);
+  transition-timing-function: var(--natural-ease);
 }
 
 button:not(:disabled):active {
@@ -176,97 +173,69 @@ button:disabled {
   opacity: 0.5;
 }
 
-/* Primary buttons become Solid Black pills with crisp contrast */
+/* Primary buttons become Deep Botanical Forest Pine pills */
 button.bg-indigo-600,
 a.bg-indigo-600,
 button.bg-indigo-700,
 button.bg-emerald-500,
-button.bg-emerald-600,
-button.bg-black,
-a.bg-black {
-  background-color: #000000 !important;
+button.bg-emerald-600 {
+  background-color: #154c38 !important;
   color: #ffffff !important;
-  border: 1px solid #000000 !important;
+  border: 1px solid #154c38 !important;
   border-radius: 980px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 2px rgba(21, 76, 56, 0.15);
 }
 
 button.bg-indigo-600:hover,
 a.bg-indigo-600:hover,
 button.bg-indigo-700:hover,
 button.bg-emerald-500:hover,
-button.bg-emerald-600:hover,
-button.bg-black:hover,
-a.bg-black:hover {
-  background-color: #27272a !important;
-  border-color: #27272a !important;
+button.bg-emerald-600:hover {
+  background-color: #103b2b !important;
+  border-color: #103b2b !important;
   color: #ffffff !important;
 }
 
-/* Flatten any gradient buttons to solid Black */
-button[class*="bg-gradient-to-r"],
-a[class*="bg-gradient-to-r"] {
-  background-image: none !important;
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border: 1px solid #000000 !important;
-  border-radius: 980px;
-}
-
-button[class*="bg-gradient-to-r"]:hover,
-a[class*="bg-gradient-to-r"]:hover {
-  background-color: #27272a !important;
-  border-color: #27272a !important;
-}
-
-/* Secondary (soft gray / tinted) buttons become crisp white with black text and border */
+/* Secondary (soft stone / tinted) buttons become crisp white with stone text and border */
 button.bg-slate-100,
-button.bg-slate-200,
-button.bg-indigo-50,
-button.bg-amber-50,
-button.bg-emerald-50,
-button.bg-purple-50 {
+button.bg-slate-200 {
   background-color: #ffffff !important;
-  color: #000000 !important;
-  border: 1px solid #d4d4d8 !important;
+  color: #1c1917 !important;
+  border: 1px solid #d6d3d1 !important;
   border-radius: 980px;
 }
 
 button.bg-slate-100:hover,
-button.bg-slate-200:hover,
-button.bg-indigo-50:hover,
-button.bg-amber-50:hover,
-button.bg-emerald-50:hover,
-button.bg-purple-50:hover {
-  background-color: #f4f4f5 !important;
-  border-color: #000000 !important;
-  color: #000000 !important;
+button.bg-slate-200:hover {
+  background-color: #f5f5f4 !important;
+  border-color: #154c38 !important;
+  color: #154c38 !important;
 }
 
-/* Crisp dark focus ring on inputs */
+/* Crisp natural focus ring on inputs */
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: #000000 !important;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12) !important;
+  border-color: #154c38 !important;
+  box-shadow: 0 0 0 3px rgba(21, 76, 56, 0.12) !important;
 }
 
 button:focus-visible,
 a:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid #000000 !important;
+  outline: 2px solid #154c38 !important;
   outline-offset: 2px;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #a1a1aa;
+  color: #a8a29e;
 }
 
 input[type="checkbox"],
 input[type="radio"] {
-  accent-color: #000000;
+  accent-color: #154c38;
   box-shadow: none;
 }
 
@@ -396,7 +365,7 @@ html {
   }
 }
 
-/* Heading & Subheading Highlight Utilities */
+/* Heading & Subheading Highlight Utilities (Minimal Modern Natural Sage & Pine) */
 .heading-badge {
   display: inline-flex;
   align-items: center;
@@ -408,17 +377,27 @@ html {
   letter-spacing: 0.025em;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border: 1px solid #000000 !important;
+  background-color: #f0fdf4 !important;
+  color: #154c38 !important;
+  border: 1px solid rgba(21, 76, 56, 0.2) !important;
 }
 
-.heading-badge-primary,
-.heading-badge-amber,
+.heading-badge-primary {
+  background-color: #f0fdf4 !important;
+  color: #154c38 !important;
+  border: 1px solid rgba(21, 76, 56, 0.25) !important;
+}
+
+.heading-badge-amber {
+  background-color: #fffbeb !important;
+  color: #92400e !important;
+  border: 1px solid #fde68a !important;
+}
+
 .heading-badge-emerald {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border: 1px solid #000000 !important;
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+  border: 1px solid #a7f3d0 !important;
 }
 
 .heading-accent-bar {
@@ -426,7 +405,7 @@ html {
   width: 0.25rem;
   height: 1.125rem;
   border-radius: 9999px;
-  background-color: #000000 !important;
+  background-color: #154c38 !important;
   margin-right: 0.5rem;
   vertical-align: middle;
 }

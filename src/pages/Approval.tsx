@@ -230,10 +230,10 @@ function PendingApprovalCard({
         <button
           type="button"
           onClick={() => onView(task)}
-          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-white hover:bg-zinc-100 text-black border-2 border-zinc-300 hover:border-black font-bold text-xs rounded-full transition-all shadow-xs cursor-pointer order-2 sm:order-1"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 hover:border-[#154c38] hover:text-[#154c38] font-bold text-xs rounded-full transition-all shadow-xs cursor-pointer order-2 sm:order-1"
           title={isEnglish ? 'View Standard Official A4 Document' : 'ดูแบบฟอร์มเอกสารทางการ A4'}
         >
-          <Eye className="w-4 h-4 text-black" />
+          <Eye className="w-4 h-4 text-stone-600" />
           <span>{isEnglish ? 'View Standard Form (A4)' : 'ดูแบบฟอร์มมาตรฐาน (A4)'}</span>
         </button>
 

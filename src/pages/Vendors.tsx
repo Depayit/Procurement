@@ -144,16 +144,16 @@ export function VendorsPage() {
         <div className="flex items-center gap-2">
           <Link
             to="/import?target=vendors"
-            className="inline-flex items-center px-4 py-2 border-2 border-zinc-300 bg-white hover:border-black text-black rounded-full text-xs font-bold transition-all shadow-xs"
+            className="inline-flex items-center px-4 py-2 border border-stone-200 bg-white hover:border-[#154c38] hover:text-[#154c38] text-stone-700 rounded-full text-xs font-bold transition-all shadow-xs"
             title="นำเข้าไฟล์ Excel, CSV หรือ JSON รายชื่อบริษัทคู่ค้า"
           >
-            <UploadCloud className="h-4 w-4 mr-1.5 text-black" />
+            <UploadCloud className="h-4 w-4 mr-1.5 text-stone-600" />
             {isEnglish ? 'Import Vendors' : 'นำเข้าไฟล์คู่ค้า'}
           </Link>
 
           <button 
             onClick={openAddForm}
-            className="inline-flex items-center px-4 py-2 bg-black hover:bg-zinc-800 text-white rounded-full text-xs font-bold transition-all shadow-xs border border-black"
+            className="inline-flex items-center px-4 py-2 bg-[#154c38] hover:bg-[#103b2b] text-white rounded-full text-xs font-bold transition-all shadow-xs border border-[#154c38]"
           >
             <Plus className="h-4 w-4 mr-1.5 text-white" />
             {t('vendors.addBtn')}
@@ -170,7 +170,7 @@ export function VendorsPage() {
               placeholder="ค้นหาชื่อคู่ค้า, ผู้ติดต่อ..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 border-2 border-zinc-200 rounded-xl text-xs focus:outline-none focus:border-black focus:ring-1 focus:ring-black bg-white"
+              className="w-full pl-9 pr-4 py-2 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#154c38] focus:ring-1 focus:ring-[#154c38] bg-white text-stone-900"
             />
           </div>
         </div>
@@ -181,16 +181,16 @@ export function VendorsPage() {
             <div key={vendor.id} className="p-4 space-y-3 bg-white hover:bg-zinc-50 transition-colors">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2.5 min-w-0">
-                  <div className="h-9 w-9 flex-shrink-0 bg-zinc-100 border border-zinc-300 text-black rounded-xl flex items-center justify-center shadow-xs mt-0.5">
-                    <Store className="h-4 w-4 text-black" />
+                  <div className="h-9 w-9 flex-shrink-0 bg-emerald-50 border border-emerald-200/80 text-[#154c38] rounded-xl flex items-center justify-center shadow-xs mt-0.5">
+                    <Store className="h-4 w-4 text-[#154c38]" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-black leading-snug break-words">{vendor.name}</h4>
-                    <p className="text-xs text-zinc-500 mt-0.5 truncate">{vendor.email}</p>
+                    <h4 className="text-sm font-bold text-stone-900 leading-snug break-words">{vendor.name}</h4>
+                    <p className="text-xs text-stone-500 mt-0.5 truncate">{vendor.email}</p>
                   </div>
                 </div>
-                <div className="inline-flex items-center px-2 py-0.5 rounded-md text-black bg-zinc-100 border border-zinc-300 font-bold font-mono text-[10px] whitespace-nowrap">
-                  <Star className="h-3 w-3 mr-0.5 fill-black text-black" />
+                <div className="inline-flex items-center px-2 py-0.5 rounded-md text-[#154c38] bg-emerald-50 border border-emerald-200/80 font-bold font-mono text-[10px] whitespace-nowrap">
+                  <Star className="h-3 w-3 mr-0.5 fill-amber-400 text-amber-500" />
                   {vendor.rating.toFixed(1)}
                 </div>
               </div>
@@ -215,7 +215,7 @@ export function VendorsPage() {
               <div className="flex items-center justify-end gap-2 pt-1 border-t border-zinc-200">
                 <button 
                   onClick={() => setViewVendor(vendor)}
-                  className="flex-1 py-1.5 px-3 text-xs font-bold text-white bg-black hover:bg-zinc-800 rounded-full transition-colors shadow-xs flex items-center justify-center gap-1"
+                  className="flex-1 py-1.5 px-3 text-xs font-bold text-white bg-[#154c38] hover:bg-[#103b2b] rounded-full transition-colors shadow-xs flex items-center justify-center gap-1"
                 >
                   <Eye className="h-3.5 w-3.5 text-white" />
                   <span>รายละเอียด</span>
@@ -317,7 +317,7 @@ export function VendorsPage() {
                     <div className="flex items-center justify-end gap-1.5">
                       <button 
                         onClick={() => setViewVendor(vendor)}
-                        className="px-3 py-1.5 text-xs font-bold text-white bg-black hover:bg-zinc-800 rounded-full transition-colors shadow-xs flex items-center gap-1 cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-bold text-white bg-[#154c38] hover:bg-[#103b2b] rounded-full transition-colors shadow-xs flex items-center gap-1 cursor-pointer"
                         title="ดูรายละเอียดคู่ค้า"
                       >
                         <Eye className="h-3.5 w-3.5 text-white" />
@@ -473,7 +473,7 @@ export function VendorsPage() {
         footer={
           <button 
             onClick={() => setViewVendor(null)}
-            className="px-5 py-2 text-xs font-bold text-white bg-black rounded-full hover:bg-zinc-800 transition-colors shadow-xs"
+            className="px-5 py-2 text-xs font-bold text-white bg-[#154c38] rounded-full hover:bg-[#103b2b] transition-colors shadow-xs"
           >
             ปิด
           </button>
@@ -481,19 +481,19 @@ export function VendorsPage() {
       >
         {viewVendor && (
           <div className="space-y-6">
-            <div className="flex items-start gap-4 pb-6 border-b-2 border-zinc-200">
-              <div className="h-16 w-16 bg-zinc-100 text-black border border-zinc-300 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Store className="h-8 w-8 text-black" />
+            <div className="flex items-start gap-4 pb-6 border-b-2 border-stone-200">
+              <div className="h-16 w-16 bg-emerald-50 text-[#154c38] border border-emerald-200/80 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Store className="h-8 w-8 text-[#154c38]" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-black">{viewVendor.name}</h2>
+                <h2 className="text-xl font-bold text-stone-900">{viewVendor.name}</h2>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 text-black border border-zinc-300">
-                    <Star className="h-3.5 w-3.5 mr-1 fill-black text-black" />
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-[#154c38] border border-emerald-200/80">
+                    <Star className="h-3.5 w-3.5 mr-1 fill-amber-400 text-amber-500" />
                     Rating: {viewVendor.rating.toFixed(1)} / 5.0
                   </span>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-100 text-black border border-zinc-300">
-                    <TrendingUp className="h-3.5 w-3.5 mr-1 text-black" />
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-[#154c38] border border-emerald-200/80">
+                    <TrendingUp className="h-3.5 w-3.5 mr-1 text-[#154c38]" />
                     On-time Delivery: {viewVendor.onTimeDeliveryRate}%
                   </span>
                 </div>

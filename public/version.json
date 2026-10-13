@@ -1,9 +1,9 @@
 {
   "version": "3.0.0",
-  "buildId": "deploy_1791886282316_yqe38",
-  "buildTime": "2026-10-13T10:11:22.316Z",
-  "timestamp": 1791886282316,
+  "buildId": "deploy_1791888652521_vzu5u",
+  "buildTime": "2026-10-13T10:50:52.520Z",
+  "timestamp": 1791888652521,
   "appName": "Conerage store",
   "releaseNotes": "ระบบได้รับการอัปเดตเวอร์ชันล่าสุด พร้อมระบบแจ้งเตือนแบบเรียลไทม์",
-  "deployedAt": "2026-10-13T10:11:22.316Z"
+  "deployedAt": "2026-10-13T10:50:52.520Z"
 }

@@ -115,21 +115,21 @@ export function Dashboard() {
         {/* Card 1: Total PR */}
         <Link 
           to="/pr" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-300 p-3 sm:p-4 lg:p-5 group hover:border-black hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-stone-200/90 p-3 sm:p-4 lg:p-5 group hover:border-[#154c38] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="flex items-start">
-            <div className="flex-shrink-0 bg-zinc-100 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-black border border-zinc-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-colors">
+            <div className="flex-shrink-0 bg-emerald-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#154c38] border border-emerald-200/80 group-hover:bg-[#154c38] group-hover:text-white group-hover:border-[#154c38] transition-colors">
               <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </div>
             <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-zinc-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}>
+                <dt className="text-xs sm:text-sm font-semibold text-stone-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}>
                   {isEnglish ? 'Total PRs' : 'ใบขอซื้อทั้งหมด (PR)'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-black tabular-nums">{totalPRCount}</div>
-                  <div className="flex items-baseline text-[10px] sm:text-[11px] font-bold text-black px-1.5 sm:px-2 py-0.5 bg-zinc-100 border border-zinc-300 rounded-md tracking-wide">
-                    <TrendingUp className="self-center flex-shrink-0 h-3 w-3 mr-0.5 sm:mr-1 text-black" aria-hidden="true" />
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-stone-900 tabular-nums">{totalPRCount}</div>
+                  <div className="flex items-baseline text-[10px] sm:text-[11px] font-bold text-[#154c38] px-1.5 sm:px-2 py-0.5 bg-emerald-50 border border-emerald-200/80 rounded-md tracking-wide">
+                    <TrendingUp className="self-center flex-shrink-0 h-3 w-3 mr-0.5 sm:mr-1 text-[#154c38]" aria-hidden="true" />
                     Live
                   </div>
                 </dd>
@@ -141,24 +141,24 @@ export function Dashboard() {
         {/* Card 2: Pending Approvals */}
         <Link 
           to="/approvals" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-300 p-3 sm:p-4 lg:p-5 group hover:border-black hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-stone-200/90 p-3 sm:p-4 lg:p-5 group hover:border-[#154c38] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="flex items-start">
-            <div className="flex-shrink-0 bg-zinc-100 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-black border border-zinc-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-colors">
+            <div className="flex-shrink-0 bg-emerald-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#154c38] border border-emerald-200/80 group-hover:bg-[#154c38] group-hover:text-white group-hover:border-[#154c38] transition-colors">
               <ClipboardCheck className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </div>
             <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-zinc-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}>
+                <dt className="text-xs sm:text-sm font-semibold text-stone-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}>
                   {isEnglish ? 'Pending Approvals' : 'รอการอนุมัติ'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-black tabular-nums">{pendingApprovalCount}</div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-stone-900 tabular-nums">{pendingApprovalCount}</div>
                   <span className={cn(
                     "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-wide",
                     pendingApprovalCount > 0 
-                      ? "bg-black text-white border-black" 
-                      : "bg-zinc-100 text-black border-zinc-300"
+                      ? "bg-amber-50 text-amber-900 border-amber-300" 
+                      : "bg-emerald-50 text-[#154c38] border-emerald-200/80"
                   )}>
                     {pendingApprovalCount > 0 ? (isEnglish ? 'Action Required' : 'ต้องพิจารณา') : (isEnglish ? 'Clear' : 'เรียบร้อย')}
                   </span>
@@ -171,24 +171,24 @@ export function Dashboard() {
         {/* Card 3: Low Stock */}
         <Link 
           to="/inventory" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-300 p-3 sm:p-4 lg:p-5 group hover:border-black hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-stone-200/90 p-3 sm:p-4 lg:p-5 group hover:border-[#154c38] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="flex items-start">
-            <div className="flex-shrink-0 bg-zinc-100 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-black border border-zinc-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-colors">
+            <div className="flex-shrink-0 bg-emerald-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#154c38] border border-emerald-200/80 group-hover:bg-[#154c38] group-hover:text-white group-hover:border-[#154c38] transition-colors">
               <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </div>
             <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-zinc-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}>
+                <dt className="text-xs sm:text-sm font-semibold text-stone-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}>
                   {isEnglish ? 'Low Stock' : 'พัสดุใกล้หมดคลัง'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-black tabular-nums">{lowStockCount}</div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-stone-900 tabular-nums">{lowStockCount}</div>
                   <span className={cn(
                     "text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md border tracking-wide",
                     lowStockCount > 0 
-                      ? "bg-black text-white border-black" 
-                      : "bg-zinc-100 text-black border-zinc-300"
+                      ? "bg-rose-50 text-rose-800 border-rose-200" 
+                      : "bg-emerald-50 text-[#154c38] border-emerald-200/80"
                   )}>
                     {lowStockCount > 0 ? (isEnglish ? 'Need Reorder' : 'ต้องสั่งเพิ่ม') : (isEnglish ? 'Normal' : 'ปกติ')}
                   </span>
@@ -201,20 +201,20 @@ export function Dashboard() {
         {/* Card 4: Active POs */}
         <Link 
           to="/po" 
-          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-slate-300 p-3 sm:p-4 lg:p-5 group hover:border-black hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+          className="bg-white overflow-hidden shadow-xs rounded-xl sm:rounded-2xl border border-stone-200/90 p-3 sm:p-4 lg:p-5 group hover:border-[#154c38] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="flex items-start">
-            <div className="flex-shrink-0 bg-zinc-100 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-black border border-zinc-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-colors">
+            <div className="flex-shrink-0 bg-emerald-50 rounded-lg sm:rounded-xl p-2 sm:p-2.5 lg:p-3 text-[#154c38] border border-emerald-200/80 group-hover:bg-[#154c38] group-hover:text-white group-hover:border-[#154c38] transition-colors">
               <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </div>
             <div className="ml-2.5 sm:ml-4 min-w-0 flex-1">
               <dl>
-                <dt className="text-xs sm:text-sm font-semibold text-zinc-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}>
+                <dt className="text-xs sm:text-sm font-semibold text-stone-600 leading-snug line-clamp-1 sm:line-clamp-2" title={isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}>
                   {isEnglish ? 'Active POs' : 'ใบสั่งซื้อรอดำเนินการ (PO)'}
                 </dt>
                 <dd className="flex items-baseline justify-between mt-1 sm:mt-2">
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-black tabular-nums">{activePOCount}</div>
-                  <span className="text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 bg-zinc-100 text-black border border-zinc-300 rounded-md tracking-wide">
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-extrabold font-mono text-stone-900 tabular-nums">{activePOCount}</div>
+                  <span className="text-[10px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 bg-emerald-50 text-[#154c38] border border-emerald-200/80 rounded-md tracking-wide">
                     {isEnglish ? 'In Progress' : 'รอดำเนินการ'}
                   </span>
                 </dd>
@@ -277,37 +277,37 @@ export function Dashboard() {
             </div>
             <Link 
               to="/pr" 
-              className="text-xs font-bold text-black hover:underline flex items-center gap-1 transition-colors"
+              className="text-xs font-bold text-[#154c38] hover:text-[#103b2b] hover:underline flex items-center gap-1 transition-colors"
             >
               {isEnglish ? 'View All' : 'ดูทั้งหมด'} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           <div className="flow-root">
-            <ul className="-my-3 divide-y divide-slate-200">
+            <ul className="-my-3 divide-y divide-stone-200">
               {recentActivities.map((item) => (
                 <li key={item.id} className="py-3 flex items-center group justify-between gap-3">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
                     <span className={cn(
                       "mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold shrink-0",
-                      item.type === 'PR' ? "bg-black text-white" : "bg-zinc-100 text-black border border-zinc-300"
+                      item.type === 'PR' ? "bg-[#154c38] text-white" : "bg-emerald-50 text-[#154c38] border border-emerald-200/80"
                     )}>
                       {item.id}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-semibold text-black truncate group-hover:underline transition-colors">
+                      <p className="text-xs sm:text-sm font-semibold text-stone-900 truncate group-hover:underline transition-colors">
                         {item.desc}
                       </p>
-                      <p className="text-[11px] text-zinc-500 truncate mt-0.5">
-                        {item.req} &bull; <span className="text-black font-semibold">{item.status}</span>
+                      <p className="text-[11px] text-stone-500 truncate mt-0.5">
+                        {item.req} &bull; <span className="text-stone-800 font-semibold">{item.status}</span>
                       </p>
                     </div>
                   </div>
                   <div className="flex-shrink-0 text-right">
-                    <p className="text-xs sm:text-sm font-bold text-black">{item.amount}</p>
+                    <p className="text-xs sm:text-sm font-bold text-stone-900">{item.amount}</p>
                     <Link 
                       to={item.link} 
-                      className="mt-0.5 inline-block text-[11px] font-bold text-black hover:underline transition-colors"
+                      className="mt-0.5 inline-block text-[11px] font-bold text-[#154c38] hover:text-[#103b2b] hover:underline transition-colors"
                     >
                       {t('common.view')} &rarr;
                     </Link>
