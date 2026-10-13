@@ -461,23 +461,18 @@ html {
 }
 
 /* Heading & Subheading Highlight Utilities (Standard Enterprise ERP Sapphire & Slate) */
-.heading-badge {
+.heading-badge,
+.heading-badge-primary {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.2rem 0.625rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  font-size: 0.725rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.025em;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: var(--theme-primary-light, #eff6ff) !important;
-  color: var(--theme-primary, #1d4ed8) !important;
-  border: 1px solid var(--theme-primary-border, #bfdbfe) !important;
-}
-
-.heading-badge-primary {
   background-color: var(--theme-primary-light, #eff6ff) !important;
   color: var(--theme-primary, #1d4ed8) !important;
   border: 1px solid var(--theme-primary-border, #bfdbfe) !important;

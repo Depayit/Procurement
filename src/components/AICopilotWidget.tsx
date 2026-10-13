@@ -246,12 +246,12 @@ export function AICopilotWidget() {
 
   return (
     <>
-      {/* Edge-Docked Folding AI Trigger Handle (พับติดขอบจอ สไลด์ออกมาเมื่อต้องการใช้งาน) */}
+      {/* Edge-Docked Folding AI Trigger Handle (พับติดขอบจอด้านข้าง สไลด์ออกมาเมื่อต้องการใช้งาน) */}
       {!isOpen && (
         <div 
-          className="fixed right-0 bottom-24 sm:bottom-28 z-40 select-none transition-transform duration-300 ease-out"
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 select-none transition-transform duration-300 ease-out"
           style={{
-            transform: touchDeltaX > 0 ? `translateX(-${touchDeltaX}px)` : undefined
+            transform: touchDeltaX > 0 ? `translate(-${touchDeltaX}px, -50%)` : undefined
           }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -272,7 +272,7 @@ export function AICopilotWidget() {
               // Hover / active slide state: gracefully glides out towards the screen center
               isHovered 
                 ? "translate-x-0 pr-4 pl-3 py-2.5 sm:py-3" 
-                : "translate-x-[calc(100%-46px)] sm:translate-x-[calc(100%-50px)] pr-2 pl-2.5 py-2.5 sm:py-3 hover:translate-x-0 hover:pr-4 hover:pl-3"
+                : "translate-x-[calc(100%-38px)] sm:translate-x-[calc(100%-42px)] pr-2 pl-2 py-2 sm:py-2.5 hover:translate-x-0 hover:pr-4 hover:pl-3"
             )}
             title={isEnglish ? "Slide or click to open AI Copilot" : "สไลด์หรือคลิกเพื่อดึง AI Copilot ออกมาใช้งาน"}
             aria-label="Open AI Copilot"
