@@ -1094,34 +1094,34 @@ export function ApprovalPage() {
                         <table className="w-full border-collapse table-fixed text-left bg-white">
                           <tbody>
                             <tr className="border-b border-slate-200">
-                              <th className="w-[140px] py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ผู้ออกเอกสาร</th>
-                              <td className="py-2 px-3 font-semibold text-slate-900 border-r border-slate-200">{viewTask.requester}</td>
-                              <th className="w-[140px] py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ระดับการพิจารณา</th>
-                              <td className="py-2 px-3 font-bold text-slate-900">ลำดับขั้นที่ {viewTask.level} (Level {viewTask.level})</td>
+                              <th className="w-[140px] py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px] whitespace-nowrap align-middle">ผู้ออกเอกสาร</th>
+                              <td className="py-2 px-3 font-semibold text-slate-900 border-r border-slate-200 align-middle">{viewTask.requester}</td>
+                              <th className="w-[140px] py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px] whitespace-nowrap align-middle">ระดับการพิจารณา</th>
+                              <td className="py-2 px-3 font-bold text-slate-900 align-middle">ลำดับขั้นที่ {viewTask.level} (Level {viewTask.level})</td>
                             </tr>
                             <tr className="border-b border-slate-200">
-                              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ประเภทเอกสาร</th>
-                              <td className="py-2 px-3 font-semibold text-slate-900 border-r border-slate-200">{viewTask.documentType === 'PR' ? 'ใบขอซื้อ (PR)' : 'ใบสั่งซื้อ (PO)'}</td>
-                              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">สถานะเอกสาร</th>
+                              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px] whitespace-nowrap align-middle">ประเภทเอกสาร</th>
+                              <td className="py-2 px-3 font-semibold text-slate-900 border-r border-slate-200 align-middle">{viewTask.documentType === 'PR' ? 'ใบขอซื้อ (PR)' : 'ใบสั่งซื้อ (PO)'}</td>
+                              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px] whitespace-nowrap align-middle">สถานะเอกสาร</th>
                               <td className="py-2 px-3 align-middle">
                                 {viewTask.status === 'Approved' ? (
-                                  <span className="stamp-approved inline-flex items-center gap-1 px-2.5 py-0.5 border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold rounded-sm text-[10px] shadow-2xs">
+                                  <span className="stamp-approved inline-flex items-center gap-1 px-2.5 py-0.5 border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold rounded-sm text-[10px] shadow-2xs whitespace-nowrap">
                                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> อนุมัติแล้ว (Approved)
                                   </span>
                                 ) : viewTask.status === 'Rejected' ? (
-                                  <span className="stamp-rejected inline-flex items-center gap-1 px-2.5 py-0.5 border border-red-600 bg-red-50 text-red-800 font-bold rounded-sm text-[10px] shadow-2xs">
+                                  <span className="stamp-rejected inline-flex items-center gap-1 px-2.5 py-0.5 border border-red-600 bg-red-50 text-red-800 font-bold rounded-sm text-[10px] shadow-2xs whitespace-nowrap">
                                     <XCircle className="w-3.5 h-3.5 text-red-600" /> ไม่อนุมัติ (Rejected)
                                   </span>
                                 ) : (
-                                  <span className="stamp-pending inline-flex items-center gap-1 px-2.5 py-0.5 border border-amber-600 bg-amber-50 text-amber-800 font-bold rounded-sm text-[10px] shadow-2xs">
+                                  <span className="stamp-pending inline-flex items-center gap-1 px-2.5 py-0.5 border border-amber-600 bg-amber-50 text-amber-800 font-bold rounded-sm text-[10px] shadow-2xs whitespace-nowrap">
                                     <Clock className="w-3.5 h-3.5 text-amber-600" /> รอการพิจารณา
                                   </span>
                                 )}
                               </td>
                             </tr>
                             <tr>
-                              <th className="py-2.5 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px]">ยอดเงินรวมสุทธิ</th>
-                              <td colSpan={3} className="py-2.5 px-3 font-bold font-mono text-slate-950 text-sm">
+                              <th className="py-2.5 px-3 bg-slate-50/90 border-r border-slate-200 font-bold text-slate-800 text-[10.5px] whitespace-nowrap align-middle">ยอดเงินรวมสุทธิ</th>
+                              <td colSpan={3} className="py-2.5 px-3 font-bold font-mono text-slate-950 text-sm align-middle">
                                 {(viewTask.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท
                               </td>
                             </tr>

@@ -144,19 +144,19 @@ export function StandardPRDocument({
           <tbody>
             {/* Row 1: Project & Urgency */}
             <tr className="border-b border-slate-200">
-              <th className="w-[130px] py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">โครงการ / ไซต์งาน</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Project / Site</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">โครงการ / ไซต์งาน</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Project / Site</span>
               </th>
-              <td className="w-[235px] py-1.5 px-3 font-bold text-slate-900 border-r border-slate-200 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 font-bold text-slate-900 border-r border-slate-200 align-middle leading-snug">
                 {pr.department}
               </td>
-              <th className="w-[130px] py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">ระดับความเร่งด่วน</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Urgency Level</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">ระดับความเร่งด่วน</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Urgency Level</span>
               </th>
-              <td className="w-[235px] py-1.5 px-3 align-middle">
-                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] border", currentUrgency.badgeClass)}>
+              <td className="w-[230px] py-1.5 px-3 align-middle">
+                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] border whitespace-nowrap", currentUrgency.badgeClass)}>
                   {currentUrgency.label} ({currentUrgency.enLabel})
                 </span>
               </td>
@@ -164,57 +164,57 @@ export function StandardPRDocument({
 
             {/* Row 2: Project Code & Delivery Location */}
             <tr className="border-b border-slate-200">
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">รหัสโครงการ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Project Code / Cost Center</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">รหัสโครงการ / BOQ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Project Code / BOQ</span>
               </th>
-              <td className="py-1.5 px-3 font-mono text-slate-900 font-bold border-r border-slate-200 align-middle">
+              <td className="w-[230px] py-1.5 px-3 font-mono text-slate-900 font-bold border-r border-slate-200 align-middle">
                 {pr.projectCode || 'PRJ-MAIN-01'}
               </td>
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">สถานที่จัดส่ง</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Delivery Location</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">สถานที่จัดส่ง</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Delivery Location</span>
               </th>
-              <td className="py-1.5 px-3 font-medium text-slate-800 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 font-medium text-slate-800 align-middle leading-snug">
                 {pr.deliveryLocation || `หน้างาน ${pr.department}`}
               </td>
             </tr>
 
             {/* Row 3: Requester & Suggested Vendor */}
             <tr className="border-b border-slate-200">
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">ผู้ขอซื้อ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Requested By</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">ผู้ขอซื้อ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Requested By</span>
               </th>
-              <td className="py-1.5 px-3 font-semibold text-slate-900 border-r border-slate-200 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 font-semibold text-slate-900 border-r border-slate-200 align-middle leading-snug">
                 {pr.requesterName}
                 {pr.requesterPosition && (
                   <span className="text-slate-500 font-normal ml-1">({pr.requesterPosition})</span>
                 )}
               </td>
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">ร้านค้าที่แนะนำ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Suggested Vendor</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">ร้านค้าที่แนะนำ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Suggested Vendor</span>
               </th>
-              <td className="py-1.5 px-3 text-slate-800 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 text-slate-800 align-middle leading-snug">
                 {pr.suggestedVendor || '-'}
               </td>
             </tr>
 
             {/* Row 4: Contact Phone & Document Status */}
             <tr className="border-b border-slate-200">
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">เบอร์โทรติดต่อ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Contact Phone</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">เบอร์โทรติดต่อ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Contact Phone</span>
               </th>
-              <td className="py-1.5 px-3 font-mono text-slate-800 border-r border-slate-200 align-middle">
+              <td className="w-[230px] py-1.5 px-3 font-mono text-slate-800 border-r border-slate-200 align-middle">
                 {pr.contactPhone || '089-123-4567'}
               </td>
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">สถานะเอกสาร</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Document Status</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">สถานะเอกสาร</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Document Status</span>
               </th>
-              <td className="py-1.5 px-3 align-middle">
+              <td className="w-[230px] py-1.5 px-3 align-middle">
                 {pr.status === 'Approved' ? (
                   <span className="stamp-approved inline-flex items-center gap-1 px-2.5 py-0.5 border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold rounded-sm text-[10px] shadow-2xs">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> อนุมัติแล้ว (Approved)
@@ -233,11 +233,11 @@ export function StandardPRDocument({
 
             {/* Row 5: Purpose & Justification */}
             <tr>
-              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">วัตถุประสงค์ / เหตุผล</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Purpose & Justification</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">วัตถุประสงค์ / เหตุผล</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap tracking-tight">Purpose & Justification</span>
               </th>
-              <td colSpan={3} className="py-2 px-3 font-medium text-slate-800 align-middle leading-relaxed text-[11px]">
+              <td colSpan={3} className="py-1.5 px-3 font-medium text-slate-800 align-middle leading-relaxed text-[11px]">
                 {pr.justification || 'จัดซื้อวัสดุอุปกรณ์ตามแผนดำเนินงานโครงการเพื่อใช้ในงานก่อสร้าง'}
               </td>
             </tr>
@@ -250,37 +250,37 @@ export function StandardPRDocument({
         <table className="w-full text-left border-collapse table-fixed bg-white">
           <thead>
             <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300 text-[10.5px]">
-              <th className="py-2 px-1 border-r border-slate-300 w-[36px] text-center">
-                <span className="block leading-tight">ลำดับ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">No.</span>
+              <th className="py-2 px-1 border-r border-slate-300 w-[34px] text-center align-middle">
+                <span className="block leading-tight whitespace-nowrap">ลำดับ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">No.</span>
               </th>
-              <th className="py-2 px-2.5 border-r border-slate-300 w-[85px] text-left">
-                <span className="block leading-tight">รหัสพัสดุ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Item Code</span>
+              <th className="py-2 px-2 border-r border-slate-300 w-[78px] text-left align-middle">
+                <span className="block leading-tight whitespace-nowrap">รหัสพัสดุ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Item Code</span>
               </th>
-              <th className="py-2 px-3 border-r border-slate-300 w-[255px] text-left">
-                <span className="block leading-tight">รายการสินค้าและคุณลักษณะเฉพาะ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Description & Specification</span>
+              <th className="py-2 px-2.5 border-r border-slate-300 w-[260px] text-left align-middle">
+                <span className="block leading-tight whitespace-nowrap">รายการสินค้าและคุณลักษณะเฉพาะ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Description & Specification</span>
               </th>
-              <th className="py-2 px-2 border-r border-slate-300 w-[55px] text-right">
-                <span className="block leading-tight">จำนวน</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Qty</span>
+              <th className="py-2 px-1.5 border-r border-slate-300 w-[62px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">จำนวน</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Qty</span>
               </th>
-              <th className="py-2 px-1 border-r border-slate-300 w-[46px] text-center">
-                <span className="block leading-tight">หน่วย</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Unit</span>
+              <th className="py-2 px-1 border-r border-slate-300 w-[44px] text-center align-middle">
+                <span className="block leading-tight whitespace-nowrap">หน่วย</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Unit</span>
               </th>
-              <th className="py-2 px-2.5 border-r border-slate-300 w-[85px] text-right">
-                <span className="block leading-tight">ราคา/หน่วย</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Unit Price</span>
+              <th className="py-2 px-2 border-r border-slate-300 w-[84px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">ราคา/หน่วย</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Unit Price</span>
               </th>
-              <th className="py-2 px-2.5 border-r border-slate-300 w-[98px] text-right">
-                <span className="block leading-tight">จำนวนเงิน</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Amount</span>
+              <th className="py-2 px-2 border-r border-slate-300 w-[98px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">จำนวนเงิน</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Amount</span>
               </th>
-              <th className="py-2 px-2.5 w-[80px] text-left">
-                <span className="block leading-tight">หมายเหตุ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Remark</span>
+              <th className="py-2 px-2 w-[70px] text-left align-middle">
+                <span className="block leading-tight whitespace-nowrap">หมายเหตุ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Remark</span>
               </th>
             </tr>
           </thead>
@@ -292,10 +292,10 @@ export function StandardPRDocument({
                   <td className="py-2 px-1 border-r border-slate-200 text-center font-medium text-slate-600 align-top">
                     {idx + 1}
                   </td>
-                  <td className="py-2 px-2.5 border-r border-slate-200 font-mono text-[10.5px] text-slate-700 align-top font-semibold">
+                  <td className="py-2 px-2 border-r border-slate-200 font-mono text-[10.5px] text-slate-700 align-top font-semibold truncate">
                     {item.itemCode || `ITM-${String(idx + 1).padStart(3, '0')}`}
                   </td>
-                  <td className="py-2 px-3 border-r border-slate-200 align-top">
+                  <td className="py-2 px-2.5 border-r border-slate-200 align-top">
                     <div className="font-bold text-slate-900 leading-snug">
                       {item.description}
                     </div>
@@ -305,19 +305,19 @@ export function StandardPRDocument({
                       </div>
                     )}
                   </td>
-                  <td className="py-2 px-2 border-r border-slate-200 text-right font-semibold text-slate-900 font-mono tabular-nums whitespace-nowrap align-top">
+                  <td className="py-2 px-1.5 border-r border-slate-200 text-right font-semibold text-slate-900 font-mono tabular-nums whitespace-nowrap align-top">
                     {Number(item.quantity).toLocaleString()}
                   </td>
                   <td className="py-2 px-1 border-r border-slate-200 text-center text-slate-700 align-top whitespace-nowrap">
                     {item.unit}
                   </td>
-                  <td className="py-2 px-2.5 border-r border-slate-200 text-right font-mono tabular-nums text-slate-700 whitespace-nowrap align-top">
+                  <td className="py-2 px-2 border-r border-slate-200 text-right font-mono tabular-nums text-slate-700 whitespace-nowrap align-top">
                     {Number(item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
-                  <td className="py-2 px-2.5 border-r border-slate-200 text-right font-bold font-mono tabular-nums text-slate-950 whitespace-nowrap align-top">
+                  <td className="py-2 px-2 border-r border-slate-200 text-right font-bold font-mono tabular-nums text-slate-950 whitespace-nowrap align-top">
                     {lineTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
-                  <td className="py-2 px-2.5 text-[10.5px] text-slate-500 leading-snug align-top">
+                  <td className="py-2 px-2 text-[10.5px] text-slate-500 leading-snug align-top">
                     {item.remark || '-'}
                   </td>
                 </tr>

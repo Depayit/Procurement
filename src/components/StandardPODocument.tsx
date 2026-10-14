@@ -148,47 +148,47 @@ export function StandardPODocument({
           <tbody>
             {/* Row 1: Vendor & Project */}
             <tr className="border-b border-slate-200">
-              <th className="w-[130px] py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">ผู้ขาย / คู่ค้า</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Vendor / Supplier</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">ผู้ขาย / คู่ค้า</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Vendor / Supplier</span>
               </th>
-              <td className="w-[235px] py-1.5 px-3 font-bold text-slate-900 border-r border-slate-200 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 font-bold text-slate-900 border-r border-slate-200 align-middle leading-snug">
                 {po.vendorName}
               </td>
-              <th className="w-[130px] py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">โครงการ / ไซต์งาน</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Project / Site</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">โครงการ / ไซต์งาน</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Project / Site</span>
               </th>
-              <td className="w-[235px] py-1.5 px-3 font-bold text-slate-900 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 font-bold text-slate-900 align-middle leading-snug">
                 {po.department || 'โครงการหลัก (สำนักงานใหญ่)'}
               </td>
             </tr>
 
             {/* Row 2: Payment Terms & Delivery Location */}
             <tr className="border-b border-slate-200">
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">เงื่อนไขการชำระเงิน</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Payment Terms</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">เงื่อนไขการชำระเงิน</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Payment Terms</span>
               </th>
-              <td className="py-1.5 px-3 font-semibold text-slate-900 border-r border-slate-200 align-middle">
+              <td className="w-[230px] py-1.5 px-3 font-semibold text-slate-900 border-r border-slate-200 align-middle">
                 {po.paymentTerms || 'เครดิตเทอม 30 วัน'}
               </td>
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">สถานที่ส่งมอบพัสดุ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Delivery Destination</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">สถานที่ส่งมอบพัสดุ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Delivery Destination</span>
               </th>
-              <td className="py-1.5 px-3 font-medium text-slate-800 align-middle leading-snug">
+              <td className="w-[230px] py-1.5 px-3 font-medium text-slate-800 align-middle leading-snug">
                 {po.deliveryLocation || `คลังสินค้า / หน้างาน ${po.department || 'สำนักงาน'}`}
               </td>
             </tr>
 
             {/* Row 3: Document Status & Project Code */}
             <tr className="border-b border-slate-200">
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">สถานะเอกสาร</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">PO Status</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">สถานะเอกสาร</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">PO Status</span>
               </th>
-              <td className="py-1.5 px-3 border-r border-slate-200 align-middle">
+              <td className="w-[230px] py-1.5 px-3 border-r border-slate-200 align-middle">
                 {po.status === 'Issued' || po.status === 'Completed' || po.status === 'Approved' ? (
                   <span className="stamp-approved inline-flex items-center gap-1 px-2.5 py-0.5 border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold rounded-sm text-[10px] shadow-2xs">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> {statusLabels[po.status] || po.status}
@@ -203,22 +203,22 @@ export function StandardPODocument({
                   </span>
                 )}
               </td>
-              <th className="py-1.5 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">รหัสโครงการ / BOQ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">Project Code / BOQ</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">รหัสโครงการ / BOQ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap">Project Code / BOQ</span>
               </th>
-              <td className="py-1.5 px-3 font-mono text-slate-900 font-bold align-middle">
+              <td className="w-[230px] py-1.5 px-3 font-mono text-slate-900 font-bold align-middle">
                 {po.projectCode || 'PRJ-MAIN-01'}
               </td>
             </tr>
 
             {/* Row 4: Description & Special Instructions */}
             <tr>
-              <th className="py-2 px-3 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
-                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight">คำอธิบายคำสั่งซื้อ</span>
-                <span className="block font-normal text-slate-500 text-[9px] leading-tight mt-0.5 uppercase">PO Description & Notes</span>
+              <th className="w-[135px] py-1.5 px-2.5 bg-slate-50/90 border-r border-slate-200 align-middle text-slate-700">
+                <span className="block font-bold text-slate-800 text-[10.5px] leading-tight whitespace-nowrap">คำอธิบายคำสั่งซื้อ</span>
+                <span className="block font-normal text-slate-500 text-[8.5px] leading-tight mt-0.5 uppercase whitespace-nowrap tracking-tight">PO Description & Notes</span>
               </th>
-              <td colSpan={3} className="py-2 px-3 font-medium text-slate-800 align-middle leading-relaxed text-[11px]">
+              <td colSpan={3} className="py-1.5 px-3 font-medium text-slate-800 align-middle leading-relaxed text-[11px]">
                 {po.poDescription || 'สั่งซื้อสินค้าตามใบขอซื้อและใบเสนอราคาที่ได้รับอนุมัติ ส่งของพร้อมใบกำกับภาษีฉบับจริง'}
               </td>
             </tr>
@@ -231,41 +231,41 @@ export function StandardPODocument({
         <table className="w-full text-left border-collapse table-fixed bg-white">
           <thead>
             <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300 text-[10.5px]">
-              <th className="py-2 px-1 border-r border-slate-300 w-[34px] text-center">
-                <span className="block leading-tight">ลำดับ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">No.</span>
+              <th className="py-2 px-1 border-r border-slate-300 w-[32px] text-center align-middle">
+                <span className="block leading-tight whitespace-nowrap">ลำดับ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">No.</span>
               </th>
-              <th className="py-2 px-2 border-r border-slate-300 w-[80px] text-left">
-                <span className="block leading-tight">รหัสพัสดุ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Item Code</span>
+              <th className="py-2 px-2 border-r border-slate-300 w-[76px] text-left align-middle">
+                <span className="block leading-tight whitespace-nowrap">รหัสพัสดุ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Item Code</span>
               </th>
-              <th className="py-2 px-2.5 border-r border-slate-300 w-[240px] text-left">
-                <span className="block leading-tight">รายการสินค้าและคุณลักษณะเฉพาะ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Description & Specification</span>
+              <th className="py-2 px-2.5 border-r border-slate-300 w-[226px] text-left align-middle">
+                <span className="block leading-tight whitespace-nowrap">รายการสินค้าและคุณลักษณะเฉพาะ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Description & Specification</span>
               </th>
-              <th className="py-2 px-1.5 border-r border-slate-300 w-[54px] text-right">
-                <span className="block leading-tight">จำนวนสั่ง</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Order Qty</span>
+              <th className="py-2 px-1.5 border-r border-slate-300 w-[64px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">จำนวนสั่ง</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Order Qty</span>
               </th>
-              <th className="py-2 px-1.5 border-r border-slate-300 w-[54px] text-right">
-                <span className="block leading-tight">รับแล้ว</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Recv Qty</span>
+              <th className="py-2 px-1.5 border-r border-slate-300 w-[60px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">รับแล้ว</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Recv Qty</span>
               </th>
-              <th className="py-2 px-1 border-r border-slate-300 w-[44px] text-center">
-                <span className="block leading-tight">หน่วย</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Unit</span>
+              <th className="py-2 px-1 border-r border-slate-300 w-[42px] text-center align-middle">
+                <span className="block leading-tight whitespace-nowrap">หน่วย</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Unit</span>
               </th>
-              <th className="py-2 px-2 border-r border-slate-300 w-[84px] text-right">
-                <span className="block leading-tight">ราคา/หน่วย</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Unit Price</span>
+              <th className="py-2 px-2 border-r border-slate-300 w-[76px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">ราคา/หน่วย</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Unit Price</span>
               </th>
-              <th className="py-2 px-2 border-r border-slate-300 w-[96px] text-right">
-                <span className="block leading-tight">จำนวนเงิน</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Amount</span>
+              <th className="py-2 px-2 border-r border-slate-300 w-[90px] text-right align-middle">
+                <span className="block leading-tight whitespace-nowrap">จำนวนเงิน</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Amount</span>
               </th>
-              <th className="py-2 px-2 w-[74px] text-left">
-                <span className="block leading-tight">หมายเหตุ</span>
-                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight">Remark</span>
+              <th className="py-2 px-2 w-[64px] text-left align-middle">
+                <span className="block leading-tight whitespace-nowrap">หมายเหตุ</span>
+                <span className="block text-[8.5px] text-slate-500 font-normal uppercase leading-tight mt-0.5 whitespace-nowrap">Remark</span>
               </th>
             </tr>
           </thead>
