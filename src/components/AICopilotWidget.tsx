@@ -334,11 +334,11 @@ export function AICopilotWidget() {
 
   return (
     <>
-      {/* Edge-Docked Folding AI Trigger Handle (พับติดขอบจอด้านข้าง สไลด์ออกมาเมื่อต้องการใช้งาน ไม่ทับเนื้อหาการ์ด) */}
+      {/* Edge-Docked Folding AI Trigger Handle (Desktop only; on mobile it is in the center of the bottom navigation bar) */}
       {!isOpen && (
         <div 
           className={cn(
-            "fixed right-0 top-[48%] -translate-y-1/2 z-40 select-none",
+            "hidden lg:block fixed right-0 top-[48%] -translate-y-1/2 z-40 select-none",
             touchDeltaX > 0 ? "transition-none" : "transition-transform duration-300 ease-out"
           )}
           style={{

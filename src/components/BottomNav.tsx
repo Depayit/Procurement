@@ -3,27 +3,18 @@ import {
   LayoutDashboard, 
   ShoppingCart, 
   ClipboardCheck, 
-  Package, 
-  Menu 
+  Menu,
+  Bot,
+  Sparkles
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
 import { useAuth } from '../contexts/AuthContext';
-import type { PermissionKey } from '../types';
 
 interface BottomNavProps {
   onOpenMenu: () => void;
   isMenuOpen: boolean;
-}
-
-interface NavTab {
-  nameTh: string;
-  nameEn: string;
-  path: string;
-  icon: typeof LayoutDashboard;
-  requiredPerm?: PermissionKey;
-  badge?: number;
 }
 
 export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
@@ -37,37 +28,13 @@ export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
     pr => pr.status === 'Pending Approval'
   ).length;
 
-  const tabs: NavTab[] = [
-    {
-      nameTh: 'แดชบอร์ด',
-      nameEn: 'Dashboard',
-      path: '/',
-      icon: LayoutDashboard,
-      requiredPerm: 'dashboard:view',
-    },
-    {
-      nameTh: 'ขอซื้อ',
-      nameEn: 'PR',
-      path: '/pr',
-      icon: ShoppingCart,
-      requiredPerm: 'pr:view',
-    },
-    {
-      nameTh: 'อนุมัติ',
-      nameEn: 'Approve',
-      path: '/approvals',
-      icon: ClipboardCheck,
-      requiredPerm: 'approvals:view',
-      badge: pendingApprovalsCount > 0 ? pendingApprovalsCount : undefined,
-    },
-    {
-      nameTh: 'คลังพัสดุ',
-      nameEn: 'Stock',
-      path: '/inventory',
-      icon: Package,
-      requiredPerm: 'inventory:view',
-    },
-  ];
+  const canViewDashboard = isAdmin || hasPermission('dashboard:view');
+  const canViewPR = isAdmin || hasPermission('pr:view');
+  const canViewApprovals = isAdmin || hasPermission('approvals:view');
+
+  const isDashboardActive = location.pathname === '/';
+  const isPRActive = location.pathname.startsWith('/pr');
+  const isApprovalsActive = location.pathname.startsWith('/approvals');
 
   return (
     <nav 
@@ -75,52 +42,128 @@ export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom,0px)]"
     >
       <div className="grid grid-cols-5 h-14 max-w-lg mx-auto items-center px-1">
-        {tabs.map((tab) => {
-          const isPermitted = isAdmin || !tab.requiredPerm || hasPermission(tab.requiredPerm);
-          if (!isPermitted) return null;
+        
+        {/* Tab 1: Dashboard */}
+        {canViewDashboard ? (
+          <Link
+            to="/"
+            className={cn(
+              "flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all relative select-none touch-manipulation",
+              isDashboardActive 
+                ? "text-indigo-600 font-bold" 
+                : "text-slate-500 hover:text-slate-900 active:scale-95"
+            )}
+          >
+            <LayoutDashboard className={cn(
+              "w-5 h-5 transition-transform", 
+              isDashboardActive && "scale-110 text-indigo-600 stroke-[2.4]"
+            )} />
+            <span className={cn(
+              "text-[10px] mt-0.5 tracking-tight truncate max-w-full leading-tight",
+              isDashboardActive ? "font-bold text-indigo-600" : "font-medium"
+            )}>
+              {isEnglish ? 'Dashboard' : 'แดชบอร์ด'}
+            </span>
+            {isDashboardActive && (
+              <span className="w-1.5 h-1 bg-indigo-600 rounded-full mt-0.5" />
+            )}
+          </Link>
+        ) : <div />}
 
-          const isActive = tab.path === '/' 
-            ? location.pathname === '/' 
-            : location.pathname.startsWith(tab.path);
-          const Icon = tab.icon;
-          const label = isEnglish ? tab.nameEn : tab.nameTh;
+        {/* Tab 2: Purchase Request (PR) */}
+        {canViewPR ? (
+          <Link
+            to="/pr"
+            className={cn(
+              "flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all relative select-none touch-manipulation",
+              isPRActive 
+                ? "text-indigo-600 font-bold" 
+                : "text-slate-500 hover:text-slate-900 active:scale-95"
+            )}
+          >
+            <ShoppingCart className={cn(
+              "w-5 h-5 transition-transform", 
+              isPRActive && "scale-110 text-indigo-600 stroke-[2.4]"
+            )} />
+            <span className={cn(
+              "text-[10px] mt-0.5 tracking-tight truncate max-w-full leading-tight",
+              isPRActive ? "font-bold text-indigo-600" : "font-medium"
+            )}>
+              {isEnglish ? 'PR' : 'ขอซื้อ'}
+            </span>
+            {isPRActive && (
+              <span className="w-1.5 h-1 bg-indigo-600 rounded-full mt-0.5" />
+            )}
+          </Link>
+        ) : <div />}
 
-          return (
-            <Link
-              key={tab.path}
-              to={tab.path}
-              className={cn(
-                "flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all relative select-none touch-manipulation",
-                isActive 
-                  ? "text-indigo-600 font-bold" 
-                  : "text-slate-500 hover:text-slate-900 active:scale-95"
-              )}
-            >
-              <div className="relative">
-                <Icon className={cn(
-                  "w-5 h-5 transition-transform", 
-                  isActive && "scale-110 text-indigo-600 stroke-[2.4]"
-                )} />
-                {typeof tab.badge === 'number' && (
-                  <span className="absolute -top-1 -right-2 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9.5px] font-black flex items-center justify-center ring-2 ring-white tabular-nums animate-pulse">
-                    {tab.badge > 99 ? '99+' : tab.badge}
-                  </span>
-                )}
-              </div>
-              <span className={cn(
-                "text-[10px] mt-0.5 tracking-tight truncate max-w-full leading-tight",
-                isActive ? "font-bold text-indigo-600" : "font-medium"
-              )}>
-                {label}
+        {/* Tab 3: CENTER PROMINENT FLOATING AI CHAT BUTTON */}
+        <div className="flex flex-col items-center justify-center relative">
+          <button
+            type="button"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('app:open-ai-copilot', { detail: { tab: 'chat' } }));
+            }}
+            className="group relative flex flex-col items-center justify-center -mt-6 select-none touch-manipulation cursor-pointer"
+            aria-label={isEnglish ? "Open AI Chat" : "เปิดแชทผู้ช่วย AI"}
+          >
+            {/* Ambient Pulse Glow */}
+            <span className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 opacity-60 blur-xs group-hover:opacity-100 transition-opacity animate-pulse" />
+            
+            {/* Elevated Circular Action Button */}
+            <div className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-[0_6px_20px_rgba(79,70,229,0.45)] ring-[3.5px] ring-white group-active:scale-90 transition-transform duration-200">
+              <Bot className="w-6 h-6 text-white group-hover:rotate-6 transition-transform" />
+              
+              {/* Online Green Ping Indicator */}
+              <span className="absolute top-0.5 right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border-2 border-white"></span>
               </span>
-              {isActive && (
-                <span className="w-1.5 h-1 bg-indigo-600 rounded-full mt-0.5" />
-              )}
-            </Link>
-          );
-        })}
+            </div>
 
-        {/* 5th Tab: All Menus / More (Toggle Drawer) */}
+            {/* Label Below Circle */}
+            <span className="text-[10px] mt-0.5 font-bold tracking-tight text-indigo-600 leading-tight flex items-center gap-0.5">
+              <span>{isEnglish ? 'AI Chat' : 'แชท AI'}</span>
+              <Sparkles className="w-2.5 h-2.5 text-amber-500 fill-amber-400" />
+            </span>
+          </button>
+        </div>
+
+        {/* Tab 4: Approvals */}
+        {canViewApprovals ? (
+          <Link
+            to="/approvals"
+            className={cn(
+              "flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all relative select-none touch-manipulation",
+              isApprovalsActive 
+                ? "text-indigo-600 font-bold" 
+                : "text-slate-500 hover:text-slate-900 active:scale-95"
+            )}
+          >
+            <div className="relative">
+              <ClipboardCheck className={cn(
+                "w-5 h-5 transition-transform", 
+                isApprovalsActive && "scale-110 text-indigo-600 stroke-[2.4]"
+              )} />
+              {pendingApprovalsCount > 0 && (
+                <span className="absolute -top-1 -right-2 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9.5px] font-black flex items-center justify-center ring-2 ring-white tabular-nums animate-pulse">
+                  {pendingApprovalsCount > 99 ? '99+' : pendingApprovalsCount}
+                </span>
+              )}
+            </div>
+            <span className={cn(
+              "text-[10px] mt-0.5 tracking-tight truncate max-w-full leading-tight",
+              isApprovalsActive ? "font-bold text-indigo-600" : "font-medium"
+            )}>
+              {isEnglish ? 'Approve' : 'อนุมัติ'}
+            </span>
+            {isApprovalsActive && (
+              <span className="w-1.5 h-1 bg-indigo-600 rounded-full mt-0.5" />
+            )}
+          </Link>
+        ) : <div />}
+
+        {/* Tab 5: All Menus / More (Toggle Drawer) */}
         <button
           type="button"
           onClick={onOpenMenu}
@@ -132,12 +175,10 @@ export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
           )}
           aria-label={isEnglish ? "All Menus" : "เมนูทั้งหมด"}
         >
-          <div className="relative">
-            <Menu className={cn(
-              "w-5 h-5 transition-transform",
-              isMenuOpen && "scale-110 text-indigo-600 stroke-[2.4]"
-            )} />
-          </div>
+          <Menu className={cn(
+            "w-5 h-5 transition-transform",
+            isMenuOpen && "scale-110 text-indigo-600 stroke-[2.4]"
+          )} />
           <span className={cn(
             "text-[10px] mt-0.5 tracking-tight truncate max-w-full leading-tight",
             isMenuOpen ? "font-bold text-indigo-600" : "font-medium"
@@ -148,6 +189,7 @@ export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
             <span className="w-1.5 h-1 bg-indigo-600 rounded-full mt-0.5" />
           )}
         </button>
+
       </div>
     </nav>
   );
