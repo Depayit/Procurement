@@ -289,11 +289,12 @@ export function Header({
           onClick={() => {
             window.dispatchEvent(new CustomEvent('app:open-ai-copilot'));
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-blue-50/50 text-slate-800 border border-slate-200 hover:border-[#1e40af] transition-all cursor-pointer shadow-xs group text-xs font-semibold"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-all cursor-pointer shadow-xs group text-xs font-bold shrink-0"
           title={isEnglish ? 'Open AI Copilot & Diagnostics' : 'เปิด AI ผู้ช่วยและศูนย์ซ่อมแซมระบบ'}
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#1e40af] group-hover:scale-110 transition-transform" />
-          <span className="text-xs font-bold hidden sm:inline">AI Copilot</span>
+          <Sparkles className="w-3.5 h-3.5 text-indigo-600 group-hover:scale-110 transition-transform shrink-0" />
+          <span className="text-xs font-bold xs:inline">AI</span>
+          <span className="text-xs font-bold hidden sm:inline">Copilot</span>
         </button>
 
         {/* Eye-Friendly Theme & Eye Comfort Toggle */}

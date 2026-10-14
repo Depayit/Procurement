@@ -21,7 +21,9 @@ import {
   ArrowRight,
   ShieldCheck,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Mic,
+  MicOff
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -111,6 +113,64 @@ export function AICopilotWidget() {
   const [inputText, setInputText] = useState('');
   const [isAsking, setIsAsking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Speech-to-Text Voice Input State (Mobile & Desktop)
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {
+          // ignore
+        }
+      }
+    };
+  }, []);
+
+  const toggleVoiceInput = () => {
+    if (isListening) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {
+          // ignore
+        }
+      }
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert(isEnglish ? 'Voice input is not supported in this browser. Please type your message.' : 'เบราว์เซอร์นี้ยังไม่รองรับการพิมพ์ด้วยเสียง กรุณาพิมพ์คำถามในช่องข้อความ');
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = isEnglish ? 'en-US' : 'th-TH';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onend = () => setIsListening(false);
+      recognition.onerror = () => setIsListening(false);
+      recognition.onresult = (event: any) => {
+        const transcript = event.results?.[0]?.[0]?.transcript;
+        if (transcript) {
+          setInputText(prev => prev ? `${prev} ${transcript}` : transcript);
+        }
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch {
+      setIsListening(false);
+    }
+  };
 
   // Diagnostics State
   const [report, setReport] = useState<SystemDiagnosticsReport | null>(null);
@@ -277,7 +337,10 @@ export function AICopilotWidget() {
       {/* Edge-Docked Folding AI Trigger Handle (พับติดขอบจอด้านข้าง สไลด์ออกมาเมื่อต้องการใช้งาน) */}
       {!isOpen && (
         <div 
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-40 select-none transition-transform duration-300 ease-out"
+          className={cn(
+            "fixed right-0 top-1/2 -translate-y-1/2 z-40 select-none",
+            touchDeltaX > 0 ? "transition-none" : "transition-transform duration-300 ease-out"
+          )}
           style={{
             transform: touchDeltaX > 0 ? `translate(-${touchDeltaX}px, -50%)` : undefined
           }}
@@ -292,27 +355,25 @@ export function AICopilotWidget() {
             type="button"
             onClick={() => setIsOpen(true)}
             className={cn(
-              "group relative flex items-center cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "group relative flex items-center cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] touch-manipulation active:scale-95",
               "bg-gradient-to-l from-indigo-700 via-indigo-600 to-purple-600 hover:from-indigo-600 hover:to-purple-500",
               "text-white shadow-[-4px_4px_20px_rgba(79,70,229,0.35)] hover:shadow-[-6px_6px_25px_rgba(79,70,229,0.5)]",
               "border-y border-l border-white/25 rounded-l-2xl backdrop-blur-md",
-              // Idle state: tucked tightly to the right screen edge showing only the mini tab handle
-              // Hover / active slide state: gracefully glides out towards the screen center
               isHovered 
                 ? "translate-x-0 pr-4 pl-3 py-2.5 sm:py-3" 
-                : "translate-x-[calc(100%-38px)] sm:translate-x-[calc(100%-42px)] pr-2 pl-2 py-2 sm:py-2.5 hover:translate-x-0 hover:pr-4 hover:pl-3"
+                : "translate-x-[calc(100%-44px)] sm:translate-x-[calc(100%-42px)] pr-2.5 pl-2 py-2.5 sm:py-2.5 hover:translate-x-0 hover:pr-4 hover:pl-3"
             )}
-            title={isEnglish ? "Slide or click to open AI Copilot" : "สไลด์หรือคลิกเพื่อดึง AI Copilot ออกมาใช้งาน"}
+            title={isEnglish ? "Slide or tap to open AI Copilot" : "สไลด์หรือแตะเพื่อเปิด AI Copilot"}
             aria-label="Open AI Copilot"
           >
             {/* Slide-out indicator chevron */}
-            <div className="mr-1.5 flex items-center justify-center text-indigo-200 group-hover:text-white transition-all shrink-0">
-              <ChevronLeft className="w-4 h-4 animate-pulse group-hover:-translate-x-0.5 transition-transform" />
+            <div className="mr-1 flex items-center justify-center text-indigo-200 group-hover:text-white transition-all shrink-0">
+              <ChevronLeft className="w-3.5 h-3.5 animate-pulse group-hover:-translate-x-0.5 transition-transform" />
             </div>
 
             {/* Glowing Bot Icon */}
             <div className="relative shrink-0">
-              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 shadow-inner group-hover:rotate-6 transition-transform">
+              <div className="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center border border-white/20 shadow-inner group-hover:rotate-6 transition-transform">
                 <Bot className="w-5 h-5 text-indigo-100" />
               </div>
               <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
@@ -322,13 +383,13 @@ export function AICopilotWidget() {
             </div>
 
             {/* Expandable Label (peeks out on slide or hover) */}
-            <div className="flex flex-col text-left ml-2.5 min-w-0 pr-1 whitespace-nowrap overflow-hidden transition-all duration-300">
+            <div className="flex flex-col text-left ml-2 min-w-0 pr-1 whitespace-nowrap overflow-hidden transition-all duration-300">
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-bold tracking-tight">AI Copilot</span>
                 <Sparkles className="w-3 h-3 text-amber-300 shrink-0" />
               </div>
               <span className="text-[10px] text-indigo-100/90 leading-tight">
-                {isEnglish ? "Slide or click to open" : "สไลด์เพื่อเปิด 24 ชม."}
+                {isEnglish ? "Slide or tap to open" : "สไลด์หรือแตะเปิด 24 ชม."}
               </span>
             </div>
           </button>
@@ -402,48 +463,48 @@ export function AICopilotWidget() {
               </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-200 bg-slate-50/80 px-3 py-1.5 gap-2 shrink-0 text-xs font-semibold">
+            {/* Navigation Tabs (3-column responsive grid on mobile) */}
+            <div className="grid grid-cols-3 border-b border-slate-200 bg-slate-50/90 p-1.5 gap-1.5 shrink-0 text-xs font-semibold">
               <button
                 type="button"
                 onClick={() => setActiveTab('chat')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-xl transition-all cursor-pointer ${
                   activeTab === 'chat'
-                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200'
+                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200 font-bold'
                     : 'text-slate-600 hover:bg-white/60'
                 }`}
               >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>{isEnglish ? 'AI Assistant' : 'ปรึกษา AI'}</span>
+                <MessageSquare className="w-3.5 h-3.5 shrink-0 text-indigo-600" />
+                <span className="truncate">{isEnglish ? 'AI Chat' : 'ถาม AI'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('diagnostics')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all cursor-pointer relative ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-xl transition-all cursor-pointer relative ${
                   activeTab === 'diagnostics'
-                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200'
+                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200 font-bold'
                     : 'text-slate-600 hover:bg-white/60'
                 }`}
               >
-                <Wrench className="w-3.5 h-3.5" />
-                <span>{isEnglish ? 'Auto-Repair Hub' : 'ตรวจ & ซ่อมระบบ'}</span>
+                <Wrench className="w-3.5 h-3.5 shrink-0 text-amber-600" />
+                <span className="truncate">{isEnglish ? 'Repair' : 'ตรวจ & ซ่อม'}</span>
                 {report && report.overallStatus !== 'healthy' && (
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
                 )}
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('tools')}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-xl transition-all cursor-pointer ${
                   activeTab === 'tools'
-                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200'
+                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200 font-bold'
                     : 'text-slate-600 hover:bg-white/60'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>{isEnglish ? 'Quick Tools' : 'เครื่องมือด่วน'}</span>
+                <Sparkles className="w-3.5 h-3.5 shrink-0 text-purple-600" />
+                <span className="truncate">{isEnglish ? 'Tools' : 'เครื่องมือ'}</span>
               </button>
             </div>
 
@@ -543,20 +604,20 @@ export function AICopilotWidget() {
                 </div>
 
                 {/* Quick Prompts Chips */}
-                <div className="px-3 py-2 bg-white border-t border-slate-100 flex gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+                <div className="px-3 py-2 bg-white border-t border-slate-100 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
                   {quickPrompts.map((prompt, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => handleSendMessage(prompt)}
-                      className="text-[11px] whitespace-nowrap bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-2.5 py-1.5 rounded-full transition-colors shrink-0 border border-slate-200/80 cursor-pointer"
+                      className="text-xs whitespace-nowrap bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-3 py-2 rounded-full transition-all shrink-0 border border-slate-200 cursor-pointer active:scale-95 font-medium flex items-center gap-1 shadow-2xs"
                     >
                       {prompt}
                     </button>
                   ))}
                 </div>
 
-                {/* Chat Input Bar */}
+                {/* Chat Input Bar with Voice Input (Speech-to-Text) */}
                 <div className="p-3 bg-white border-t border-slate-200 shrink-0 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                   <form
                     onSubmit={(e) => {
@@ -565,18 +626,38 @@ export function AICopilotWidget() {
                     }}
                     className="flex items-center gap-2"
                   >
+                    {/* Voice Input Button */}
+                    <button
+                      type="button"
+                      onClick={toggleVoiceInput}
+                      className={cn(
+                        "p-2.5 rounded-xl border transition-all cursor-pointer shrink-0 flex items-center justify-center touch-manipulation active:scale-90",
+                        isListening
+                          ? "bg-red-500 text-white border-red-600 animate-pulse shadow-md"
+                          : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                      )}
+                      title={isListening 
+                        ? (isEnglish ? 'Listening... Tap to stop' : 'กำลังฟังเสียง... แตะเพื่อหยุด') 
+                        : (isEnglish ? 'Voice input (Speech-to-text)' : 'พูดเพื่อถาม AI (พิมพ์ด้วยเสียง)')}
+                      aria-label="Voice input"
+                    >
+                      {isListening ? <MicOff className="w-4 h-4 animate-bounce" /> : <Mic className="w-4 h-4" />}
+                    </button>
+
                     <input
                       type="text"
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      placeholder={isEnglish ? "Ask AI about any system issue..." : "ถาม AI เรื่องปัญหาการใช้งาน เช่น กล้องไม่ติด, PR ติดอนุมัติ..."}
-                      className="flex-1 text-xs sm:text-sm px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                      placeholder={isListening 
+                        ? (isEnglish ? "Listening... speak now" : "กำลังฟังเสียงของคุณ...") 
+                        : (isEnglish ? "Ask AI or tap mic..." : "พิมพ์ถาม AI หรือกดไมค์พูด...")}
+                      className="flex-1 text-base sm:text-sm px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
                       disabled={isAsking}
                     />
                     <button
                       type="submit"
                       disabled={!inputText.trim() || isAsking}
-                      className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0"
+                      className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0 touch-manipulation active:scale-95"
                     >
                       <Send className="w-4 h-4" />
                     </button>
