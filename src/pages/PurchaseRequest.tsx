@@ -841,7 +841,7 @@ export function PurchaseRequestPage() {
 
                 <div>
                   <h3 className="text-sm font-bold text-slate-800 mb-3 border-b border-slate-200 pb-2">รายการที่ขอซื้อ ({viewPR.items.length})</h3>
-                  <div className="border border-slate-200 rounded-lg overflow-hidden">
+                  <div className="border border-slate-200 rounded-lg overflow-x-auto">
                     <table className="w-full text-xs text-left border-collapse">
                       <thead className="bg-slate-100/80 border-b border-slate-200 font-bold text-slate-700">
                         <tr>

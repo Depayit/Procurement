@@ -1090,7 +1090,7 @@ export function ApprovalPage() {
                       </div>
 
                       {/* Information Matrix */}
-                      <div className="border border-slate-300 rounded-sm mb-4 bg-white text-xs overflow-hidden shadow-2xs">
+                      <div className="border border-slate-300 rounded-sm mb-4 bg-white text-xs overflow-x-auto shadow-2xs">
                         <table className="w-full border-collapse table-fixed text-left bg-white">
                           <tbody>
                             <tr className="border-b border-slate-200">

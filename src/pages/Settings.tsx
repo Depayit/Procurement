@@ -1965,7 +1965,7 @@ export function SettingsPage() {
 
                 <div>
                    <h4 className="text-sm font-bold text-slate-800 mb-3">ประวัติการสำรองข้อมูลล่าสุด</h4>
-                   <div className="border border-slate-200 rounded-lg overflow-hidden">
+                   <div className="border border-slate-200 rounded-lg overflow-x-auto">
                      <table className="w-full text-sm text-left">
                        <thead className="bg-slate-50 text-xs text-slate-500 font-bold uppercase tracking-wide border-b border-slate-200">
                          <tr>
