@@ -334,11 +334,11 @@ export function AICopilotWidget() {
 
   return (
     <>
-      {/* Edge-Docked Folding AI Trigger Handle (พับติดขอบจอด้านข้าง สไลด์ออกมาเมื่อต้องการใช้งาน) */}
+      {/* Edge-Docked Folding AI Trigger Handle (พับติดขอบจอด้านข้าง สไลด์ออกมาเมื่อต้องการใช้งาน ไม่ทับเนื้อหาการ์ด) */}
       {!isOpen && (
         <div 
           className={cn(
-            "fixed right-0 top-1/2 -translate-y-1/2 z-40 select-none",
+            "fixed right-0 top-[48%] -translate-y-1/2 z-40 select-none",
             touchDeltaX > 0 ? "transition-none" : "transition-transform duration-300 ease-out"
           )}
           style={{
@@ -357,15 +357,21 @@ export function AICopilotWidget() {
             className={cn(
               "group relative flex items-center cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] touch-manipulation active:scale-95",
               "bg-gradient-to-l from-indigo-700 via-indigo-600 to-purple-600 hover:from-indigo-600 hover:to-purple-500",
-              "text-white shadow-[-4px_4px_20px_rgba(79,70,229,0.35)] hover:shadow-[-6px_6px_25px_rgba(79,70,229,0.5)]",
-              "border-y border-l border-white/25 rounded-l-2xl backdrop-blur-md",
+              "text-white shadow-[-3px_3px_15px_rgba(79,70,229,0.3)] hover:shadow-[-6px_6px_25px_rgba(79,70,229,0.5)]",
+              "border-y border-l border-white/30 rounded-l-2xl backdrop-blur-md",
+              "before:absolute before:inset-y-[-10px] before:-left-4 before:right-0 before:content-['']",
               isHovered 
-                ? "translate-x-0 pr-4 pl-3 py-2.5 sm:py-3" 
-                : "translate-x-[calc(100%-44px)] sm:translate-x-[calc(100%-42px)] pr-2.5 pl-2 py-2.5 sm:py-2.5 hover:translate-x-0 hover:pr-4 hover:pl-3"
+                ? "translate-x-0 pr-4 pl-2 py-2.5 sm:py-3" 
+                : "translate-x-[calc(100%-11px)] sm:translate-x-[calc(100%-13px)] pr-1 pl-1.5 py-2.5 sm:py-2.5 hover:translate-x-0 hover:pr-4 hover:pl-2"
             )}
             title={isEnglish ? "Slide or tap to open AI Copilot" : "สไลด์หรือแตะเพื่อเปิด AI Copilot"}
             aria-label="Open AI Copilot"
           >
+            {/* Edge Grip Indicator (always visible at the edge when folded) */}
+            <div className="flex items-center justify-center shrink-0 w-2.5 sm:w-3 text-white/90 mr-1.5">
+              <div className="w-1 h-6 sm:h-7 rounded-full bg-white/80 group-hover:bg-white shadow-xs transition-colors" />
+            </div>
+
             {/* Slide-out indicator chevron */}
             <div className="mr-1 flex items-center justify-center text-indigo-200 group-hover:text-white transition-all shrink-0">
               <ChevronLeft className="w-3.5 h-3.5 animate-pulse group-hover:-translate-x-0.5 transition-transform" />

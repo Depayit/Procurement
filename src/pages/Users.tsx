@@ -468,32 +468,43 @@ export function UsersPage() {
                       </div>
 
                       {/* Middle: Department & Role */}
-                      <div className="grid grid-cols-2 gap-2 bg-white/90 p-2.5 rounded-lg border border-slate-200/80 text-xs shadow-2xs">
-                        <div>
-                          <span className="text-[10px] text-slate-400 font-bold uppercase block">{isEnglish ? 'Department' : 'แผนก / สังกัด'}</span>
-                          <span className="font-semibold text-slate-700 block truncate mt-0.5">
+                      <div className="bg-slate-50/70 p-3 rounded-xl border border-slate-200/80 text-xs space-y-2 shadow-2xs">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[10.5px] text-slate-400 font-bold uppercase tracking-wider shrink-0">
+                            {isEnglish ? 'Department' : 'แผนก / สังกัด'}
+                          </span>
+                          <span className="font-semibold text-slate-700 text-right truncate">
                             {user.department || (isEnglish ? 'Head Office' : 'สำนักงานใหญ่')}
                           </span>
                         </div>
-                        <div className="border-l border-slate-200/80 pl-2.5">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase block">{isEnglish ? 'Role' : 'บทบาทและสิทธิ์'}</span>
+
+                        <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-200/60">
+                          <span className="text-[10.5px] text-slate-400 font-bold uppercase tracking-wider shrink-0">
+                            {isEnglish ? 'Role' : 'บทบาทและสิทธิ์'}
+                          </span>
                           <span className={cn(
-                            "inline-flex items-center gap-1 font-bold text-xs truncate mt-0.5",
-                            user.role === 'Admin' ? "text-indigo-700" : "text-slate-800"
+                            "inline-flex items-center gap-1.5 font-bold text-xs px-2.5 py-1 rounded-lg border shrink-0",
+                            user.role === 'Admin' 
+                              ? "bg-indigo-50 text-indigo-700 border-indigo-200" 
+                              : "bg-white text-slate-800 border-slate-200"
                           )}>
-                            <Shield className="w-3 h-3 text-indigo-500 shrink-0" />
-                            <span className="truncate">{userRoleConfig?.titleTh || user.role}</span>
+                            <Shield className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                            <span>
+                              {isEnglish 
+                                ? (userRoleConfig?.titleEn?.split('/')[0]?.trim() || user.role)
+                                : (userRoleConfig?.titleTh?.split('(')[0]?.trim() || user.role)}
+                            </span>
                           </span>
                         </div>
                       </div>
 
                       {/* Action buttons */}
                       {canManageUsers && (
-                        <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+                        <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
                           <button
                             type="button"
                             onClick={() => openEditUser(user)}
-                            className="flex-1 py-1.5 px-3 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2 px-3 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl transition-colors shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
                           >
                             <Edit className="w-3.5 h-3.5 text-indigo-600" />
                             <span>{isEnglish ? 'Edit' : 'แก้ไข'}</span>
@@ -501,7 +512,7 @@ export function UsersPage() {
                           <button
                             type="button"
                             onClick={() => setDeleteUserId(user.id)}
-                            className="py-1.5 px-3 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+                            className="py-2 px-3.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
                             title="ลบผู้ใช้งาน"
                           >
                             <Trash2 className="w-3.5 h-3.5 text-rose-500" />
