@@ -328,10 +328,18 @@ export function Header({
             <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 transition-transform hidden sm:block", showUserMenu && "rotate-180")} />
           </button>
 
+          {/* Mobile backdrop for easy dismissal */}
           {showUserMenu && (
-            <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-1.5rem)] sm:w-84 max-w-sm bg-white rounded-2xl shadow-2xl border border-slate-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100dvh-5rem)] flex flex-col">
+            <div 
+              className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-2xs sm:hidden animate-in fade-in duration-150"
+              onClick={() => setShowUserMenu(false)}
+            />
+          )}
+
+          {showUserMenu && (
+            <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-1.5rem)] sm:w-88 max-w-sm bg-white rounded-2xl shadow-2xl border border-slate-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100dvh-9rem)] sm:max-h-[min(620px,calc(100dvh-5rem))] flex flex-col">
               {/* Header Details (Sticky Profile Summary) */}
-              <div className="p-3.5 bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white border-b border-slate-100 shrink-0">
+              <div className="p-3 sm:p-3.5 bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white border-b border-slate-100 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100 shrink-0">
                     {currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'}
@@ -346,106 +354,109 @@ export function Header({
                 </div>
               </div>
 
-              {/* Persona / Role Selector (Scrollable Middle Section) */}
-              <div className="p-2.5 sm:p-3 bg-slate-50/50 border-b border-slate-100 flex flex-col min-h-0 flex-1 overflow-hidden">
-                <div className="flex items-center justify-between mb-2 px-1 shrink-0">
-                  <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5 text-indigo-600" />
-                    {isEnglish ? 'Switch Persona' : 'สลับบทบาทจำลอง'}
-                  </span>
-                  <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">
-                    Active
-                  </span>
-                </div>
-                
-                {/* Scrollable list with thin scrollbar and comfortable max-height */}
-                <div className="space-y-1.5 overflow-y-auto max-h-48 sm:max-h-56 pr-1 scroll-smooth overscroll-contain">
-                  {availableRoles.map(item => {
-                    const isSelected = activeRole === item.role;
-                    return (
-                      <button
-                        key={item.role}
-                        type="button"
-                        onClick={() => {
-                          switchRole(item.role);
-                          setShowUserMenu(false);
-                        }}
-                        className={cn(
-                          "w-full text-left p-2 rounded-xl text-xs flex items-center gap-2.5 transition-all cursor-pointer border",
-                          isSelected
-                            ? "bg-indigo-600 text-white border-indigo-600 shadow-xs font-semibold"
-                            : "bg-white text-slate-700 border-slate-200/80 hover:bg-indigo-50/50 hover:border-indigo-200"
-                        )}
-                      >
-                        <span className={cn(
-                          "w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-bold shrink-0",
-                          isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
-                        )}>
-                          {item.avatarText}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate leading-tight font-medium text-xs">
-                            {isEnglish ? item.titleEn : item.titleTh}
-                          </p>
-                          <p className={cn(
-                            "text-[10px] truncate mt-0.5",
-                            isSelected ? "text-indigo-100" : "text-slate-400"
+              {/* Unified Scrollable Body - Allows smooth scrolling of all sections on mobile & small viewports */}
+              <div className="flex-1 overflow-y-auto overscroll-contain divide-y divide-slate-100 scroll-smooth">
+                {/* Section 1: Persona / Role Selector */}
+                <div className="p-2.5 sm:p-3 bg-slate-50/50">
+                  <div className="flex items-center justify-between mb-2 px-1">
+                    <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-indigo-600" />
+                      {isEnglish ? 'Switch Persona' : 'สลับบทบาทจำลอง'}
+                    </span>
+                    <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">
+                      Active
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-1.5">
+                    {availableRoles.map(item => {
+                      const isSelected = activeRole === item.role;
+                      return (
+                        <button
+                          key={item.role}
+                          type="button"
+                          onClick={() => {
+                            switchRole(item.role);
+                            setShowUserMenu(false);
+                          }}
+                          className={cn(
+                            "w-full text-left p-2 rounded-xl text-xs flex items-center gap-2.5 transition-all cursor-pointer border",
+                            isSelected
+                              ? "bg-indigo-600 text-white border-indigo-600 shadow-xs font-semibold"
+                              : "bg-white text-slate-700 border-slate-200/80 hover:bg-indigo-50/50 hover:border-indigo-200"
+                          )}
+                        >
+                          <span className={cn(
+                            "w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-bold shrink-0",
+                            isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
                           )}>
-                            {isEnglish ? item.descEn : item.descTh}
-                          </p>
-                        </div>
-                        {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0" />}
-                      </button>
-                    );
-                  })}
+                            {item.avatarText}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate leading-tight font-medium text-xs">
+                              {isEnglish ? item.titleEn : item.titleTh}
+                            </p>
+                            <p className={cn(
+                              "text-[10px] truncate mt-0.5",
+                              isSelected ? "text-indigo-100" : "text-slate-400"
+                            )}>
+                              {isEnglish ? item.descEn : item.descTh}
+                            </p>
+                          </div>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
 
-              {/* Quick Links (Pinned to bottom) */}
-              <div className="p-2 bg-white flex flex-col gap-0.5 text-xs font-medium shrink-0">
-                <Link
-                  to="/users"
-                  onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
-                >
-                  <span className="flex items-center gap-2 truncate">
-                    <UserCheck className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span>{isEnglish ? 'Users & Roles' : 'ผู้ใช้งานและสิทธิ์'}</span>
-                  </span>
-                  <span className="text-[11px] text-slate-400">&rarr;</span>
-                </Link>
-                <Link
-                  to="/settings"
-                  onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
-                >
-                  <span className="truncate">{isEnglish ? 'Settings' : 'ตั้งค่าระบบ'}</span>
-                  <span className="text-[11px] text-slate-400">&rarr;</span>
-                </Link>
-                <Link
-                  to="/manual"
-                  onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 flex items-center justify-between transition-colors font-semibold"
-                >
-                  <span className="flex items-center gap-2 truncate">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-                    <span>{isEnglish ? 'User Manual' : 'คู่มือระบบ'}</span>
-                  </span>
-                  <span className="text-[11px] text-indigo-500">&rarr;</span>
-                </Link>
-                <Link
-                  to="/ai-tools"
-                  onClick={() => setShowUserMenu(false)}
-                  className="px-3 py-1.5 rounded-lg text-purple-700 hover:bg-purple-50 flex items-center justify-between transition-colors font-semibold"
-                >
-                  <span className="flex items-center gap-2 truncate">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>{isEnglish ? 'AI Assistant' : 'ผู้ช่วย AI'}</span>
-                  </span>
-                  <span className="text-[11px] text-purple-500">&rarr;</span>
-                </Link>
+                {/* Section 2: Quick Navigation Links */}
+                <div className="p-2 bg-white flex flex-col gap-0.5 text-xs font-medium">
+                  <Link
+                    to="/users"
+                    onClick={() => setShowUserMenu(false)}
+                    className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
+                  >
+                    <span className="flex items-center gap-2 truncate">
+                      <UserCheck className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{isEnglish ? 'Users & Roles' : 'ผู้ใช้งานและสิทธิ์'}</span>
+                    </span>
+                    <span className="text-[11px] text-slate-400">&rarr;</span>
+                  </Link>
+                  <Link
+                    to="/settings"
+                    onClick={() => setShowUserMenu(false)}
+                    className="px-3 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center justify-between transition-colors"
+                  >
+                    <span className="truncate">{isEnglish ? 'Settings' : 'ตั้งค่าระบบ'}</span>
+                    <span className="text-[11px] text-slate-400">&rarr;</span>
+                  </Link>
+                  <Link
+                    to="/manual"
+                    onClick={() => setShowUserMenu(false)}
+                    className="px-3 py-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 flex items-center justify-between transition-colors font-semibold"
+                  >
+                    <span className="flex items-center gap-2 truncate">
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                      <span>{isEnglish ? 'User Manual' : 'คู่มือระบบ'}</span>
+                    </span>
+                    <span className="text-[11px] text-indigo-500">&rarr;</span>
+                  </Link>
+                  <Link
+                    to="/ai-tools"
+                    onClick={() => setShowUserMenu(false)}
+                    className="px-3 py-1.5 rounded-lg text-purple-700 hover:bg-purple-50 flex items-center justify-between transition-colors font-semibold"
+                  >
+                    <span className="flex items-center gap-2 truncate">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                      <span>{isEnglish ? 'AI Assistant' : 'ผู้ช่วย AI'}</span>
+                    </span>
+                    <span className="text-[11px] text-purple-500">&rarr;</span>
+                  </Link>
+                </div>
 
-                <div className="pt-1 mt-1 border-t border-slate-100">
+                {/* Section 3: Demo Data & Logout Actions */}
+                <div className="p-2.5 pb-3 sm:pb-2.5 bg-slate-50/70 space-y-1.5">
                   <button
                     type="button"
                     onClick={() => {
@@ -455,7 +466,7 @@ export function Header({
                         window.location.reload();
                       }
                     }}
-                    className="w-full px-3 py-1.5 rounded-lg text-amber-800 bg-amber-50 hover:bg-amber-100/80 flex items-center justify-between transition-colors font-semibold text-xs cursor-pointer border border-amber-200/60"
+                    className="w-full px-3 py-2 rounded-xl text-amber-800 bg-amber-50/90 hover:bg-amber-100 flex items-center justify-between transition-colors font-semibold text-xs cursor-pointer border border-amber-200/70 shadow-2xs"
                   >
                     <span className="flex items-center gap-2 truncate">
                       <Layers className="w-3.5 h-3.5 text-amber-600 shrink-0" />
@@ -463,9 +474,7 @@ export function Header({
                     </span>
                     <span className="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-bold">1-Click</span>
                   </button>
-                </div>
 
-                <div className="pt-1 mt-1 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => {
@@ -474,13 +483,13 @@ export function Header({
                         logout();
                       }
                     }}
-                    className="w-full px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 flex items-center justify-between transition-colors font-medium cursor-pointer"
+                    className="w-full px-3 py-2 rounded-xl text-rose-700 bg-white hover:bg-rose-50 border border-rose-200/80 flex items-center justify-between transition-colors font-semibold text-xs cursor-pointer shadow-2xs"
                   >
                     <span className="flex items-center gap-2">
                       <LogOut className="w-3.5 h-3.5 text-rose-500 shrink-0" />
                       <span>{isEnglish ? 'Log Out' : 'ออกจากระบบ'}</span>
                     </span>
-                    <span className="text-[10px] text-rose-400">Exit</span>
+                    <span className="text-[10px] text-rose-400 font-mono">Exit</span>
                   </button>
                 </div>
               </div>
