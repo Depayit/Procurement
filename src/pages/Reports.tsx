@@ -28,7 +28,7 @@ import {
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProcurement } from '../contexts/ProcurementContext';
 
-const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#64748B', '#8B5CF6'];
+const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#0EA5E9', '#8B5CF6', '#EC4899', '#64748B', '#14B8A6'];
 
 export function ReportsPage() {
   const { t, isEnglish } = useLanguage();
@@ -294,31 +294,71 @@ export function ReportsPage() {
              </div>
           </div>
 
-          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-6 min-w-0">
-             <h2 className="text-lg font-bold text-slate-800 mb-6">สัดส่วนยอดซื้อตามหมวดหมู่</h2>
-             <div className="w-full h-72 min-w-0 min-h-[280px]">
-               <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={260}>
-                 <PieChart>
-                   <Pie
-                     data={categorySpend}
-                     cx="50%"
-                     cy="45%"
-                     innerRadius={60}
-                     outerRadius={100}
-                     paddingAngle={2}
-                     dataKey="value"
+          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-5 sm:p-6 min-w-0 flex flex-col justify-between">
+             <div className="flex items-center justify-between mb-4 sm:mb-6">
+               <h2 className="text-base sm:text-lg font-bold text-slate-800">
+                 {isEnglish ? 'Spend by Category' : 'สัดส่วนยอดซื้อตามหมวดหมู่'}
+               </h2>
+               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                 {categorySpend.length} {isEnglish ? 'Categories' : 'หมวดหมู่'}
+               </span>
+             </div>
+
+             <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 min-w-0 flex-1">
+               {/* Donut Chart with Center Metric */}
+               <div className="w-full sm:w-1/2 h-52 sm:h-60 relative flex items-center justify-center shrink-0">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <PieChart>
+                     <Pie
+                       data={categorySpend}
+                       cx="50%"
+                       cy="50%"
+                       innerRadius={50}
+                       outerRadius={75}
+                       paddingAngle={3}
+                       dataKey="value"
+                     >
+                       {categorySpend.map((entry, index) => (
+                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                       ))}
+                     </Pie>
+                     <Tooltip 
+                       formatter={(value: any) => [`${value ?? 0}%`, isEnglish ? 'Share' : 'สัดส่วน']}
+                       contentStyle={{borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: '0 4px 10px rgba(0,0,0,0.06)'}} 
+                     />
+                   </PieChart>
+                 </ResponsiveContainer>
+                 {/* Center Label in Donut Hole */}
+                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                   <span className="text-xl font-extrabold text-slate-800">{categorySpend.length}</span>
+                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                     {isEnglish ? 'Types' : 'ประเภท'}
+                   </span>
+                 </div>
+               </div>
+
+               {/* Responsive Legend List (No SVG Overflow) */}
+               <div className="w-full sm:w-1/2 flex flex-col gap-1.5 max-h-56 sm:max-h-64 overflow-y-auto no-scrollbar">
+                 {categorySpend.map((entry, index) => (
+                   <div 
+                     key={entry.name}
+                     className="flex items-center justify-between p-1.5 sm:p-2 rounded-lg hover:bg-slate-50 transition-colors text-xs"
                    >
-                     {categorySpend.map((entry, index) => (
-                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                     ))}
-                   </Pie>
-                   <Tooltip 
-                     formatter={(value: any) => [`${value ?? 0}%`, 'สัดส่วน']}
-                     contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} 
-                   />
-                   <Legend verticalAlign="bottom" height={36} iconType="circle" />
-                 </PieChart>
-               </ResponsiveContainer>
+                     <div className="flex items-center gap-2 min-w-0">
+                       <span 
+                         className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs" 
+                         style={{ backgroundColor: COLORS[index % COLORS.length] }} 
+                       />
+                       <span className="text-slate-700 font-medium truncate" title={entry.name}>
+                         {entry.name}
+                       </span>
+                     </div>
+                     <span className="font-bold font-mono text-slate-900 shrink-0 ml-2">
+                       {entry.value}%
+                     </span>
+                   </div>
+                 ))}
+               </div>
              </div>
           </div>
         </div>
