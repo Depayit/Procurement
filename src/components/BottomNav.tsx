@@ -104,27 +104,21 @@ export function BottomNav({ onOpenMenu, isMenuOpen }: BottomNavProps) {
             onClick={() => {
               window.dispatchEvent(new CustomEvent('app:open-ai-copilot', { detail: { tab: 'chat' } }));
             }}
-            className="group relative flex flex-col items-center justify-center -mt-6 select-none touch-manipulation cursor-pointer"
+            className="group relative flex flex-col items-center justify-center -mt-3 select-none touch-manipulation cursor-pointer"
             aria-label={isEnglish ? "Open AI Chat" : "เปิดแชทผู้ช่วย AI"}
           >
-            {/* Ambient Pulse Glow */}
-            <span className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 opacity-60 blur-xs group-hover:opacity-100 transition-opacity animate-pulse" />
-            
-            {/* Elevated Circular Action Button */}
-            <div className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-[0_6px_20px_rgba(79,70,229,0.45)] ring-[3.5px] ring-white group-active:scale-90 transition-transform duration-200">
-              <Bot className="w-6 h-6 text-white group-hover:rotate-6 transition-transform" />
+            {/* Circular Action Button (subtle) */}
+            <div className="relative w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-[0_3px_10px_rgba(79,70,229,0.25)] ring-2 ring-white group-hover:shadow-[0_4px_14px_rgba(79,70,229,0.35)] group-active:scale-95 transition-all duration-200">
+              <Bot className="w-5 h-5 text-white" />
               
-              {/* Online Green Ping Indicator */}
-              <span className="absolute top-0.5 right-0.5 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border-2 border-white"></span>
-              </span>
+              {/* Online Indicator */}
+              <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 border-2 border-white" />
             </div>
 
             {/* Label Below Circle */}
-            <span className="text-[10px] mt-0.5 font-bold tracking-tight text-indigo-600 leading-tight flex items-center gap-0.5">
+            <span className="text-[10px] mt-0.5 font-semibold tracking-tight text-indigo-600 leading-tight flex items-center gap-0.5">
               <span>{isEnglish ? 'AI Chat' : 'แชท AI'}</span>
-              <Sparkles className="w-2.5 h-2.5 text-amber-500 fill-amber-400" />
+              <Sparkles className="w-2.5 h-2.5 text-amber-400" />
             </span>
           </button>
         </div>
