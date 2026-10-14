@@ -283,13 +283,13 @@ export function Header({
           <span className="text-xs font-bold">Demo Preset</span>
         </button>
 
-        {/* AI Copilot & Diagnostics Quick Trigger */}
+        {/* AI Copilot & Diagnostics Quick Trigger (Desktop only; on mobile accessible via edge slider) */}
         <button
           type="button"
           onClick={() => {
             window.dispatchEvent(new CustomEvent('app:open-ai-copilot'));
           }}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-all cursor-pointer shadow-xs group text-xs font-bold shrink-0"
+          className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-all cursor-pointer shadow-xs group text-xs font-bold shrink-0"
           title={isEnglish ? 'Open AI Copilot & Diagnostics' : 'เปิด AI ผู้ช่วยและศูนย์ซ่อมแซมระบบ'}
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-600 group-hover:scale-110 transition-transform shrink-0" />
@@ -300,8 +300,8 @@ export function Header({
         {/* Eye-Friendly Theme & Eye Comfort Toggle */}
         <ThemeToggle />
 
-        {/* Language Switcher */}
-        <LanguageToggle />
+        {/* Language Switcher (Desktop only on header) */}
+        <LanguageToggle className="hidden sm:inline-flex" />
 
         {/* User Badge & Interactive Role Switcher */}
         <div className="relative" ref={userMenuRef}>
