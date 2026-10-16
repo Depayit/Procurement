@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import type { UserProfile, PermissionKey, PermissionModule, RoleConfig } from '../types';
 import { DEFAULT_ROLES_CONFIG, ALL_PERMISSION_KEYS } from '../lib/permissions';
 import { logSystemAction } from '../lib/auditLog';
+import { GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 export type UserRole = 
   | 'Site Engineer' 
@@ -34,6 +36,7 @@ export interface AuthContextType {
   // Authentication
   isAuthenticated: boolean;
   login: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string; user?: UserProfile }>;
   logout: () => void;
 
   // RBAC Permission Checker
@@ -252,12 +255,142 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return { 
       success: false, 
-      error: 'ไม่พบบัญชีผู้ใช้งานหรืออีเมลไม่ถูกต้อง กรุณาเลือกบัญชีจากปุ่มเข้าสู่ระบบด่วน หรือตรวจสอบข้อมูลอีกครั้ง' 
+      error: 'ไม่พบบัญชีผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบข้อมูลอีกครั้ง หรือเข้าสู่ระบบด้วย Google Account' 
     };
   }, []);
 
-  const logout = useCallback(() => {
+  const loginWithGoogle = useCallback(async (): Promise<{ success: boolean; error?: string; user?: UserProfile }> => {
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      const result = await signInWithPopup(auth, provider);
+      const gUser = result.user;
+
+      if (!gUser || !gUser.email) {
+        return { success: false, error: 'ไม่พบข้อมูลอีเมลจาก Google Account' };
+      }
+
+      const cleanEmail = gUser.email.trim().toLowerCase();
+      const displayName = gUser.displayName || cleanEmail.split('@')[0] || 'Google User';
+      const photoURL = gUser.photoURL || undefined;
+
+      // 1. Check if user exists in PRESET_USERS
+      const presetMatch = Object.values(PRESET_USERS).find(u => 
+        u.email.toLowerCase() === cleanEmail
+      );
+
+      let userToSet: UserProfile | undefined = presetMatch ? {
+        ...presetMatch,
+        name: gUser.displayName || presetMatch.name,
+        photoURL,
+        authProvider: 'google',
+        lastLogin: new Date().toISOString()
+      } : undefined;
+
+      // 2. Check if user exists in persisted users list
+      if (!userToSet) {
+        try {
+          const savedUsersStr = localStorage.getItem('procuresync_users_list_v2');
+          if (savedUsersStr) {
+            const parsedUsers = JSON.parse(savedUsersStr);
+            if (Array.isArray(parsedUsers)) {
+              const found = parsedUsers.find((u: any) => u.email?.toLowerCase() === cleanEmail);
+              if (found) {
+                userToSet = {
+                  id: found.id || `usr-g-${gUser.uid.slice(0, 8)}`,
+                  name: gUser.displayName || found.name,
+                  email: found.email,
+                  role: found.role || 'Purchasing Staff',
+                  status: 'Active',
+                  department: found.department || 'ฝ่ายจัดซื้อและสัญญา (ส่วนกลาง)',
+                  lastLogin: new Date().toISOString(),
+                  photoURL,
+                  authProvider: 'google'
+                };
+              }
+            }
+          }
+        } catch (e) {
+          console.error('Error finding user in persisted list:', e);
+        }
+      }
+
+      // 3. New user registration from Google Account
+      if (!userToSet) {
+        const isAdminUser = cleanEmail.includes('admin');
+        const defaultRole = isAdminUser ? 'Admin' : 'Purchasing Staff';
+        const defaultDept = isAdminUser ? 'เทคโนโลยีสารสนเทศ (IT ERP & Governance)' : 'ฝ่ายจัดซื้อและสัญญา (ส่วนกลาง)';
+
+        userToSet = {
+          id: `usr-g-${gUser.uid.slice(0, 10)}`,
+          name: displayName,
+          email: gUser.email,
+          role: defaultRole,
+          status: 'Active',
+          department: defaultDept,
+          lastLogin: new Date().toISOString(),
+          photoURL,
+          authProvider: 'google'
+        };
+
+        try {
+          const savedUsersStr = localStorage.getItem('procuresync_users_list_v2');
+          const userList = savedUsersStr ? JSON.parse(savedUsersStr) : [];
+          if (Array.isArray(userList) && !userList.some((u: any) => u.email?.toLowerCase() === cleanEmail)) {
+            userList.push({
+              id: userToSet.id,
+              name: userToSet.name,
+              email: userToSet.email,
+              role: userToSet.role,
+              status: 'Active',
+              department: userToSet.department,
+              lastLogin: 'เพิ่งเข้าสู่ระบบ (Google)'
+            });
+            localStorage.setItem('procuresync_users_list_v2', JSON.stringify(userList));
+          }
+        } catch (e) {
+          console.error('Failed to append new Google user to procuresync_users_list_v2:', e);
+        }
+      }
+
+      setCurrentUser(userToSet);
+      setIsAuthenticated(true);
+      try {
+        localStorage.setItem(STORAGE_AUTH_KEY, 'true');
+        localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(userToSet));
+      } catch {
+        // ignore
+      }
+
+      logSystemAction(userToSet.name, 'Google Login', `เข้าสู่ระบบสำเร็จผ่าน Google Account: ${userToSet.email} (${userToSet.role})`);
+      return { success: true, user: userToSet };
+    } catch (err: any) {
+      console.error('Google Sign-In error:', err);
+      let errMsg = 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ';
+      if (err?.code === 'auth/popup-closed-by-user') {
+        errMsg = 'หน้าต่างเข้าสู่ระบบ Google ถูกปิดก่อนเสร็จสิ้น (Popup closed)';
+      } else if (err?.code === 'auth/popup-blocked') {
+        errMsg = 'เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาตป๊อปอัปสำหรับเว็บไซต์นี้';
+      } else if (err?.code === 'auth/cancelled-popup-request') {
+        errMsg = 'มีคำขอเข้าสู่ระบบกำลังทำงานอยู่ กรุณารอสักครู่';
+      } else if (err?.code === 'auth/unauthorized-domain') {
+        errMsg = 'โดเมนนี้ยังไม่ได้เปิดรับรองใน Firebase Auth (Authorized Domains) กรุณาตรวจสอบ Firebase Console';
+      } else if (err?.code === 'auth/operation-not-allowed') {
+        errMsg = 'ระบบ Google Sign-In ยังไม่ได้รับการเปิดใช้งานใน Firebase Console (Authentication > Sign-in method > Google)';
+      } else if (err?.message) {
+        errMsg = err.message;
+      }
+      return { success: false, error: errMsg };
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
     logSystemAction(currentUser.name, 'Logout', 'ออกจากระบบการใช้งาน');
+    try {
+      await firebaseSignOut(auth);
+    } catch (e) {
+      console.warn('Firebase signout notice:', e);
+    }
     setIsAuthenticated(false);
     try {
       localStorage.setItem(STORAGE_AUTH_KEY, 'false');
@@ -490,6 +623,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       availableRoles,
       isAuthenticated,
       login,
+      loginWithGoogle,
       logout,
       hasPermission,
       canViewModule,

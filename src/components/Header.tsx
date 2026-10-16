@@ -314,8 +314,12 @@ export function Header({
             className="flex items-center space-x-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af] rounded-xl p-1.5 transition-all hover:bg-slate-100 cursor-pointer border border-transparent hover:border-slate-200"
             title={isEnglish ? 'Switch user / role' : 'สลับบทบาทผู้ใช้งาน'}
           >
-            <div className="w-8 h-8 rounded-full bg-[#1e40af] text-white flex items-center justify-center text-xs font-bold shadow-xs ring-2 ring-blue-100">
-              {currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'}
+            <div className="w-8 h-8 rounded-full bg-[#1e40af] text-white flex items-center justify-center text-xs font-bold shadow-xs ring-2 ring-blue-100 overflow-hidden">
+              {currentUser.photoURL ? (
+                <img src={currentUser.photoURL} alt={currentUser.name} className="w-full h-full object-cover" />
+              ) : (
+                currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'
+              )}
             </div>
             <div className="hidden md:block text-left">
               <span className="block font-semibold text-slate-900 text-xs leading-tight truncate max-w-[120px]">
@@ -341,8 +345,12 @@ export function Header({
               {/* Header Details (Sticky Profile Summary) */}
               <div className="p-3 sm:p-3.5 bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white border-b border-slate-100 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100 shrink-0">
-                    {currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'}
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-100 shrink-0 overflow-hidden">
+                    {currentUser.photoURL ? (
+                      <img src={currentUser.photoURL} alt={currentUser.name} className="w-full h-full object-cover" />
+                    ) : (
+                      currentUser.name ? currentUser.name.slice(0, 2).toUpperCase() : 'US'
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-slate-900 text-xs sm:text-sm truncate leading-snug">{currentUser.name}</p>

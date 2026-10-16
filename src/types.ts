@@ -178,6 +178,8 @@ export interface UserProfile {
   status: 'Active' | 'Inactive';
   lastLogin?: string;
   department?: string;
+  photoURL?: string;
+  authProvider?: 'password' | 'google';
 }
 
 export type PermissionKey =
